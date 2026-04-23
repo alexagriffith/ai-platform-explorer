@@ -1,8 +1,14 @@
 // Sub-components for capabilities that have internal architecture
 export const subComponents = {
-  'rh-mcp': {
-    name: 'Red Hat MCP Gateway',
+  'rh-mcp-full': {
+    name: 'Full MCP Ecosystem',
     components: [
+      {
+        id: 'mcp-registry',
+        name: 'MCP Registry',
+        description: 'System of Record for governance and lifecycle management',
+        role: 'Governance & Backbone'
+      },
       {
         id: 'mcp-catalog',
         name: 'MCP Catalog',
@@ -22,17 +28,39 @@ export const subComponents = {
         role: 'Secure & Aggregate'
       },
       {
+        id: 'mcp-ingestion',
+        name: 'Ingestion Pipeline',
+        description: 'Supply chain security: validate, scan, sign, certify, publish',
+        role: 'Trust & Integrity',
+        stages: ['Validate', 'Scan', 'Sign', 'Certify', 'Publish']
+      }
+    ]
+  },
+  'rh-mcp-catalog': {
+    name: 'MCP Catalog & Registry',
+    components: [
+      {
         id: 'mcp-registry',
         name: 'MCP Registry',
         description: 'System of Record for governance and lifecycle management',
         role: 'Governance & Backbone'
       },
       {
-        id: 'mcp-ingestion',
-        name: 'Ingestion Pipeline',
-        description: 'Supply chain security: validate, scan, sign, certify, publish',
-        role: 'Trust & Integrity',
-        stages: ['Validate', 'Scan', 'Sign', 'Certify', 'Publish']
+        id: 'mcp-catalog',
+        name: 'MCP Catalog',
+        description: 'Discover and browse certified MCP servers',
+        role: 'Discovery'
+      }
+    ]
+  },
+  'rh-mcp-registry': {
+    name: 'MCP Registry Only',
+    components: [
+      {
+        id: 'mcp-registry',
+        name: 'MCP Registry',
+        description: 'System of Record for governance, metadata, and certification tracking',
+        role: 'Governance & Backbone'
       }
     ]
   },

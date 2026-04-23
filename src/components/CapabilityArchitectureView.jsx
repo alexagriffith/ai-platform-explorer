@@ -10,7 +10,7 @@ export default function CapabilityArchitectureView({ onSwitchToGenerate }) {
   const [selectedCapabilities, setSelectedCapabilities] = useState({});
   const [configuringCapability, setConfiguringCapability] = useState(null);
   const [deepDiveOption, setDeepDiveOption] = useState(null);
-  const [detailLevel, setDetailLevel] = useState(2); // 1: basic, 2: standard, 3: technical
+  const [detailLevel, setDetailLevel] = useState(2); // 1: basic, 2: technical
   const [viewOrder, setViewOrder] = useState('bottom-up'); // 'bottom-up' or 'top-down'
   const [expandedComponents, setExpandedComponents] = useState(new Set());
   const [showFlowViz, setShowFlowViz] = useState(false);
@@ -98,12 +98,12 @@ export default function CapabilityArchitectureView({ onSwitchToGenerate }) {
                   </span>
                 )}
               </h4>
-              {!compact && detailLevel >= 2 && (
+              {!compact && detailLevel === 2 && (
                 <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
                   {capability.description}
                 </p>
               )}
-              {detailLevel >= 2 && (
+              {detailLevel === 2 && (
                 <div className="mt-1 text-xs text-gray-500 dark:text-gray-500">
                   {capability.options.length} option{capability.options.length > 1 ? 's' : ''}
                 </div>
@@ -149,9 +149,9 @@ export default function CapabilityArchitectureView({ onSwitchToGenerate }) {
                 )}
               </div>
               <div className={`font-semibold text-gray-700 dark:text-gray-300 truncate ${compact ? 'text-xs' : 'text-xs'}`}>
-                {detailLevel >= 2 ? `${selectedOption?.provider}: ${selectedOption?.name}` : selectedOption?.name}
+                {detailLevel === 2 ? `${selectedOption?.provider}: ${selectedOption?.name}` : selectedOption?.name}
               </div>
-              {detailLevel >= 3 && selectedOption?.status && (
+              {detailLevel === 2 && selectedOption?.status && (
                 <div className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
                   Status: {selectedOption.status}
                 </div>
@@ -176,7 +176,7 @@ export default function CapabilityArchitectureView({ onSwitchToGenerate }) {
               )}
             </div>
           </div>
-          {!compact && detailLevel >= 2 && (
+          {!compact && detailLevel === 2 && (
             <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
               {selectedOption?.description}
             </p>
@@ -466,8 +466,7 @@ export default function CapabilityArchitectureView({ onSwitchToGenerate }) {
                 <div className="flex gap-1">
                   {[
                     { level: 1, label: 'Basic' },
-                    { level: 2, label: 'Standard' },
-                    { level: 3, label: 'Technical' }
+                    { level: 2, label: 'Technical' }
                   ].map(({ level, label }) => (
                     <button
                       key={level}

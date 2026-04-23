@@ -227,12 +227,26 @@ export const capabilities = {
       position: 'orchestration',
       options: [
         {
-          id: 'rh-mcp',
+          id: 'rh-mcp-full',
           provider: 'Red Hat',
-          name: 'Red Hat MCP Gateway',
-          description: 'Managed MCP server ecosystem on OpenShift AI',
+          name: 'Full MCP Ecosystem',
+          description: 'Complete platform: Registry + Catalog + Lifecycle Operator + Gateway',
           status: 'Tech Preview',
           recommended: true
+        },
+        {
+          id: 'rh-mcp-catalog',
+          provider: 'Red Hat',
+          name: 'MCP Catalog & Registry',
+          description: 'Browse and discover MCP servers with governance (no auto-deployment)',
+          status: 'Tech Preview'
+        },
+        {
+          id: 'rh-mcp-registry',
+          provider: 'Red Hat',
+          name: 'MCP Registry Only',
+          description: 'System of record for MCP governance and metadata',
+          status: 'Tech Preview'
         },
         {
           id: 'custom-mcp',

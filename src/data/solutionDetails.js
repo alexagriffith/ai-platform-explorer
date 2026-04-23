@@ -258,9 +258,9 @@ export const solutionDetails = {
     documentation: 'https://docs.redhat.com/trustyai',
     contacts: ['#forum-trustyai']
   },
-  'rh-mcp': {
-    name: 'Red Hat MCP Gateway',
-    description: 'Model Context Protocol server ecosystem for connecting AI models to tools with enterprise security',
+  'rh-mcp-full': {
+    name: 'Full MCP Ecosystem',
+    description: 'Complete Model Context Protocol platform with governance, discovery, deployment, and security',
     architecture: {
       components: [
         { name: 'MCP Catalog', role: 'Discovery', description: 'Browse and filter MCP servers by category and trust tier' },
@@ -295,6 +295,63 @@ export const solutionDetails = {
     ],
     documentation: 'https://docs.redhat.com/mcp',
     contacts: ['#forum-mcp-gateway', '#team-rh-ai-agent-ops', 'Catherine (Cat) Weeks (SME)']
+  },
+  'rh-mcp-catalog': {
+    name: 'MCP Catalog & Registry',
+    description: 'Discovery and governance platform for MCP servers without automated deployment',
+    architecture: {
+      components: [
+        { name: 'MCP Registry', role: 'Governance', description: 'System of record for MCP metadata and certification' },
+        { name: 'MCP Catalog', role: 'Discovery', description: 'Browse and filter certified MCP servers' }
+      ],
+      integrations: [
+        { name: 'Partner MCP Servers', purpose: 'View certified partners (Confluent, MongoDB, etc.)' },
+        { name: 'AI Gateway', purpose: 'Can integrate for authentication' }
+      ]
+    },
+    capabilities: [
+      'Browse certified MCP servers by category',
+      'View MCP server metadata and documentation',
+      'Track certification and trust levels',
+      'Governance and compliance reporting',
+      'Manual deployment workflows'
+    ],
+    useCases: [
+      'Teams wanting visibility without auto-deployment',
+      'Manual approval workflows required',
+      'Browsing available tools before commitment',
+      'Governance-focused deployments'
+    ],
+    documentation: 'https://docs.redhat.com/mcp',
+    contacts: ['#forum-mcp-gateway', 'Catherine (Cat) Weeks (SME)']
+  },
+  'rh-mcp-registry': {
+    name: 'MCP Registry Only',
+    description: 'System of record for MCP governance - API-only, no UI',
+    architecture: {
+      components: [
+        { name: 'MCP Registry', role: 'Governance', description: 'Metadata, certification, and API access' }
+      ],
+      integrations: [
+        { name: 'Custom Tooling', purpose: 'Build your own catalog or deployment tools' },
+        { name: 'CI/CD Pipelines', purpose: 'Automated MCP governance checks' }
+      ]
+    },
+    capabilities: [
+      'REST API for MCP metadata',
+      'Certification tracking and validation',
+      'Governance policy enforcement',
+      'Headless MCP management',
+      'Integration with custom tooling'
+    ],
+    useCases: [
+      'Building custom MCP management interfaces',
+      'API-driven governance',
+      'Integration with existing tools',
+      'Advanced users with custom workflows'
+    ],
+    documentation: 'https://docs.redhat.com/mcp',
+    contacts: ['#forum-mcp-gateway', 'Catherine (Cat) Weeks (SME)']
   },
   'odf': {
     name: 'OpenShift Data Foundation',

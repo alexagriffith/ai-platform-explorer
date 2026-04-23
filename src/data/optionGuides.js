@@ -131,11 +131,23 @@ export const optionGuides = {
     whenToUse: 'Fine-tuning workflows, instruction-following quality checks',
     bestFor: 'Teams using InstructLab for model fine-tuning'
   },
-  'rh-mcp': {
-    whatItIs: 'Managed Model Context Protocol server ecosystem',
-    whyChoose: 'Connect AI to external tools, APIs, and data sources securely',
-    whenToUse: 'Agentic AI, tool-using models, complex workflows',
-    bestFor: 'Advanced AI applications needing external tool integration'
+  'rh-mcp-full': {
+    whatItIs: 'Complete MCP platform with Registry, Catalog, Lifecycle Operator, and Gateway',
+    whyChoose: 'Full governance, discovery, automated deployment, and security for MCP servers',
+    whenToUse: 'Production agentic AI, enterprise governance required, automated MCP deployments',
+    bestFor: 'Enterprise teams needing complete MCP lifecycle management'
+  },
+  'rh-mcp-catalog': {
+    whatItIs: 'MCP Catalog and Registry for browsing and discovering certified MCP servers',
+    whyChoose: 'Discover available tools without automated deployment - more control over what gets installed',
+    whenToUse: 'Want to browse available MCPs, need governance but manual deployment',
+    bestFor: 'Teams that want visibility and governance but prefer manual MCP deployment'
+  },
+  'rh-mcp-registry': {
+    whatItIs: 'MCP Registry only - system of record for MCP governance and metadata',
+    whyChoose: 'Track and govern MCP servers without catalog UI or automated deployment',
+    whenToUse: 'Building custom tooling, need API-only governance, headless MCP management',
+    bestFor: 'Advanced users building custom MCP management solutions'
   },
 
   // Application Layer
