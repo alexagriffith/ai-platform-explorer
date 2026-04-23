@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --accent: #aa3bff;
+    --accent-rgb: 170, 59, 255;
+  }
+
+  body {
+    @apply font-sans antialiased;
+  }
+}
