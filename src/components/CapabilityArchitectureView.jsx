@@ -6,7 +6,7 @@ import { subComponents } from '../data/subComponents';
 import DeepDiveModal from './DeepDiveModal';
 import FlowVisualization from './FlowVisualization';
 
-export default function CapabilityArchitectureView() {
+export default function CapabilityArchitectureView({ onSwitchToGenerate }) {
   const [selectedCapabilities, setSelectedCapabilities] = useState({});
   const [configuringCapability, setConfiguringCapability] = useState(null);
   const [deepDiveOption, setDeepDiveOption] = useState(null);
@@ -425,7 +425,7 @@ export default function CapabilityArchitectureView() {
               </h2>
               <div className="flex gap-2">
                 <button
-                  onClick={() => window.location.hash = '#customer-env'}
+                  onClick={() => onSwitchToGenerate && onSwitchToGenerate()}
                   className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
                   title="Answer a few questions to auto-generate your architecture"
                 >

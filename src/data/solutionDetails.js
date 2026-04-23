@@ -2,32 +2,39 @@
 export const solutionDetails = {
   'rh-gateway': {
     name: 'Red Hat AI Gateway',
-    description: 'Enterprise-grade API gateway for AI workloads with authentication, rate limiting, and routing',
+    description: 'Enterprise-grade API gateway for AI workloads with authentication, rate limiting, and semantic routing',
     architecture: {
       components: [
         { name: 'Authorino', role: 'Authentication & Authorization', description: 'Kubernetes-native auth service supporting OAuth, OIDC, API keys, mTLS' },
-        { name: 'Limitador', role: 'Rate Limiting', description: 'Distributed rate limiting service with token bucket algorithm' },
-        { name: 'Envoy Proxy', role: 'L7 Proxy', description: 'High-performance proxy for routing, load balancing, and circuit breaking' }
+        { name: 'Kuadrant (Limitador)', role: 'Rate Limiting & Quotas', description: 'Distributed rate limiting service with token bucket algorithm and quota management' },
+        { name: 'Envoy Proxy', role: 'L7 Proxy', description: 'High-performance proxy for routing, load balancing, and circuit breaking' },
+        { name: 'llm-d Router', role: 'Semantic Routing', description: 'Token-aware scheduling with KV cache-aware routing for GPU optimization' }
       ],
       integrations: [
         { name: 'OpenShift Service Mesh', purpose: 'Traffic management and observability' },
         { name: 'Red Hat SSO / Keycloak', purpose: 'Identity provider integration' },
-        { name: 'Prometheus', purpose: 'Metrics and monitoring' }
+        { name: 'Prometheus', purpose: 'Metrics and monitoring' },
+        { name: 'Project Navigator', purpose: 'Intent-based workflow orchestration' },
+        { name: 'AutoRAG', purpose: 'Optimized RAG endpoint routing' }
       ]
     },
     capabilities: [
-      'API authentication (OAuth, OIDC, API keys, mTLS)',
-      'Rate limiting and quotas per user/tenant',
+      'Authentication: OAuth, OIDC, API keys, mTLS',
+      'SLO-based priority routing (latency-sensitive vs throughput-sensitive)',
+      'KV Cache-aware intelligent routing for GPU utilization',
+      'Rate limiting and quota management per user/tenant',
+      'Semantic routing with intent-based model selection',
       'Request routing and load balancing',
       'Circuit breaking and retry policies',
       'API analytics and metrics',
-      'Policy enforcement (RBAC, ABAC)'
+      'RBAC policy enforcement'
     ],
     useCases: [
       'Multi-tenant AI platforms requiring isolation',
-      'Production inference endpoints with SLAs',
+      'Production inference endpoints with SLAs (<200ms TTFT)',
       'External API exposure with security requirements',
-      'Usage-based billing and quota management'
+      'Usage-based billing and quota management',
+      'Intent-based routing to optimal models'
     ],
     documentation: 'https://docs.redhat.com',
     contacts: ['#forum-ai-gateway', 'ai-gateway-support@redhat.com']
@@ -70,28 +77,36 @@ export const solutionDetails = {
   },
   'rhoai': {
     name: 'Red Hat OpenShift AI (RHOAI)',
-    description: 'Comprehensive AI/ML platform for the full machine learning lifecycle',
+    description: 'Comprehensive AI/ML platform for the full machine learning lifecycle with AutoRAG and InstructLab',
     architecture: {
       components: [
         { name: 'JupyterHub / Workbenches', role: 'Development', description: 'Multi-user notebooks with GPU support and custom images' },
-        { name: 'Data Science Pipelines', role: 'MLOps', description: 'Kubeflow Pipelines for workflow orchestration' },
+        { name: 'Data Science Pipelines', role: 'MLOps', description: 'Kubeflow Pipelines (KFP) for workflow orchestration' },
         { name: 'Model Serving (KServe)', role: 'Inference', description: 'Multi-framework serving with auto-scaling' },
         { name: 'Distributed Workloads', role: 'Training', description: 'CodeFlare/Ray for distributed training' },
+        { name: 'AutoRAG', role: 'RAG Optimization', description: 'Automated optimization of chunking, embeddings, and top-K retrieval' },
+        { name: 'InstructLab', role: 'Fine-Tuning', description: 'LAB-based synthetic data generation and model fine-tuning' },
         { name: 'Dashboard', role: 'Management', description: 'Unified UI for projects and resources' }
       ],
       integrations: [
         { name: 'S3-compatible storage', purpose: 'Data and model artifacts' },
         { name: 'Model Registry', purpose: 'Version control and metadata' },
         { name: 'TrustyAI', purpose: 'Model explainability and monitoring' },
-        { name: 'OpenShift Pipelines', purpose: 'CI/CD integration' }
+        { name: 'OpenShift Pipelines', purpose: 'CI/CD integration' },
+        { name: 'Vector Databases', purpose: 'RAG with Elastic, pgvector, etc.' }
       ]
     },
     capabilities: [
       'Jupyter notebooks with GPU scheduling',
-      'Pipeline-based ML workflows',
+      'Pipeline-based ML workflows (KFP)',
       'Multi-framework model serving (TensorFlow, PyTorch, ONNX, etc.)',
       'Distributed training across multiple GPUs/nodes',
+      'AutoRAG: Automated chunking strategy, embedding model, and top-K optimization',
+      'InstructLab integration: LAB-based fine-tuning with synthetic data generation',
+      'Document processing: PDF, docx, pptx, md, html, plain text',
+      'OCR for image-based text and ASR for audio conversion',
       'Experiment tracking and versioning',
+      'Model evaluation with MMLU, HumanEval, and custom benchmarks',
       'Model monitoring and drift detection',
       'Integration with partner tools (VSCode, RStudio)'
     ],
@@ -99,43 +114,50 @@ export const solutionDetails = {
       'Enterprise ML platform for data science teams',
       'Production model deployment and serving',
       'Distributed training of large models',
+      'RAG applications with AutoRAG optimization',
+      'Fine-tuning with InstructLab',
       'MLOps automation and governance'
     ],
     documentation: 'https://docs.redhat.com/rhoai',
-    contacts: ['#forum-openshift-ai', '#forum-rhai-docs']
+    contacts: ['#forum-openshift-ai', '#forum-rhai-docs', 'Suhas Kashyap (AutoRAG/Navigator SME)']
   },
   'ai-inference': {
     name: 'Red Hat AI Inference Server',
-    description: 'High-performance LLM serving optimized for throughput and latency',
+    description: 'High-performance LLM serving optimized for throughput and latency with intelligent routing',
     architecture: {
       components: [
         { name: 'vLLM Runtime', role: 'Inference Engine', description: 'PagedAttention, continuous batching, multi-GPU support' },
+        { name: 'llm-d', role: 'Distributed Inference', description: 'Token-aware scheduling, KV cache routing, split-phase inference' },
         { name: 'TGIS', role: 'Text Generation', description: 'Optimized for streaming and batch inference' },
         { name: 'Model Cache', role: 'Performance', description: 'In-memory caching and model preloading' }
       ],
       integrations: [
         { name: 'Model Registry', purpose: 'Model versioning and deployment' },
         { name: 'Prometheus', purpose: 'Performance metrics and SLIs' },
-        { name: 'AI Gateway', purpose: 'Authentication and rate limiting' }
+        { name: 'AI Gateway', purpose: 'Authentication, rate limiting, and semantic routing' },
+        { name: 'GPU Operator', purpose: 'NVIDIA GPU optimization and scheduling' }
       ]
     },
     capabilities: [
       'vLLM-based high-performance serving',
+      'llm-d token-aware scheduling and KV cache routing',
+      'SLO-based priority: latency-sensitive vs throughput-sensitive workloads',
       'PagedAttention for memory efficiency',
       'Continuous batching for throughput',
       'Multi-GPU tensor parallelism',
       'Token streaming for real-time responses',
       'Model quantization (INT8, FP16)',
-      'Auto-scaling based on load'
+      'Auto-scaling based on load and GPU utilization'
     ],
     useCases: [
       'Production LLM inference at scale',
-      'Real-time chatbot applications',
+      'Real-time chatbot applications (<200ms TTFT)',
       'Batch processing of text generation',
-      'Multi-model serving with routing'
+      'Multi-model serving with intelligent routing',
+      'High-throughput background workloads'
     ],
     documentation: 'https://docs.redhat.com',
-    contacts: ['#forum-ai-inference']
+    contacts: ['#forum-ai-inference', 'Shumaila Yaseen (SME)']
   },
   'rh-model-registry': {
     name: 'Red Hat Model Registry',
@@ -238,36 +260,41 @@ export const solutionDetails = {
   },
   'rh-mcp': {
     name: 'Red Hat MCP Gateway',
-    description: 'Model Context Protocol server ecosystem for connecting AI models to tools',
+    description: 'Model Context Protocol server ecosystem for connecting AI models to tools with enterprise security',
     architecture: {
       components: [
         { name: 'MCP Catalog', role: 'Discovery', description: 'Browse and filter MCP servers by category and trust tier' },
         { name: 'MCP Lifecycle Operator', role: 'Management', description: 'Kubernetes-native MCP server orchestration' },
         { name: 'MCP Gateway', role: 'Routing', description: 'Centralized access control and tool aggregation' },
-        { name: 'MCP Registry', role: 'Governance', description: 'Metadata, certification, and security scanning' }
+        { name: 'MCP Registry', role: 'Governance', description: 'Metadata, certification, and security scanning' },
+        { name: 'Ingestion Pipeline', role: 'Validation', description: 'Four-stage validation: Validate → Scan → Sign & Certify → Publish' }
       ],
       integrations: [
-        { name: 'Partner MCP Servers', purpose: 'Confluent, MongoDB, Elastic, Azure, etc.' },
+        { name: 'Partner MCP Servers', purpose: 'Confluent, MongoDB, Elastic, Azure, AWS, Google Cloud' },
         { name: 'Model Serving', purpose: 'Connect models to external tools' },
-        { name: 'AI Gateway', purpose: 'Authentication and policy enforcement' }
+        { name: 'AI Gateway', purpose: 'Authentication and policy enforcement' },
+        { name: 'Project Navigator', purpose: 'Intent-based agent orchestration' }
       ]
     },
     capabilities: [
-      'Curated marketplace of MCP servers',
-      'One-click deployment',
-      'Security scanning and certification',
+      'Four-stage ingestion pipeline: Validate → Scan → Sign & Certify → Publish',
+      'Curated marketplace of certified MCP servers',
+      'One-click deployment with security scanning',
+      'CVE detection and vulnerability analysis',
+      'Cryptographic signing and trust verification',
       'Tool aggregation across multiple backends',
-      'Access control and policy enforcement',
-      'Kubernetes-native management'
+      'RBAC access control and policy enforcement',
+      'Kubernetes-native management',
+      'Partner integrations (Confluent, MongoDB, Elastic, Azure, AWS, GCP)'
     ],
     useCases: [
       'Agentic AI with external tool access',
       'RAG with enterprise data sources',
       'Multi-agent orchestration',
-      'Secure tool integration'
+      'Secure tool integration with certified partners'
     ],
     documentation: 'https://docs.redhat.com/mcp',
-    contacts: ['#forum-mcp-gateway']
+    contacts: ['#forum-mcp-gateway', '#team-rh-ai-agent-ops', 'Catherine (Cat) Weeks (SME)']
   },
   'odf': {
     name: 'OpenShift Data Foundation',

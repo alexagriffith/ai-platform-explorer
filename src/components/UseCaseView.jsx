@@ -1,6 +1,10 @@
 import { useState, useRef } from 'react';
 import { Lightbulb, ArrowRight, CheckCircle2, GitBranch, ChevronDown, X } from 'lucide-react';
 import { products } from '../data/products';
+import MCPIngestionPipeline from './MCPIngestionPipeline';
+import FineTuningDecisionMatrix from './FineTuningDecisionMatrix';
+import RAGArchitecture from './RAGArchitecture';
+import SecurityOverview from './SecurityOverview';
 
 export default function UseCaseView({ customerEnv }) {
   const [selectedUseCases, setSelectedUseCases] = useState([]);
@@ -80,15 +84,24 @@ export default function UseCaseView({ customerEnv }) {
     {
       id: 'rag',
       title: 'RAG (Retrieval Augmented Generation)',
-      description: 'Enhance LLMs with private data and knowledge bases',
-      recommendedProducts: ['rhoai', 'ai-inference', 'gen-ai-studio'],
+      description: 'Enhance LLMs with private data and knowledge bases to stop hallucinations',
+      recommendedProducts: ['rhoai', 'ai-inference', 'gen-ai-studio', 'ai-gateway'],
       customerProfiles: ['Enterprise developers', 'Knowledge management teams', 'Customer support'],
-      deploymentPatterns: ['Vector database integration', 'Document processing', 'Semantic search'],
+      deploymentPatterns: [
+        'API Gateway → Model Serving → GPU → Response',
+        'Document processing (PDF, docx, pptx, md, html, text)',
+        'OCR for images, ASR for audio',
+        'Vector database integration (Elastic, pgvector)',
+        'AutoRAG optimization'
+      ],
       considerations: [
-        'Vector database selection (e.g., Elastic)',
-        'Document chunking and embedding strategy',
-        'Retrieval quality and relevance',
-        'Data privacy and security'
+        'Document ingestion formats: PDF, docx, pptx, md, html, plain text',
+        'Processing techniques: OCR for images, ASR for audio',
+        'AutoRAG: Automated chunking strategy optimization',
+        'Embedding model selection and top-K retrieval tuning',
+        'Vector database selection (Elastic preferred, pgvector, etc.)',
+        'Retrieval quality and relevance metrics',
+        'Data privacy and security with RBAC'
       ]
     }
   ];
@@ -267,6 +280,18 @@ export default function UseCaseView({ customerEnv }) {
           </div>
         ))}
       </div>
+
+      {/* Fine-Tuning Decision Matrix */}
+      <FineTuningDecisionMatrix />
+
+      {/* RAG Architecture */}
+      <RAGArchitecture />
+
+      {/* MCP Ingestion Pipeline */}
+      <MCPIngestionPipeline />
+
+      {/* Security Overview */}
+      <SecurityOverview />
 
       {/* When to Use What */}
       <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg p-6 border border-blue-200 dark:border-blue-700">

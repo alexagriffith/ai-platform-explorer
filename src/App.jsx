@@ -4,6 +4,7 @@ import ArchitectureHub from './components/ArchitectureHub';
 import ProductExplorer from './components/ProductExplorer';
 import UseCaseView from './components/UseCaseView';
 import DecisionFlowchart from './components/DecisionFlowchart';
+import AcronymGlossary from './components/AcronymGlossary';
 import { products } from './data/products';
 
 function App() {
@@ -121,6 +122,9 @@ function App() {
           <p>Red Hat AI Platform Explorer • Internal Demo Tool</p>
         </div>
       </footer>
+
+      {/* Floating Acronym Glossary */}
+      <AcronymGlossary />
     </div>
   );
 }

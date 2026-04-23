@@ -13,7 +13,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, selectedP
       name: 'Build Your Stack',
       icon: Layers,
       description: 'Layer-by-layer architecture builder with flexible component selection',
-      component: <CapabilityArchitectureView />
+      component: <CapabilityArchitectureView onSwitchToGenerate={() => setMode('generate')} />
     },
     {
       id: 'interactive',
@@ -112,7 +112,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, selectedP
         <div className="mt-4 flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
           <Info size={16} className="text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
           <p className="text-sm text-blue-800 dark:text-blue-200">
-            {mode === 'build' && 'Click capability boxes to explore options. Green = Red Hat, Blue = Customer, Purple = Partner.'}
+            {mode === 'build' && 'Click on capability boxes to select and configure components for your AI stack.'}
             {mode === 'interactive' && 'Follow the step-by-step guide to build your stack from the ground up.'}
             {mode === 'generate' && 'Tell us about your current environment and we\'ll recommend the best Red Hat AI solutions.'}
           </p>

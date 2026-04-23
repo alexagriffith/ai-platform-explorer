@@ -152,9 +152,9 @@ export const optionGuides = {
     bestFor: 'Advanced AI applications with sophisticated orchestration needs'
   },
   'gen-ai-studio': {
-    whatItIs: 'Prompt testing, experimentation, and asset management',
-    whyChoose: 'Iterate on prompts, manage assets, collaborate on AI development',
-    whenToUse: 'Prompt engineering, team collaboration, asset management',
-    bestFor: 'Teams developing and refining AI applications'
+    whatItIs: 'Prompt testing, experimentation, and AI asset management (models, prompts, RAG pipelines)',
+    whyChoose: 'Iterate on prompts, manage AI assets (deployed models, prompts, RAG configurations), collaborate on development',
+    whenToUse: 'Prompt engineering, team collaboration, managing AI assets for experimentation and consumption',
+    bestFor: 'Teams developing and refining AI applications with centralized asset discovery'
   }
 };
