@@ -60,6 +60,17 @@ export default function CapabilityArchitectureView({ onSwitchToGenerate }) {
     });
   };
 
+  const loadBasicInferenceStack = () => {
+    // Pre-populate a minimal viable inference stack
+    const basicStack = {
+      'container-platform': 'openshift',      // OpenShift as foundation
+      'ai-platform': 'rhoai',                 // OpenShift AI
+      'model-serving': 'ai-inference',        // AI Inference Server
+      'accelerators': 'nvidia-gpu'            // NVIDIA GPUs
+    };
+    setSelectedCapabilities(basicStack);
+  };
+
   const CapabilityCard = ({ capability, layerColor, compact = false, showDetails = true }) => {
     const isSelected = isCapabilitySelected(capability.id);
     const selectedOptionId = getSelectedOption(capability.id);
@@ -425,13 +436,23 @@ export default function CapabilityArchitectureView({ onSwitchToGenerate }) {
               </h2>
               <div className="flex gap-2">
                 <button
-                  onClick={() => onSwitchToGenerate && onSwitchToGenerate()}
+                  onClick={loadBasicInferenceStack}
                   className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
-                  title="Answer a few questions to auto-generate your architecture"
+                  title="Load a basic inference stack to get started"
                 >
                   <Sparkles size={18} />
-                  Auto-Generate
+                  Quick Start: Basic Inference
                 </button>
+                {onSwitchToGenerate && (
+                  <button
+                    onClick={() => onSwitchToGenerate()}
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+                    title="Answer questions to generate a custom architecture"
+                  >
+                    <Building2 size={18} />
+                    Generate from Environment
+                  </button>
+                )}
                 {totalSelected > 0 && (
                   <button
                     onClick={() => setShowFlowViz(true)}
