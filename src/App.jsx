@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Layers, Target, Package, Settings, Info, Hammer } from 'lucide-react';
-import CapabilityArchitectureView from './components/CapabilityArchitectureView';
-import InteractiveBuilder from './components/InteractiveBuilder';
+import { Layers, Target, Package, Info, GitBranch } from 'lucide-react';
+import ArchitectureHub from './components/ArchitectureHub';
 import ProductExplorer from './components/ProductExplorer';
 import UseCaseView from './components/UseCaseView';
-import CustomerConfig from './components/CustomerConfig';
+import DecisionFlowchart from './components/DecisionFlowchart';
 import { products } from './data/products';
 
 function App() {
@@ -27,18 +26,22 @@ function App() {
 
   const views = [
     { id: 'architecture', name: 'Architecture', icon: Layers },
-    { id: 'build', name: 'Interactive Build', icon: Hammer },
-    { id: 'products', name: 'Products', icon: Package },
+    { id: 'decisions', name: 'Decision Guide', icon: GitBranch },
     { id: 'use-cases', name: 'Use Cases', icon: Target },
-    { id: 'config', name: 'Customer Environment', icon: Settings }
+    { id: 'products', name: 'Products', icon: Package }
   ];
 
   const renderView = () => {
     switch (currentView) {
       case 'architecture':
-        return <CapabilityArchitectureView />;
-      case 'build':
-        return <InteractiveBuilder />;
+        return (
+          <ArchitectureHub
+            customerEnv={customerEnv}
+            setCustomerEnv={setCustomerEnv}
+            selectedProducts={selectedProducts}
+            setSelectedProducts={setSelectedProducts}
+          />
+        );
       case 'products':
         return (
           <ProductExplorer
@@ -46,16 +49,10 @@ function App() {
             setSelectedProducts={setSelectedProducts}
           />
         );
+      case 'decisions':
+        return <DecisionFlowchart />;
       case 'use-cases':
         return <UseCaseView customerEnv={customerEnv} />;
-      case 'config':
-        return (
-          <CustomerConfig
-            customerEnv={customerEnv}
-            setCustomerEnv={setCustomerEnv}
-            setSelectedProducts={setSelectedProducts}
-          />
-        );
       default:
         return null;
     }

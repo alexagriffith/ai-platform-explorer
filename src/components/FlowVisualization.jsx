@@ -1,4 +1,4 @@
-import { useState } from 'lucide-react';
+import { useState } from 'react';
 import { X, ArrowDown, Workflow, Maximize2, Minimize2, Database, Cpu, Network, Layers } from 'lucide-react';
 import { subComponents } from '../data/subComponents';
 import { solutionDetails } from '../data/solutionDetails';

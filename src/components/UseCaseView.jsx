@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react';
 import { Lightbulb, ArrowRight, CheckCircle2, GitBranch, ChevronDown, X } from 'lucide-react';
 import { products } from '../data/products';
-import DecisionFlowchart from './DecisionFlowchart';
 
 export default function UseCaseView({ customerEnv }) {
   const [selectedUseCases, setSelectedUseCases] = useState([]);
@@ -126,7 +125,7 @@ export default function UseCaseView({ customerEnv }) {
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          Use Cases & Decision Guide
+          Use Cases
         </h2>
         <p className="text-gray-600 dark:text-gray-400 mb-4">
           Explore common AI use cases and recommended Red Hat solutions for each scenario.
@@ -168,9 +167,6 @@ export default function UseCaseView({ customerEnv }) {
           </div>
         </div>
       </div>
-
-      {/* Decision Flowchart */}
-      <DecisionFlowchart />
 
       {/* Use Cases */}
       <div className="space-y-6">
