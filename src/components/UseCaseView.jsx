@@ -5,6 +5,7 @@ import MCPEcosystemFull from './MCPEcosystemFull';
 import FineTuningDecisionMatrix from './FineTuningDecisionMatrix';
 import RAGArchitecture from './RAGArchitecture';
 import SecurityOverview from './SecurityOverview';
+import TrainingDeepDive from './TrainingDeepDive';
 
 export default function UseCaseView({ customerEnv }) {
   const [selectedUseCases, setSelectedUseCases] = useState([]);
@@ -283,6 +284,9 @@ export default function UseCaseView({ customerEnv }) {
 
       {/* Fine-Tuning Decision Matrix */}
       <FineTuningDecisionMatrix />
+
+      {/* Training Deep Dive */}
+      <TrainingDeepDive />
 
       {/* RAG Architecture */}
       <RAGArchitecture />

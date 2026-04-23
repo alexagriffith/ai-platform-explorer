@@ -83,6 +83,36 @@ export default function AcronymGlossary() {
       fullName: 'Red Hat Enterprise Linux AI',
       explanation: 'Foundation models and serving on individual RHEL servers.',
       whenToUse: 'For single-server deployments and edge AI use cases.'
+    },
+    {
+      acronym: 'LAB',
+      fullName: 'Large-scale Alignment for chatBots',
+      explanation: 'Multi-phase training method used by InstructLab for model fine-tuning.',
+      whenToUse: 'When fine-tuning models with synthetic data and taxonomy-driven approaches.'
+    },
+    {
+      acronym: 'SDG',
+      fullName: 'Synthetic Data Generation',
+      explanation: 'Automated creation of training data from taxonomy definitions.',
+      whenToUse: 'When you have limited human-labeled data but need to fine-tune models.'
+    },
+    {
+      acronym: 'KFP',
+      fullName: 'Kubeflow Pipelines',
+      explanation: 'Workflow orchestration system for automating ML pipelines.',
+      whenToUse: 'For building reproducible, automated ML workflows in OpenShift AI.'
+    },
+    {
+      acronym: 'Ray',
+      fullName: 'Ray Distributed Framework',
+      explanation: 'Framework for parallelizing compute workloads across clusters.',
+      whenToUse: 'For distributed training jobs that span multiple nodes and GPUs.'
+    },
+    {
+      acronym: 'TTFT',
+      fullName: 'Time to First Token',
+      explanation: 'Latency metric measuring time until the first output token is generated.',
+      whenToUse: 'When optimizing real-time inference performance for chatbots.'
     }
   ];
 

@@ -121,6 +121,107 @@ export const solutionDetails = {
     documentation: 'https://docs.redhat.com/rhoai',
     contacts: ['#forum-openshift-ai', '#forum-rhai-docs', 'Suhas Kashyap (AutoRAG/Navigator SME)']
   },
+  'rhoai-distributed': {
+    name: 'RHOAI Distributed Workloads',
+    description: 'Enterprise-scale distributed training across multi-node GPU clusters',
+    architecture: {
+      components: [
+        { name: 'Ray', role: 'Distributed Computing', description: 'Framework for parallelizing training across multiple nodes' },
+        { name: 'Training Operator', role: 'Job Management', description: 'Kubernetes-native orchestration for PyTorch, TensorFlow jobs' },
+        { name: 'CodeFlare', role: 'Resource Management', description: 'Manages distributed resources on OpenShift' }
+      ],
+      integrations: [
+        { name: 'JupyterHub', purpose: 'Development environment for training code' },
+        { name: 'Model Registry', purpose: 'Register and version trained models' },
+        { name: 'S3-compatible storage', purpose: 'Store datasets and checkpoints' },
+        { name: 'GPU Operator', purpose: 'Multi-GPU and multi-node GPU scheduling' }
+      ]
+    },
+    capabilities: [
+      'Multi-node distributed training',
+      'Tensor parallelism (split models across GPUs)',
+      'Data parallelism (process different batches simultaneously)',
+      'Support for PyTorch, TensorFlow, scikit-learn',
+      'Ray Tune for hyperparameter optimization',
+      'Checkpoint management and recovery',
+      'Integration with Data Science Pipelines'
+    ],
+    useCases: [
+      'Training large language models (70B+ parameters)',
+      'Distributed deep learning on massive datasets',
+      'Multi-GPU and multi-node training jobs',
+      'Enterprise-scale model development'
+    ],
+    documentation: 'https://docs.redhat.com/rhoai',
+    contacts: ['#forum-openshift-ai', 'Mustafa (Training-Hub SME)']
+  },
+  'instructlab': {
+    name: 'InstructLab',
+    description: 'Model alignment and fine-tuning using synthetic data generation and the LAB method',
+    architecture: {
+      components: [
+        { name: 'LAB Method', role: 'Training Algorithm', description: 'Large-scale Alignment for chatBots - multi-phase training approach' },
+        { name: 'Synthetic Data Generation', role: 'Data Creation', description: 'Generates training data from taxonomy definitions' },
+        { name: 'Taxonomy System', role: 'Knowledge Organization', description: 'Structured approach to defining skills and knowledge' }
+      ],
+      integrations: [
+        { name: 'RHEL AI', purpose: 'Bundled for single-server fine-tuning' },
+        { name: 'OpenShift AI', purpose: 'Distributed multi-phase training pipelines' },
+        { name: 'Model Registry', purpose: 'Version fine-tuned models' }
+      ]
+    },
+    capabilities: [
+      'Synthetic data generation from taxonomy',
+      'Small-to-medium scale alignment',
+      'Domain-specific skill injection',
+      'Taxonomy-driven model improvement',
+      'Answer correctness and faithfulness evaluation',
+      'Reduced need for human-labeled datasets',
+      'Multi-phase LAB-tuning pipelines'
+    ],
+    useCases: [
+      'Adding domain knowledge to foundation models',
+      'Fine-tuning with limited training data',
+      'Subject matter expert-driven model improvement',
+      'Alignment for specific use cases or industries'
+    ],
+    documentation: 'https://docs.redhat.com/instructlab',
+    contacts: ['#forum-instructlab', 'Abhishek Bhanwalder (SDG SME)']
+  },
+  'data-science-pipelines': {
+    name: 'Data Science Pipelines',
+    description: 'Automated ML workflow orchestration based on Kubeflow Pipelines',
+    architecture: {
+      components: [
+        { name: 'Kubeflow Pipelines', role: 'Workflow Engine', description: 'Orchestrates multi-step ML workflows' },
+        { name: 'Pipeline Components', role: 'Reusable Steps', description: 'Modular components for data prep, training, evaluation' },
+        { name: 'Experiment Tracking', role: 'Versioning', description: 'Track pipeline runs and compare results' }
+      ],
+      integrations: [
+        { name: 'S3-compatible storage', purpose: 'Pipeline artifacts and data' },
+        { name: 'Model Registry', purpose: 'Register trained models' },
+        { name: 'JupyterHub', purpose: 'Develop and test pipelines' },
+        { name: 'Distributed Workloads', purpose: 'Execute training steps at scale' }
+      ]
+    },
+    capabilities: [
+      'Automated data preparation workflows',
+      'Reproducible training pipelines',
+      'Hyperparameter tuning automation',
+      'Multi-step workflow orchestration',
+      'Experiment versioning and comparison',
+      'Integration with MLflow (Tech Preview)',
+      'CI/CD for ML models'
+    ],
+    useCases: [
+      'Automating recurring training tasks',
+      'Ensuring reproducibility across teams',
+      'MLOps automation and governance',
+      'End-to-end ML lifecycle management'
+    ],
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/working_with_data_science_pipelines',
+    contacts: ['#forum-openshift-ai', '#team-openshift-ai-platform']
+  },
   'ai-inference': {
     name: 'Red Hat AI Inference Server',
     description: 'High-performance LLM serving optimized for throughput and latency with intelligent routing',

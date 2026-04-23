@@ -64,6 +64,94 @@ export const subComponents = {
       }
     ]
   },
+  'rhoai-distributed': {
+    name: 'RHOAI Distributed Workloads',
+    components: [
+      {
+        id: 'ray-framework',
+        name: 'Ray',
+        description: 'Distributed computing framework for parallel training',
+        role: 'Distributed Computing'
+      },
+      {
+        id: 'training-operator',
+        name: 'Training Operator',
+        description: 'Kubernetes operator for PyTorch, TensorFlow, and XGBoost jobs',
+        role: 'Job Orchestration'
+      },
+      {
+        id: 'codeflare',
+        name: 'CodeFlare',
+        description: 'Resource management for distributed workloads on OpenShift',
+        role: 'Resource Management'
+      },
+      {
+        id: 'ray-tune',
+        name: 'Ray Tune',
+        description: 'Hyperparameter optimization at scale',
+        role: 'HPO'
+      }
+    ]
+  },
+  'instructlab': {
+    name: 'InstructLab',
+    components: [
+      {
+        id: 'lab-method',
+        name: 'LAB Method',
+        description: 'Large-scale Alignment for chatBots training algorithm',
+        role: 'Training Algorithm'
+      },
+      {
+        id: 'sdg',
+        name: 'Synthetic Data Generation',
+        description: 'Generates training examples from taxonomy definitions',
+        role: 'Data Creation'
+      },
+      {
+        id: 'taxonomy',
+        name: 'Taxonomy System',
+        description: 'Structured knowledge and skill definitions',
+        role: 'Knowledge Organization'
+      },
+      {
+        id: 'ilab-eval',
+        name: 'InstructLab Evaluation',
+        description: 'Answer correctness and faithfulness metrics',
+        role: 'Quality Assessment'
+      }
+    ]
+  },
+  'data-science-pipelines': {
+    name: 'Data Science Pipelines',
+    components: [
+      {
+        id: 'kfp',
+        name: 'Kubeflow Pipelines',
+        description: 'Workflow orchestration engine',
+        role: 'Pipeline Engine'
+      },
+      {
+        id: 'pipeline-components',
+        name: 'Reusable Components',
+        description: 'Modular steps for data prep, training, evaluation',
+        role: 'Building Blocks'
+      },
+      {
+        id: 'experiment-tracking',
+        name: 'Experiment Tracking',
+        description: 'Version and compare pipeline runs',
+        role: 'Versioning'
+      },
+      {
+        id: 'mlflow-integration',
+        name: 'MLflow Integration',
+        description: 'Track experiments, parameters, and artifacts',
+        role: 'Experiment Management',
+        status: 'Tech Preview'
+      }
+    ]
+  },
   'rhoai': {
     name: 'Red Hat OpenShift AI',
     components: [

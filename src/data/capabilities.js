@@ -73,6 +73,45 @@ export const capabilities = {
   ],
   services: [
     {
+      id: 'model-training',
+      name: 'Model Training',
+      description: 'Train and fine-tune AI models at scale',
+      required: false,
+      subLayer: 'core', // Core training layer
+      position: 'base',
+      options: [
+        {
+          id: 'rhoai-distributed',
+          provider: 'Red Hat',
+          name: 'RHOAI Distributed Workloads',
+          description: 'Multi-node distributed training with Ray and Training Operator',
+          status: 'GA',
+          recommended: true
+        },
+        {
+          id: 'instructlab',
+          provider: 'Red Hat',
+          name: 'InstructLab',
+          description: 'Model alignment and fine-tuning with synthetic data generation',
+          status: 'GA'
+        },
+        {
+          id: 'data-science-pipelines',
+          provider: 'Red Hat',
+          name: 'Data Science Pipelines',
+          description: 'Automated ML workflows with Kubeflow Pipelines',
+          status: 'GA'
+        },
+        {
+          id: 'custom-training',
+          provider: 'Customer',
+          name: 'Custom Training Infrastructure',
+          description: 'Customer-provided training frameworks and infrastructure',
+          isCustomer: true
+        }
+      ]
+    },
+    {
       id: 'model-serving',
       name: 'Model Serving',
       description: 'Deploy and serve AI models with high performance',

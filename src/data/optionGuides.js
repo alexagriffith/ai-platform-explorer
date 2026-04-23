@@ -70,7 +70,33 @@ export const optionGuides = {
     bestFor: 'Cloud-native teams, AWS customers, variable storage needs'
   },
 
-  // AI Services Layer
+  // AI Services Layer - Training
+  'rhoai-distributed': {
+    whatItIs: 'Framework for running training jobs across multiple nodes with Ray and Training Operator',
+    whyChoose: 'Accelerates training of large models by utilizing multi-node GPU clusters',
+    whenToUse: 'Training models that exceed the memory of a single GPU, large-scale distributed training',
+    bestFor: 'MLOps engineers, data scientists training large models (70B+ parameters)'
+  },
+  'instructlab': {
+    whatItIs: 'Model alignment tool using synthetic data generation and the LAB method',
+    whyChoose: 'Simplifies fine-tuning by reducing need for massive human-labeled datasets',
+    whenToUse: 'Adding specific domain knowledge or skills to foundation models, limited training data',
+    bestFor: 'AI developers, subject matter experts, taxonomy-driven model improvement'
+  },
+  'data-science-pipelines': {
+    whatItIs: 'Automated ML workflow engine based on Kubeflow Pipelines',
+    whyChoose: 'Ensures reproducibility and scalability of training and data prep steps',
+    whenToUse: 'Automating recurring training, evaluation, and deployment tasks',
+    bestFor: 'Data scientists, ML engineers needing MLOps automation'
+  },
+  'custom-training': {
+    whatItIs: 'Customer-provided training frameworks and infrastructure',
+    whyChoose: 'Full control over training environment, specialized hardware, air-gapped deployments',
+    whenToUse: 'Specialized requirements not met by standard offerings, existing training infrastructure',
+    bestFor: 'Organizations with existing ML infrastructure or unique requirements'
+  },
+
+  // AI Services Layer - Inference
   'ai-inference': {
     whatItIs: 'High-performance vLLM-based server for LLM inference',
     whyChoose: 'Optimized for speed and throughput, GPU-accelerated, industry-leading performance',
