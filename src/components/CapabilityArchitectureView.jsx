@@ -428,45 +428,37 @@ export default function CapabilityArchitectureView({ onSwitchToGenerate }) {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-start justify-between gap-4 mb-3">
           <div className="flex-1">
-            <div className="flex items-center justify-between gap-4 mb-2 flex-wrap">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                Build Your AI Stack
-              </h2>
-              <div className="flex gap-2">
-                <button
-                  onClick={loadBasicInferenceStack}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
-                  title="Load a basic inference stack to get started"
-                >
-                  <Sparkles size={18} />
-                  Quick Start: Basic Inference
-                </button>
-                {onSwitchToGenerate && (
-                  <button
-                    onClick={() => onSwitchToGenerate()}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
-                    title="Answer questions to generate a custom architecture"
-                  >
-                    <Building2 size={18} />
-                    Generate from Environment
-                  </button>
-                )}
-                {totalSelected > 0 && (
-                  <button
-                    onClick={() => setShowFlowViz(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
-                  >
-                    <Workflow size={18} />
-                    See Data Flow
-                  </button>
-                )}
-              </div>
-            </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+              Build Your AI Stack
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Choose capabilities • Select Red Hat or your own solutions • Build from bottom up
             </p>
+          </div>
+          <div className="flex gap-2 flex-shrink-0">
+            <button
+              onClick={loadBasicInferenceStack}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-md text-sm font-medium shadow-sm hover:shadow-md transition-all"
+              title="Load a basic inference stack to get started"
+            >
+              <Sparkles size={14} />
+              Quick Start
+            </button>
+            {totalSelected > 0 && (
+              <button
+                onClick={() => setShowFlowViz(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-md text-sm font-medium shadow-sm hover:shadow-md transition-all"
+              >
+                <Workflow size={14} />
+                Data Flow
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
             {/* Controls */}
             <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-2">

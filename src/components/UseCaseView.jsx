@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Lightbulb, ArrowRight, CheckCircle2, GitBranch, ChevronDown, X } from 'lucide-react';
 import { products } from '../data/products';
-import MCPIngestionPipeline from './MCPIngestionPipeline';
+import MCPEcosystemFull from './MCPEcosystemFull';
 import FineTuningDecisionMatrix from './FineTuningDecisionMatrix';
 import RAGArchitecture from './RAGArchitecture';
 import SecurityOverview from './SecurityOverview';
@@ -287,8 +287,8 @@ export default function UseCaseView({ customerEnv }) {
       {/* RAG Architecture */}
       <RAGArchitecture />
 
-      {/* MCP Ingestion Pipeline */}
-      <MCPIngestionPipeline />
+      {/* MCP Ecosystem */}
+      <MCPEcosystemFull />
 
       {/* Security Overview */}
       <SecurityOverview />
