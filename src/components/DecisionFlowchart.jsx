@@ -440,6 +440,370 @@ export default function DecisionFlowchart() {
           alternatives: ['For simpler: Single-source RAG', 'For fine-tuning: InstructLab instead']
         }
       }
+    },
+    gpu: {
+      title: 'Which GPU Hardware Should I Use?',
+      description: 'Choose the right accelerator for your AI workloads',
+      steps: [
+        {
+          question: 'What is your primary workload?',
+          options: [
+            { value: 'training', label: 'Model training (especially large models)', next: 1 },
+            { value: 'inference', label: 'Model inference/serving', next: 2 },
+            { value: 'both', label: 'Both training and inference', next: 3 },
+            { value: 'poc', label: 'POC / Getting started', next: 4 }
+          ]
+        },
+        {
+          question: 'Training scale and budget?',
+          condition: { step: 0, value: 'training' },
+          options: [
+            { value: 'high-budget', label: 'Large models, maximum performance, budget flexible', recommendation: 'nvidia-h100' },
+            { value: 'mid-budget', label: 'Standard models, good performance, moderate budget', recommendation: 'nvidia-a100' },
+            { value: 'low-budget', label: 'Smaller models, cost-conscious', recommendation: 'amd-mi' }
+          ]
+        },
+        {
+          question: 'Latency and throughput requirements?',
+          condition: { step: 0, value: 'inference' },
+          options: [
+            { value: 'high-throughput', label: 'High throughput, many concurrent requests', recommendation: 'nvidia-a10g' },
+            { value: 'balanced', label: 'Balanced latency and cost', recommendation: 'nvidia-l40s' },
+            { value: 'cost-optimized', label: 'Cost-optimized, moderate load', recommendation: 'intel-gaudi' }
+          ]
+        },
+        {
+          question: 'What is your primary constraint?',
+          condition: { step: 0, value: 'both' },
+          options: [
+            { value: 'performance', label: 'Maximum performance', recommendation: 'nvidia-h100' },
+            { value: 'balance', label: 'Balance of performance and cost', recommendation: 'nvidia-a100' },
+            { value: 'cost', label: 'Cost optimization', recommendation: 'amd-mi' }
+          ]
+        },
+        {
+          question: 'Budget and scale for POC?',
+          condition: { step: 0, value: 'poc' },
+          options: [
+            { value: 'minimal', label: 'Minimal cost, just testing concepts', recommendation: 'cpu-only' },
+            { value: 'realistic', label: 'Need realistic performance testing', recommendation: 'nvidia-a10g' }
+          ]
+        }
+      ],
+      recommendations: {
+        'nvidia-h100': {
+          product: 'NVIDIA H100 GPUs',
+          icon: '🚀',
+          why: 'Latest generation, highest performance for both training and inference',
+          bestFor: ['Large language models (70B+ parameters)', 'Distributed training', 'Production inference at scale'],
+          tradeoffs: [
+            { pro: 'Best performance available', con: 'Highest cost per GPU' },
+            { pro: '80GB HBM3 memory', con: 'Limited availability' },
+            { pro: 'Transformer Engine', con: 'May be overkill for smaller models' }
+          ],
+          alternatives: ['A100 for better availability', 'A10G for cost optimization']
+        },
+        'nvidia-a100': {
+          product: 'NVIDIA A100 GPUs',
+          icon: '⚡',
+          why: 'Proven workhorse for ML training and inference with great availability',
+          bestFor: ['Medium to large models', 'Distributed training', 'Multi-GPU setups'],
+          tradeoffs: [
+            { pro: 'Excellent performance', con: 'Expensive for inference-only' },
+            { pro: '40GB or 80GB options', con: 'Previous generation' },
+            { pro: 'Wide availability', con: 'Lower performance than H100' }
+          ],
+          alternatives: ['H100 for max performance', 'A10G for inference-only']
+        },
+        'nvidia-a10g': {
+          product: 'NVIDIA A10G GPUs',
+          icon: '💰',
+          why: 'Cost-effective inference and light training, excellent for production serving',
+          bestFor: ['LLM inference', 'Model serving APIs', 'Cost-sensitive workloads'],
+          tradeoffs: [
+            { pro: 'Best price/performance for inference', con: 'Not ideal for large model training' },
+            { pro: '24GB memory', con: 'Memory limited for 70B+ models' },
+            { pro: 'Widely available in cloud', con: 'Lower FP64 performance' }
+          ],
+          alternatives: ['L40S for better performance', 'A100 for training']
+        },
+        'nvidia-l40s': {
+          product: 'NVIDIA L40S GPUs',
+          icon: '🎯',
+          why: 'Balanced GPU for inference and visualization workloads',
+          bestFor: ['Production inference', 'Multi-modal models', 'Hybrid workloads'],
+          tradeoffs: [
+            { pro: 'Good inference performance', con: 'Not optimized for training' },
+            { pro: '48GB memory', con: 'More expensive than A10G' },
+            { pro: 'Ada Lovelace architecture', con: 'Less common than A100/A10G' }
+          ],
+          alternatives: ['A10G for cost savings', 'H100 for max throughput']
+        },
+        'amd-mi': {
+          product: 'AMD MI-Series GPUs',
+          icon: '🔧',
+          why: 'Open-source alternative to NVIDIA with competitive pricing',
+          bestFor: ['Cost optimization', 'Avoiding vendor lock-in', 'ROCm-compatible workloads'],
+          tradeoffs: [
+            { pro: 'Lower cost than NVIDIA', con: 'Smaller ecosystem' },
+            { pro: 'Open-source ROCm', con: 'Less framework support' },
+            { pro: 'Good for training', con: 'Requires ROCm expertise' }
+          ],
+          alternatives: ['NVIDIA for wider support', 'Intel for alternative vendor']
+        },
+        'intel-gaudi': {
+          product: 'Intel Gaudi Accelerators',
+          icon: '🔷',
+          why: 'Intel alternative focused on training and inference efficiency',
+          bestFor: ['Intel infrastructure', 'Cost-optimized inference', 'LLM workloads'],
+          tradeoffs: [
+            { pro: 'Competitive pricing', con: 'Smaller ecosystem than NVIDIA' },
+            { pro: 'Optimized for LLMs', con: 'Framework support still growing' },
+            { pro: 'Good power efficiency', con: 'Less proven in production' }
+          ],
+          alternatives: ['NVIDIA for maturity', 'AMD for open source']
+        },
+        'cpu-only': {
+          product: 'CPU-Only (No GPU)',
+          icon: '💻',
+          why: 'Lowest cost option for testing and small-scale workloads',
+          bestFor: ['POCs', 'Development', 'Small models', 'Budget constraints'],
+          tradeoffs: [
+            { pro: 'No GPU costs', con: 'Very slow for training' },
+            { pro: 'Universal availability', con: 'Not suitable for production' },
+            { pro: 'Easy to get started', con: 'Limited to small models' }
+          ],
+          alternatives: ['A10G for production', 'Cloud GPUs for flexibility']
+        }
+      }
+    },
+    vectordb: {
+      title: 'Which Vector Database for RAG?',
+      description: 'Choose the right vector database for your RAG application',
+      steps: [
+        {
+          question: 'What is your deployment preference?',
+          options: [
+            { value: 'managed', label: 'Prefer managed/cloud service', next: 1 },
+            { value: 'self-hosted', label: 'Self-hosted on OpenShift', next: 2 },
+            { value: 'existing', label: 'Already have a database', next: 3 }
+          ]
+        },
+        {
+          question: 'What is your scale?',
+          condition: { step: 0, value: 'managed' },
+          options: [
+            { value: 'small', label: 'Small scale (<1M vectors)', recommendation: 'pinecone' },
+            { value: 'large', label: 'Large scale (1M+ vectors)', recommendation: 'elastic-cloud' }
+          ]
+        },
+        {
+          question: 'Do you want Red Hat support?',
+          condition: { step: 0, value: 'self-hosted' },
+          options: [
+            { value: 'yes', label: 'Yes, prefer Red Hat partnership', recommendation: 'elastic-self' },
+            { value: 'no', label: 'No, open source is fine', recommendation: 'pgvector' }
+          ]
+        },
+        {
+          question: 'What database do you currently use?',
+          condition: { step: 0, value: 'existing' },
+          options: [
+            { value: 'postgres', label: 'PostgreSQL', recommendation: 'pgvector' },
+            { value: 'elastic', label: 'Elasticsearch', recommendation: 'elastic-self' },
+            { value: 'other', label: 'Other / None', recommendation: 'elastic-self' }
+          ]
+        }
+      ],
+      recommendations: {
+        'elastic-cloud': {
+          product: 'Elastic (Cloud)',
+          icon: '☁️',
+          why: 'Red Hat preferred partner with mature vector search and enterprise features',
+          bestFor: ['Large scale', 'Enterprise support', 'Hybrid search (keyword + vector)'],
+          tradeoffs: [
+            { pro: 'Red Hat partnership', con: 'Higher cost than open source' },
+            { pro: 'Hybrid search built-in', con: 'Vendor lock-in' },
+            { pro: 'Fully managed', con: 'Less control' }
+          ],
+          alternatives: ['Elastic self-hosted for control', 'Pinecone for simplicity']
+        },
+        'elastic-self': {
+          product: 'Elastic (Self-Hosted)',
+          icon: '🔍',
+          why: 'Deploy on OpenShift with Red Hat support, full control',
+          bestFor: ['Data sovereignty', 'On-premises', 'Red Hat support needed'],
+          tradeoffs: [
+            { pro: 'Full control', con: 'You manage infrastructure' },
+            { pro: 'Red Hat support available', con: 'Setup complexity' },
+            { pro: 'Hybrid search', con: 'Resource intensive' }
+          ],
+          alternatives: ['Elastic Cloud for managed', 'pgvector for simplicity']
+        },
+        'pgvector': {
+          product: 'PostgreSQL + pgvector',
+          icon: '🐘',
+          why: 'Open source vector extension for PostgreSQL, simple and cost-effective',
+          bestFor: ['Existing PostgreSQL users', 'Budget-conscious', 'Simpler deployments'],
+          tradeoffs: [
+            { pro: 'Leverage PostgreSQL expertise', con: 'Less optimized than purpose-built' },
+            { pro: 'Open source', con: 'No enterprise support' },
+            { pro: 'Low cost', con: 'Limited to PostgreSQL performance' }
+          ],
+          alternatives: ['Elastic for enterprise features', 'Milvus for scale']
+        },
+        'pinecone': {
+          product: 'Pinecone',
+          icon: '🌲',
+          why: 'Purpose-built managed vector database, simple to use',
+          bestFor: ['Fast time-to-market', 'Startups', 'Small to medium scale'],
+          tradeoffs: [
+            { pro: 'Easiest to get started', con: 'Vendor lock-in' },
+            { pro: 'Fully managed', con: 'Can get expensive at scale' },
+            { pro: 'Good performance', con: 'Cloud-only' }
+          ],
+          alternatives: ['Elastic for Red Hat support', 'pgvector for cost savings']
+        }
+      }
+    },
+    storage: {
+      title: 'Where Should I Store AI Data?',
+      description: 'Choose the right storage strategy for datasets and models',
+      steps: [
+        {
+          question: 'Where is your AI platform deployed?',
+          options: [
+            { value: 'on-prem', label: 'On-premises / Private cloud', next: 1 },
+            { value: 'public-cloud', label: 'Public cloud (AWS/Azure/GCP)', next: 2 },
+            { value: 'hybrid', label: 'Hybrid (both)', next: 3 }
+          ]
+        },
+        {
+          question: 'What is your data scale?',
+          condition: { step: 0, value: 'on-prem' },
+          options: [
+            { value: 'small', label: 'Small (<10TB)', recommendation: 'odf-small' },
+            { value: 'large', label: 'Large (10TB+)', recommendation: 'odf-large' }
+          ]
+        },
+        {
+          question: 'Which cloud provider?',
+          condition: { step: 0, value: 'public-cloud' },
+          options: [
+            { value: 'aws', label: 'AWS', recommendation: 's3' },
+            { value: 'azure', label: 'Azure', recommendation: 'azure-blob' },
+            { value: 'gcp', label: 'GCP', recommendation: 'gcs' },
+            { value: 'multi', label: 'Multi-cloud', recommendation: 'noobaa' }
+          ]
+        },
+        {
+          question: 'Primary data location?',
+          condition: { step: 0, value: 'hybrid' },
+          options: [
+            { value: 'mostly-on-prem', label: 'Mostly on-premises', recommendation: 'odf-hybrid' },
+            { value: 'mostly-cloud', label: 'Mostly cloud', recommendation: 's3-hybrid' },
+            { value: 'balanced', label: 'Evenly distributed', recommendation: 'noobaa' }
+          ]
+        }
+      ],
+      recommendations: {
+        'odf-small': {
+          product: 'OpenShift Data Foundation (Small)',
+          icon: '💾',
+          why: 'Integrated S3-compatible storage for small to medium datasets on OpenShift',
+          bestFor: ['On-premises deployments', 'Data sovereignty', '<10TB datasets'],
+          tradeoffs: [
+            { pro: 'Seamless OpenShift integration', con: 'Limited to on-prem' },
+            { pro: 'S3-compatible API', con: 'Requires storage infrastructure' },
+            { pro: 'Data stays on-prem', con: 'More expensive than cloud at scale' }
+          ],
+          alternatives: ['S3 for cloud', 'ODF Large for bigger datasets']
+        },
+        'odf-large': {
+          product: 'OpenShift Data Foundation (Large)',
+          icon: '🏢',
+          why: 'Scalable on-premises S3-compatible storage with Ceph backend',
+          bestFor: ['Large on-prem deployments', 'Petabyte scale', 'Data residency'],
+          tradeoffs: [
+            { pro: 'Scales to petabytes', con: 'Complex to manage at scale' },
+            { pro: 'Full control', con: 'Higher operational burden' },
+            { pro: 'No cloud egress costs', con: 'Requires hardware investment' }
+          ],
+          alternatives: ['Hybrid with cloud for burst', 'NooBaa for multi-cloud']
+        },
+        's3': {
+          product: 'Amazon S3',
+          icon: '☁️',
+          why: 'Industry-standard cloud object storage, pay-as-you-go',
+          bestFor: ['AWS deployments', 'Cloud-native teams', 'Variable storage needs'],
+          tradeoffs: [
+            { pro: 'Unlimited scale', con: 'Egress costs can be high' },
+            { pro: 'No infrastructure management', con: 'Data in public cloud' },
+            { pro: 'Pay-as-you-go', con: 'Costs increase with scale' }
+          ],
+          alternatives: ['ODF for on-prem', 'GCS/Azure for multi-cloud']
+        },
+        'azure-blob': {
+          product: 'Azure Blob Storage',
+          icon: '🔷',
+          why: 'Azure native object storage with hot/cool/archive tiers',
+          bestFor: ['Azure deployments', 'Microsoft ecosystem', 'Tiered storage'],
+          tradeoffs: [
+            { pro: 'Azure integration', con: 'Azure vendor lock-in' },
+            { pro: 'Tiered pricing', con: 'Complex pricing model' },
+            { pro: 'Global availability', con: 'Egress costs' }
+          ],
+          alternatives: ['S3 for AWS', 'ODF for on-prem']
+        },
+        'gcs': {
+          product: 'Google Cloud Storage',
+          icon: '🌐',
+          why: 'GCP native object storage with excellent network performance',
+          bestFor: ['GCP deployments', 'Global distribution', 'Data analytics'],
+          tradeoffs: [
+            { pro: 'GCP integration', con: 'GCP vendor lock-in' },
+            { pro: 'Fast network', con: 'Egress costs' },
+            { pro: 'Good for analytics', con: 'Complex for small teams' }
+          ],
+          alternatives: ['S3 for AWS', 'ODF for on-prem']
+        },
+        'noobaa': {
+          product: 'NooBaa (Multi-Cloud Gateway)',
+          icon: '🌍',
+          why: 'S3-compatible multi-cloud abstraction layer from ODF',
+          bestFor: ['Multi-cloud strategy', 'Cloud migration', 'Avoiding lock-in'],
+          tradeoffs: [
+            { pro: 'Cloud-agnostic', con: 'Additional abstraction layer' },
+            { pro: 'Data mobility', con: 'Complexity' },
+            { pro: 'Hybrid cloud support', con: 'Performance overhead' }
+          ],
+          alternatives: ['S3 for simplicity', 'ODF for full on-prem']
+        },
+        'odf-hybrid': {
+          product: 'ODF with Cloud Tiering',
+          icon: '🔄',
+          why: 'Primary storage on-prem with cloud tiering for cold data',
+          bestFor: ['Hybrid deployments', 'Cost optimization', 'Data gravity on-prem'],
+          tradeoffs: [
+            { pro: 'Hot data on-prem', con: 'Complex setup' },
+            { pro: 'Cold data in cloud', con: 'Retrieval latency' },
+            { pro: 'Cost optimized', con: 'Requires both infrastructures' }
+          ],
+          alternatives: ['Full ODF for simplicity', 'Full S3 for cloud-first']
+        },
+        's3-hybrid': {
+          product: 'S3 with On-Prem Caching',
+          icon: '⚡',
+          why: 'Primary storage in cloud with on-prem caching for performance',
+          bestFor: ['Cloud-first hybrid', 'Low-latency access', 'Burst workloads'],
+          tradeoffs: [
+            { pro: 'Unlimited cloud scale', con: 'Egress costs' },
+            { pro: 'Local cache performance', con: 'Cache management complexity' },
+            { pro: 'Flexible', con: 'Requires both systems' }
+          ],
+          alternatives: ['Full S3 for cloud', 'Full ODF for on-prem']
+        }
+      }
     }
   };
 
