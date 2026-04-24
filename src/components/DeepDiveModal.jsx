@@ -37,47 +37,42 @@ export default function DeepDiveModal({ optionId, onClose }) {
             <section>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <GitBranch size={20} className="text-purple-600" />
-                Component Connection Map
+                Architecture Overview
               </h3>
               <div className="p-6 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg border-2 border-purple-200 dark:border-purple-700">
-                {/* Core Components */}
-                <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
-                  {details.architecture.components.map((component, idx) => (
-                    <div key={idx} className="text-center">
-                      <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border-2 border-purple-400 shadow-md min-w-[140px]">
+                {/* Core Components - Grid Layout */}
+                <div className="mb-6">
+                  <div className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Core Components</div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {details.architecture.components.map((component, idx) => (
+                      <div key={idx} className="p-3 bg-white dark:bg-gray-800 rounded-lg border-2 border-purple-400 shadow-sm hover:shadow-md transition-shadow">
                         <div className="font-bold text-sm text-gray-900 dark:text-white mb-1">
                           {component.name}
                         </div>
-                        <div className="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded">
+                        <div className="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded inline-block">
                           {component.role}
                         </div>
                       </div>
-                      {idx < details.architecture.components.length - 1 && (
-                        <ArrowRight className="inline-block mx-2 text-purple-600" size={20} />
-                      )}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
 
-                {/* Integration Connections */}
+                {/* External Integrations */}
                 <div className="border-t-2 border-purple-300 dark:border-purple-600 pt-4">
-                  <div className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3 text-center">
+                  <div className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">
                     External Integrations
                   </div>
-                  <div className="grid md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {details.architecture.integrations.map((integration, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-300 dark:border-blue-700"
+                        className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-300 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
                       >
-                        <ArrowRight size={14} className="text-blue-600 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-xs text-gray-900 dark:text-white truncate">
-                            {integration.name}
-                          </div>
-                          <div className="text-xs text-gray-600 dark:text-gray-400">
-                            {integration.purpose}
-                          </div>
+                        <div className="font-semibold text-sm text-gray-900 dark:text-white mb-1">
+                          {integration.name}
+                        </div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">
+                          {integration.purpose}
                         </div>
                       </div>
                     ))}
