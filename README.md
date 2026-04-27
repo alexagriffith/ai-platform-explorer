@@ -2,6 +2,10 @@
 
 An interactive visualization tool for exploring and building Red Hat AI platform architectures. This tool helps customers, sales engineers, and architects understand how different Red Hat AI offerings work together and can be configured for various use cases.
 
+**🌐 Live Site:** [https://alexagriffith.github.io/ai-platform-explorer/](https://alexagriffith.github.io/ai-platform-explorer/)
+
+> **⚠️ Work In Progress:** This tool is actively being developed and improved. Content and features are subject to change.
+
 ## ✨ Features
 
 ### 🏗️ Interactive Architecture Builder
