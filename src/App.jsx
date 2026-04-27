@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Layers, Target, Package, Info, GitBranch } from 'lucide-react';
+import { Layers, Target, Package, Info, GitBranch, AlertCircle } from 'lucide-react';
 import ArchitectureHub from './components/ArchitectureHub';
 import ProductExplorer from './components/ProductExplorer';
 import UseCaseView from './components/UseCaseView';
@@ -85,6 +85,18 @@ function App() {
           </div>
         </div>
       </header>
+
+      {/* WIP Banner */}
+      <div className="bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          <div className="flex items-center justify-center gap-2 text-white">
+            <AlertCircle size={18} className="flex-shrink-0" />
+            <p className="text-sm font-medium">
+              Work In Progress: This tool is actively being developed and improved. Content and features are subject to change.
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Navigation */}
       <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
