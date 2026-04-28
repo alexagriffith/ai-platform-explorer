@@ -84,25 +84,95 @@ export default function UseCaseView({ customerEnv }) {
     },
     {
       id: 'rag',
-      title: 'RAG (Retrieval Augmented Generation)',
-      description: 'Enhance LLMs with private data and knowledge bases to stop hallucinations',
-      recommendedProducts: ['rhoai', 'ai-inference', 'gen-ai-studio', 'ai-gateway'],
+      title: 'RAG (Retrieval Augmented Generation) with AutoRAG',
+      description: 'Build RAG applications with automated chunking, embedding, and retrieval optimization',
+      recommendedProducts: ['project-navigator', 'rhoai', 'ai-inference', 'gen-ai-studio', 'ai-gateway'],
       customerProfiles: ['Enterprise developers', 'Knowledge management teams', 'Customer support'],
       deploymentPatterns: [
-        'API Gateway → Model Serving → GPU → Response',
-        'Document processing (PDF, docx, pptx, md, html, text)',
+        'AutoRAG optimization pipeline: chunking → embedding → top-K tuning',
+        'Document processing: PDF, docx, pptx, md, html, text',
         'OCR for images, ASR for audio',
         'Vector database integration (Elastic, pgvector)',
-        'AutoRAG optimization'
+        'Intent-based routing via Project Navigator'
       ],
       considerations: [
-        'Document ingestion formats: PDF, docx, pptx, md, html, plain text',
-        'Processing techniques: OCR for images, ASR for audio',
-        'AutoRAG: Automated chunking strategy optimization',
-        'Embedding model selection and top-K retrieval tuning',
-        'Vector database selection (Elastic preferred, pgvector, etc.)',
-        'Retrieval quality and relevance metrics',
-        'Data privacy and security with RBAC'
+        'AutoRAG automates chunking strategy (character, recursive, semantic)',
+        'Embedding model selection (Granite, sentence-transformers, etc.)',
+        'Top-K retrieval optimization for precision/recall',
+        'Document formats: PDF, docx, pptx, md, html, plain text',
+        'OCR for image-based text, ASR for audio conversion',
+        'Vector DB choice: Elastic (preferred partner), pgvector, others',
+        'RAGAS evaluation for answer correctness and faithfulness',
+        'Project Navigator for intent-based workflow orchestration'
+      ]
+    },
+    {
+      id: 'security-testing',
+      title: 'LLM Security & Vulnerability Testing',
+      description: 'Test LLMs for vulnerabilities, attacks, and robustness with Garak',
+      recommendedProducts: ['rh-evaluation', 'trustyai', 'fms-guardrails'],
+      customerProfiles: ['Security engineers', 'ML security teams', 'Compliance officers'],
+      deploymentPatterns: [
+        'Pre-production security scanning',
+        'Continuous security testing in CI/CD',
+        'Robustness validation before release'
+      ],
+      considerations: [
+        'Garak runs 100+ attack vectors (can be slow)',
+        'Requires security expertise to interpret results',
+        'Should be part of pre-deployment checklist',
+        'Combine with guardrails for runtime protection',
+        'Test both base models and fine-tuned versions',
+        'Jailbreak attempt detection',
+        'Prompt injection vulnerability scanning',
+        'Toxic output prevention validation'
+      ]
+    },
+    {
+      id: 'disaggregated-serving',
+      title: 'Disaggregated LLM Serving (Prefill/Decode Split)',
+      description: 'Cost-optimize LLM inference by splitting prefill and decode phases',
+      recommendedProducts: ['ai-inference', 'kserve', 'openshift'],
+      customerProfiles: ['Cost-conscious teams', 'High-volume inference', 'Infrastructure engineers'],
+      deploymentPatterns: [
+        'Split prefill (prompt processing) and decode (token generation)',
+        'llm-d routing with KV cache awareness',
+        'LeaderWorkerSet for multi-node coordination',
+        'GPU optimization for different phases'
+      ],
+      considerations: [
+        'Prefill is compute-bound (benefits from high FLOPS GPUs)',
+        'Decode is memory-bound (benefits from high memory bandwidth)',
+        'Can use different GPU types for each phase',
+        'llm-d handles KV cache routing between phases',
+        'Reduces overall GPU costs for large-scale deployments',
+        'Requires understanding of LLM inference internals',
+        'Best for high-volume production workloads (1M+ requests/day)',
+        'LLMInferenceService API (v1alpha2) supports this pattern'
+      ]
+    },
+    {
+      id: 'batch-inference',
+      title: 'High-Volume Batch Inference',
+      description: 'Process large batches of offline inference requests cost-efficiently',
+      recommendedProducts: ['batch-gateway', 'ai-inference', 'openshift'],
+      customerProfiles: ['Data processing teams', 'Analytics teams', 'Cost-optimization engineers'],
+      deploymentPatterns: [
+        'OpenAI-compatible Batch API (/v1/batches)',
+        'JSONL file upload with 50K+ requests per batch',
+        'Asynchronous processing with priority queue',
+        'S3-backed file storage for inputs/outputs'
+      ],
+      considerations: [
+        'Cost-efficient: better GPU utilization than real-time',
+        'Up to 50,000 requests per batch (200 MB max file size)',
+        'Asynchronous: results available after minutes/hours',
+        'OpenAI-compatible API for easy migration',
+        'Multi-tenant support via X-MaaS-User header',
+        'Redis or PostgreSQL for job metadata',
+        'S3-compatible storage for batch files',
+        'Use cases: document processing, data analysis, offline tasks',
+        'Not suitable for real-time or interactive workloads'
       ]
     }
   ];
