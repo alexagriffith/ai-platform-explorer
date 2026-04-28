@@ -176,6 +176,31 @@ export const capabilities = {
       ]
     },
     {
+      id: 'batch-inference',
+      name: 'Batch Inference',
+      description: 'Asynchronous batch processing for high-volume offline inference',
+      required: false,
+      subLayer: 'core',
+      position: 'adjacent',
+      options: [
+        {
+          id: 'batch-gateway',
+          provider: 'Red Hat',
+          name: 'Red Hat Batch Gateway',
+          description: 'OpenAI-compatible batch inference API (up to 50K requests per batch)',
+          status: 'Tech Preview',
+          recommended: true
+        },
+        {
+          id: 'custom-batch',
+          provider: 'Customer',
+          name: 'Custom Batch Solution',
+          description: 'Customer-provided batch inference infrastructure',
+          isCustomer: true
+        }
+      ]
+    },
+    {
       id: 'observability',
       name: 'Observability & Monitoring',
       description: 'Monitor AI workloads, track metrics, and analyze performance',
@@ -221,6 +246,31 @@ export const capabilities = {
           provider: 'Customer',
           name: 'Custom Governance Tools',
           description: 'Customer-provided governance solution',
+          isCustomer: true
+        }
+      ]
+    },
+    {
+      id: 'content-safety',
+      name: 'Content Safety & Guardrails',
+      description: 'Content filtering, safety detection, and harmful content prevention',
+      required: false,
+      subLayer: 'wrapper',
+      position: 'wrapper',
+      options: [
+        {
+          id: 'fms-guardrails',
+          provider: 'Red Hat',
+          name: 'FMS Guardrails Orchestrator',
+          description: 'Content safety orchestrator with configurable detectors',
+          status: 'Tech Preview',
+          recommended: true
+        },
+        {
+          id: 'custom-guardrails',
+          provider: 'Customer',
+          name: 'Custom Safety Solution',
+          description: 'Customer-provided content moderation/safety tools',
           isCustomer: true
         }
       ]
@@ -293,6 +343,24 @@ export const capabilities = {
           name: 'Self-hosted MCP Servers',
           description: 'Customer-deployed MCP implementations',
           isCustomer: true
+        }
+      ]
+    },
+    {
+      id: 'llama-stack',
+      name: 'Llama Stack Platform',
+      description: 'Meta\'s unified API for inference, agents, safety, eval, and vector I/O',
+      required: false,
+      subLayer: 'orchestration',
+      position: 'orchestration',
+      options: [
+        {
+          id: 'llama-stack-distribution',
+          provider: 'Red Hat',
+          name: 'Llama Stack Distribution',
+          description: 'RHOAI-integrated Llama Stack with vLLM, TrustyAI, and RAGAS',
+          status: 'Tech Preview',
+          recommended: true
         }
       ]
     },

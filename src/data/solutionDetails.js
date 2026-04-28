@@ -767,5 +767,139 @@ export const solutionDetails = {
     ],
     documentation: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai',
     contacts: ['#forum-rhel-ai', 'RHEL AI Product Team']
+  },
+  'batch-gateway': {
+    name: 'Red Hat Batch Gateway',
+    description: 'OpenAI-compatible batch inference API gateway for processing bulk LLM requests asynchronously',
+    architecture: {
+      components: [
+        { name: 'API Server', role: 'REST API', description: 'OpenAI-compatible /v1/files and /v1/batches endpoints' },
+        { name: 'Batch Processor', role: 'Worker Pool', description: 'Polls priority queue and dispatches jobs to inference backends' },
+        { name: 'Redis Queue', role: 'Job Queue', description: 'Priority queue for pending batch jobs with tenant isolation' },
+        { name: 'S3 Storage', role: 'File Storage', description: 'Stores input JSONL files and output results' }
+      ],
+      integrations: [
+        { name: 'llm-d Gateway', purpose: 'Downstream inference endpoint for batch requests' },
+        { name: 'AI Inference Server', purpose: 'Alternative inference backend (OpenAI-compatible)' },
+        { name: 'Redis', purpose: 'Job queue, metadata, and event handling' },
+        { name: 'S3-compatible storage', purpose: 'Batch file storage (input/output)' },
+        { name: 'PostgreSQL', purpose: 'Alternative metadata backend' }
+      ]
+    },
+    capabilities: [
+      'OpenAI-compatible Batch API (/v1/batches)',
+      'Files API for JSONL upload/download (/v1/files)',
+      'Up to 50,000 requests per batch file (200 MB max)',
+      'Asynchronous processing with priority queue',
+      'Multi-tenant support via X-MaaS-User header',
+      'Configurable worker pool for concurrent processing',
+      'Redis or PostgreSQL backend for metadata',
+      'S3 or local filesystem for file storage',
+      'Retry logic with exponential backoff',
+      'mTLS support for inference backend connections',
+      'Prometheus metrics and health endpoints'
+    ],
+    useCases: [
+      'High-volume offline inference (e.g., processing 100K+ documents overnight)',
+      'Cost-optimized inference (batch requests use resources more efficiently)',
+      'Asynchronous workflows where real-time response not needed',
+      'Large-scale data processing and analysis',
+      'Background tasks requiring LLM inference at scale'
+    ],
+    documentation: 'https://github.com/red-hat-data-services/batch-gateway',
+    contacts: ['#team-llm-d', '#forum-ai-inference']
+  },
+  'fms-guardrails': {
+    name: 'FMS Guardrails Orchestrator',
+    description: 'REST API middleware coordinating AI text generation with content safety guardrails',
+    architecture: {
+      components: [
+        { name: 'Orchestrator Server', role: 'Middleware', description: 'Routes requests through detector → chunker → LLM pipeline (Rust/Axum)' },
+        { name: 'Detector Client', role: 'Safety Analysis', description: 'Connects to HAP and other detector services for content analysis' },
+        { name: 'Chunker Client', role: 'Tokenization', description: 'Text segmentation for detector processing (gRPC)' },
+        { name: 'Generation Client', role: 'LLM Backend', description: 'Connects to TGIS, caikit-nlp, or OpenAI-compatible APIs' }
+      ],
+      integrations: [
+        { name: 'TGIS / caikit-nlp', purpose: 'Text generation backends (gRPC)' },
+        { name: 'vLLM / OpenAI-compatible', purpose: 'Alternative generation backend (HTTP)' },
+        { name: 'HAP Detector', purpose: 'Hate, Abuse, Profanity detection service' },
+        { name: 'Custom Detectors', purpose: 'Configurable content safety services' },
+        { name: 'OpenTelemetry', purpose: 'Distributed tracing and metrics' }
+      ]
+    },
+    capabilities: [
+      'Content safety detection (hate, abuse, profanity)',
+      'Chat message detection and filtering',
+      'Context document safety analysis',
+      'Generation-coupled detection (real-time screening)',
+      'Streaming and unary request patterns',
+      'Configurable score thresholds for blocking',
+      'TLS and mTLS support for all connections',
+      'OpenTelemetry instrumentation',
+      'Multiple API versions (v1, v2)',
+      'Standalone detection endpoints (no generation)',
+      'Rust-based high-performance middleware'
+    ],
+    useCases: [
+      'Regulated industries requiring content moderation',
+      'Customer-facing chatbots needing safety controls',
+      'Preventing harmful or toxic outputs from LLMs',
+      'Compliance with content safety regulations',
+      'Multi-layered safety (input + output detection)',
+      'Real-time content filtering for production APIs'
+    ],
+    documentation: 'https://github.com/red-hat-data-services/fms-guardrails-orchestrator',
+    contacts: ['#forum-ai-safety', '#team-fms-guardrails']
+  },
+  'llama-stack-distribution': {
+    name: 'Llama Stack Distribution',
+    description: 'Meta\'s unified AI/ML API server with inference, agents, safety, evaluation, and vector I/O',
+    architecture: {
+      components: [
+        { name: 'Llama Stack Server', role: 'Unified API', description: 'FastAPI server exposing /v1/* endpoints for all capabilities' },
+        { name: 'Inference Providers', role: 'LLM Serving', description: 'vLLM (primary), AWS Bedrock, Azure, Vertex AI, WatsonX, OpenAI' },
+        { name: 'Vector Providers', role: 'Embeddings', description: 'Milvus, pgvector, Qdrant, FAISS for vector storage' },
+        { name: 'Safety Providers', role: 'Guardrails', description: 'TrustyAI FMS integration for content safety' },
+        { name: 'Eval Providers', role: 'Evaluation', description: 'LM Eval, RAGAS, Garak for model assessment' },
+        { name: 'Agent Runtime', role: 'Orchestration', description: 'Agent creation, session management, and tool use' },
+        { name: 'PostgreSQL Backend', role: 'Persistence', description: 'KV store, inference logs, agent state, file metadata' }
+      ],
+      integrations: [
+        { name: 'vLLM', purpose: 'Primary inference and embedding backend' },
+        { name: 'TrustyAI FMS', purpose: 'Safety shield evaluation' },
+        { name: 'TrustyAI LM Eval', purpose: 'Model evaluation jobs' },
+        { name: 'Kubeflow Pipelines', purpose: 'RAGAS and Garak evaluation execution' },
+        { name: 'PostgreSQL', purpose: 'Persistent state storage' },
+        { name: 'Milvus Lite', purpose: 'Default inline vector store' },
+        { name: 'OpenTelemetry', purpose: 'Traces and metrics export' }
+      ]
+    },
+    capabilities: [
+      'OpenAI-compatible chat/completions API (/v1/chat/completions)',
+      'Inference with multiple backends (vLLM, Bedrock, Azure, etc.)',
+      'Agent creation with tool use and session management',
+      'Safety shield evaluation (TrustyAI FMS)',
+      'Model evaluation (LM Eval, RAGAS, Garak)',
+      'Vector database operations (Milvus, pgvector, Qdrant, FAISS)',
+      'File upload and management',
+      'Dataset I/O operations',
+      'Scoring functions (basic, LLM-as-judge, Braintrust)',
+      'Batch processing',
+      'PostgreSQL-backed persistence',
+      'Multi-arch support (x86_64, arm64)',
+      'Sentence transformers for inline embeddings',
+      'Pre-downloaded Granite embedding model'
+    ],
+    useCases: [
+      'Unified API for all AI/ML capabilities (single endpoint)',
+      'Agentic applications with tool use',
+      'RAG applications with integrated vector storage',
+      'Model evaluation workflows',
+      'Safety-first LLM deployments with built-in guardrails',
+      'Multi-provider inference (cloud + on-prem)',
+      'Developers familiar with Meta\'s Llama Stack ecosystem'
+    ],
+    documentation: 'https://github.com/red-hat-data-services/llama-stack-distribution',
+    contacts: ['#forum-llama-stack', '#team-rhoai-platform']
   }
 };
