@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { GitBranch, ArrowRight, CheckCircle, XCircle, HelpCircle } from 'lucide-react';
+import DecisionTree from './DecisionTree';
 
 export default function DecisionFlowchart() {
   const [selectedDecision, setSelectedDecision] = useState('');
   const [currentStep, setCurrentStep] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
+  const [treeRecommendation, setTreeRecommendation] = useState(null);
 
   const decisionFlows = {
     product: {
@@ -1213,28 +1215,6 @@ export default function DecisionFlowchart() {
   };
 
   const flow = getCurrentFlow();
-  const currentFlowStep = flow?.steps[currentStep];
-
-  // Check if we should show a recommendation
-  const getRecommendation = () => {
-    if (!currentFlowStep) return null;
-
-    const selectedOption = currentFlowStep.options?.find(
-      opt => opt.value === userAnswers[currentStep]
-    );
-
-    if (selectedOption?.recommendation && flow.recommendations[selectedOption.recommendation]) {
-      return flow.recommendations[selectedOption.recommendation];
-    }
-
-    if (currentFlowStep.recommendation) {
-      return currentFlowStep.recommendation;
-    }
-
-    return null;
-  };
-
-  const recommendation = getRecommendation();
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
@@ -1267,92 +1247,48 @@ export default function DecisionFlowchart() {
         </div>
       ) : (
         <div>
-          {/* Progress */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="font-semibold text-gray-900 dark:text-white">{flow.title}</h4>
-              <button
-                onClick={() => {
-                  setSelectedDecision('');
-                  resetFlow();
-                }}
-                className="text-sm text-purple-600 dark:text-purple-400 hover:underline"
-              >
-                Change Decision Type
-              </button>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div
-                className="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full transition-all"
-                style={{ width: `${((currentStep + 1) / flow.steps.length) * 100}%` }}
-              ></div>
-            </div>
+          {/* Header */}
+          <div className="mb-6 flex items-center justify-between">
+            <h4 className="font-semibold text-lg text-gray-900 dark:text-white">{flow.title}</h4>
+            <button
+              onClick={() => {
+                setSelectedDecision('');
+                setTreeRecommendation(null);
+                resetFlow();
+              }}
+              className="text-sm text-purple-600 dark:text-purple-400 hover:underline"
+            >
+              ← Change Decision Type
+            </button>
           </div>
 
-          {!recommendation ? (
-            /* Question */
-            <div className="space-y-4">
-              <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg border border-purple-200 dark:border-purple-700">
-                <div className="flex items-start gap-3">
-                  <HelpCircle size={24} className="text-purple-600 flex-shrink-0 mt-1" />
-                  <div>
-                    <p className="font-semibold text-gray-900 dark:text-white mb-2">
-                      Step {currentStep + 1}: {currentFlowStep?.question}
-                    </p>
-                    <div className="space-y-2">
-                      {currentFlowStep?.options.map((option) => (
-                        <button
-                          key={option.value}
-                          onClick={() => handleAnswer(option.value, option.next)}
-                          className="w-full p-3 text-left rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 dark:hover:border-purple-500 bg-white dark:bg-gray-800 transition-all hover:shadow-md"
-                        >
-                          <div className="flex items-center gap-2">
-                            <ArrowRight size={16} className="text-purple-600" />
-                            <span className="text-gray-900 dark:text-white">{option.label}</span>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Back button */}
-              {currentStep > 0 && (
-                <button
-                  onClick={() => {
-                    const newAnswers = { ...userAnswers };
-                    delete newAnswers[currentStep];
-                    setUserAnswers(newAnswers);
-                    setCurrentStep(currentStep - 1);
-                  }}
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:underline"
-                >
-                  ← Go Back
-                </button>
-              )}
-            </div>
+          {!treeRecommendation ? (
+            /* Decision Tree */
+            <DecisionTree
+              flow={flow}
+              onRecommendation={setTreeRecommendation}
+            />
           ) : (
             /* Recommendation */
             <div className="space-y-6">
               <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border-2 border-green-500 dark:border-green-600">
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="text-4xl">{recommendation.icon}</div>
+                  <div className="text-4xl">{treeRecommendation.icon}</div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <CheckCircle size={24} className="text-green-600" />
                       <h4 className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {recommendation.product}
+                        {treeRecommendation.product}
                       </h4>
                     </div>
                     <p className="text-gray-700 dark:text-gray-300 mb-3">
-                      <strong>Why:</strong> {recommendation.why}
+                      <strong>Why:</strong> {treeRecommendation.why}
                     </p>
-                    {recommendation.bestFor && (
+                    {treeRecommendation.bestFor && (
                       <div className="mb-3">
                         <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Best for:</p>
                         <div className="flex flex-wrap gap-2">
-                          {recommendation.bestFor.map((item, idx) => (
+                          {treeRecommendation.bestFor.map((item, idx) => (
                             <span key={idx} className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded text-xs">
                               {item}
                             </span>
@@ -1360,11 +1296,11 @@ export default function DecisionFlowchart() {
                         </div>
                       </div>
                     )}
-                    {recommendation.components && (
+                    {treeRecommendation.components && (
                       <div>
                         <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Key components:</p>
                         <div className="flex flex-wrap gap-2">
-                          {recommendation.components.map((comp, idx) => (
+                          {treeRecommendation.components.map((comp, idx) => (
                             <span key={idx} className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded text-xs">
                               {comp}
                             </span>
@@ -1383,7 +1319,7 @@ export default function DecisionFlowchart() {
                       Advantages
                     </h5>
                     <ul className="space-y-1 text-sm">
-                      {recommendation.tradeoffs.map((t, idx) => (
+                      {treeRecommendation.tradeoffs.map((t, idx) => (
                         <li key={idx} className="text-gray-700 dark:text-gray-300 flex items-start gap-1">
                           <span className="text-green-600">✓</span>
                           <span>{t.pro}</span>
@@ -1397,7 +1333,7 @@ export default function DecisionFlowchart() {
                       Tradeoffs
                     </h5>
                     <ul className="space-y-1 text-sm">
-                      {recommendation.tradeoffs.map((t, idx) => (
+                      {treeRecommendation.tradeoffs.map((t, idx) => (
                         <li key={idx} className="text-gray-700 dark:text-gray-300 flex items-start gap-1">
                           <span className="text-orange-600">!</span>
                           <span>{t.con}</span>
@@ -1408,13 +1344,13 @@ export default function DecisionFlowchart() {
                 </div>
 
                 {/* Alternatives */}
-                {recommendation.alternatives && (
+                {treeRecommendation.alternatives && (
                   <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-700">
                     <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                       Alternative options:
                     </p>
                     <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                      {recommendation.alternatives.map((alt, idx) => (
+                      {treeRecommendation.alternatives.map((alt, idx) => (
                         <li key={idx} className="flex items-start gap-2">
                           <ArrowRight size={14} className="text-blue-600 mt-0.5 flex-shrink-0" />
                           <span>{alt}</span>
@@ -1428,7 +1364,10 @@ export default function DecisionFlowchart() {
               {/* Action buttons */}
               <div className="flex gap-3">
                 <button
-                  onClick={resetFlow}
+                  onClick={() => {
+                    setTreeRecommendation(null);
+                    resetFlow();
+                  }}
                   className="px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors"
                 >
                   Start Over
@@ -1436,6 +1375,7 @@ export default function DecisionFlowchart() {
                 <button
                   onClick={() => {
                     setSelectedDecision('');
+                    setTreeRecommendation(null);
                     resetFlow();
                   }}
                   className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
