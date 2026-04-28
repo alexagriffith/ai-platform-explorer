@@ -804,6 +804,390 @@ export default function DecisionFlowchart() {
           alternatives: ['Full S3 for cloud', 'Full ODF for on-prem']
         }
       }
+    },
+    batchVsRealtime: {
+      title: 'Batch vs Real-time Inference',
+      description: 'Choose the right inference pattern for your workload',
+      steps: [
+        {
+          question: 'What is your latency requirement?',
+          options: [
+            { value: 'real-time', label: 'Real-time (<500ms)', next: 1 },
+            { value: 'near-real-time', label: 'Near real-time (1-5 seconds)', next: 2 },
+            { value: 'async', label: 'Asynchronous (minutes to hours)', next: 3 }
+          ]
+        },
+        {
+          question: 'What is your request volume?',
+          condition: { step: 0, value: 'real-time' },
+          options: [
+            { value: 'low', label: '<100 req/sec', recommendation: 'AI-Inference-Realtime' },
+            { value: 'high', label: '>100 req/sec', recommendation: 'AI-Inference-Scale' }
+          ]
+        },
+        {
+          question: 'Can you tolerate some queueing?',
+          condition: { step: 0, value: 'near-real-time' },
+          options: [
+            { value: 'yes', label: 'Yes, queueing is acceptable', recommendation: 'AI-Inference-Queue' },
+            { value: 'no', label: 'No, need immediate processing', recommendation: 'AI-Inference-Realtime' }
+          ]
+        },
+        {
+          question: 'What is your batch size?',
+          condition: { step: 0, value: 'async' },
+          options: [
+            { value: 'large', label: '>10K requests per batch', recommendation: 'Batch-Gateway' },
+            { value: 'small', label: '<10K requests', recommendation: 'Either' }
+          ]
+        }
+      ],
+      recommendations: {
+        'Batch-Gateway': {
+          product: 'Red Hat Batch Gateway',
+          icon: '📦',
+          why: 'Optimized for high-volume asynchronous processing with cost efficiency',
+          bestFor: ['Offline processing', 'Large datasets', 'Cost optimization', 'Non-urgent workloads'],
+          tradeoffs: [
+            { pro: 'Cost-efficient (better GPU utilization)', con: 'No real-time results' },
+            { pro: 'Handles 50K+ requests per batch', con: 'Requires async workflow design' },
+            { pro: 'OpenAI-compatible API', con: 'Tech Preview status' }
+          ],
+          alternatives: ['For real-time: AI Inference Server']
+        },
+        'AI-Inference-Realtime': {
+          product: 'Red Hat AI Inference Server',
+          icon: '⚡',
+          why: 'Low-latency serving with llm-d token-aware scheduling',
+          bestFor: ['Chatbots', 'Interactive apps', 'Real-time APIs', 'User-facing services'],
+          tradeoffs: [
+            { pro: 'Sub-200ms TTFT possible', con: 'Higher cost per request' },
+            { pro: 'llm-d KV cache routing', con: 'Requires more GPU resources' }
+          ],
+          alternatives: ['For batch: Batch Gateway', 'For cost: Batch processing']
+        },
+        'AI-Inference-Scale': {
+          product: 'Red Hat AI Inference Server (scaled)',
+          icon: '🚀',
+          why: 'High-throughput real-time serving with auto-scaling',
+          bestFor: ['High-traffic APIs', 'Production scale', 'SLO requirements'],
+          tradeoffs: [
+            { pro: 'Handles high request rate', con: 'Higher infrastructure cost' },
+            { pro: 'Auto-scaling', con: 'Complex capacity planning' }
+          ],
+          alternatives: ['For lower volume: Standard AI Inference', 'For batch: Batch Gateway']
+        },
+        'AI-Inference-Queue': {
+          product: 'Red Hat AI Inference Server with queueing',
+          icon: '📊',
+          why: 'Near real-time with request queuing for cost balance',
+          bestFor: ['Some latency tolerance', 'Cost-conscious', 'Bursty traffic'],
+          tradeoffs: [
+            { pro: 'Lower cost than pure real-time', con: 'Variable latency' },
+            { pro: 'Handles bursts', con: 'Not suitable for strict SLOs' }
+          ],
+          alternatives: ['For strict SLOs: Real-time', 'For batch: Batch Gateway']
+        },
+        'Either': {
+          product: 'Either Batch or Real-time',
+          icon: '🔀',
+          why: 'Small batch sizes work with either pattern',
+          bestFor: ['Flexible requirements', 'Small scale'],
+          tradeoffs: [
+            { pro: 'Can choose based on other factors', con: 'Need to evaluate cost vs latency' },
+            { pro: 'Both options viable', con: 'May need to test both' }
+          ],
+          alternatives: ['Test both approaches']
+        }
+      }
+    },
+    evaluationFramework: {
+      title: 'Which Evaluation Framework?',
+      description: 'Choose the right evaluation tool for your use case',
+      steps: [
+        {
+          question: 'What are you evaluating?',
+          options: [
+            { value: 'llm-quality', label: 'LLM quality (MMLU, HellaSwag, etc.)', next: 1 },
+            { value: 'performance', label: 'Performance (throughput, latency)', next: 2 },
+            { value: 'rag', label: 'RAG pipeline quality', next: 3 },
+            { value: 'security', label: 'Security & vulnerabilities', next: 4 }
+          ]
+        },
+        {
+          question: 'How many benchmarks do you need?',
+          condition: { step: 0, value: 'llm-quality' },
+          options: [
+            { value: 'comprehensive', label: '100+ standard benchmarks', recommendation: 'lm-eval-harness' },
+            { value: 'custom', label: 'Custom evaluation metrics', recommendation: 'lm-eval-custom' }
+          ]
+        },
+        {
+          question: 'What performance metrics?',
+          condition: { step: 0, value: 'performance' },
+          options: [
+            { value: 'throughput', label: 'Throughput & token/sec', recommendation: 'GuideLLM' },
+            { value: 'both', label: 'Throughput + latency', recommendation: 'GuideLLM' }
+          ]
+        },
+        {
+          question: 'What RAG aspects?',
+          condition: { step: 0, value: 'rag' },
+          options: [
+            { value: 'all', label: 'Answer correctness + faithfulness', recommendation: 'RAGAS' },
+            { value: 'custom', label: 'Custom RAG metrics', recommendation: 'RAGAS-custom' }
+          ]
+        },
+        {
+          question: 'What security concerns?',
+          condition: { step: 0, value: 'security' },
+          options: [
+            { value: 'vulnerabilities', label: 'LLM vulnerabilities & attacks', recommendation: 'Garak' },
+            { value: 'robustness', label: 'Robustness testing', recommendation: 'Garak' }
+          ]
+        }
+      ],
+      recommendations: {
+        'lm-eval-harness': {
+          product: 'LM Evaluation Harness (via EvalHub)',
+          icon: '📊',
+          why: '167+ standard benchmarks including MMLU, HellaSwag, TruthfulQA',
+          bestFor: ['Comprehensive quality assessment', 'Standard benchmark comparison', 'Academic research', 'Model releases'],
+          tradeoffs: [
+            { pro: '167+ pre-configured benchmarks', con: 'Can be slow for large models' },
+            { pro: 'Industry-standard metrics', con: 'Less customizable than custom eval' }
+          ],
+          alternatives: ['For performance: GuideLLM', 'For RAG: RAGAS']
+        },
+        'lm-eval-custom': {
+          product: 'LM Evaluation Harness (custom)',
+          icon: '🔧',
+          why: 'Create custom evaluation tasks for domain-specific needs',
+          bestFor: ['Domain-specific evaluation', 'Custom metrics', 'Specialized benchmarks'],
+          tradeoffs: [
+            { pro: 'Fully customizable', con: 'Requires task authoring' },
+            { pro: 'Domain-specific', con: 'Not comparable to standard benchmarks' }
+          ],
+          alternatives: ['For standard: lm-eval-harness', 'For RAG: RAGAS']
+        },
+        'GuideLLM': {
+          product: 'GuideLLM (via EvalHub)',
+          icon: '🚀',
+          why: 'Performance benchmarking for throughput and latency optimization',
+          bestFor: ['Performance tuning', 'Capacity planning', 'SLO validation', 'Infrastructure sizing'],
+          tradeoffs: [
+            { pro: 'Real-world performance metrics', con: 'Not focused on quality' },
+            { pro: 'Throughput optimization', con: 'Requires representative workload' }
+          ],
+          alternatives: ['For quality: lm-eval-harness', 'For RAG: RAGAS']
+        },
+        'RAGAS': {
+          product: 'RAGAS (via EvalHub)',
+          icon: '🔍',
+          why: 'RAG-specific evaluation: answer correctness, faithfulness, context precision',
+          bestFor: ['RAG application quality', 'Retrieval optimization', 'Answer validation', 'AutoRAG tuning'],
+          tradeoffs: [
+            { pro: 'RAG-specific metrics', con: 'Only for RAG pipelines' },
+            { pro: 'Answer correctness + faithfulness', con: 'Requires ground truth data' }
+          ],
+          alternatives: ['For general: lm-eval-harness', 'For performance: GuideLLM']
+        },
+        'RAGAS-custom': {
+          product: 'RAGAS (custom metrics)',
+          icon: '🎯',
+          why: 'Custom RAG evaluation metrics for specific use cases',
+          bestFor: ['Domain-specific RAG', 'Custom answer validation', 'Specialized retrieval'],
+          tradeoffs: [
+            { pro: 'Tailored to your RAG pipeline', con: 'Requires metric design' },
+            { pro: 'Domain-specific', con: 'Not comparable to standard' }
+          ],
+          alternatives: ['For standard: RAGAS', 'For general: lm-eval-harness']
+        },
+        'Garak': {
+          product: 'Garak (via EvalHub)',
+          icon: '🛡️',
+          why: 'LLM vulnerability scanner and robustness testing',
+          bestFor: ['Security testing', 'Vulnerability detection', 'Robustness validation', 'Pre-production checks'],
+          tradeoffs: [
+            { pro: 'Finds security issues', con: 'Can be slow (many attack vectors)' },
+            { pro: 'Robustness testing', con: 'Requires security expertise to interpret' }
+          ],
+          alternatives: ['For quality: lm-eval-harness', 'For performance: GuideLLM']
+        }
+      }
+    },
+    trainingApproach: {
+      title: 'Which Training Approach?',
+      description: 'Choose between InstructLab, Distributed Workloads, or Pipelines',
+      steps: [
+        {
+          question: 'What is your training goal?',
+          options: [
+            { value: 'fine-tune', label: 'Fine-tune with limited data', next: 1 },
+            { value: 'large-scale', label: 'Large-scale multi-node training', next: 2 },
+            { value: 'automated', label: 'Automated workflow / MLOps', next: 3 }
+          ]
+        },
+        {
+          question: 'Do you have labeled training data?',
+          condition: { step: 0, value: 'fine-tune' },
+          options: [
+            { value: 'no', label: 'No, need synthetic data generation', recommendation: 'InstructLab' },
+            { value: 'yes', label: 'Yes, have training dataset', recommendation: 'Either-Fine-Tune' }
+          ]
+        },
+        {
+          question: 'How many GPUs/nodes needed?',
+          condition: { step: 0, value: 'large-scale' },
+          options: [
+            { value: 'multi-node', label: 'Multi-node (8+ GPUs)', recommendation: 'Distributed-Workloads' },
+            { value: 'single-node', label: 'Single-node (<8 GPUs)', recommendation: 'InstructLab-or-Pipelines' }
+          ]
+        },
+        {
+          question: 'Need reproducible workflows?',
+          condition: { step: 0, value: 'automated' },
+          options: [
+            { value: 'yes', label: 'Yes, CI/CD for ML', recommendation: 'Data-Science-Pipelines' },
+            { value: 'no', label: 'No, one-off training', recommendation: 'Distributed-Workloads' }
+          ]
+        }
+      ],
+      recommendations: {
+        'InstructLab': {
+          product: 'InstructLab',
+          icon: '🧬',
+          why: 'LAB-based fine-tuning with synthetic data generation from taxonomy',
+          bestFor: ['Limited training data', 'Domain knowledge injection', 'SME-driven improvements', 'Small-to-medium models'],
+          tradeoffs: [
+            { pro: 'Synthetic data generation', con: 'Not for 70B+ models' },
+            { pro: 'Taxonomy-driven approach', con: 'Requires taxonomy creation' },
+            { pro: 'Less data labeling needed', con: 'Multi-phase training complexity' }
+          ],
+          alternatives: ['For scale: Distributed Workloads', 'For automation: Data Science Pipelines']
+        },
+        'Distributed-Workloads': {
+          product: 'RHOAI Distributed Workloads',
+          icon: '⚙️',
+          why: 'Multi-node distributed training with Ray, PyTorchJob, and Kueue',
+          bestFor: ['Large models (70B+)', 'Multi-GPU training', 'Tensor parallelism', 'Data parallelism'],
+          tradeoffs: [
+            { pro: 'Scales to 100+ GPUs', con: 'More complex infrastructure' },
+            { pro: 'Tensor + data parallelism', con: 'Higher cost' },
+            { pro: 'Ray and KubeFlow support', con: 'Steeper learning curve' }
+          ],
+          alternatives: ['For simplicity: InstructLab', 'For automation: Data Science Pipelines']
+        },
+        'Data-Science-Pipelines': {
+          product: 'Data Science Pipelines',
+          icon: '🔄',
+          why: 'Automated ML workflows with Kubeflow Pipelines',
+          bestFor: ['MLOps automation', 'Reproducible training', 'CI/CD for models', 'Team collaboration'],
+          tradeoffs: [
+            { pro: 'Reproducible pipelines', con: 'Requires pipeline authoring' },
+            { pro: 'Experiment tracking', con: 'More overhead than ad-hoc training' },
+            { pro: 'Integration with MLflow', con: 'Learning curve for KFP' }
+          ],
+          alternatives: ['For simplicity: InstructLab', 'For scale: Distributed Workloads']
+        },
+        'Either-Fine-Tune': {
+          product: 'InstructLab or Distributed Workloads',
+          icon: '🔀',
+          why: 'Both can work with existing datasets - choose based on scale',
+          bestFor: ['Flexible requirements', 'Have training data'],
+          tradeoffs: [
+            { pro: 'Multiple viable options', con: 'Need to evaluate scale needs' },
+            { pro: 'Can choose later', con: 'Should test with sample' }
+          ],
+          alternatives: ['For synthesis: InstructLab', 'For scale: Distributed Workloads']
+        },
+        'InstructLab-or-Pipelines': {
+          product: 'InstructLab or Data Science Pipelines',
+          icon: '🔀',
+          why: 'Single-node can use either approach',
+          bestFor: ['Single-node training', 'Moderate scale'],
+          tradeoffs: [
+            { pro: 'Both work for single-node', con: 'Choose based on automation needs' },
+            { pro: 'Can combine both', con: 'Pipelines add overhead' }
+          ],
+          alternatives: ['For automation: Pipelines', 'For synthesis: InstructLab']
+        }
+      }
+    },
+    servingChoice: {
+      title: 'KServe or AI Inference Server?',
+      description: 'Choose the right serving platform for your models',
+      steps: [
+        {
+          question: 'What type of models are you serving?',
+          options: [
+            { value: 'llms-only', label: 'LLMs only (GPT, Llama, Mistral, etc.)', next: 1 },
+            { value: 'multi-framework', label: 'Multiple frameworks (TF, PyTorch, ONNX, XGBoost)', next: 2 },
+            { value: 'pipelines', label: 'Multi-model pipelines (pre/post-processing)', next: 3 }
+          ]
+        },
+        {
+          question: 'Do you need advanced LLM features?',
+          condition: { step: 0, value: 'llms-only' },
+          options: [
+            { value: 'yes', label: 'Yes (llm-d, KV cache routing, split-phase)', recommendation: 'AI-Inference' },
+            { value: 'no', label: 'No, standard serving is fine', recommendation: 'Either-Serving' }
+          ]
+        },
+        {
+          question: 'How many different frameworks?',
+          condition: { step: 0, value: 'multi-framework' },
+          options: [
+            { value: 'many', label: '3+ different frameworks', recommendation: 'KServe' },
+            { value: 'few', label: '1-2 frameworks', recommendation: 'Either-Serving' }
+          ]
+        },
+        {
+          question: 'Need InferenceGraph DAGs?',
+          condition: { step: 0, value: 'pipelines' },
+          options: [
+            { value: 'yes', label: 'Yes, complex pipelines', recommendation: 'KServe' },
+            { value: 'no', label: 'No, simple chaining', recommendation: 'Either-Serving' }
+          ]
+        }
+      ],
+      recommendations: {
+        'AI-Inference': {
+          product: 'Red Hat AI Inference Server',
+          icon: '🚀',
+          why: 'LLM-optimized serving with llm-d token-aware scheduling and KV cache routing',
+          bestFor: ['LLM-only workloads', 'Low-latency requirements (<200ms TTFT)', 'GPU optimization', 'SLO-based routing'],
+          tradeoffs: [
+            { pro: 'llm-d token-aware scheduling', con: 'LLM-focused (not multi-framework)' },
+            { pro: 'KV cache routing for efficiency', con: 'Newer, less mature than KServe' },
+            { pro: 'Split-phase prefill/decode', con: 'Requires llm-d understanding' }
+          ],
+          alternatives: ['For multi-framework: KServe', 'For pipelines: KServe InferenceGraph']
+        },
+        'KServe': {
+          product: 'KServe (via RHOAI)',
+          icon: '🎯',
+          why: 'Multi-framework serving with InferenceGraph support for complex pipelines',
+          bestFor: ['Multiple ML frameworks', 'InferenceGraph DAGs', 'TrainedModel multi-model serving', 'Mature production needs'],
+          tradeoffs: [
+            { pro: 'Multi-framework (TF, PyTorch, ONNX, etc.)', con: 'Less optimized for LLMs than AI Inference' },
+            { pro: 'InferenceGraph for pipelines', con: 'More complex for simple LLM serving' },
+            { pro: 'Mature, widely adopted', con: 'Lacks llm-d advanced features' }
+          ],
+          alternatives: ['For LLM-only: AI Inference Server', 'For simplicity: AI Inference Server']
+        },
+        'Either-Serving': {
+          product: 'Either KServe or AI Inference',
+          icon: '🔀',
+          why: 'Both can handle this use case - choose based on other factors',
+          bestFor: ['Standard LLM serving', '1-2 frameworks', 'Simple requirements'],
+          tradeoffs: [
+            { pro: 'Multiple viable options', con: 'Need to evaluate other criteria' },
+            { pro: 'Both work', con: 'Should test performance' }
+          ],
+          alternatives: ['For llm-d: AI Inference', 'For maturity: KServe']
+        }
+      }
     }
   };
 
