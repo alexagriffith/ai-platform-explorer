@@ -6,8 +6,8 @@ import { subComponents } from '../data/subComponents';
 import DeepDiveModal from './DeepDiveModal';
 import FlowVisualization from './FlowVisualization';
 
-export default function CapabilityArchitectureView({ onSwitchToGenerate }) {
-  const [selectedCapabilities, setSelectedCapabilities] = useState({});
+export default function CapabilityArchitectureView({ onSwitchToGenerate, selectedCapabilities, setSelectedCapabilities }) {
+  // selectedCapabilities passed as props now
   const [configuringCapability, setConfiguringCapability] = useState(null);
   const [deepDiveOption, setDeepDiveOption] = useState(null);
   const [detailLevel, setDetailLevel] = useState(2); // 1: basic, 2: technical

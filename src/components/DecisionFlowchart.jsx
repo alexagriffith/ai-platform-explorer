@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { GitBranch, ArrowRight, CheckCircle, XCircle, HelpCircle } from 'lucide-react';
+import { GitBranch, ArrowRight, CheckCircle, XCircle, HelpCircle, Plus } from 'lucide-react';
 import DecisionTree from './DecisionTree';
+import { capabilities } from '../data/capabilities';
 
-export default function DecisionFlowchart() {
+export default function DecisionFlowchart({ selectedCapabilities, setSelectedCapabilities, onSwitchToArchitecture }) {
   const [selectedDecision, setSelectedDecision] = useState('');
   const [currentStep, setCurrentStep] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
@@ -1214,6 +1215,64 @@ export default function DecisionFlowchart() {
     return decisionFlows[selectedDecision];
   };
 
+  // Map recommendation product names to capability option IDs
+  const productNameToOptionId = {
+    'Red Hat Batch Gateway': 'batch-gateway',
+    'Red Hat AI Inference Server': 'ai-inference',
+    'Red Hat AI Inference Server (scaled)': 'ai-inference',
+    'Red Hat AI Inference Server with queueing': 'ai-inference',
+    'KServe (via RHOAI)': 'kserve',
+    'LM Evaluation Harness (via EvalHub)': 'rh-evaluation',
+    'LM Evaluation Harness (custom)': 'rh-evaluation',
+    'GuideLLM (via EvalHub)': 'rh-evaluation',
+    'RAGAS (via EvalHub)': 'rh-evaluation',
+    'RAGAS (custom metrics)': 'rh-evaluation',
+    'Garak (via EvalHub)': 'rh-evaluation',
+    'InstructLab': 'instructlab',
+    'RHOAI Distributed Workloads': 'rhoai-distributed',
+    'Data Science Pipelines': 'data-science-pipelines',
+    'Red Hat Enterprise Linux AI': 'rhel-ai',
+    'Red Hat OpenShift AI': 'rhoai',
+    'Red Hat AI Enterprise': 'rhaie',
+    'Red Hat OpenShift': 'openshift'
+  };
+
+  const addRecommendationToArchitecture = () => {
+    if (!treeRecommendation) return;
+
+    // Get the option ID from the product name
+    const optionId = productNameToOptionId[treeRecommendation.product];
+    if (!optionId) {
+      console.warn('No mapping found for product:', treeRecommendation.product);
+      return;
+    }
+
+    // Find which capability this option belongs to
+    let capabilityId = null;
+    for (const [layerId, layerCapabilities] of Object.entries(capabilities)) {
+      for (const capability of layerCapabilities) {
+        if (capability.options.some(opt => opt.id === optionId)) {
+          capabilityId = capability.id;
+          break;
+        }
+      }
+      if (capabilityId) break;
+    }
+
+    if (capabilityId) {
+      // Add to selected capabilities
+      setSelectedCapabilities(prev => ({
+        ...prev,
+        [capabilityId]: optionId
+      }));
+
+      // Switch to architecture tab
+      if (onSwitchToArchitecture) {
+        onSwitchToArchitecture();
+      }
+    }
+  };
+
   const flow = getCurrentFlow();
 
   return (
@@ -1362,7 +1421,14 @@ export default function DecisionFlowchart() {
               </div>
 
               {/* Action buttons */}
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={addRecommendationToArchitecture}
+                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all"
+                >
+                  <Plus size={20} />
+                  Add to Your Architecture
+                </button>
                 <button
                   onClick={() => {
                     setTreeRecommendation(null);

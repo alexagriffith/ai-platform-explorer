@@ -24,6 +24,7 @@ function App() {
   const [selectedProducts, setSelectedProducts] = useState(
     products.filter(p => p.required).map(p => p.id)
   );
+  const [selectedCapabilities, setSelectedCapabilities] = useState({});
 
   const views = [
     { id: 'architecture', name: 'Architecture', icon: Layers },
@@ -41,6 +42,9 @@ function App() {
             setCustomerEnv={setCustomerEnv}
             selectedProducts={selectedProducts}
             setSelectedProducts={setSelectedProducts}
+            selectedCapabilities={selectedCapabilities}
+            setSelectedCapabilities={setSelectedCapabilities}
+            onSwitchToDecisions={() => setCurrentView('decisions')}
           />
         );
       case 'products':
@@ -51,7 +55,13 @@ function App() {
           />
         );
       case 'decisions':
-        return <DecisionFlowchart />;
+        return (
+          <DecisionFlowchart
+            selectedCapabilities={selectedCapabilities}
+            setSelectedCapabilities={setSelectedCapabilities}
+            onSwitchToArchitecture={() => setCurrentView('architecture')}
+          />
+        );
       case 'use-cases':
         return <UseCaseView customerEnv={customerEnv} />;
       default:

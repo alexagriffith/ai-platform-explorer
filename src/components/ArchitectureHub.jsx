@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Layers, Hammer, Settings, Info } from 'lucide-react';
+import { Layers, Hammer, Settings, Info, HelpCircle, ArrowRight } from 'lucide-react';
 import CapabilityArchitectureView from './CapabilityArchitectureView';
 import InteractiveBuilder from './InteractiveBuilder';
 import CustomerConfig from './CustomerConfig';
 
-export default function ArchitectureHub({ customerEnv, setCustomerEnv, selectedProducts, setSelectedProducts }) {
+export default function ArchitectureHub({ customerEnv, setCustomerEnv, selectedProducts, setSelectedProducts, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities }) {
   const [mode, setMode] = useState('build'); // 'build', 'interactive', 'generate'
 
   const modes = [
@@ -13,7 +13,13 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, selectedP
       name: 'Build Your Stack',
       icon: Layers,
       description: 'Layer-by-layer architecture builder with flexible component selection',
-      component: <CapabilityArchitectureView onSwitchToGenerate={() => setMode('generate')} />
+      component: (
+        <CapabilityArchitectureView
+          onSwitchToGenerate={() => setMode('generate')}
+          selectedCapabilities={selectedCapabilities}
+          setSelectedCapabilities={setSelectedCapabilities}
+        />
+      )
     },
     {
       id: 'interactive',
@@ -53,6 +59,23 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, selectedP
               Choose how you want to build your Red Hat AI stack
             </p>
           </div>
+        </div>
+
+        {/* Help Link */}
+        <div className="mb-4">
+          <button
+            onClick={onSwitchToDecisions}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-purple-300 dark:border-purple-700 rounded-lg hover:shadow-md transition-all group"
+          >
+            <HelpCircle size={20} className="text-purple-600" />
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Not sure what to choose?
+            </span>
+            <ArrowRight size={16} className="text-purple-600 group-hover:translate-x-1 transition-transform" />
+            <span className="text-sm font-semibold text-purple-600">
+              Use Decision Guide
+            </span>
+          </button>
         </div>
 
         {/* Mode Selector */}
