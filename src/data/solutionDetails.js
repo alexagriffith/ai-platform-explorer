@@ -224,41 +224,44 @@ export const solutionDetails = {
   },
   'ai-inference': {
     name: 'Red Hat AI Inference Server',
-    description: 'High-performance LLM serving optimized for throughput and latency with intelligent routing',
+    description: 'High-performance LLM serving powered by vLLM and llm-d for advanced token-aware scheduling, KV cache routing, and SLO-based priority',
     architecture: {
       components: [
-        { name: 'vLLM Runtime', role: 'Inference Engine', description: 'PagedAttention, continuous batching, multi-GPU support' },
-        { name: 'llm-d', role: 'Distributed Inference', description: 'Token-aware scheduling, KV cache routing, split-phase inference' },
-        { name: 'TGIS', role: 'Text Generation', description: 'Optimized for streaming and batch inference' },
+        { name: 'llm-d Inference Scheduler', role: 'Advanced Scheduling', description: 'Token-aware scheduling, KV cache routing, split-phase prefill/decode, SLO-based priority routing (latency vs throughput)' },
+        { name: 'vLLM Runtime', role: 'Inference Engine', description: 'PagedAttention, continuous batching, multi-GPU support - orchestrated by llm-d' },
+        { name: 'TGIS', role: 'Text Generation', description: 'Alternative runtime for streaming and batch inference' },
         { name: 'Model Cache', role: 'Performance', description: 'In-memory caching and model preloading' }
       ],
       integrations: [
+        { name: 'llm-d Gateway', purpose: 'Semantic routing and intelligent request distribution' },
         { name: 'Model Registry', purpose: 'Model versioning and deployment' },
         { name: 'Prometheus', purpose: 'Performance metrics and SLIs' },
-        { name: 'AI Gateway', purpose: 'Authentication, rate limiting, and semantic routing' },
+        { name: 'AI Gateway', purpose: 'Authentication, rate limiting, and semantic routing integration' },
         { name: 'GPU Operator', purpose: 'NVIDIA GPU optimization and scheduling' }
       ]
     },
     capabilities: [
-      'vLLM-based high-performance serving',
-      'llm-d token-aware scheduling and KV cache routing',
-      'SLO-based priority: latency-sensitive vs throughput-sensitive workloads',
-      'PagedAttention for memory efficiency',
-      'Continuous batching for throughput',
+      '🚀 llm-d Token-Aware Scheduling: Intelligent request routing based on token count',
+      '🚀 llm-d KV Cache Routing: Maximize GPU utilization with cache-aware scheduling',
+      '🚀 llm-d SLO-Based Priority: Latency-sensitive (<200ms TTFT) vs throughput-sensitive routing',
+      '🚀 llm-d Split-Phase Inference: Disaggregated prefill/decode for cost optimization',
+      'vLLM-based high-performance serving with PagedAttention',
+      'Continuous batching for maximum throughput',
       'Multi-GPU tensor parallelism',
       'Token streaming for real-time responses',
       'Model quantization (INT8, FP16)',
       'Auto-scaling based on load and GPU utilization'
     ],
     useCases: [
-      'Production LLM inference at scale',
-      'Real-time chatbot applications (<200ms TTFT)',
-      'Batch processing of text generation',
-      'Multi-model serving with intelligent routing',
-      'High-throughput background workloads'
+      'Production LLM inference requiring <200ms TTFT (llm-d latency-sensitive routing)',
+      'High-throughput background workloads (llm-d throughput-sensitive routing)',
+      'Multi-model serving with intelligent routing (llm-d semantic routing)',
+      'Cost-optimized disaggregated serving (llm-d split-phase prefill/decode)',
+      'Real-time chatbot applications at scale',
+      'Batch processing of text generation with efficiency'
     ],
     documentation: 'https://docs.redhat.com',
-    contacts: ['#forum-ai-inference', 'Shumaila Yaseen (SME)']
+    contacts: ['#forum-ai-inference', 'Shumaila Yaseen (SME)', '#team-llm-d']
   },
   'rh-model-registry': {
     name: 'Red Hat Model Registry',
