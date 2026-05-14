@@ -111,21 +111,21 @@ spec:
       {
         kind: 'Deployment',
         name: 'vllm-model-server',
-        createdBy: 'user',
+        plane: 'control',
         children: [
           {
             kind: 'ReplicaSet',
             name: 'vllm-model-server-abc123',
-            createdBy: 'controller',
+            plane: 'control',
             children: [
-              { kind: 'Pod', name: 'vllm-model-server-abc123-1', createdBy: 'controller', children: [] },
-              { kind: 'Pod', name: 'vllm-model-server-abc123-2', createdBy: 'controller', children: [] }
+              { kind: 'Pod', name: 'vllm-model-server-abc123-1', plane: 'data', children: [] },
+              { kind: 'Pod', name: 'vllm-model-server-abc123-2', plane: 'data', children: [] }
             ]
           }
         ]
       },
-      { kind: 'Service', name: 'vllm-service', createdBy: 'user', children: [] },
-      { kind: 'Route', name: 'vllm-route', createdBy: 'user', children: [] }
+      { kind: 'Service', name: 'vllm-service', plane: 'data', children: [] },
+      { kind: 'Route', name: 'vllm-route', plane: 'data', children: [] }
     ],
 
     controlPlane: [
@@ -231,32 +231,32 @@ spec:
       {
         kind: 'InferenceService',
         name: 'llama-model',
-        createdBy: 'user',
+        plane: 'control',
         children: [
           {
             kind: 'Deployment',
             name: 'llama-model-predictor',
-            createdBy: 'controller',
+            plane: 'control',
             children: [
               {
                 kind: 'ReplicaSet',
                 name: 'llama-model-predictor-xyz789',
-                createdBy: 'controller',
+                plane: 'control',
                 children: [
-                  { kind: 'Pod', name: 'llama-model-predictor-xyz789-1', createdBy: 'controller', children: [] },
-                  { kind: 'Pod', name: 'llama-model-predictor-xyz789-2', createdBy: 'controller', children: [] }
+                  { kind: 'Pod', name: 'llama-model-predictor-xyz789-1', plane: 'data', children: [] },
+                  { kind: 'Pod', name: 'llama-model-predictor-xyz789-2', plane: 'data', children: [] }
                 ]
               }
             ]
           },
-          { kind: 'Service', name: 'llama-model-predictor', createdBy: 'controller', children: [] },
-          { kind: 'Route', name: 'llama-model', createdBy: 'controller', children: [] }
+          { kind: 'Service', name: 'llama-model-predictor', plane: 'data', children: [] },
+          { kind: 'Route', name: 'llama-model', plane: 'data', children: [] }
         ]
       },
       {
         kind: 'ServingRuntime',
         name: 'vllm-runtime',
-        createdBy: 'platform',
+        plane: 'control',
         children: []
       }
     ],
