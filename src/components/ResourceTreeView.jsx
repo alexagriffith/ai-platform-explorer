@@ -1,4 +1,4 @@
-import { ChevronRight, ChevronDown, Box, User, Cpu, X, ExternalLink, Info } from 'lucide-react';
+import { ChevronRight, ChevronDown, Box, User, Cpu, X, ExternalLink, Info, Building2 } from 'lucide-react';
 import { useState } from 'react';
 import { getResourceDefinition } from '../data/resourceDefinitions';
 
@@ -83,18 +83,24 @@ export default function ResourceTreeView({ comparison }) {
 
       {/* Legend */}
       <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
-        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Creator Legend</h4>
-        <div className="grid md:grid-cols-3 gap-4 text-sm">
+        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Who Creates What?</h4>
+        <div className="grid md:grid-cols-4 gap-4 text-sm">
           <div className="flex items-center gap-2">
             <User size={16} className="text-blue-600 dark:text-blue-400" />
             <span className="text-gray-700 dark:text-gray-300">
-              <strong>User:</strong> You submit this YAML
+              <strong>You submit:</strong> Your deployment YAML
             </span>
           </div>
           <div className="flex items-center gap-2">
             <Cpu size={16} className="text-purple-600 dark:text-purple-400" />
             <span className="text-gray-700 dark:text-gray-300">
-              <strong>Controller:</strong> Created automatically
+              <strong>Auto-created:</strong> By controllers
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Building2 size={16} className="text-orange-600 dark:text-orange-400" />
+            <span className="text-gray-700 dark:text-gray-300">
+              <strong>Platform:</strong> Pre-created, you reference
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -127,6 +133,7 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind }) {
   const creatorConfig = {
     user: { icon: User, color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-50 dark:bg-blue-900/20' },
     controller: { icon: Cpu, color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-50 dark:bg-purple-900/20' },
+    platform: { icon: Building2, color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-50 dark:bg-orange-900/20' },
     operator: { icon: Box, color: 'text-green-600 dark:text-green-400', bgColor: 'bg-green-50 dark:bg-green-900/20' }
   };
 
@@ -299,6 +306,12 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
                 <>
                   <Cpu size={16} className="text-purple-600 dark:text-purple-400" />
                   <span><strong>Created automatically</strong> by Kubernetes controllers</span>
+                </>
+              )}
+              {resource.usedBy === 'platform' && (
+                <>
+                  <Building2 size={16} className="text-orange-600 dark:text-orange-400" />
+                  <span><strong>Pre-created by platform team</strong> - you reference it by name</span>
                 </>
               )}
               {resource.usedBy === 'operator' && (

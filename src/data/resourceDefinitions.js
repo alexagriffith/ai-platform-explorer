@@ -116,7 +116,7 @@ export const resourceDefinitions = {
     kind: 'ServingRuntime',
     apiVersion: 'serving.kserve.io/v1alpha1',
     category: 'KServe',
-    description: 'Defines a reusable model serving runtime (vLLM, TGI, Triton, etc.). Platform teams create ServingRuntimes; app teams reference them in InferenceServices.',
+    description: 'Defines a reusable model serving runtime (vLLM, TGI, Triton, etc.). Platform teams create ServingRuntimes once and share them across app teams. App teams reference the runtime by name in their InferenceServices.',
     keyFields: [
       { name: 'spec.supportedModelFormats', description: 'Which model formats this runtime can serve' },
       { name: 'spec.containers', description: 'Container template with runtime image and args' },
@@ -124,7 +124,7 @@ export const resourceDefinitions = {
       { name: 'spec.grpcEndpoint', description: 'gRPC endpoint if supported' }
     ],
     docsUrl: 'https://kserve.github.io/website/latest/modelserving/servingruntimes/',
-    usedBy: 'user'
+    usedBy: 'platform'
   },
 
   VirtualService: {

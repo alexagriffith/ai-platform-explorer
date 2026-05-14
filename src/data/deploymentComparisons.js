@@ -243,7 +243,8 @@ spec:
                 name: 'llama-model-predictor-xyz789',
                 createdBy: 'controller',
                 children: [
-                  { kind: 'Pod', name: 'llama-model-predictor-xyz789-1', createdBy: 'controller', children: [] }
+                  { kind: 'Pod', name: 'llama-model-predictor-xyz789-1', createdBy: 'controller', children: [] },
+                  { kind: 'Pod', name: 'llama-model-predictor-xyz789-2', createdBy: 'controller', children: [] }
                 ]
               }
             ]
@@ -255,7 +256,7 @@ spec:
       {
         kind: 'ServingRuntime',
         name: 'vllm-runtime',
-        createdBy: 'user',
+        createdBy: 'platform',
         children: []
       }
     ],
