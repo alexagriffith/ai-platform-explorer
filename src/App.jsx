@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Layers, Target, Package, Info, GitBranch, AlertCircle } from 'lucide-react';
+import { Layers, Target, Package, Info, GitBranch, AlertCircle, GitCompare } from 'lucide-react';
 import ArchitectureHub from './components/ArchitectureHub';
 import ProductExplorer from './components/ProductExplorer';
 import UseCaseView from './components/UseCaseView';
 import DecisionFlowchart from './components/DecisionFlowchart';
+import DeploymentImpactView from './components/DeploymentImpactView';
 import AcronymGlossary from './components/AcronymGlossary';
 import { products } from './data/products';
 
@@ -30,7 +31,8 @@ function App() {
     { id: 'architecture', name: 'Architecture', icon: Layers },
     { id: 'decisions', name: 'Decision Guide', icon: GitBranch },
     { id: 'use-cases', name: 'Use Cases', icon: Target },
-    { id: 'products', name: 'Products', icon: Package }
+    { id: 'products', name: 'Products', icon: Package },
+    { id: 'deployment-impact', name: 'Deployment Impact', icon: GitCompare }
   ];
 
   const renderView = () => {
@@ -64,6 +66,8 @@ function App() {
         );
       case 'use-cases':
         return <UseCaseView customerEnv={customerEnv} />;
+      case 'deployment-impact':
+        return <DeploymentImpactView />;
       default:
         return null;
     }
