@@ -70,16 +70,16 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">RH</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-bold text-lg sm:text-xl">RH</span>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
                 Red Hat AI Platform Explorer
               </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hidden sm:block">
                 Interactive visualization of Red Hat's AI offerings
               </p>
             </div>
@@ -91,9 +91,9 @@ function App() {
       <div className="bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
           <div className="flex items-center justify-center gap-2 text-white">
-            <AlertCircle size={18} className="flex-shrink-0" />
-            <p className="text-sm font-medium">
-              Work In Progress: This tool is actively being developed and improved. Content and features are subject to change.
+            <AlertCircle size={16} className="flex-shrink-0" />
+            <p className="text-xs sm:text-sm font-medium text-center">
+              Work In Progress: Content and features subject to change
             </p>
           </div>
         </div>
@@ -101,8 +101,8 @@ function App() {
 
       {/* Navigation */}
       <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-1">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex gap-0.5 sm:gap-1 overflow-x-auto">
             {views.map((view) => {
               const Icon = view.icon;
               return (
@@ -115,14 +115,15 @@ function App() {
                     }
                     setCurrentView(view.id);
                   }}
-                  className={`flex items-center gap-2 px-4 py-3 font-medium text-sm transition-colors border-b-2 ${
+                  className={`flex items-center justify-center sm:justify-start gap-2 px-2 sm:px-4 py-3 font-medium text-xs sm:text-sm transition-colors border-b-2 whitespace-nowrap ${
                     currentView === view.id
                       ? 'border-purple-600 text-purple-600 dark:text-purple-400'
                       : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                   }`}
+                  title={view.name}
                 >
-                  <Icon size={18} />
-                  {view.name}
+                  <Icon size={18} className="flex-shrink-0" />
+                  <span className="hidden sm:inline">{view.name}</span>
                 </button>
               );
             })}

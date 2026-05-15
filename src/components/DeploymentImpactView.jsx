@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { FileCode, Table, GitCompare, ChevronDown, ChevronRight } from 'lucide-react';
+import { FileCode, Table, GitCompare, ChevronDown, ChevronRight, Zap } from 'lucide-react';
 import DeploymentComparisonSelector from './DeploymentComparisonSelector';
 import YAMLDiffView from './YAMLDiffView';
 import CapabilityDeltaTable from './CapabilityDeltaTable';
 import ResourceTreeView from './ResourceTreeView';
+import QuickComparisonTable from './QuickComparisonTable';
 import { getComparisonById } from '../data/deploymentComparisons';
 
 /**
@@ -19,18 +20,33 @@ export default function DeploymentImpactView() {
 
   const comparison = selectedComparisonId ? getComparisonById(selectedComparisonId) : null;
 
-  const tabs = [
-    { id: 'yaml', name: 'YAML Diff', icon: FileCode },
-    { id: 'resources', name: 'Resource Tree', icon: GitCompare },
-    { id: 'capabilities', name: 'Capability Delta', icon: Table }
-  ];
+  // Reset active tab when comparison changes
+  const handleSelectComparison = (id) => {
+    setSelectedComparisonId(id);
+    const newComparison = getComparisonById(id);
+    setActiveTab(newComparison?.comparisonType === 'alternative' ? 'quick' : 'yaml');
+  };
+
+  // For alternative comparisons (not upgrades), show Quick Comparison tab first
+  const tabs = comparison?.comparisonType === 'alternative'
+    ? [
+        { id: 'quick', name: 'Quick Comparison', icon: Zap },
+        { id: 'yaml', name: 'YAML Diff', icon: FileCode },
+        { id: 'resources', name: 'Resource Tree', icon: GitCompare },
+        { id: 'capabilities', name: 'Capability Delta', icon: Table }
+      ]
+    : [
+        { id: 'yaml', name: 'YAML Diff', icon: FileCode },
+        { id: 'resources', name: 'Resource Tree', icon: GitCompare },
+        { id: 'capabilities', name: 'Capability Delta', icon: Table }
+      ];
 
   return (
     <div className="space-y-8">
       {/* Comparison Selector */}
       <DeploymentComparisonSelector
         selectedComparisonId={selectedComparisonId}
-        onSelectComparison={setSelectedComparisonId}
+        onSelectComparison={handleSelectComparison}
       />
 
       {/* Comparison Content */}
@@ -73,6 +89,7 @@ export default function DeploymentImpactView() {
 
             {/* Tab Content */}
             <div className="p-6">
+              {activeTab === 'quick' && <QuickComparisonTable comparison={comparison} />}
               {activeTab === 'yaml' && <YAMLDiffView comparison={comparison} />}
               {activeTab === 'resources' && <ResourceTreeView comparison={comparison} />}
               {activeTab === 'capabilities' && <CapabilityDeltaTable comparison={comparison} />}

@@ -38,6 +38,18 @@ export default function ResourceTreeView({ comparison }) {
   const beforeKinds = getResourceKinds(before.clusterResources);
   const afterKinds = getResourceKinds(after.clusterResources);
 
+  // Detect if this is an alternative comparison (not an upgrade)
+  const isAlternative = comparison.comparisonType === 'alternative';
+
+  // Configure labels and colors based on comparison type
+  const leftConfig = isAlternative
+    ? { label: before.label, color: 'bg-blue-500', prefix: '' }
+    : { label: before.label, color: 'bg-orange-500', prefix: 'Before: ' };
+
+  const rightConfig = isAlternative
+    ? { label: after.label, color: 'bg-purple-500', prefix: '' }
+    : { label: after.label, color: 'bg-green-500', prefix: 'After: ' };
+
   return (
     <div className="space-y-6 relative">
       <div>
@@ -45,21 +57,24 @@ export default function ResourceTreeView({ comparison }) {
           Kubernetes Resource Tree
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
-          What objects get created in your cluster? Who creates them (you or controllers)?
-          <span className="inline-flex items-center gap-1 ml-2 text-sm text-blue-600 dark:text-blue-400">
+          {isAlternative
+            ? 'Compare what K8s resources each platform creates from similar user inputs.'
+            : 'See how the resource structure changes when adopting this platform component.'}
+          {' '}
+          <span className="inline-flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400">
             <Info size={14} />
             Click any resource type to learn more
           </span>
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Before State */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+        {/* Left State */}
         <div>
           <div className="mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-              <span className="inline-block w-3 h-3 bg-orange-500 rounded-full mr-2"></span>
-              Before: {before.label}
+              <span className={`inline-block w-3 h-3 ${leftConfig.color} rounded-full mr-2`}></span>
+              {leftConfig.prefix}{leftConfig.label}
             </h4>
           </div>
 
@@ -72,17 +87,18 @@ export default function ResourceTreeView({ comparison }) {
                 selectedKind={selectedResourceKind}
                 diffStatus="before"
                 otherKinds={afterKinds}
+                isAlternative={isAlternative}
               />
             ))}
           </div>
         </div>
 
-        {/* After State */}
+        {/* Right State */}
         <div>
           <div className="mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-              <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
-              After: {after.label}
+              <span className={`inline-block w-3 h-3 ${rightConfig.color} rounded-full mr-2`}></span>
+              {rightConfig.prefix}{rightConfig.label}
             </h4>
           </div>
 
@@ -95,6 +111,7 @@ export default function ResourceTreeView({ comparison }) {
                 selectedKind={selectedResourceKind}
                 diffStatus="after"
                 otherKinds={beforeKinds}
+                isAlternative={isAlternative}
               />
             ))}
           </div>
@@ -119,20 +136,22 @@ export default function ResourceTreeView({ comparison }) {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-4 text-sm pt-2 border-t border-gray-200 dark:border-gray-600">
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded">
-                NEW
-              </span>
-              <span className="text-gray-700 dark:text-gray-300">Added by platform</span>
+          {!isAlternative && (
+            <div className="flex items-center gap-4 text-sm pt-2 border-t border-gray-200 dark:border-gray-600">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded">
+                  NEW
+                </span>
+                <span className="text-gray-700 dark:text-gray-300">Added by platform</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 rounded">
+                  REMOVED
+                </span>
+                <span className="text-gray-700 dark:text-gray-300">No longer needed</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 rounded">
-                REMOVED
-              </span>
-              <span className="text-gray-700 dark:text-gray-300">No longer needed</span>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -150,8 +169,9 @@ export default function ResourceTreeView({ comparison }) {
 /**
  * ResourceTreeNode - Individual node in the tree with expand/collapse and clickable resource kind
  */
-function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffStatus, otherKinds }) {
-  const [isExpanded, setIsExpanded] = useState(true);
+function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffStatus, otherKinds, isAlternative }) {
+  // Expand first 2 levels by default, collapse deeper levels
+  const [isExpanded, setIsExpanded] = useState(depth <= 1);
   const hasChildren = node.children && node.children.length > 0;
 
   const planeConfig = {
@@ -163,12 +183,14 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
   const PlaneIcon = config.icon;
   const isSelected = selectedKind === node.kind;
 
-  // Determine if this resource is new or removed
+  // Determine if this resource is new or removed (only for upgrade comparisons, not alternatives)
   let badge = null;
-  if (diffStatus === 'after' && !otherKinds.has(node.kind)) {
-    badge = { text: 'NEW', className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' };
-  } else if (diffStatus === 'before' && !otherKinds.has(node.kind)) {
-    badge = { text: 'REMOVED', className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' };
+  if (!isAlternative) {
+    if (diffStatus === 'after' && !otherKinds.has(node.kind)) {
+      badge = { text: 'NEW', className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' };
+    } else if (diffStatus === 'before' && !otherKinds.has(node.kind)) {
+      badge = { text: 'REMOVED', className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' };
+    }
   }
 
   return (

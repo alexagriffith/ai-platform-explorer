@@ -31,7 +31,7 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {comparisons.map((comparison) => {
           const isSelected = selectedComparisonId === comparison.id;
 
@@ -82,14 +82,6 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
         })}
       </div>
 
-      {comparisons.length === 1 && (
-        <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            <strong>V2.0 MVP:</strong> We're starting with the most common technical question (vLLM → KServe).
-            Future comparisons will include: No Gateway → AI Gateway, Standalone K8s → RHOAI, and more.
-          </p>
-        </div>
-      )}
     </div>
   );
 }

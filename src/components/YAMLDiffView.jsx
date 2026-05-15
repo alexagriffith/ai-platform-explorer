@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, ChevronDown, ChevronRight } from 'lucide-react';
 
 /**
  * YAMLDiffView
@@ -17,58 +17,60 @@ export default function YAMLDiffView({ comparison }) {
   }
 
   const { before, after } = comparison;
+  const isAlternative = comparison.comparisonType === 'alternative';
+
+  // Configure labels and colors based on comparison type
+  const leftConfig = isAlternative
+    ? { label: before.label, color: 'bg-blue-500', prefix: '', state: 'option-a' }
+    : { label: before.label, color: 'bg-orange-500', prefix: 'Before: ', state: 'before' };
+
+  const rightConfig = isAlternative
+    ? { label: after.label, color: 'bg-purple-500', prefix: '', state: 'option-b' }
+    : { label: after.label, color: 'bg-green-500', prefix: 'After: ', state: 'after' };
 
   return (
     <div className="space-y-6">
       <div>
         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-          What You Submit: Before vs After
+          {isAlternative ? 'What You Submit: Side-by-Side' : 'What You Submit: Before vs After'}
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
-          See how the YAML you write changes when adopting this platform component.
+          {isAlternative
+            ? 'Compare the YAML specifications for each platform approach.'
+            : 'See how the YAML you write changes when adopting this platform component.'}
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Before State */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+        {/* Left State */}
         <div className="space-y-4">
           <div className="sticky top-0 bg-white dark:bg-gray-900 py-2 border-b border-gray-200 dark:border-gray-700">
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-              <span className="inline-block w-3 h-3 bg-orange-500 rounded-full mr-2"></span>
-              Before: {before.label}
+              <span className={`inline-block w-3 h-3 ${leftConfig.color} rounded-full mr-2`}></span>
+              {leftConfig.prefix}{leftConfig.label}
             </h4>
           </div>
 
           {before.submittedResources.map((resource, idx) => (
-            <YAMLResource key={idx} resource={resource} state="before" />
+            <YAMLResource key={idx} resource={resource} state={leftConfig.state} />
           ))}
         </div>
 
-        {/* After State */}
+        {/* Right State */}
         <div className="space-y-4">
           <div className="sticky top-0 bg-white dark:bg-gray-900 py-2 border-b border-gray-200 dark:border-gray-700">
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-              <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
-              After: {after.label}
+              <span className={`inline-block w-3 h-3 ${rightConfig.color} rounded-full mr-2`}></span>
+              {rightConfig.prefix}{rightConfig.label}
             </h4>
           </div>
 
           {after.submittedResources.map((resource, idx) => (
-            <YAMLResource key={idx} resource={resource} state="after" />
+            <YAMLResource key={idx} resource={resource} state={rightConfig.state} />
           ))}
         </div>
       </div>
 
-      {/* Summary */}
-      <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-        <p className="text-sm text-gray-700 dark:text-gray-300">
-          <strong>Key takeaway:</strong> You submit{' '}
-          <strong className="text-orange-600 dark:text-orange-400">{before.submittedResources.length} resource{before.submittedResources.length !== 1 ? 's' : ''}</strong>{' '}
-          before, and{' '}
-          <strong className="text-green-600 dark:text-green-400">{after.submittedResources.length} resource{after.submittedResources.length !== 1 ? 's' : ''}</strong>{' '}
-          after. The platform handles the rest.
-        </p>
-      </div>
     </div>
   );
 }
@@ -78,6 +80,7 @@ export default function YAMLDiffView({ comparison }) {
  */
 function YAMLResource({ resource, state }) {
   const [copied, setCopied] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleCopy = async () => {
     try {
@@ -89,32 +92,49 @@ function YAMLResource({ resource, state }) {
     }
   };
 
-  const stateColor = state === 'before'
-    ? 'border-orange-300 dark:border-orange-700'
-    : 'border-green-300 dark:border-green-700';
+  const stateColorMap = {
+    'before': 'border-orange-300 dark:border-orange-700',
+    'after': 'border-green-300 dark:border-green-700',
+    'option-a': 'border-blue-300 dark:border-blue-700',
+    'option-b': 'border-purple-300 dark:border-purple-700'
+  };
+  const stateColor = stateColorMap[state] || stateColorMap['before'];
 
   return (
     <div className={`border-2 ${stateColor} rounded-lg overflow-hidden bg-white dark:bg-gray-800`}>
-      {/* Header */}
-      <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+      {/* Header - clickable to expand/collapse */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left"
+      >
         <div className="flex items-center justify-between">
-          <div>
-            <div className="flex items-baseline gap-2">
-              <span className="font-mono text-sm font-semibold text-gray-900 dark:text-white">
-                {resource.kind}
-              </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                {resource.apiVersion}
-              </span>
+          <div className="flex items-center gap-2 flex-1">
+            {isExpanded ? (
+              <ChevronDown size={16} className="text-gray-400 flex-shrink-0" />
+            ) : (
+              <ChevronRight size={16} className="text-gray-400 flex-shrink-0" />
+            )}
+            <div className="flex-1">
+              <div className="flex items-baseline gap-2">
+                <span className="font-mono text-sm font-semibold text-gray-900 dark:text-white">
+                  {resource.kind}
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {resource.apiVersion}
+                </span>
+              </div>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                {resource.description}
+              </p>
             </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-              {resource.description}
-            </p>
           </div>
 
           <button
-            onClick={handleCopy}
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCopy();
+            }}
+            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex-shrink-0"
             title="Copy YAML"
           >
             {copied ? (
@@ -130,14 +150,16 @@ function YAMLResource({ resource, state }) {
             )}
           </button>
         </div>
-      </div>
+      </button>
 
-      {/* YAML Content */}
-      <div className="overflow-x-auto">
-        <pre className="p-4 text-xs font-mono leading-relaxed text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900">
-          <code>{resource.yamlSnippet}</code>
-        </pre>
-      </div>
+      {/* YAML Content - collapsible */}
+      {isExpanded && (
+        <div className="overflow-x-auto">
+          <pre className="p-4 text-xs font-mono leading-relaxed text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900">
+            <code>{resource.yamlSnippet}</code>
+          </pre>
+        </div>
+      )}
     </div>
   );
 }
