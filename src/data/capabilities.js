@@ -408,7 +408,7 @@ export const capabilities = {
           id: 'rhaie',
           provider: 'Red Hat',
           name: 'Red Hat AI Enterprise (RHAIE)',
-          description: 'Integrated OpenShift + AI platform (single offering)',
+          description: 'Turnkey platform (OpenShift + AI bundled). All-in-one for new AI deployments.',
           status: 'GA',
           recommended: false
         },
@@ -487,7 +487,7 @@ export const capabilities = {
           id: 'kubernetes',
           provider: 'Customer',
           name: 'Existing Kubernetes',
-          description: 'Non-OpenShift Kubernetes (EKS, AKS, GKE, self-managed)',
+          description: 'Non-OpenShift Kubernetes (EKS, AKS, GKE, self-managed). Pairs with Red Hat AI (RHAI).',
           isCustomer: true
         },
         {
@@ -510,7 +510,7 @@ export const capabilities = {
           id: 'nvidia-gpu',
           provider: 'NVIDIA',
           name: 'NVIDIA GPUs',
-          description: 'NVIDIA',
+          description: 'A100, H100, L40S',
           status: 'GA',
           recommended: true
         },
@@ -518,28 +518,28 @@ export const capabilities = {
           id: 'amd-gpu',
           provider: 'AMD',
           name: 'AMD GPUs',
-          description: 'AMD',
+          description: 'MI300, MI250',
           status: 'GA'
         },
         {
           id: 'intel-gpu',
           provider: 'Intel',
           name: 'Intel GPUs/Gaudi',
-          description: 'Intel',
+          description: 'Gaudi, Data Center GPU',
           status: 'GA'
         },
         {
           id: 'google-tpu',
           provider: 'Google',
           name: 'Google TPU',
-          description: 'Google',
+          description: 'Cloud TPUs',
           status: 'GA'
         },
         {
           id: 'cpu-only',
           provider: 'CPU',
           name: 'CPU Only',
-          description: 'No accelerators',
+          description: 'No GPU',
           isNone: true
         }
       ]
