@@ -80,6 +80,17 @@ export default function DecisionTree({ flow, onRecommendation }) {
 
   const canGoBack = Object.keys(selectedPath).length > 0;
 
+  // Calculate visible question number (not array index)
+  const getVisibleQuestionNumber = (targetStepIndex) => {
+    let visibleCount = 0;
+    for (let i = 0; i <= targetStepIndex; i++) {
+      if (shouldShowStep(flow.steps[i], i)) {
+        visibleCount++;
+      }
+    }
+    return visibleCount;
+  };
+
   return (
     <div className="space-y-6">
       {/* Breadcrumb and controls */}
@@ -120,6 +131,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
 
           const isActive = isNodeActive(stepIndex);
           const isCompleted = isNodeCompleted(stepIndex);
+          const visibleNumber = getVisibleQuestionNumber(stepIndex);
 
           return (
             <div key={stepIndex} className="mb-8">
@@ -148,7 +160,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
                           isActive ? 'border-purple-600 bg-purple-200 dark:bg-purple-800' : 'border-gray-400'
                         }`}>
                           <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-300">
-                            {stepIndex + 1}
+                            {visibleNumber}
                           </div>
                         </div>
                       )}

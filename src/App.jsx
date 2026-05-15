@@ -56,6 +56,7 @@ function App() {
       case 'decisions':
         return (
           <DecisionFlowchart
+            key="decision-flowchart"
             selectedCapabilities={selectedCapabilities}
             setSelectedCapabilities={setSelectedCapabilities}
             onSwitchToArchitecture={() => setCurrentView('architecture')}

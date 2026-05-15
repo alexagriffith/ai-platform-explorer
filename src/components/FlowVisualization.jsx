@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { X, ArrowDown, Workflow, Maximize2, Minimize2, Copy, Layers, Crosshair } from 'lucide-react';
+import { X, ArrowDown, Workflow, Maximize2, Minimize2, Download, Layers, Crosshair } from 'lucide-react';
 import { subComponents } from '../data/subComponents';
 import {
   collectFlowLayersFromNested,
@@ -8,7 +8,7 @@ import {
   collectBridgeStructuralEdges,
   getFocusNeighborSet
 } from '../lib/flowVisualizationData';
-import { generateDataFlowSummaryTextFromNested } from '../lib/dataFlowSummaryText';
+import html2canvas from 'html2canvas';
 
 function nameById(flow, id) {
   for (const layer of flow) {
@@ -51,7 +51,7 @@ function LayerBridge({ edges }) {
 
 export default function FlowVisualization({ selectedCapabilities, onClose }) {
   const [expandedComponent, setExpandedComponent] = useState(null);
-  const [copyDone, setCopyDone] = useState(false);
+  const [exportingPng, setExportingPng] = useState(false);
   const [focusedId, setFocusedId] = useState(null);
 
   const flow = useMemo(() => collectFlowLayersFromNested(selectedCapabilities), [selectedCapabilities]);
@@ -103,15 +103,30 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
     return m;
   }, [flow, structuralEdges]);
 
-  const copyDataFlowSummary = async () => {
-    const text = generateDataFlowSummaryTextFromNested(selectedCapabilities);
+  const handleExportPng = useCallback(async () => {
+    const captureEl = document.getElementById('flow-viz-capture');
+    if (!captureEl) return;
+
+    setExportingPng(true);
     try {
-      await navigator.clipboard.writeText(text);
-      setCopyDone(true);
-    } catch {
-      setCopyDone(false);
+      const canvas = await html2canvas(captureEl, {
+        backgroundColor: '#1e40af',
+        scale: 2,
+        logging: false
+      });
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `red-hat-ai-architecture-flow-${new Date().toISOString().split('T')[0]}.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('PNG export failed:', err);
+    } finally {
+      setExportingPng(false);
     }
-  };
+  }, []);
 
   const handleCardClick = useCallback((componentId) => {
     setFocusedId((cur) => (cur === componentId ? null : componentId));
@@ -232,21 +247,19 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
                 Architecture flow
               </h2>
               <p className="text-blue-100 text-sm max-w-2xl">
-                Workshop view for orientation—how pieces relate, what is typically paired, and facilitator focus. For a
-                shareable snapshot of the same selections, use{' '}
-                <strong className="text-white">Export Stack</strong> in Build Your Stack.
+                Visual guide showing how components relate and connect in your AI stack.
               </p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 type="button"
-                onClick={copyDataFlowSummary}
-                className="flex items-center gap-2 px-3 py-2 bg-white/15 hover:bg-white/25 rounded-lg text-sm font-semibold"
+                onClick={handleExportPng}
+                disabled={exportingPng}
+                className="flex items-center gap-2 px-4 py-2 bg-white/15 hover:bg-white/25 rounded-lg text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Copy size={18} />
-                Copy summary
+                <Download size={18} />
+                {exportingPng ? 'Exporting...' : 'Export as PNG'}
               </button>
-              {copyDone && <span className="text-xs text-green-200">Copied</span>}
               <button
                 type="button"
                 onClick={onClose}
@@ -259,7 +272,7 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
           </div>
         </div>
 
-        <div className="p-8 bg-gray-900">
+        <div id="flow-viz-capture" className="p-8 bg-gray-900">
           <div className="space-y-0">
             {flow.map((layer, idx) => (
               <div key={layer.layerId}>
@@ -362,17 +375,6 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
               <Maximize2 size={12} className="inline mr-1 align-text-bottom opacity-70" />
               Expand icon opens internal detail without changing focus. Hover a component for short relationship hints.
             </div>
-          </div>
-
-          <div className="mt-6 p-5 bg-gray-800/80 rounded-lg border border-gray-700">
-            <h4 className="font-bold text-white mb-2 flex items-center gap-2 text-sm">
-              <ArrowDown size={16} />
-              Discussion framing
-            </h4>
-            <p className="text-sm text-gray-400 leading-relaxed">
-              Walk from the application edge toward runtime when you narrate requests. Dashed rows are typical add-ons
-              to discuss next—retrieval, registry, or gateways—not missing requirements.
-            </p>
           </div>
         </div>
       </div>
