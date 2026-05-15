@@ -78,6 +78,8 @@ export const solutionDetails = {
   'rhoai': {
     name: 'Red Hat OpenShift AI (RHOAI)',
     description: 'Comprehensive AI/ML platform for the full machine learning lifecycle with AutoRAG and InstructLab',
+    requirements:
+      'Requires a supported Red Hat OpenShift footprint. Confirm version compatibility, GPU scheduling, and storage classes with your platform team.',
     architecture: {
       components: [
         { name: 'JupyterHub / Workbenches', role: 'Development', description: 'Multi-user notebooks with GPU support and custom images' },
@@ -120,6 +122,33 @@ export const solutionDetails = {
     ],
     documentation: 'https://docs.redhat.com/rhoai',
     contacts: ['#forum-openshift-ai', '#forum-rhai-docs', 'Suhas Kashyap (AutoRAG/Navigator SME)']
+  },
+  'rhai': {
+    name: 'Red Hat AI (RHAI)',
+    description: 'Red Hat AI for standard Kubernetes clusters where OpenShift is not the container platform',
+    requirements:
+      'Requires a supported non-OpenShift Kubernetes distribution and validated integrations for networking, storage, and observability. Confirm SKU and scope with your account team.',
+    architecture: {
+      components: [
+        { name: 'Kubernetes-native services', role: 'Runtime', description: 'Serving, routing, and platform integrations designed for upstream or cloud-managed Kubernetes' },
+        { name: 'Inference & tooling', role: 'Workloads', description: 'Aligns with Red Hat AI Inference Server and related Kubernetes-first patterns where applicable' }
+      ],
+      integrations: [
+        { name: 'Cloud or self-managed Kubernetes', purpose: 'Control plane and networking outside OpenShift' },
+        { name: 'Partner storage & observability', purpose: 'Typically customer-chosen backing services' }
+      ]
+    },
+    capabilities: [
+      'Workshop placement: choose RHAI when the footprint is non-OpenShift Kubernetes',
+      'Not interchangeable with OpenShift AI (RHOAI), which assumes OpenShift',
+      'Use RHOAI or RHAIE when OpenShift is the agreed container platform'
+    ],
+    useCases: [
+      'EKS, AKS, or GKE estates standardizing on Kubernetes without OpenShift',
+      'Upstream Kubernetes with a supported Red Hat AI software path'
+    ],
+    documentation: 'https://docs.redhat.com',
+    contacts: ['#forum-openshift-ai']
   },
   'rhoai-distributed': {
     name: 'RHOAI Distributed Workloads',
@@ -225,6 +254,8 @@ export const solutionDetails = {
   'ai-inference': {
     name: 'Red Hat AI Inference Server',
     description: 'High-performance LLM serving powered by vLLM and llm-d for advanced token-aware scheduling, KV cache routing, and SLO-based priority',
+    requirements:
+      'Requires compatible GPU drivers/operators where used and a supported serving topology. Validate latency SLOs and model formats with documentation.',
     architecture: {
       components: [
         { name: 'llm-d Inference Scheduler', role: 'Advanced Scheduling', description: 'Token-aware scheduling, KV cache routing, split-phase prefill/decode, SLO-based priority routing (latency vs throughput)' },

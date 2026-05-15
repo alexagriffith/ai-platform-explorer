@@ -211,15 +211,15 @@ export default function MCPEcosystemFull() {
 
         <div className="mt-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-700">
           <p className="text-sm text-gray-700 dark:text-gray-300">
-            <strong className="text-purple-700 dark:text-purple-300">Feeds & Informs:</strong> The Registry feeds metadata to the Catalog, Lifecycle Operator, and Gateway - ensuring all components work from the same source of truth
+            <strong className="text-purple-700 dark:text-purple-300">Registry role:</strong> The registry supplies metadata to the catalog, lifecycle operator, and gateway so components share one source of truth.
           </p>
         </div>
       </div>
 
-      {/* AI Assets + Playground + Agents */}
+      {/* AI assets, evaluation, agents */}
       <div className="bg-gradient-to-r from-green-900 to-teal-900 rounded-lg shadow-lg p-6 text-white">
         <h3 className="text-xl font-bold mb-2">
-          AI Assets • Playground • Agents
+          AI assets, evaluation, and agents
         </h3>
         <p className="text-green-100 text-sm">
           Enterprise users consume governed MCP tools through OpenShift AI
@@ -229,10 +229,10 @@ export default function MCPEcosystemFull() {
       {/* Ready-to-Use MCP Servers */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-          Ready-to-Use MCP Servers
+          Curated MCP servers
         </h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          Ecosystem grows each release — partners onboard through Red Hat's certification pipeline
+          Partner catalog expands over time; certification status belongs in product documentation.
         </p>
 
         <div className="space-y-4">

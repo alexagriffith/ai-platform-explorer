@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { GitBranch, ArrowRight, CheckCircle, XCircle, HelpCircle, Plus } from 'lucide-react';
+import { GitBranch, ArrowRight, CheckCircle, XCircle, Plus, Eye } from 'lucide-react';
 import DecisionTree from './DecisionTree';
+import { mergeDecisionPatches, getPatchesForRecommendationKey } from '../data/decisionRecommendationApply';
 import { capabilities } from '../data/capabilities';
+import { reconcileContainerAiPlatform } from '../lib/platformAiConstraints';
 
 export default function DecisionFlowchart({ selectedCapabilities, setSelectedCapabilities, onSwitchToArchitecture }) {
   const [selectedDecision, setSelectedDecision] = useState('');
-  const [currentStep, setCurrentStep] = useState(0);
-  const [userAnswers, setUserAnswers] = useState({});
   const [treeRecommendation, setTreeRecommendation] = useState(null);
+  const [applyNotice, setApplyNotice] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
 
   const decisionFlows = {
     product: {
@@ -649,7 +651,7 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
           why: 'Open source vector extension for PostgreSQL, simple and cost-effective',
           bestFor: ['Existing PostgreSQL users', 'Budget-conscious', 'Simpler deployments'],
           tradeoffs: [
-            { pro: 'Leverage PostgreSQL expertise', con: 'Less optimized than purpose-built' },
+            { pro: 'Reuse PostgreSQL expertise', con: 'Less optimized than purpose-built' },
             { pro: 'Open source', con: 'No enterprise support' },
             { pro: 'Low cost', con: 'Limited to PostgreSQL performance' }
           ],
@@ -716,7 +718,7 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
           why: 'Integrated S3-compatible storage for small to medium datasets on OpenShift',
           bestFor: ['On-premises deployments', 'Data sovereignty', '<10TB datasets'],
           tradeoffs: [
-            { pro: 'Seamless OpenShift integration', con: 'Limited to on-prem' },
+            { pro: 'OpenShift-native integration', con: 'Limited to on-prem' },
             { pro: 'S3-compatible API', con: 'Requires storage infrastructure' },
             { pro: 'Data stays on-prem', con: 'More expensive than cloud at scale' }
           ],
@@ -1194,82 +1196,98 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
     }
   };
 
-  const handleAnswer = (value, next) => {
-    const newAnswers = { ...userAnswers, [currentStep]: value };
-    setUserAnswers(newAnswers);
-
-    if (next !== undefined) {
-      setCurrentStep(next);
-    } else {
-      // End of flow - handled by recommendation
-    }
-  };
-
-  const resetFlow = () => {
-    setCurrentStep(0);
-    setUserAnswers({});
-  };
-
   const getCurrentFlow = () => {
     if (!selectedDecision || !decisionFlows[selectedDecision]) return null;
     return decisionFlows[selectedDecision];
   };
 
-  // Map recommendation product names to capability option IDs
-  const productNameToOptionId = {
-    'Red Hat Batch Gateway': 'batch-gateway',
-    'Red Hat AI Inference Server': 'ai-inference',
-    'Red Hat AI Inference Server (scaled)': 'ai-inference',
-    'Red Hat AI Inference Server with queueing': 'ai-inference',
-    'KServe (via RHOAI)': 'kserve',
-    'LM Evaluation Harness (via EvalHub)': 'rh-evaluation',
-    'LM Evaluation Harness (custom)': 'rh-evaluation',
-    'GuideLLM (via EvalHub)': 'rh-evaluation',
-    'RAGAS (via EvalHub)': 'rh-evaluation',
-    'RAGAS (custom metrics)': 'rh-evaluation',
-    'Garak (via EvalHub)': 'rh-evaluation',
-    'InstructLab': 'instructlab',
-    'RHOAI Distributed Workloads': 'rhoai-distributed',
-    'Data Science Pipelines': 'data-science-pipelines',
-    'Red Hat Enterprise Linux AI': 'rhel-ai',
-    'Red Hat OpenShift AI': 'rhoai',
-    'Red Hat AI Enterprise': 'rhaie',
-    'Red Hat OpenShift': 'openshift'
+  const getCapabilityName = (capabilityId) => {
+    for (const layer of Object.values(capabilities)) {
+      const cap = layer.find((c) => c.id === capabilityId);
+      if (cap) return cap.name;
+    }
+    return capabilityId;
+  };
+
+  const getOptionName = (capabilityId, optionId) => {
+    for (const layer of Object.values(capabilities)) {
+      const cap = layer.find((c) => c.id === capabilityId);
+      if (cap) {
+        const opt = cap.options.find((o) => o.id === optionId);
+        if (opt) return opt.name;
+      }
+    }
+    return optionId;
+  };
+
+  const generatePreview = () => {
+    if (!treeRecommendation) return null;
+    const key = treeRecommendation.recommendationKey;
+    if (!key) return null;
+
+    const patches = getPatchesForRecommendationKey(key);
+    if (!patches || patches.length === 0) return null;
+
+    const merged = { ...selectedCapabilities };
+    for (const { capabilityId, optionId } of patches) {
+      merged[capabilityId] = optionId;
+    }
+
+    const reconciledBefore = reconcileContainerAiPlatform(selectedCapabilities);
+    const reconciledAfter = reconcileContainerAiPlatform(merged);
+
+    const changes = [];
+    const reconciliationChanges = [];
+
+    for (const { capabilityId, optionId } of patches) {
+      const prevOption = selectedCapabilities[capabilityId];
+      const capName = getCapabilityName(capabilityId);
+      const optName = getOptionName(capabilityId, optionId);
+
+      if (!prevOption) {
+        changes.push({ type: 'add', capabilityId, capName, optName });
+      } else if (prevOption !== optionId) {
+        const prevOptName = getOptionName(capabilityId, prevOption);
+        changes.push({ type: 'update', capabilityId, capName, optName, prevOptName });
+      }
+    }
+
+    for (const capabilityId of Object.keys(reconciledAfter)) {
+      const reconciledValue = reconciledAfter[capabilityId];
+      const mergedValue = merged[capabilityId];
+      const beforeValue = reconciledBefore[capabilityId];
+
+      if (reconciledValue !== mergedValue && reconciledValue !== beforeValue) {
+        const capName = getCapabilityName(capabilityId);
+        const optName = getOptionName(capabilityId, reconciledValue);
+        reconciliationChanges.push({ capabilityId, capName, optName });
+      }
+    }
+
+    return { changes, reconciliationChanges };
   };
 
   const addRecommendationToArchitecture = () => {
     if (!treeRecommendation) return;
-
-    // Get the option ID from the product name
-    const optionId = productNameToOptionId[treeRecommendation.product];
-    if (!optionId) {
-      console.warn('No mapping found for product:', treeRecommendation.product);
+    const key = treeRecommendation.recommendationKey;
+    if (!key) {
+      setApplyNotice('This path has no stable workshop mapping yet — capture choices in Build Your Stack.');
+      setShowPreview(false);
       return;
     }
-
-    // Find which capability this option belongs to
-    let capabilityId = null;
-    for (const [layerId, layerCapabilities] of Object.entries(capabilities)) {
-      for (const capability of layerCapabilities) {
-        if (capability.options.some(opt => opt.id === optionId)) {
-          capabilityId = capability.id;
-          break;
-        }
-      }
-      if (capabilityId) break;
+    const { next, applied } = mergeDecisionPatches(selectedCapabilities, key);
+    if (!applied) {
+      setApplyNotice(
+        'No blueprint rows are mapped for this card yet. Use Build Your Stack to record the agreed components.'
+      );
+      setShowPreview(false);
+      return;
     }
-
-    if (capabilityId) {
-      // Add to selected capabilities
-      setSelectedCapabilities(prev => ({
-        ...prev,
-        [capabilityId]: optionId
-      }));
-
-      // Switch to architecture tab
-      if (onSwitchToArchitecture) {
-        onSwitchToArchitecture();
-      }
+    setApplyNotice(null);
+    setShowPreview(false);
+    setSelectedCapabilities(next);
+    if (onSwitchToArchitecture) {
+      onSwitchToArchitecture();
     }
   };
 
@@ -1279,7 +1297,7 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
       <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
         <GitBranch size={24} className="text-purple-600" />
-        Decision Flowchart
+        Decision Guides
       </h3>
 
       {!selectedDecision ? (
@@ -1291,7 +1309,10 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
             {Object.entries(decisionFlows).map(([key, flowData]) => (
               <button
                 key={key}
-                onClick={() => setSelectedDecision(key)}
+                onClick={() => {
+                  setApplyNotice(null);
+                  setSelectedDecision(key);
+                }}
                 className="p-4 text-left rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 dark:hover:border-purple-500 transition-all hover:shadow-lg"
               >
                 <h4 className="font-bold text-gray-900 dark:text-white mb-2">
@@ -1311,9 +1332,9 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
             <h4 className="font-semibold text-lg text-gray-900 dark:text-white">{flow.title}</h4>
             <button
               onClick={() => {
+                setApplyNotice(null);
                 setSelectedDecision('');
                 setTreeRecommendation(null);
-                resetFlow();
               }}
               className="text-sm text-purple-600 dark:text-purple-400 hover:underline"
             >
@@ -1325,7 +1346,10 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
             /* Decision Tree */
             <DecisionTree
               flow={flow}
-              onRecommendation={setTreeRecommendation}
+              onRecommendation={(rec) => {
+                setApplyNotice(null);
+                setTreeRecommendation(rec);
+              }}
             />
           ) : (
             /* Recommendation */
@@ -1420,19 +1444,107 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
                 )}
               </div>
 
+              {/* Preview modal */}
+              {showPreview && (() => {
+                const preview = generatePreview();
+                return preview ? (
+                  <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setShowPreview(false)}>
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
+                      <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <Eye size={20} className="text-purple-600" />
+                        Preview Changes to Your Stack
+                      </h4>
+
+                      {preview.changes.length > 0 && (
+                        <div className="mb-4">
+                          <p className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Will apply:</p>
+                          <div className="space-y-2">
+                            {preview.changes.map((change, idx) => (
+                              <div key={idx} className="p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-700">
+                                {change.type === 'add' && (
+                                  <p className="text-sm">
+                                    <span className="font-semibold text-green-700 dark:text-green-400">Add:</span>{' '}
+                                    <span className="font-bold">{change.capName}</span> → {change.optName}
+                                  </p>
+                                )}
+                                {change.type === 'update' && (
+                                  <p className="text-sm">
+                                    <span className="font-semibold text-blue-700 dark:text-blue-400">Update:</span>{' '}
+                                    <span className="font-bold">{change.capName}</span> → {change.optName}{' '}
+                                    <span className="text-gray-500 dark:text-gray-400">(was: {change.prevOptName})</span>
+                                  </p>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {preview.reconciliationChanges.length > 0 && (
+                        <div className="mb-4">
+                          <p className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Also updates (compatibility):</p>
+                          <div className="space-y-2">
+                            {preview.reconciliationChanges.map((change, idx) => (
+                              <div key={idx} className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-200 dark:border-amber-700">
+                                <p className="text-sm">
+                                  <span className="font-bold">{change.capName}</span> → {change.optName}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {preview.changes.length === 0 && preview.reconciliationChanges.length === 0 && (
+                        <p className="text-gray-600 dark:text-gray-400 mb-4">No changes to your current stack.</p>
+                      )}
+
+                      <div className="flex gap-3 mt-6">
+                        <button
+                          onClick={addRecommendationToArchitecture}
+                          className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-bold hover:shadow-lg transition-all"
+                        >
+                          <Plus size={20} />
+                          Confirm & Add to Stack
+                        </button>
+                        <button
+                          onClick={() => setShowPreview(false)}
+                          className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+
               {/* Action buttons */}
               <div className="flex flex-wrap gap-3">
                 <button
-                  onClick={addRecommendationToArchitecture}
+                  onClick={() => {
+                    if (!treeRecommendation?.recommendationKey) {
+                      setApplyNotice('This path has no stable workshop mapping yet — capture choices in Build Your Stack.');
+                      return;
+                    }
+                    const patches = getPatchesForRecommendationKey(treeRecommendation.recommendationKey);
+                    if (!patches || patches.length === 0) {
+                      setApplyNotice('No blueprint rows are mapped for this card yet. Use Build Your Stack to record the agreed components.');
+                      return;
+                    }
+                    setApplyNotice(null);
+                    setShowPreview(true);
+                  }}
                   className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all"
                 >
-                  <Plus size={20} />
-                  Add to Your Architecture
+                  <Eye size={20} />
+                  Preview & Add to Stack
                 </button>
                 <button
                   onClick={() => {
+                    setApplyNotice(null);
+                    setShowPreview(false);
                     setTreeRecommendation(null);
-                    resetFlow();
                   }}
                   className="px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors"
                 >
@@ -1440,15 +1552,21 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
                 </button>
                 <button
                   onClick={() => {
+                    setApplyNotice(null);
+                    setShowPreview(false);
                     setSelectedDecision('');
                     setTreeRecommendation(null);
-                    resetFlow();
                   }}
                   className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
                 >
-                  Try Different Decision
+                  Try Different Guide
                 </button>
               </div>
+              {applyNotice && (
+                <p className="text-sm text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2">
+                  {applyNotice}
+                </p>
+              )}
             </div>
           )}
         </div>

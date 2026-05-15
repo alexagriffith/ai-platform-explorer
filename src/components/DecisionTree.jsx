@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle, XCircle, RotateCcw } from 'lucide-react';
+import { CheckCircle, RotateCcw, ChevronLeft } from 'lucide-react';
 
 export default function DecisionTree({ flow, onRecommendation }) {
   const [selectedPath, setSelectedPath] = useState({});
@@ -16,19 +16,31 @@ export default function DecisionTree({ flow, onRecommendation }) {
       const currentFlowStep = flow.steps[stepIndex];
       const selectedOption = currentFlowStep.options.find(opt => opt.value === optionValue);
       if (selectedOption?.recommendation && flow.recommendations[selectedOption.recommendation]) {
-        onRecommendation(flow.recommendations[selectedOption.recommendation]);
+        onRecommendation({
+          ...flow.recommendations[selectedOption.recommendation],
+          recommendationKey: selectedOption.recommendation
+        });
       }
     }
+  };
+
+  const goBack = () => {
+    const completedSteps = Object.keys(selectedPath).map(Number).sort((a, b) => b - a);
+    if (completedSteps.length === 0) return;
+
+    const lastCompletedStep = completedSteps[0];
+    const newPath = { ...selectedPath };
+    delete newPath[lastCompletedStep];
+
+    setSelectedPath(newPath);
+    setCurrentStep(Math.max(0, lastCompletedStep - 1));
+    onRecommendation(null);
   };
 
   const resetTree = () => {
     setSelectedPath({});
     setCurrentStep(0);
     onRecommendation(null);
-  };
-
-  const getCurrentFlowStep = () => {
-    return flow.steps[currentStep];
   };
 
   const isNodeActive = (stepIndex) => {
@@ -51,17 +63,54 @@ export default function DecisionTree({ flow, onRecommendation }) {
     return conditionMet && stepIndex <= currentStep + 1;
   };
 
+  const getBreadcrumb = () => {
+    const completedSteps = Object.keys(selectedPath)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+    return completedSteps
+      .map((stepIdx) => {
+        const step = flow.steps[stepIdx];
+        const optionValue = selectedPath[stepIdx];
+        const option = step.options.find((o) => o.value === optionValue);
+        return option?.label || optionValue;
+      })
+      .join(' → ');
+  };
+
+  const canGoBack = Object.keys(selectedPath).length > 0;
+
   return (
     <div className="space-y-6">
-      {/* Reset button */}
-      <div className="flex justify-end">
-        <button
-          onClick={resetTree}
-          className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-        >
-          <RotateCcw size={16} />
-          Reset
-        </button>
+      {/* Breadcrumb and controls */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          {canGoBack && (
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="font-semibold">Your path: </span>
+              <span className="italic">{getBreadcrumb()}</span>
+            </div>
+          )}
+        </div>
+        <div className="flex gap-2 flex-shrink-0">
+          <button
+            onClick={goBack}
+            disabled={!canGoBack}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Go back one step"
+          >
+            <ChevronLeft size={16} />
+            Back
+          </button>
+          <button
+            onClick={resetTree}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            aria-label="Reset all choices"
+          >
+            <RotateCcw size={16} />
+            Reset
+          </button>
+        </div>
       </div>
 
       {/* Tree visualization */}
@@ -120,6 +169,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
                               key={option.value}
                               onClick={() => !disabled && handleNodeClick(stepIndex, option.value, option.next)}
                               disabled={disabled}
+                              aria-current={selected ? 'true' : undefined}
                               className={`p-4 rounded-lg border-2 text-left transition-all ${
                                 selected
                                   ? 'border-purple-600 bg-purple-100 dark:bg-purple-800 shadow-md'

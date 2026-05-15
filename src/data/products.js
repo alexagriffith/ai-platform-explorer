@@ -31,6 +31,23 @@ export const products = [
     }
   },
   {
+    id: 'rhai',
+    name: 'Red Hat AI (RHAI)',
+    description: 'Red Hat AI for non-OpenShift Kubernetes environments (aligned to major cloud Kubernetes and upstream clusters).',
+    category: 'AI/ML Platform',
+    status: 'GA',
+    layer: 'platform',
+    required: false,
+    connections: ['ai-inference', 'model-registry'],
+    useCases: ['Kubernetes-first estates without OpenShift', 'Cloud-managed Kubernetes'],
+    customerProfile: ['Platform teams on EKS/AKS/GKE', 'Kubernetes platform engineering'],
+    deploymentPattern: 'Standard Kubernetes',
+    resources: {
+      docs: 'https://docs.redhat.com',
+      contacts: ['#forum-openshift-ai']
+    }
+  },
+  {
     id: 'rhel-ai',
     name: 'Red Hat Enterprise Linux AI (RHEL AI)',
     description: 'A foundation model platform for consistently running large language models (LLMs) in individual Linux server environments.',
@@ -38,7 +55,7 @@ export const products = [
     status: 'GA',
     layer: 'platform',
     required: false,
-    connections: ['llama-stack'],
+    connections: ['llama-stack', 'instructlab'],
     useCases: ['Fine-tuning models', 'Serving models in isolated environments'],
     customerProfile: ['Developers', 'Small teams starting AI'],
     deploymentPattern: 'Single Linux server',
@@ -59,6 +76,97 @@ export const products = [
     useCases: ['High-throughput serving of LLMs'],
     customerProfile: ['Infrastructure teams', 'Platform engineers'],
     deploymentPattern: 'Scalable GPU-optimized nodes',
+    resources: {
+      docs: 'https://docs.redhat.com'
+    }
+  },
+  {
+    id: 'kserve',
+    name: 'KServe (multi-framework serving)',
+    description: 'Kubernetes-native model serving pattern commonly used with OpenShift AI for multi-model and canary workflows.',
+    category: 'Model Serving',
+    status: 'GA',
+    layer: 'services',
+    required: false,
+    connections: ['rhoai', 'ai-inference'],
+    resources: {
+      docs: 'https://docs.redhat.com'
+    }
+  },
+  {
+    id: 'batch-gateway',
+    name: 'Red Hat Batch Gateway',
+    description: 'OpenAI-compatible batch inference API for large asynchronous LLM workloads.',
+    category: 'Model Serving',
+    status: 'GA',
+    layer: 'services',
+    required: false,
+    connections: ['ai-inference', 'rhoai'],
+    resources: {
+      docs: 'https://docs.redhat.com'
+    }
+  },
+  {
+    id: 'rh-evaluation',
+    name: 'OpenShift AI evaluation (EvalHub pattern)',
+    description: 'Evaluation workflows and harness integration for model quality — treat as a capability area to confirm with documentation.',
+    category: 'Evaluation',
+    status: 'Tech Preview',
+    layer: 'services',
+    required: false,
+    connections: ['rhoai'],
+    resources: {
+      docs: 'https://docs.redhat.com'
+    }
+  },
+  {
+    id: 'fms-guardrails',
+    name: 'Guardrails (content safety)',
+    description: 'Policy and safety controls for generative workloads — confirm productized path and scope with your account team.',
+    category: 'Governance',
+    status: 'Tech Preview',
+    layer: 'services',
+    required: false,
+    connections: ['trustyai', 'rhoai'],
+    resources: {
+      docs: 'https://docs.redhat.com'
+    }
+  },
+  {
+    id: 'instructlab',
+    name: 'InstructLab',
+    description: 'Alignment and fine-tuning using synthetic data and the LAB method (often paired with RHEL AI or OpenShift AI).',
+    category: 'Training / Alignment',
+    status: 'GA',
+    layer: 'services',
+    required: false,
+    connections: ['rhel-ai', 'rhoai'],
+    resources: {
+      docs: 'https://docs.redhat.com'
+    }
+  },
+  {
+    id: 'rhoai-distributed',
+    name: 'OpenShift AI — distributed training',
+    description: 'Ray / CodeFlare style distributed jobs on OpenShift AI for larger training footprints.',
+    category: 'Training',
+    status: 'GA',
+    layer: 'services',
+    required: false,
+    connections: ['rhoai'],
+    resources: {
+      docs: 'https://docs.redhat.com'
+    }
+  },
+  {
+    id: 'data-science-pipelines',
+    name: 'Data Science Pipelines',
+    description: 'Kubeflow Pipelines-based automation for repeatable ML workflows on OpenShift AI.',
+    category: 'MLOps',
+    status: 'GA',
+    layer: 'services',
+    required: false,
+    connections: ['rhoai'],
     resources: {
       docs: 'https://docs.redhat.com'
     }

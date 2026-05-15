@@ -9,9 +9,15 @@ export const optionGuides = {
   },
   'kubernetes': {
     whatItIs: 'Standard Kubernetes cluster (any distribution)',
-    whyChoose: 'You already have Kubernetes and want to leverage existing infrastructure',
+    whyChoose: 'You already run Kubernetes and want to reuse that footprint',
     whenToUse: 'Existing K8s investment, cost optimization, specific K8s distribution requirements',
     bestFor: 'Organizations with K8s expertise and existing clusters'
+  },
+  'rhel-hosts': {
+    whatItIs: 'Dedicated Red Hat Enterprise Linux systems without OpenShift as the AI runtime',
+    whyChoose: 'RHEL AI and edge-style LLM footprints that are not scheduled on a shared Kubernetes control plane',
+    whenToUse: 'Single-server inference, air-gapped Linux hosts, department-scale AI before cluster rollout',
+    bestFor: 'Teams standardizing on RHEL for model hosts and wanting a clear split from cluster-based RHOAI/RHAIE'
   },
   'nvidia-gpu': {
     whatItIs: 'NVIDIA GPUs (A100, H100, etc.) with CUDA support',
@@ -51,15 +57,23 @@ export const optionGuides = {
     whenToUse: 'Existing OpenShift deployment, incremental AI adoption, custom configurations',
     bestFor: 'Teams with OpenShift experience, existing clusters, flexible deployments'
   },
+  'rhai': {
+    whatItIs: 'Red Hat AI offerings aligned to standard Kubernetes (not the OpenShift AI operator stack)',
+    whyChoose: 'Your control plane is non-OpenShift Kubernetes and you still want a supported Red Hat AI path',
+    whenToUse: 'EKS, AKS, GKE, or other Kubernetes where OpenShift is not the platform',
+    bestFor: 'Cloud provider–managed clusters or upstream Kubernetes estates'
+  },
   'rhel-ai': {
-    whatItIs: 'Foundation models and serving on individual RHEL servers',
+    whatItIs:
+      'Foundation models and serving on individual RHEL servers; InstructLab-style alignment often pairs here',
     whyChoose: 'Simple single-server deployment, includes InstructLab for fine-tuning',
-    whenToUse: 'Edge deployments, single servers, getting started, fine-tuning focus',
-    bestFor: 'Small teams, edge use cases, rapid prototyping, learning'
+    whenToUse:
+      'Edge deployments, single-server inference, fine-tuning. Red Hat MCP SKUs in this app require OpenShift selected as runtime; use hybrid (OpenShift + RHEL AI) or self-hosted MCP if you need both.',
+    bestFor: 'Small teams, edge inference, department pilots'
   },
   'odf': {
     whatItIs: 'OpenShift Data Foundation - integrated S3-compatible object storage',
-    whyChoose: 'Seamless OpenShift integration, on-premises storage, data sovereignty',
+    whyChoose: 'OpenShift-native storage integration, on-premises footprint, data sovereignty',
     whenToUse: 'On-prem deployments, data residency requirements, integrated platform',
     bestFor: 'Organizations keeping data on-premises with OpenShift'
   },
@@ -129,7 +143,7 @@ export const optionGuides = {
   },
   'pgvector': {
     whatItIs: 'PostgreSQL with vector extension',
-    whyChoose: 'Open source, leverage existing PostgreSQL expertise, cost-effective',
+    whyChoose: 'Open source; reuse existing PostgreSQL skills; often lower licensing cost',
     whenToUse: 'Existing PostgreSQL, cost optimization, simpler deployments',
     bestFor: 'Teams with PostgreSQL experience, budget-conscious projects'
   },
@@ -160,19 +174,22 @@ export const optionGuides = {
   'rh-mcp-full': {
     whatItIs: 'Complete MCP platform with Registry, Catalog, Lifecycle Operator, and Gateway',
     whyChoose: 'Full governance, discovery, automated deployment, and security for MCP servers',
-    whenToUse: 'Production agentic AI, enterprise governance required, automated MCP deployments',
+    whenToUse:
+      'Production agentic AI on OpenShift. In this explorer Red Hat MCP is enabled only when Platform & Runtime is OpenShift (hybrid with RHEL AI is fine).',
     bestFor: 'Enterprise teams needing complete MCP lifecycle management'
   },
   'rh-mcp-catalog': {
     whatItIs: 'MCP Catalog and Registry for browsing and discovering certified MCP servers',
     whyChoose: 'Discover available tools without automated deployment - more control over what gets installed',
-    whenToUse: 'Want to browse available MCPs, need governance but manual deployment',
+    whenToUse:
+      'Governance-first MCP discovery on OpenShift; same runtime rule as other Red Hat MCP options in this explorer.',
     bestFor: 'Teams that want visibility and governance but prefer manual MCP deployment'
   },
   'rh-mcp-registry': {
     whatItIs: 'MCP Registry only - system of record for MCP governance and metadata',
     whyChoose: 'Track and govern MCP servers without catalog UI or automated deployment',
-    whenToUse: 'Building custom tooling, need API-only governance, headless MCP management',
+    whenToUse:
+      'Headless MCP governance on OpenShift; same OpenShift runtime requirement as other Red Hat MCP SKUs here.',
     bestFor: 'Advanced users building custom MCP management solutions'
   },
 

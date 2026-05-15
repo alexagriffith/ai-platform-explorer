@@ -1,17 +1,52 @@
 import { useState, useEffect } from 'react';
-import { Check, ChevronRight, ArrowDown, Building2, Sparkles, RotateCcw, Package, Microscope, ArrowUp, Plus, X, Workflow, HelpCircle, Info } from 'lucide-react';
+import { Check, ChevronRight, ArrowDown, ArrowRight, Building2, Sparkles, RotateCcw, Package, Microscope, ArrowUp, Workflow, HelpCircle, Info } from 'lucide-react';
 import { capabilities, capabilityLayers } from '../data/capabilities';
 import { optionGuides } from '../data/optionGuides';
+import {
+  flattenBuiltLayersToMap,
+  expandCapabilityMapToBuiltLayers,
+  capabilityMapToFlowShape
+} from '../lib/capabilityBlueprint';
+import { reconcileContainerAiPlatform, isCapabilityOptionDisabled } from '../lib/platformAiConstraints';
 import DeepDiveModal from './DeepDiveModal';
 import FlowVisualization from './FlowVisualization';
 
-export default function InteractiveBuilder() {
+function fillLayerDefaults(layer) {
+  const layerCaps = capabilities[layer.id] || [];
+  const layerSelections = {};
+  for (const cap of layerCaps) {
+    if (cap.required) {
+      const recommendedOption = cap.options.find((opt) => opt.recommended);
+      if (recommendedOption) {
+        layerSelections[cap.id] = recommendedOption.id;
+      }
+    }
+  }
+  return layerSelections;
+}
+
+/** Only the first wizard layer — avoids locking Platform & Runtime from a not-yet-chosen AI / ML platform. */
+function buildInitialBuiltLayers(buildOrder) {
+  if (!buildOrder.length) return {};
+  const first = buildOrder[0];
+  return { [first.id]: fillLayerDefaults(first) };
+}
+
+function truncateBuiltLayersAfter(prev, lastIndexInclusive, buildOrder) {
+  const kept = {};
+  for (let i = 0; i <= lastIndexInclusive; i++) {
+    const lid = buildOrder[i]?.id;
+    if (lid && prev[lid]) kept[lid] = { ...prev[lid] };
+  }
+  return expandCapabilityMapToBuiltLayers(reconcileContainerAiPlatform(flattenBuiltLayersToMap(kept)));
+}
+
+export default function InteractiveBuilder({ selectedCapabilities = {}, setSelectedCapabilities }) {
   const [currentLayerIndex, setCurrentLayerIndex] = useState(0);
   const [builtLayers, setBuiltLayers] = useState({});
   const [isComplete, setIsComplete] = useState(false);
   const [deepDiveOption, setDeepDiveOption] = useState(null);
   const [viewOrder, setViewOrder] = useState('bottom-up'); // 'bottom-up' or 'top-down'
-  const [configuringCapability, setConfiguringCapability] = useState(null);
   const [showFlowViz, setShowFlowViz] = useState(false);
   const [expandedGuide, setExpandedGuide] = useState(null);
 
@@ -19,49 +54,49 @@ export default function InteractiveBuilder() {
   const buildOrder = [...capabilityLayers].reverse();
   const currentLayer = buildOrder[currentLayerIndex];
 
-  // Auto-select ONLY required options on component mount
+  // Hydrate from canonical Build Your Stack map when present; otherwise required-option defaults.
   useEffect(() => {
-    const autoSelected = {};
-    buildOrder.forEach(layer => {
-      const layerCaps = capabilities[layer.id] || [];
-      const layerSelections = {};
-
-      layerCaps.forEach(cap => {
-        // Auto-select ONLY if required
-        if (cap.required) {
-          const recommendedOption = cap.options.find(opt => opt.recommended);
-          if (recommendedOption) {
-            layerSelections[cap.id] = recommendedOption.id;
-          }
-        }
-      });
-
-      if (Object.keys(layerSelections).length > 0) {
-        autoSelected[layer.id] = layerSelections;
+    queueMicrotask(() => {
+      if (Object.keys(selectedCapabilities).length > 0) {
+        setBuiltLayers(
+          expandCapabilityMapToBuiltLayers(reconcileContainerAiPlatform(selectedCapabilities))
+        );
+      } else {
+        const initial = buildInitialBuiltLayers(buildOrder);
+        const flat = reconcileContainerAiPlatform(flattenBuiltLayersToMap(initial));
+        setBuiltLayers(expandCapabilityMapToBuiltLayers(flat));
       }
     });
+    // Intentionally mount-only: remount when switching hub modes picks up latest parent map.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    setBuiltLayers(autoSelected);
-  }, []); // Only run on mount
+  // When the wizard reaches the completion screen, push selections to the single blueprint map.
+  useEffect(() => {
+    if (!isComplete) return;
+    setSelectedCapabilities(reconcileContainerAiPlatform(flattenBuiltLayersToMap(builtLayers)));
+  }, [isComplete, builtLayers, setSelectedCapabilities]);
 
   const toggleCapability = (layerId, capabilityId, optionId) => {
-    setBuiltLayers(prev => ({
-      ...prev,
-      [layerId]: {
-        ...(prev[layerId] || {}),
-        [capabilityId]: optionId
-      }
-    }));
+    setBuiltLayers((prev) => {
+      const flat = flattenBuiltLayersToMap(prev);
+      const cap = Object.values(capabilities)
+        .flat()
+        .find((c) => c.id === capabilityId);
+      if (cap && isCapabilityOptionDisabled(cap, optionId, flat)) return prev;
+      const nextFlat = { ...flat, [capabilityId]: optionId };
+      const reconciled = reconcileContainerAiPlatform(nextFlat);
+      return expandCapabilityMapToBuiltLayers(reconciled);
+    });
   };
 
   const removeCapability = (layerId, capabilityId) => {
     setBuiltLayers(prev => {
       const layerData = { ...(prev[layerId] || {}) };
       delete layerData[capabilityId];
-      return {
-        ...prev,
-        [layerId]: layerData
-      };
+      const next = { ...prev, [layerId]: layerData };
+      const reconciled = reconcileContainerAiPlatform(flattenBuiltLayersToMap(next));
+      return expandCapabilityMapToBuiltLayers(reconciled);
     });
   };
 
@@ -76,21 +111,45 @@ export default function InteractiveBuilder() {
 
   const proceedToNextLayer = () => {
     if (currentLayerIndex < buildOrder.length - 1) {
-      setCurrentLayerIndex(currentLayerIndex + 1);
+      const nextIdx = currentLayerIndex + 1;
+      const nextLayer = buildOrder[nextIdx];
+      setBuiltLayers((prev) => {
+        const defaults = fillLayerDefaults(nextLayer);
+        const merged = {
+          ...prev,
+          [nextLayer.id]: { ...defaults, ...(prev[nextLayer.id] || {}) }
+        };
+        return expandCapabilityMapToBuiltLayers(reconcileContainerAiPlatform(flattenBuiltLayersToMap(merged)));
+      });
+      setCurrentLayerIndex(nextIdx);
     } else {
       setIsComplete(true);
     }
   };
 
   const goBackToLayer = (index) => {
-    setCurrentLayerIndex(index);
     setIsComplete(false);
+    setBuiltLayers((prev) => truncateBuiltLayersAfter(prev, index, buildOrder));
+    setCurrentLayerIndex(index);
+  };
+
+  const stepBack = () => {
+    if (currentLayerIndex <= 0) return;
+    const newIdx = currentLayerIndex - 1;
+    setBuiltLayers((prev) => truncateBuiltLayersAfter(prev, newIdx, buildOrder));
+    setCurrentLayerIndex(newIdx);
   };
 
   const resetBuilder = () => {
+    const wasComplete = isComplete;
     setCurrentLayerIndex(0);
-    setBuiltLayers({});
     setIsComplete(false);
+    if (wasComplete) {
+      setSelectedCapabilities({});
+    }
+    const initial = buildInitialBuiltLayers(buildOrder);
+    const flat = reconcileContainerAiPlatform(flattenBuiltLayersToMap(initial));
+    setBuiltLayers(expandCapabilityMapToBuiltLayers(flat));
   };
 
   const getLayerColor = (layerId) => {
@@ -171,9 +230,9 @@ export default function InteractiveBuilder() {
     );
   };
 
-  const CapabilitySelector = ({ capability, layerId, layerColor }) => {
+  const CapabilitySelector = ({ capability, layerId }) => {
+    const flatForRules = flattenBuiltLayersToMap(builtLayers);
     const selectedOptionId = builtLayers[layerId]?.[capability.id];
-    const selectedOption = capability.options.find(o => o.id === selectedOptionId);
     const isSelected = !!selectedOptionId;
 
     return (
@@ -201,19 +260,27 @@ export default function InteractiveBuilder() {
         </div>
 
         <div className="grid gap-2">
-          {capability.options.map(option => {
+          {capability.options.map((option) => {
             const isOptionSelected = selectedOptionId === option.id;
             const guide = optionGuides[option.id];
             const isGuideExpanded = expandedGuide === option.id;
+            const disabled = isCapabilityOptionDisabled(capability, option.id, flatForRules);
 
             return (
               <div key={option.id} className="space-y-2">
                 <button
-                  onClick={() => toggleCapability(layerId, capability.id, option.id)}
+                  type="button"
+                  aria-disabled={disabled}
+                  onClick={() => {
+                    if (disabled) return;
+                    toggleCapability(layerId, capability.id, option.id);
+                  }}
                   className={`w-full p-3 rounded-lg border-2 transition-all text-left ${
-                    isOptionSelected
-                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-purple-300'
+                    disabled
+                      ? 'cursor-not-allowed border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900/40 opacity-55'
+                      : isOptionSelected
+                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                        : 'border-gray-200 dark:border-gray-700 hover:border-purple-300'
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -224,12 +291,17 @@ export default function InteractiveBuilder() {
                         <div className="w-5 h-5 rounded-full border-2 border-current" />
                       )}
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-bold text-gray-900 dark:text-white">
                             {option.name}
                           </span>
+                          {disabled && (
+                            <span className="px-2 py-0.5 bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-200 text-xs rounded">
+                              N/A
+                            </span>
+                          )}
                           {option.isCustomer && (
                             <span className="px-2 py-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded">
                               Customer
@@ -331,8 +403,10 @@ export default function InteractiveBuilder() {
               <Check size={24} />
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Stack Build Complete!</h2>
-              <p className="text-green-100">Your AI platform architecture is ready</p>
+              <h2 className="text-2xl font-bold">Guided steps complete</h2>
+              <p className="text-green-100">
+                Selections are saved to Build Your Stack — switch to that mode above to review or fine-tune by layer.
+              </p>
             </div>
           </div>
           <div className="mt-4 flex gap-4">
@@ -368,9 +442,6 @@ export default function InteractiveBuilder() {
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">Your Complete Stack</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Click on Red Hat solutions (green boxes) to see technical deep dive
-              </p>
             </div>
             <div className="flex gap-2">
               {/* View Order Toggle */}
@@ -421,16 +492,7 @@ export default function InteractiveBuilder() {
         {/* Flow Visualization Modal */}
         {showFlowViz && (
           <FlowVisualization
-            selectedCapabilities={Object.entries(builtLayers).reduce((acc, [layerId, selections]) => {
-              acc[layerId] = {};
-              Object.entries(selections).forEach(([capId, optionId]) => {
-                const cap = capabilities[layerId]?.find(c => c.id === capId);
-                if (cap) {
-                  acc[layerId][capId] = cap.options.find(o => o.id === optionId);
-                }
-              });
-              return acc;
-            }, {})}
+            selectedCapabilities={capabilityMapToFlowShape(flattenBuiltLayersToMap(builtLayers))}
             onClose={() => setShowFlowViz(false)}
           />
         )}
@@ -452,7 +514,7 @@ export default function InteractiveBuilder() {
               Interactive Stack Builder
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Step {currentLayerIndex + 1} of {buildOrder.length}: Configure {currentLayer?.name}
+              Step {currentLayerIndex + 1} of {buildOrder.length}
             </p>
           </div>
           <button
@@ -511,20 +573,12 @@ export default function InteractiveBuilder() {
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                   {currentLayer?.name}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Configure the capabilities for this layer
-                </p>
               </div>
             </div>
 
             <div className="space-y-6">
               {layerCaps.map(capability => (
-                <CapabilitySelector
-                  key={capability.id}
-                  capability={capability}
-                  layerId={currentLayer.id}
-                  layerColor={layerColor}
-                />
+                <CapabilitySelector key={capability.id} capability={capability} layerId={currentLayer.id} />
               ))}
             </div>
 
@@ -532,7 +586,8 @@ export default function InteractiveBuilder() {
             <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
               {currentLayerIndex > 0 ? (
                 <button
-                  onClick={() => setCurrentLayerIndex(currentLayerIndex - 1)}
+                  type="button"
+                  onClick={stepBack}
                   className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                 >
                   Back
@@ -576,8 +631,6 @@ export default function InteractiveBuilder() {
 
             <div className="space-y-2">
               {buildOrder.map((layer, index) => {
-                const selectedCaps = builtLayers[layer.id] || {};
-                const selectedCount = Object.keys(selectedCaps).length;
                 const isCurrentLayer = index === currentLayerIndex;
                 const isCompleted = index < currentLayerIndex;
                 const layerColor = getLayerColor(layer.id);
@@ -592,6 +645,7 @@ export default function InteractiveBuilder() {
                           ? 'border-green-300 bg-green-50 dark:bg-green-900/20'
                           : 'border-gray-200 dark:border-gray-700'
                       }`}
+                      style={{ borderLeft: `3px solid ${layerColor}` }}
                     >
                       <div className="flex items-center gap-2 mb-1">
                         {isCompleted ? (
@@ -605,11 +659,6 @@ export default function InteractiveBuilder() {
                           {layer.name}
                         </span>
                       </div>
-                      {selectedCount > 0 && (
-                        <p className="text-xs text-gray-600 dark:text-gray-400 ml-6">
-                          {selectedCount} component{selectedCount !== 1 ? 's' : ''} selected
-                        </p>
-                      )}
                     </div>
                     {index < buildOrder.length - 1 && (
                       <div className="flex justify-center py-0.5">

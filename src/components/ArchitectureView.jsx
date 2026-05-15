@@ -3,7 +3,121 @@ import { Info, ExternalLink, Users, Plus, X, Minus, ChevronRight, ZoomIn, ZoomOu
 import { products, layers } from '../data/products';
 import { componentDetails } from '../data/componentDetails';
 
-export default function ArchitectureView({ selectedProducts, setSelectedProducts, customerEnv }) {
+function ArchitectureDrilledView({ componentId, detailLevel, onBack }) {
+  const product = products.find((p) => p.id === componentId);
+  const details = componentDetails[componentId];
+  if (!product || !details) return null;
+
+  return (
+    <div className="space-y-4">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-sm">
+        <button
+          type="button"
+          onClick={onBack}
+          className="flex items-center gap-1 text-purple-600 dark:text-purple-400 hover:underline"
+        >
+          <ZoomOut size={16} />
+          Back to Stack View
+        </button>
+        <ChevronRight size={16} className="text-gray-400" />
+        <span className="text-gray-900 dark:text-white font-semibold">{product.name}</span>
+      </div>
+
+      {/* Component Header */}
+      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 text-white">
+        <h2 className="text-3xl font-bold mb-2">{product.name}</h2>
+        <p className="text-purple-100 mb-4">{product.description}</p>
+        <div className="flex gap-2">
+          <span className="px-3 py-1 bg-white/20 rounded-full text-sm">{product.category}</span>
+          <span className="px-3 py-1 bg-white/20 rounded-full text-sm">{product.status}</span>
+        </div>
+      </div>
+
+      {/* Sub-components */}
+      {details.subComponents && details.subComponents.length > 0 && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <LayersIcon size={20} />
+            Internal Components
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            {details.subComponents.map((subComp) => (
+              <div
+                key={subComp.id}
+                className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-gray-200 dark:border-gray-600"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <h4 className="font-bold text-gray-900 dark:text-white">{subComp.name}</h4>
+                  <span className="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded">
+                    {subComp.type}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">{subComp.description}</p>
+                {detailLevel >= 3 && subComp.techDetails && (
+                  <div className="space-y-1">
+                    <div className="text-xs font-semibold text-gray-600 dark:text-gray-400">TECHNICAL DETAILS:</div>
+                    {subComp.techDetails.map((detail, i) => (
+                      <div key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1">
+                        <span className="text-purple-600">•</span>
+                        <span>{detail}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Infrastructure */}
+      {detailLevel >= 3 && details.infrastructure && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <Network size={20} />
+            Infrastructure Requirements
+          </h3>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {details.infrastructure.map((infra, i) => (
+              <div key={i} className="space-y-2">
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">{infra.type}</h4>
+                <ul className="space-y-1">
+                  {infra.items.map((item, j) => (
+                    <li key={j} className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-1">
+                      <span className="text-purple-600">→</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Integrations */}
+      {detailLevel >= 2 && details.integrations && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Key Integrations</h3>
+          <div className="grid md:grid-cols-2 gap-3">
+            {details.integrations.map((integration, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-gray-900 dark:text-white">{integration.name}</div>
+                  <div className="text-xs text-gray-600 dark:text-gray-400">{integration.purpose}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function ArchitectureView({ selectedProducts, setSelectedProducts }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [drilledComponent, setDrilledComponent] = useState(null);
   const [viewMode, setViewMode] = useState('layers'); // 'layers' or 'drilled'
@@ -140,119 +254,6 @@ export default function ArchitectureView({ selectedProducts, setSelectedProducts
     </button>
   );
 
-  const DrilledView = () => {
-    const product = products.find(p => p.id === drilledComponent);
-    const details = componentDetails[drilledComponent];
-    if (!product || !details) return null;
-
-    return (
-      <div className="space-y-4">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm">
-          <button
-            onClick={drillOut}
-            className="flex items-center gap-1 text-purple-600 dark:text-purple-400 hover:underline"
-          >
-            <ZoomOut size={16} />
-            Back to Stack View
-          </button>
-          <ChevronRight size={16} className="text-gray-400" />
-          <span className="text-gray-900 dark:text-white font-semibold">{product.name}</span>
-        </div>
-
-        {/* Component Header */}
-        <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 text-white">
-          <h2 className="text-3xl font-bold mb-2">{product.name}</h2>
-          <p className="text-purple-100 mb-4">{product.description}</p>
-          <div className="flex gap-2">
-            <span className="px-3 py-1 bg-white/20 rounded-full text-sm">{product.category}</span>
-            <span className="px-3 py-1 bg-white/20 rounded-full text-sm">{product.status}</span>
-          </div>
-        </div>
-
-        {/* Sub-components */}
-        {details.subComponents && details.subComponents.length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <LayersIcon size={20} />
-              Internal Components
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              {details.subComponents.map((subComp) => (
-                <div
-                  key={subComp.id}
-                  className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-gray-200 dark:border-gray-600"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-bold text-gray-900 dark:text-white">{subComp.name}</h4>
-                    <span className="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded">
-                      {subComp.type}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">{subComp.description}</p>
-                  {detailLevel >= 3 && subComp.techDetails && (
-                    <div className="space-y-1">
-                      <div className="text-xs font-semibold text-gray-600 dark:text-gray-400">TECHNICAL DETAILS:</div>
-                      {subComp.techDetails.map((detail, i) => (
-                        <div key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1">
-                          <span className="text-purple-600">•</span>
-                          <span>{detail}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Infrastructure */}
-        {detailLevel >= 3 && details.infrastructure && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Network size={20} />
-              Infrastructure Requirements
-            </h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {details.infrastructure.map((infra, i) => (
-                <div key={i} className="space-y-2">
-                  <h4 className="font-semibold text-gray-900 dark:text-white text-sm">{infra.type}</h4>
-                  <ul className="space-y-1">
-                    {infra.items.map((item, j) => (
-                      <li key={j} className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-1">
-                        <span className="text-purple-600">→</span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Integrations */}
-        {detailLevel >= 2 && details.integrations && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Key Integrations</h3>
-            <div className="grid md:grid-cols-2 gap-3">
-              {details.integrations.map((integration, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-sm text-gray-900 dark:text-white">{integration.name}</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">{integration.purpose}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
     <div className="space-y-6">
       {/* Controls */}
@@ -302,7 +303,11 @@ export default function ArchitectureView({ selectedProducts, setSelectedProducts
       </div>
 
       {viewMode === 'drilled' ? (
-        <DrilledView />
+        <ArchitectureDrilledView
+          componentId={drilledComponent}
+          detailLevel={detailLevel}
+          onBack={drillOut}
+        />
       ) : (
         /* Stack Diagram */
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-xl p-8 border-2 border-gray-200 dark:border-gray-700">

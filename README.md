@@ -1,12 +1,32 @@
 # Red Hat AI Platform Explorer
 
-An interactive visualization tool for exploring and building Red Hat AI platform architectures. This tool helps customers, sales engineers, and architects understand how different Red Hat AI offerings work together and can be configured for various use cases.
+Interactive workshop tool for exploring Red Hat AI platform architectures. Helps facilitators and customers align on capabilities, tradeoffs, and next steps.
+
+**Key features:** Architecture builder, decision guides, use case patterns, product catalog, PNG export, and copyable stack summaries.
+
+**Current scope:** Workshop assistant for discussion and alignment. Not a live configurator or automated SKU generator.
+
+**Roadmap:** [docs/ROADMAP.md](docs/ROADMAP.md)
 
 **🌐 Live Site:** [https://alexagriffith.github.io/ai-platform-explorer/](https://alexagriffith.github.io/ai-platform-explorer/)
 
 > **⚠️ Work In Progress:** This tool is actively being developed and improved. Content and features are subject to change.
 
+## Application state (V1 blueprint)
+
+The **architecture workshop stack** is driven by a single in-memory object in `App.jsx`:
+
+| State | Role |
+|--------|------|
+| **`selectedCapabilities`** | **Canonical blueprint** — flat map of `capabilityId → optionId`. This is what **Build Your Stack** reads and writes, what the Decision Guide applies into, and what the Interactive Builder syncs into when the guided flow finishes. |
+| `selectedProducts` | Highlights in the **Products** tab only. It is **not** the stack blueprint (product ↔ capability derivation is optional later work). |
+| `customerEnv` | Inputs for **Generate from Environment** — used for copyable suggestion previews; it does **not** auto-apply to `selectedCapabilities`. |
+
+Utilities for converting wizard layer maps and flow-visualization shapes live in `src/lib/capabilityBlueprint.js`. **Container ↔ AI pairing** (OpenShift + RHOAI/RHAIE vs non-OCP Kubernetes + RHAI) is enforced in `src/lib/platformAiConstraints.js`.
+
 ## ✨ Features
+
+- **Export Stack (PNG)** — From **Build Your Stack**, use **Export Stack** for a snapshot of the layer canvas (selected components and legend).
 
 ### 🏗️ Interactive Architecture Builder
 - **Layer-by-Layer Construction**: Build your AI stack from infrastructure up through applications
@@ -63,30 +83,32 @@ The application will be available at `http://localhost:5173`
 npm run build
 ```
 
+### Unit tests (workshop lib)
+
+```bash
+npm test
+```
+
+Covers pure helpers in `src/lib` (architecture flow clipboard text, reconcile rules, flow shape, decision patches). See `docs/V1_MANUAL_TEST_MATRIX.md` for manual smoke checks.
+
 ## 🎯 Usage
 
 ### Building a Stack
 
-1. **Architecture Tab**: Click on capability boxes to configure each layer
-   - 🟢 Green boxes = Red Hat solutions (clickable for deep dive)
-   - 🔵 Blue boxes = Customer-provided solutions
-   - 🟣 Purple boxes = Partner/Other solutions
+- **Architecture Tab**: Configure capabilities layer by layer
+  - Green = Red Hat solutions
+  - Blue = Customer solutions
+  - Purple = Partner solutions
 
-2. **Interactive Builder**: Step-by-step guided configuration
-   - Click ❓ help icon next to each option to learn more
-   - Progress through infrastructure → platform → services → application
-   - Edit completed layers anytime
+- **Interactive Builder**: Guided step-by-step configuration
 
-3. **View Data Flow**: See how your components interact
-   - Click "See Data Flow" button after selecting components
-   - Expand components to see internal architecture
-   - Dark technical diagram with clear connections
+- **Generate from Environment**: Create suggested stack from customer context
 
-### Using Decision Guides
+- **View Data Flow**: Technical architecture diagrams with component relationships
 
-1. Navigate to the **Use Cases** tab
-2. Select a decision type (Product, Deployment, Architecture)
-3. Answer questions to get personalized recommendations with tradeoffs
+### Decision Guides
+
+Navigate to **Use Cases** tab and follow the guided questions for personalized recommendations.
 
 ## 🛠️ Technology Stack
 
@@ -126,6 +148,15 @@ Focus on **capabilities** (e.g., "Model Serving") rather than forcing specific p
 - **Platform**: AI/ML platforms and data storage
 - **AI Services**: Sub-layered into base (serving), adjacent (registry, vector DB), wrapper (observability, governance), orchestration (MCP, evaluation)
 - **Application**: API gateways, workflow orchestration, tools
+
+## 📋 Roadmap & Development
+
+**For contributors/developers:**
+
+- **[Roadmap](docs/ROADMAP.md)** - V1 scope, V2 plans, future enhancements
+- **[Manual Test Matrix](docs/V1_MANUAL_TEST_MATRIX.md)** - Smoke test checklist
+
+---
 
 ## 📄 License
 

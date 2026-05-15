@@ -1,4 +1,4 @@
-import { ArrowRight, FileText, Image, Mic, Database, Cpu, Zap, Settings } from 'lucide-react';
+import { ArrowRight, FileText, Image, Mic, Cpu, Zap, Settings } from 'lucide-react';
 
 export default function RAGArchitecture() {
   const pipeline = [

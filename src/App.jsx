@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Layers, Target, Package, Info, GitBranch, AlertCircle } from 'lucide-react';
+import { Layers, Target, Package, GitBranch, AlertCircle } from 'lucide-react';
 import ArchitectureHub from './components/ArchitectureHub';
 import ProductExplorer from './components/ProductExplorer';
 import UseCaseView from './components/UseCaseView';
@@ -24,11 +24,12 @@ function App() {
   const [selectedProducts, setSelectedProducts] = useState(
     products.filter(p => p.required).map(p => p.id)
   );
+  // Canonical architecture blueprint: flat map capabilityId -> optionId (see README "Application state").
   const [selectedCapabilities, setSelectedCapabilities] = useState({});
 
   const views = [
     { id: 'architecture', name: 'Architecture', icon: Layers },
-    { id: 'decisions', name: 'Decision Guide', icon: GitBranch },
+    { id: 'decisions', name: 'Decision Guides', icon: GitBranch },
     { id: 'use-cases', name: 'Use Cases', icon: Target },
     { id: 'products', name: 'Products', icon: Package }
   ];
@@ -40,8 +41,6 @@ function App() {
           <ArchitectureHub
             customerEnv={customerEnv}
             setCustomerEnv={setCustomerEnv}
-            selectedProducts={selectedProducts}
-            setSelectedProducts={setSelectedProducts}
             selectedCapabilities={selectedCapabilities}
             setSelectedCapabilities={setSelectedCapabilities}
             onSwitchToDecisions={() => setCurrentView('decisions')}
@@ -63,7 +62,7 @@ function App() {
           />
         );
       case 'use-cases':
-        return <UseCaseView customerEnv={customerEnv} />;
+        return <UseCaseView />;
       default:
         return null;
     }
@@ -74,23 +73,17 @@ function App() {
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">RH</span>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Red Hat AI Platform Explorer
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Interactive visualization of Red Hat's AI offerings
-                </p>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xl">RH</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-              <Info size={16} />
-              <span>Build your stack • Choose Red Hat or customer solutions</span>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Red Hat AI Platform Explorer
+              </h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Interactive visualization of Red Hat's AI offerings
+              </p>
             </div>
           </div>
         </div>
@@ -141,11 +134,10 @@ function App() {
       {/* Footer */}
       <footer className="mt-12 py-6 border-t border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-600 dark:text-gray-400">
-          <p>Red Hat AI Platform Explorer • Internal Demo Tool</p>
+          <p>Red Hat AI Platform Explorer • Prototype</p>
         </div>
       </footer>
 
-      {/* Floating Acronym Glossary */}
       <AcronymGlossary />
     </div>
   );

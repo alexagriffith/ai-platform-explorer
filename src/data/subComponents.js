@@ -191,22 +191,17 @@ export const subComponents = {
     name: 'Red Hat AI Enterprise',
     components: [
       {
-        id: 'openshift',
-        name: 'OpenShift Platform',
-        description: 'Enterprise Kubernetes foundation',
-        role: 'Infrastructure'
-      },
-      {
-        id: 'openshift-ai',
-        name: 'OpenShift AI',
-        description: 'AI/ML platform capabilities',
-        role: 'AI Platform'
+        id: 'rhaie-bundle',
+        name: 'OpenShift + OpenShift AI (bundled)',
+        description:
+          'One integrated RHAIE offering—OpenShift and OpenShift AI are delivered and supported together here, not as two independent products you bolt on separately.',
+        role: 'Integrated platform'
       },
       {
         id: 'instructlab',
         name: 'InstructLab',
         description: 'Model alignment and fine-tuning',
-        role: 'Model Development'
+        role: 'Model development'
       }
     ]
   },

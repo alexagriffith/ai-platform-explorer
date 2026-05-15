@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Layers, Shield, Package, GitBranch, CheckCircle2, ArrowRight, Users, ChevronRight } from 'lucide-react';
+import { Layers, Shield, Package, GitBranch, CheckCircle2, ArrowRight, ChevronRight } from 'lucide-react';
 
 export default function MCPEcosystemView() {
   const [selectedSlide, setSelectedSlide] = useState(0);

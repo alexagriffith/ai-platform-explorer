@@ -5,4 +5,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/ai-platform-explorer/',
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.js'],
+    passWithNoTests: false
+  }
 })

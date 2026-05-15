@@ -4,7 +4,7 @@ import CapabilityArchitectureView from './CapabilityArchitectureView';
 import InteractiveBuilder from './InteractiveBuilder';
 import CustomerConfig from './CustomerConfig';
 
-export default function ArchitectureHub({ customerEnv, setCustomerEnv, selectedProducts, setSelectedProducts, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities }) {
+export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities }) {
   const [mode, setMode] = useState('build'); // 'build', 'interactive', 'generate'
 
   const modes = [
@@ -26,19 +26,20 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, selectedP
       name: 'Interactive Builder',
       icon: Hammer,
       description: 'Step-by-step guided workflow from infrastructure to application',
-      component: <InteractiveBuilder />
+      component: (
+        <InteractiveBuilder
+          selectedCapabilities={selectedCapabilities}
+          setSelectedCapabilities={setSelectedCapabilities}
+        />
+      )
     },
     {
       id: 'generate',
       name: 'Generate from Environment',
       icon: Settings,
-      description: 'Answer questions about your setup and get automated recommendations',
+      description: 'Capture environment signals and copy a draft suggestion list for the workshop',
       component: (
-        <CustomerConfig
-          customerEnv={customerEnv}
-          setCustomerEnv={setCustomerEnv}
-          setSelectedProducts={setSelectedProducts}
-        />
+        <CustomerConfig customerEnv={customerEnv} setCustomerEnv={setCustomerEnv} />
       )
     }
   ];
@@ -131,15 +132,17 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, selectedP
           })}
         </div>
 
-        {/* Info Banner */}
-        <div className="mt-4 flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-          <Info size={16} className="text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-          <p className="text-sm text-blue-800 dark:text-blue-200">
-            {mode === 'build' && 'Click on capability boxes to select and configure components for your AI stack.'}
-            {mode === 'interactive' && 'Follow the step-by-step guide to build your stack from the ground up.'}
-            {mode === 'generate' && 'Tell us about your current environment and we\'ll recommend the best Red Hat AI solutions.'}
-          </p>
-        </div>
+        {(mode === 'interactive' || mode === 'generate') && (
+          <div className="mt-4 flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+            <Info size={16} className="text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+            <p className="text-sm text-blue-800 dark:text-blue-200">
+              {mode === 'interactive' &&
+                'Guided steps through each layer. When you finish, selections sync to Build Your Stack so the main canvas stays aligned.'}
+              {mode === 'generate' &&
+                'Capture the customer profile here, then open a copyable suggestion preview. Build Your Stack stays unchanged until you record choices there.'}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Render Selected Mode */}

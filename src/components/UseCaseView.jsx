@@ -1,15 +1,14 @@
 import { useState, useRef } from 'react';
-import { Lightbulb, ArrowRight, CheckCircle2, GitBranch, ChevronDown, X } from 'lucide-react';
-import { products } from '../data/products';
+import { Lightbulb, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { getCatalogDisplayName } from '../data/catalogResolve';
 import MCPEcosystemFull from './MCPEcosystemFull';
 import FineTuningDecisionMatrix from './FineTuningDecisionMatrix';
 import RAGArchitecture from './RAGArchitecture';
 import SecurityOverview from './SecurityOverview';
 import TrainingDeepDive from './TrainingDeepDive';
 
-export default function UseCaseView({ customerEnv }) {
+export default function UseCaseView() {
   const [selectedUseCases, setSelectedUseCases] = useState([]);
-  const [showUseCaseDropdown, setShowUseCaseDropdown] = useState(false);
   const useCaseRefs = useRef({});
   const useCases = [
     {
@@ -177,10 +176,6 @@ export default function UseCaseView({ customerEnv }) {
     }
   ];
 
-  const getProductName = (productId) => {
-    return products.find(p => p.id === productId)?.name || productId;
-  };
-
   const scrollToUseCase = (useCaseId) => {
     useCaseRefs.current[useCaseId]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -289,7 +284,7 @@ export default function UseCaseView({ customerEnv }) {
                       key={productId}
                       className="px-3 py-1.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-lg text-sm font-medium"
                     >
-                      {getProductName(productId)}
+                      {getCatalogDisplayName(productId)}
                     </span>
                   ))}
                 </div>

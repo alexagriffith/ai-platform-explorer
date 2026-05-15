@@ -1,9 +1,6 @@
-import { useState } from 'react';
-import { Cpu, Zap, GitBranch, Database, ArrowRight, CheckCircle, XCircle, Info } from 'lucide-react';
+import { Cpu, Zap, GitBranch, Database, ArrowRight, CheckCircle, Info } from 'lucide-react';
 
 export default function TrainingDeepDive() {
-  const [expandedSection, setExpandedSection] = useState('workflow');
-
   const trainingWorkflow = [
     {
       step: 'Data Preparation',
