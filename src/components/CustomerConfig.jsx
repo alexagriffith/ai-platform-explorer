@@ -1,49 +1,96 @@
 import { useState } from 'react';
-import { CheckCircle2, Circle, AlertCircle, Sparkles } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Sparkles, Copy, X } from 'lucide-react';
 import { products, thirdPartyOptions } from '../data/products';
 
-export default function CustomerConfig({ customerEnv, setCustomerEnv, setSelectedProducts }) {
-  const [showRecommendations, setShowRecommendations] = useState(false);
+function getSuggestedProductIds(customerEnv) {
+  const recommended = products.filter((p) => p.required).map((p) => p.id);
+
+  if (customerEnv.useCase === 'inference') {
+    recommended.push('ai-inference');
+    if (!customerEnv.hasApiGateway) {
+      recommended.push('ai-gateway');
+    }
+  }
+
+  if (customerEnv.useCase === 'training') {
+    recommended.push('rhoai');
+    if (!customerEnv.hasModelRegistry) {
+      recommended.push('model-registry');
+    }
+  }
+
+  if (customerEnv.useCase === 'full-stack') {
+    recommended.push('rhoai', 'ai-inference', 'model-registry', 'trustyai', 'gen-ai-studio');
+    if (!customerEnv.hasApiGateway) {
+      recommended.push('ai-gateway');
+    }
+  }
+
+  if (customerEnv.teamSize === 'large' || customerEnv.deployment === 'hybrid') {
+    recommended.push('rhoai', 'trustyai');
+  }
+
+  if (customerEnv.teamSize === 'small' && customerEnv.deployment === 'on-premise') {
+    recommended.push('rhel-ai');
+  }
+
+  return [...new Set(recommended)];
+}
+
+function productLabel(productId) {
+  const p = products.find((x) => x.id === productId);
+  if (p) return p.name;
+  const t = thirdPartyOptions.find((x) => x.id === productId);
+  if (t) return t.name;
+  return productId;
+}
+
+function buildWorkshopCopyText(customerEnv, suggestedIds) {
+  const lines = [
+    'Workshop Suggestions',
+    '',
+    'Environment:',
+    `- OpenShift: ${customerEnv.hasOpenShift ? 'yes' : 'no'}`,
+    `- Kubernetes: ${customerEnv.hasKubernetes ? 'yes' : 'no'}`,
+    `- GPUs: ${customerEnv.hasGPUs ? 'yes' : 'no'}`,
+    `- API gateway: ${customerEnv.hasApiGateway ? 'yes' : 'no'}`,
+    `- Model registry: ${customerEnv.hasModelRegistry ? 'yes' : 'no'}`,
+    `- Use case: ${customerEnv.useCase || 'not set'}`,
+    `- Team size: ${customerEnv.teamSize}`,
+    `- Deployment: ${customerEnv.deployment}`,
+    '',
+    'Suggested products:',
+    ...suggestedIds.map((id) => `- ${productLabel(id)}`),
+    '',
+    'Next: Build Your Stack → Architecture'
+  ];
+  return lines.join('\n');
+}
+
+export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
+  const [showSuggestionModal, setShowSuggestionModal] = useState(false);
+  const [suggestedProductIds, setSuggestedProductIds] = useState([]);
+  const [copyDone, setCopyDone] = useState(false);
 
   const updateEnv = (key, value) => {
     setCustomerEnv(prev => ({ ...prev, [key]: value }));
   };
 
-  const generateRecommendations = () => {
-    const recommended = products.filter(p => p.required).map(p => p.id);
+  const openSuggestionPreview = () => {
+    const ids = getSuggestedProductIds(customerEnv);
+    setSuggestedProductIds(ids);
+    setCopyDone(false);
+    setShowSuggestionModal(true);
+  };
 
-    // Add recommendations based on customer environment
-    if (customerEnv.useCase === 'inference') {
-      recommended.push('ai-inference');
-      if (!customerEnv.hasApiGateway) {
-        recommended.push('ai-gateway');
-      }
+  const copySuggestionText = async () => {
+    const text = buildWorkshopCopyText(customerEnv, suggestedProductIds);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyDone(true);
+    } catch {
+      setCopyDone(false);
     }
-
-    if (customerEnv.useCase === 'training') {
-      recommended.push('rhoai');
-      if (!customerEnv.hasModelRegistry) {
-        recommended.push('model-registry');
-      }
-    }
-
-    if (customerEnv.useCase === 'full-stack') {
-      recommended.push('rhoai', 'ai-inference', 'model-registry', 'trustyai', 'gen-ai-studio');
-      if (!customerEnv.hasApiGateway) {
-        recommended.push('ai-gateway');
-      }
-    }
-
-    if (customerEnv.teamSize === 'large' || customerEnv.deployment === 'hybrid') {
-      recommended.push('rhoai', 'trustyai');
-    }
-
-    if (customerEnv.teamSize === 'small' && customerEnv.deployment === 'on-premise') {
-      recommended.push('rhel-ai');
-    }
-
-    setSelectedProducts([...new Set(recommended)]);
-    setShowRecommendations(true);
   };
 
   return (
@@ -54,7 +101,8 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv, setSelecte
           Configure Customer Environment
         </h2>
         <p className="text-gray-600 dark:text-gray-400">
-          Tell us about your customer's existing infrastructure and requirements to get personalized recommendations.
+          Capture the customer&apos;s existing footprint and constraints. Use the preview to copy a draft checklist for
+          the workshop — nothing here updates the architecture canvas automatically.
         </p>
       </div>
 
@@ -405,37 +453,95 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv, setSelecte
         </div>
       </div>
 
-      {/* Generate Button */}
+      {/* Suggestion preview */}
       <div className="flex justify-center">
         <button
-          onClick={generateRecommendations}
+          type="button"
+          onClick={openSuggestionPreview}
           className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
         >
           <Sparkles size={20} />
-          Generate Recommended Architecture
+          Preview workshop suggestions
         </button>
       </div>
 
-      {/* Recommendations */}
-      {showRecommendations && (
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-6 border-2 border-purple-200 dark:border-purple-700">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-            <Sparkles size={24} className="text-purple-600" />
-            Recommendations Generated
-          </h3>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">
-            Based on your customer's environment, we've updated the architecture view with recommended components.
-            Switch to the <strong>Architecture</strong> tab to see the visualization!
-          </p>
-          <div className="bg-white dark:bg-gray-800 rounded p-4 text-sm">
-            <p className="font-semibold text-gray-900 dark:text-white mb-2">Quick Summary:</p>
-            <ul className="space-y-1 text-gray-700 dark:text-gray-300">
-              {customerEnv.hasOpenShift && <li>✓ Customer has OpenShift - great foundation!</li>}
-              {!customerEnv.hasOpenShift && <li>→ Will need OpenShift as the base platform</li>}
-              {customerEnv.hasApiGateway && <li>✓ Can integrate with existing API Gateway</li>}
-              {customerEnv.hasModelRegistry && <li>✓ Can use existing Model Registry</li>}
-              {customerEnv.useCase && <li>→ Optimized for {customerEnv.useCase} use case</li>}
-            </ul>
+      <p className="text-center text-sm text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
+        Opens a modal with a plain-text summary you can copy into notes. Build Your Stack is unchanged — record
+        architecture choices there when you are ready.
+      </p>
+
+      {showSuggestionModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="suggestion-modal-title"
+          onClick={() => setShowSuggestionModal(false)}
+        >
+          <div
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3 p-4 border-b border-gray-200 dark:border-gray-700">
+              <div>
+                <h3 id="suggestion-modal-title" className="text-lg font-bold text-gray-900 dark:text-white">
+                  Suggestion preview
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Draft only — for facilitator notes. Does not update Build Your Stack or the Products tab.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSuggestionModal(false)}
+                className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+                aria-label="Close"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-4 space-y-4">
+              <div className="rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-3 text-sm text-amber-900 dark:text-amber-100">
+                Work in progress: heuristics are intentionally simple. Treat this as a conversation starter, not an
+                automated design.
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Suggested products to discuss</p>
+                <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                  {suggestedProductIds.map((id) => (
+                    <li key={id}>• {productLabel(id)}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Context summary</p>
+                <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                  {customerEnv.hasOpenShift && <li>✓ OpenShift in environment</li>}
+                  {!customerEnv.hasOpenShift && <li>→ OpenShift called out as a typical base to validate</li>}
+                  {customerEnv.hasApiGateway && <li>✓ Existing API gateway noted</li>}
+                  {!customerEnv.hasApiGateway && customerEnv.useCase === 'inference' && (
+                    <li>→ Gateway may warrant discussion for inference paths</li>
+                  )}
+                  {customerEnv.hasModelRegistry && <li>✓ Model registry present</li>}
+                  {customerEnv.useCase && <li>→ Use case set to: {customerEnv.useCase}</li>}
+                </ul>
+              </div>
+
+              <div className="flex flex-wrap gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={copySuggestionText}
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-semibold hover:bg-purple-700"
+                >
+                  <Copy size={16} />
+                  Copy full text
+                </button>
+                {copyDone && <span className="text-sm text-green-600 dark:text-green-400 self-center">Copied.</span>}
+              </div>
+            </div>
           </div>
         </div>
       )}
