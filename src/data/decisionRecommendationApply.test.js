@@ -63,7 +63,18 @@ describe('Decision Recommendation Mappings', () => {
   });
 
   it('should have expected structure for deployment recommendations', () => {
-    const deploymentRecs = ['on-prem-small', 'on-prem-large', 'cloud-inference', 'cloud-training'];
+    const deploymentRecs = [
+      'on-prem-small',
+      'on-prem-large',
+      'cloud-openshift-inference',
+      'cloud-openshift-training',
+      'cloud-openshift-both',
+      'cloud-kubernetes-inference',
+      'cloud-kubernetes-training',
+      'cloud-kubernetes-both',
+      'hybrid-train-onprem',
+      'hybrid-inference-onprem'
+    ];
 
     for (const key of deploymentRecs) {
       const patches = DECISION_RECOMMENDATION_PATCHES[key];

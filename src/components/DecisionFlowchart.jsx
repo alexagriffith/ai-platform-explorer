@@ -163,7 +163,7 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
           options: [
             { value: 'strict', label: 'Must stay on-premises (compliance, air-gap)', next: 1 },
             { value: 'flexible', label: 'Can use public cloud', next: 2 },
-            { value: 'hybrid', label: 'Need both', next: 3 }
+            { value: 'hybrid', label: 'Need both', next: 4 }
           ]
         },
         {
@@ -175,12 +175,29 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
           ]
         },
         {
-          question: 'Primary workload type?',
+          question: 'Do you have or want managed OpenShift on cloud?',
           condition: { step: 0, value: 'flexible' },
           options: [
-            { value: 'inference', label: 'Mainly inference', recommendation: 'cloud-inference' },
-            { value: 'training', label: 'Training and experimentation', recommendation: 'cloud-training' },
-            { value: 'both', label: 'Both training and inference', recommendation: 'cloud-both' }
+            { value: 'yes', label: 'Yes, using managed OpenShift (ROSA/ARO)', next: 3 },
+            { value: 'no', label: 'No, using native cloud Kubernetes (EKS/AKS/GKE)', next: 5 }
+          ]
+        },
+        {
+          question: 'Primary workload type?',
+          condition: { step: 2, value: 'yes' },
+          options: [
+            { value: 'inference', label: 'Mainly inference', recommendation: 'cloud-openshift-inference' },
+            { value: 'training', label: 'Training and experimentation', recommendation: 'cloud-openshift-training' },
+            { value: 'both', label: 'Both training and inference', recommendation: 'cloud-openshift-both' }
+          ]
+        },
+        {
+          question: 'Primary workload type?',
+          condition: { step: 2, value: 'no' },
+          options: [
+            { value: 'inference', label: 'Mainly inference', recommendation: 'cloud-kubernetes-inference' },
+            { value: 'training', label: 'Training and experimentation', recommendation: 'cloud-kubernetes-training' },
+            { value: 'both', label: 'Both training and inference', recommendation: 'cloud-kubernetes-both' }
           ]
         },
         {
@@ -217,41 +234,77 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
           ],
           alternatives: ['Hybrid for burst capacity', 'Managed OpenShift on cloud']
         },
-        'cloud-inference': {
-          product: 'Public Cloud (Inference)',
+        'cloud-openshift-inference': {
+          product: 'Managed OpenShift on Cloud (Inference)',
           icon: '☁️',
-          why: 'Managed OpenShift on AWS/Azure/GCP with AI Inference Server',
-          bestFor: ['Production APIs', 'Global reach', 'Variable load'],
+          why: 'Managed OpenShift (ROSA/ARO) with RHOAI and AI Inference Server',
+          bestFor: ['Production APIs', 'OpenShift expertise', 'Enterprise support'],
           tradeoffs: [
-            { pro: 'Global availability', con: 'Network latency' },
-            { pro: 'Auto-scaling', con: 'Cloud egress costs' },
-            { pro: 'Managed infrastructure', con: 'Data transfer costs' }
+            { pro: 'Red Hat support', con: 'Higher cost than native K8s' },
+            { pro: 'OpenShift features', con: 'Cloud egress costs' },
+            { pro: 'Managed infrastructure', con: 'Vendor-specific' }
           ],
-          alternatives: ['On-prem for data residency', 'Edge for ultra-low latency']
+          alternatives: ['Native K8s for lower cost', 'On-prem for data residency']
         },
-        'cloud-training': {
-          product: 'Public Cloud (Training)',
+        'cloud-openshift-training': {
+          product: 'Managed OpenShift on Cloud (Training)',
           icon: '🧪',
-          why: 'Cloud-based OpenShift AI for experimentation and model development',
-          bestFor: ['Experimentation', 'Bursty workloads', 'Startups'],
+          why: 'Managed OpenShift AI (ROSA/ARO) for experimentation and model development',
+          bestFor: ['Experimentation', 'OpenShift teams', 'Bursty workloads'],
           tradeoffs: [
             { pro: 'Access to latest GPUs', con: 'Expensive for sustained use' },
-            { pro: 'No upfront investment', con: 'Vendor lock-in risk' },
+            { pro: 'Red Hat support', con: 'Higher cost than native K8s' },
             { pro: 'Fast provisioning', con: 'Data transfer costs' }
           ],
-          alternatives: ['On-prem for cost optimization', 'Hybrid for flexibility']
+          alternatives: ['Native K8s for lower cost', 'On-prem for cost optimization']
         },
-        'cloud-both': {
-          product: 'Public Cloud (Full Lifecycle)',
+        'cloud-openshift-both': {
+          product: 'Managed OpenShift on Cloud (Full Lifecycle)',
           icon: '🔄',
-          why: 'Complete ML platform in the cloud with OpenShift AI',
-          bestFor: ['Cloud-native teams', 'Rapid iteration', 'Global deployment'],
+          why: 'Complete ML platform with managed OpenShift AI (ROSA/ARO)',
+          bestFor: ['OpenShift-first teams', 'Enterprise support', 'Full lifecycle'],
           tradeoffs: [
             { pro: 'End-to-end platform', con: 'Higher ongoing costs' },
-            { pro: 'Fully managed', con: 'Less control' },
+            { pro: 'Red Hat support', con: 'Vendor-specific' },
             { pro: 'Easy collaboration', con: 'Compliance considerations' }
           ],
-          alternatives: ['Hybrid for cost/compliance balance']
+          alternatives: ['Native K8s for lower cost', 'Hybrid for flexibility']
+        },
+        'cloud-kubernetes-inference': {
+          product: 'Native Cloud Kubernetes (Inference)',
+          icon: '☁️',
+          why: 'EKS/AKS/GKE with Red Hat AI (RHAI) and AI Inference Server',
+          bestFor: ['Production APIs', 'Cloud-native teams', 'Cost optimization'],
+          tradeoffs: [
+            { pro: 'Lower cost than OpenShift', con: 'No Red Hat support for K8s' },
+            { pro: 'Native cloud integration', con: 'Cloud egress costs' },
+            { pro: 'Managed infrastructure', con: 'Self-managed AI platform' }
+          ],
+          alternatives: ['Managed OpenShift for support', 'On-prem for data residency']
+        },
+        'cloud-kubernetes-training': {
+          product: 'Native Cloud Kubernetes (Training)',
+          icon: '🧪',
+          why: 'EKS/AKS/GKE with Red Hat AI (RHAI) for model development',
+          bestFor: ['Experimentation', 'Cloud-native teams', 'Cost-conscious'],
+          tradeoffs: [
+            { pro: 'Access to latest GPUs', con: 'Expensive for sustained use' },
+            { pro: 'Lower cost than OpenShift', con: 'Less enterprise support' },
+            { pro: 'Fast provisioning', con: 'Data transfer costs' }
+          ],
+          alternatives: ['Managed OpenShift for support', 'On-prem for cost optimization']
+        },
+        'cloud-kubernetes-both': {
+          product: 'Native Cloud Kubernetes (Full Lifecycle)',
+          icon: '🔄',
+          why: 'Complete ML platform with RHAI on EKS/AKS/GKE',
+          bestFor: ['Cloud-native teams', 'Cost optimization', 'Kubernetes expertise'],
+          tradeoffs: [
+            { pro: 'End-to-end platform', con: 'Higher ongoing costs' },
+            { pro: 'Lower cost than OpenShift', con: 'Less enterprise support' },
+            { pro: 'Easy collaboration', con: 'Compliance considerations' }
+          ],
+          alternatives: ['Managed OpenShift for support', 'Hybrid for flexibility']
         },
         'hybrid-train-onprem': {
           product: 'Hybrid (Training On-Prem, Inference Cloud)',

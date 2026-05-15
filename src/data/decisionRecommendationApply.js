@@ -20,9 +20,12 @@ export const DECISION_RECOMMENDATION_PATCHES = {
   // —— Deployment ——
   'on-prem-small': [p('container-platform', 'rhel-hosts'), p('ai-platform', 'rhel-ai'), p('accelerators', 'cpu-only')],
   'on-prem-large': [p('container-platform', 'openshift'), p('ai-platform', 'rhoai'), p('accelerators', 'nvidia-gpu')],
-  'cloud-inference': [p('container-platform', 'openshift'), p('ai-platform', 'rhoai'), p('model-serving', 'ai-inference')],
-  'cloud-training': [p('container-platform', 'openshift'), p('ai-platform', 'rhoai')],
-  'cloud-both': [p('container-platform', 'openshift'), p('ai-platform', 'rhoai'), p('model-registry', 'rh-model-registry')],
+  'cloud-openshift-inference': [p('container-platform', 'openshift'), p('ai-platform', 'rhoai'), p('model-serving', 'ai-inference')],
+  'cloud-openshift-training': [p('container-platform', 'openshift'), p('ai-platform', 'rhoai')],
+  'cloud-openshift-both': [p('container-platform', 'openshift'), p('ai-platform', 'rhoai'), p('model-registry', 'rh-model-registry')],
+  'cloud-kubernetes-inference': [p('container-platform', 'kubernetes'), p('ai-platform', 'rhai'), p('model-serving', 'ai-inference')],
+  'cloud-kubernetes-training': [p('container-platform', 'kubernetes'), p('ai-platform', 'rhai')],
+  'cloud-kubernetes-both': [p('container-platform', 'kubernetes'), p('ai-platform', 'rhai'), p('model-registry', 'rh-model-registry')],
   'hybrid-train-onprem': [p('container-platform', 'openshift'), p('ai-platform', 'rhoai')],
   'hybrid-inference-onprem': [p('container-platform', 'openshift'), p('ai-platform', 'rhoai'), p('model-serving', 'ai-inference')],
 

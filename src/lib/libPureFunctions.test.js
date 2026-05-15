@@ -229,11 +229,19 @@ describe('decisionRecommendationApply (runtime safety)', () => {
     expect(next['ai-platform']).toBe('rhoai');
   });
 
-  it('cloud-inference adds container, AI, and serving', () => {
-    const { next, applied } = mergeDecisionPatches({}, 'cloud-inference');
+  it('cloud-openshift-inference adds OpenShift, RHOAI, and serving', () => {
+    const { next, applied } = mergeDecisionPatches({}, 'cloud-openshift-inference');
     expect(applied).toBe(true);
     expect(next['container-platform']).toBe('openshift');
     expect(next['ai-platform']).toBe('rhoai');
+    expect(next['model-serving']).toBe('ai-inference');
+  });
+
+  it('cloud-kubernetes-inference adds Kubernetes, RHAI, and serving', () => {
+    const { next, applied } = mergeDecisionPatches({}, 'cloud-kubernetes-inference');
+    expect(applied).toBe(true);
+    expect(next['container-platform']).toBe('kubernetes');
+    expect(next['ai-platform']).toBe('rhai');
     expect(next['model-serving']).toBe('ai-inference');
   });
 
