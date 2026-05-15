@@ -30,9 +30,9 @@ export const subComponents = {
       {
         id: 'mcp-ingestion',
         name: 'Ingestion Pipeline',
-        description: 'Supply chain security: validate, scan, sign, certify, publish',
+        description: 'MCP server ingestion and governance workflow',
         role: 'Trust & Integrity',
-        stages: ['Validate', 'Scan', 'Sign', 'Certify', 'Publish']
+        stages: ['Validate', 'Scan', 'Certify', 'Publish']
       }
     ]
   },

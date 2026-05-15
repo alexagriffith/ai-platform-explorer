@@ -84,22 +84,36 @@ export default function TrainingDeepDive() {
     {
       gpu: 'NVIDIA H100',
       memory: '80GB HBM3',
-      bestFor: 'Training largest models (70B-175B+ params)',
-      cost: 'Highest',
+      bestFor: 'Training largest models (70B-175B+ params), fastest R&D iteration',
+      cost: 'Highest (3-5x A100)',
       performance: 'Maximum'
+    },
+    {
+      gpu: 'AMD MI300X',
+      memory: '192GB HBM3',
+      bestFor: 'Large model training with high memory requirements, H100 alternative',
+      cost: 'Very High',
+      performance: 'Excellent'
     },
     {
       gpu: 'NVIDIA A100',
       memory: '40GB / 80GB',
-      bestFor: 'Medium to large model training (7B-70B params)',
+      bestFor: 'Most production training (7B-70B params) - often sufficient for 70B with techniques',
       cost: 'High',
       performance: 'Excellent'
     },
     {
+      gpu: 'NVIDIA L40S',
+      memory: '48GB',
+      bestFor: 'Inference-optimized, cost-effective serving, light fine-tuning',
+      cost: 'Medium',
+      performance: 'Very Good (inference)'
+    },
+    {
       gpu: 'NVIDIA A10G',
       memory: '24GB',
-      bestFor: 'Small model training, fine-tuning (<7B params)',
-      cost: 'Medium',
+      bestFor: 'Cost-effective inference, small model training (<7B params)',
+      cost: 'Medium-Low',
       performance: 'Good'
     },
     {

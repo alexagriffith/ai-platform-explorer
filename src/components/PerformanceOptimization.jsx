@@ -53,12 +53,12 @@ export default function PerformanceOptimization() {
     },
     {
       useCase: 'Multi-Node Cluster',
-      tech: 'llm-d',
+      tech: 'Advanced Scheduler (llm-d)',
       why: 'Orchestrates across nodes with cache-aware routing'
     },
     {
       useCase: 'Latency-Critical (Chat)',
-      tech: 'vLLM + llm-d',
+      tech: 'vLLM + Advanced Scheduler',
       why: 'Combines fast serving with priority-based scheduling'
     },
     {
@@ -103,7 +103,7 @@ export default function PerformanceOptimization() {
           Performance & Optimization
         </h2>
         <p className="text-blue-100">
-          Deep dive into vLLM and llm-d for high-performance inference
+          Deep dive into vLLM and advanced scheduling for high-performance inference
         </p>
       </div>
 
@@ -161,13 +161,13 @@ export default function PerformanceOptimization() {
         </div>
       </div>
 
-      {/* llm-d Orchestration */}
+      {/* Advanced Scheduling */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center gap-3 mb-4">
           <Layers className="text-purple-600" size={28} />
           <div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-              llm-d (LLM Distributed Inference)
+              Advanced Inference Scheduling (llm-d)
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Orchestration layer for multi-node, multi-GPU environments

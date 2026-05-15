@@ -157,12 +157,8 @@ export default function DecisionTree({ flow, onRecommendation }) {
                         <CheckCircle size={24} className="text-green-600" />
                       ) : (
                         <div className={`w-6 h-6 rounded-full border-2 ${
-                          isActive ? 'border-purple-600 bg-purple-200 dark:bg-purple-800' : 'border-gray-400'
-                        }`}>
-                          <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-300">
-                            {visibleNumber}
-                          </div>
-                        </div>
+                          isActive ? 'border-purple-600 bg-purple-600' : 'border-gray-400 bg-gray-200 dark:bg-gray-700'
+                        }`} />
                       )}
                     </div>
                     <div className="flex-1">

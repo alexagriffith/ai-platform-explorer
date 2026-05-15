@@ -49,12 +49,6 @@ export default function AcronymGlossary() {
       whenToUse: 'To maximize GPU performance and lower response times.'
     },
     {
-      acronym: 'llm-d',
-      fullName: 'LLM Distributed Inference',
-      explanation: 'Token-aware scheduling system for intelligent request routing.',
-      whenToUse: 'For optimizing GPU utilization with KV cache-aware routing.'
-    },
-    {
       acronym: 'RBAC',
       fullName: 'Role-Based Access Control',
       explanation: 'Security model that restricts system access based on user roles.',

@@ -11,7 +11,7 @@ export const capabilities = {
           id: 'rh-gateway',
           provider: 'Red Hat',
           name: 'Red Hat AI Gateway',
-          description: 'Authorino + Limitador + Envoy for AI workloads',
+          description: 'Model-as-a-Service gateway with OpenAI-compatible APIs. Governs access to self-hosted and external models with usage tracking and policy enforcement.',
           status: 'GA',
           recommended: true
         },
@@ -123,15 +123,15 @@ export const capabilities = {
           id: 'ai-inference',
           provider: 'Red Hat',
           name: 'Red Hat AI Inference Server',
-          description: 'vLLM-based high-performance LLM serving',
+          description: 'vLLM-based high-performance LLM serving with advanced scheduling. Can be deployed via KServe or standalone.',
           status: 'GA',
           recommended: true
         },
         {
           id: 'kserve',
           provider: 'Red Hat',
-          name: 'KServe (via RHOAI)',
-          description: 'Multi-framework model serving',
+          name: 'KServe',
+          description: 'Model serving platform built into RHOAI. Supports multiple runtimes (vLLM, TorchServe, TensorFlow, etc.) with autoscaling (HPA/KEDA/Knative) and advanced deployment patterns.',
           status: 'GA'
         },
         {
@@ -188,7 +188,7 @@ export const capabilities = {
           provider: 'Red Hat',
           name: 'Red Hat Batch Gateway',
           description: 'OpenAI-compatible batch inference API (up to 50K requests per batch)',
-          status: 'Tech Preview',
+          status: 'Technology Preview',
           recommended: true
         },
         {
@@ -212,7 +212,7 @@ export const capabilities = {
           id: 'rh-observability',
           provider: 'Red Hat',
           name: 'OpenShift Monitoring Stack',
-          description: 'Prometheus + Grafana for AI workloads',
+          description: 'Prometheus + Grafana + OpenShift alerting. AI-specific metrics (GPU utilization, model latency/throughput) require additional exporters (NVIDIA DCGM) and custom ServiceMonitors/dashboards.',
           status: 'GA',
           recommended: true
         },
@@ -310,7 +310,7 @@ export const capabilities = {
     {
       id: 'mcp',
       name: 'Model Context Protocol (MCP)',
-      description: 'Connect AI agents to external tools and data sources',
+      description: 'Connect AI agents to external tools and data sources. Note: MCP is an emerging standard - verify component availability with your Red Hat account team.',
       required: false,
       subLayer: 'orchestration', // Higher level - connects to tools
       position: 'orchestration',
@@ -319,7 +319,7 @@ export const capabilities = {
           id: 'rh-mcp-full',
           provider: 'Red Hat',
           name: 'Full MCP Ecosystem',
-          description: 'Complete platform: Registry + Catalog + Lifecycle Operator + Gateway',
+          description: 'MCP platform components (Registry, Catalog, Lifecycle Operator, Gateway). Verify availability and maturity of each component.',
           status: 'Tech Preview',
           recommended: true
         },
@@ -416,23 +416,21 @@ export const capabilities = {
           id: 'rhoai',
           provider: 'Red Hat',
           name: 'Red Hat OpenShift AI (RHOAI)',
-          description: 'AI/ML platform for existing OpenShift clusters',
-          status: 'GA',
-          recommended: true
+          description: 'AI/ML platform for OpenShift clusters (self-managed or managed ROSA/ARO). Use this if your container platform is OpenShift.',
+          status: 'GA'
         },
         {
           id: 'rhai',
           provider: 'Red Hat',
           name: 'Red Hat AI (RHAI)',
-          description: 'AI platform for non-OpenShift Kubernetes',
-          status: 'GA',
-          recommended: false
+          description: 'AI/ML platform for non-OpenShift Kubernetes (EKS, AKS, GKE, self-managed). Use this if your container platform is standard Kubernetes.',
+          status: 'GA'
         },
         {
           id: 'rhel-ai',
           provider: 'Red Hat',
           name: 'Red Hat Enterprise Linux AI',
-          description: 'Foundation models on RHEL bare metal or VMs',
+          description: 'Foundation model serving and InstructLab fine-tuning on individual RHEL servers. Single-node only. Best for edge deployments, development environments, and single-server use cases. For distributed training or production-scale serving, use RHOAI or RHAI.',
           status: 'GA'
         }
       ]
@@ -440,14 +438,14 @@ export const capabilities = {
     {
       id: 'data-storage',
       name: 'Data Storage',
-      description: 'Object storage for datasets, models, and artifacts',
+      description: 'Object storage for datasets, models, and artifacts. Required for training, model registry, and pipeline artifacts. Can use external S3-compatible storage.',
       required: false,
       options: [
         {
           id: 'odf',
           provider: 'Red Hat',
           name: 'OpenShift Data Foundation',
-          description: 'Integrated S3-compatible storage',
+          description: 'Integrated S3-compatible storage. Best for: on-prem, data residency requirements, integrated OpenShift experience.',
           status: 'GA',
           recommended: true
         },
@@ -455,14 +453,14 @@ export const capabilities = {
           id: 's3',
           provider: 'AWS',
           name: 'Amazon S3',
-          description: 'AWS object storage',
+          description: 'AWS object storage. Best for: cloud deployments, cost optimization, existing AWS commitment.',
           status: 'GA'
         },
         {
           id: 'customer-storage',
           provider: 'Customer',
           name: 'Existing Object Storage',
-          description: 'MinIO, Azure Blob, GCS, etc.',
+          description: 'MinIO, Azure Blob, GCS, etc. Best for: existing storage infrastructure, specific compliance requirements.',
           isCustomer: true
         }
       ]

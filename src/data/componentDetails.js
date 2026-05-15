@@ -223,25 +223,32 @@ export const componentDetails = {
   'ai-gateway': {
     subComponents: [
       {
-        id: 'authorino',
-        name: 'Authorino',
-        type: 'Auth/AuthZ',
-        description: 'API authentication and authorization',
-        techDetails: ['OAuth/OIDC', 'API keys', 'mTLS', 'Policy enforcement']
+        id: 'model-catalog',
+        name: 'Model Catalog',
+        type: 'Model Discovery',
+        description: 'Centralized catalog of available AI models',
+        techDetails: ['Self-hosted models', 'External providers (NVIDIA Nemotron)', 'Admin-curated lists', 'Model metadata']
       },
       {
-        id: 'limitador',
-        name: 'Limitador',
-        type: 'Rate Limiting',
-        description: 'API rate limiting and quotas',
-        techDetails: ['Token bucket', 'User quotas', 'Distributed limits']
+        id: 'openai-api',
+        name: 'OpenAI API Adapter',
+        type: 'API Layer',
+        description: 'OpenAI-compatible REST endpoints',
+        techDetails: ['Chat completions', 'Embeddings', 'Text generation', 'Streaming responses']
       },
       {
-        id: 'envoy',
-        name: 'Envoy Proxy',
-        type: 'API Gateway',
-        description: 'L7 proxy and routing',
-        techDetails: ['Dynamic routing', 'Load balancing', 'Circuit breaking']
+        id: 'usage-tracking',
+        name: 'Usage Tracking',
+        type: 'Metering',
+        description: 'Track model usage and costs',
+        techDetails: ['Token counting', 'Request metrics', 'Per-user tracking', 'Cost allocation']
+      },
+      {
+        id: 'policy-engine',
+        name: 'Policy Engine',
+        type: 'Governance',
+        description: 'Access control and rate limiting',
+        techDetails: ['Identity-based policies', 'Rate limits per user/model', 'Model routing rules', 'Quota enforcement']
       }
     ]
   }

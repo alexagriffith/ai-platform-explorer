@@ -14,7 +14,7 @@ export default function RAGArchitecture() {
       icon: Cpu,
       color: 'blue',
       description: 'vLLM/KServe inference engine',
-      details: ['vLLM runtime', 'llm-d routing', 'KV cache awareness', 'Multi-GPU support']
+      details: ['vLLM runtime', 'Advanced routing (llm-d)', 'KV cache awareness', 'Multi-GPU support']
     },
     {
       stage: 'GPU',

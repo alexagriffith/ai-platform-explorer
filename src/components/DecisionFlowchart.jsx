@@ -61,11 +61,20 @@ const guideGroups = [
   }
 ];
 
-export default function DecisionFlowchart({ selectedCapabilities, setSelectedCapabilities, onSwitchToArchitecture }) {
-  const [selectedDecision, setSelectedDecision] = useState('');
+export default function DecisionFlowchart({
+  selectedCapabilities,
+  setSelectedCapabilities,
+  onSwitchToArchitecture,
+  selectedDecisionGuide,
+  setSelectedDecisionGuide
+}) {
   const [treeRecommendation, setTreeRecommendation] = useState(null);
   const [applyNotice, setApplyNotice] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
+
+  // Use prop for selected decision
+  const selectedDecision = selectedDecisionGuide;
+  const setSelectedDecision = setSelectedDecisionGuide;
 
   const decisionFlows = {
     product: {
@@ -219,7 +228,7 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
           options: [
             { value: 'strict', label: 'Must stay on-premises (compliance, air-gap)', next: 1 },
             { value: 'flexible', label: 'Can use public cloud', next: 2 },
-            { value: 'hybrid', label: 'Need both', next: 4 }
+            { value: 'hybrid', label: 'Need both', next: 5 }
           ]
         },
         {
@@ -235,7 +244,7 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
           condition: { step: 0, value: 'flexible' },
           options: [
             { value: 'yes', label: 'Yes, using managed OpenShift (ROSA/ARO)', next: 3 },
-            { value: 'no', label: 'No, using native cloud Kubernetes (EKS/AKS/GKE)', next: 5 }
+            { value: 'no', label: 'No, using native cloud Kubernetes (EKS/AKS/GKE)', next: 4 }
           ]
         },
         {
@@ -972,11 +981,11 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
         'AI-Inference-Realtime': {
           product: 'Red Hat AI Inference Server',
           icon: '⚡',
-          why: 'Low-latency serving with llm-d token-aware scheduling',
+          why: 'Low-latency serving with (llm-d) token-aware scheduling',
           bestFor: ['Chatbots', 'Interactive apps', 'Real-time APIs', 'User-facing services'],
           tradeoffs: [
             { pro: 'Sub-200ms TTFT possible', con: 'Higher cost per request' },
-            { pro: 'llm-d KV cache routing', con: 'Requires more GPU resources' }
+            { pro: '(llm-d) KV cache routing', con: 'Requires more GPU resources' }
           ],
           alternatives: ['For batch: Batch Gateway', 'For cost: Batch processing']
         },
@@ -1244,7 +1253,7 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
           question: 'Do you need advanced LLM features?',
           condition: { step: 0, value: 'llms-only' },
           options: [
-            { value: 'yes', label: 'Yes (llm-d, KV cache routing, split-phase)', recommendation: 'AI-Inference' },
+            { value: 'yes', label: 'Yes (token-aware scheduling, KV cache routing, split-phase)', recommendation: 'AI-Inference' },
             { value: 'no', label: 'No, standard serving is fine', recommendation: 'Either-Serving' }
           ]
         },
@@ -1269,12 +1278,12 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
         'AI-Inference': {
           product: 'Red Hat AI Inference Server',
           icon: '🚀',
-          why: 'LLM-optimized serving with llm-d token-aware scheduling and KV cache routing',
+          why: 'LLM-optimized serving with (llm-d) token-aware scheduling and KV cache routing',
           bestFor: ['LLM-only workloads', 'Low-latency requirements (<200ms TTFT)', 'GPU optimization', 'SLO-based routing'],
           tradeoffs: [
-            { pro: 'llm-d token-aware scheduling', con: 'LLM-focused (not multi-framework)' },
+            { pro: '(llm-d) Token-aware scheduling', con: 'LLM-focused (not multi-framework)' },
             { pro: 'KV cache routing for efficiency', con: 'Newer, less mature than KServe' },
-            { pro: 'Split-phase prefill/decode', con: 'Requires llm-d understanding' }
+            { pro: 'Split-phase prefill/decode', con: 'More complex setup than standard serving' }
           ],
           alternatives: ['For multi-framework: KServe', 'For pipelines: KServe InferenceGraph']
         },
@@ -1286,7 +1295,7 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
           tradeoffs: [
             { pro: 'Multi-framework (TF, PyTorch, ONNX, etc.)', con: 'Less optimized for LLMs than AI Inference' },
             { pro: 'InferenceGraph for pipelines', con: 'More complex for simple LLM serving' },
-            { pro: 'Mature, widely adopted', con: 'Lacks llm-d advanced features' }
+            { pro: 'Mature, widely adopted', con: 'Lacks advanced LLM-specific optimizations' }
           ],
           alternatives: ['For LLM-only: AI Inference Server', 'For simplicity: AI Inference Server']
         },
@@ -1299,7 +1308,7 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
             { pro: 'Multiple viable options', con: 'Need to evaluate other criteria' },
             { pro: 'Both work', con: 'Should test performance' }
           ],
-          alternatives: ['For llm-d: AI Inference', 'For maturity: KServe']
+          alternatives: ['For advanced LLM features: AI Inference', 'For maturity: KServe']
         }
       }
     }

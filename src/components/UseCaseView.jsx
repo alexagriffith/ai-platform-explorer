@@ -135,7 +135,7 @@ export default function UseCaseView() {
       customerProfiles: ['Cost-conscious teams', 'High-volume inference', 'Infrastructure engineers'],
       deploymentPatterns: [
         'Split prefill (prompt processing) and decode (token generation)',
-        'llm-d routing with KV cache awareness',
+        'Advanced routing (llm-d) with KV cache awareness',
         'LeaderWorkerSet for multi-node coordination',
         'GPU optimization for different phases'
       ],
@@ -143,7 +143,7 @@ export default function UseCaseView() {
         'Prefill is compute-bound (benefits from high FLOPS GPUs)',
         'Decode is memory-bound (benefits from high memory bandwidth)',
         'Can use different GPU types for each phase',
-        'llm-d handles KV cache routing between phases',
+        'Advanced scheduler (llm-d) handles KV cache routing between phases',
         'Reduces overall GPU costs for large-scale deployments',
         'Requires understanding of LLM inference internals',
         'Best for high-volume production workloads (1M+ requests/day)',

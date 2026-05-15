@@ -16,15 +16,15 @@ export const products = [
   {
     id: 'rhoai',
     name: 'Red Hat OpenShift AI (RHOAI)',
-    description: 'A hybrid cloud AI platform for data scientists and developers to build, train, deploy, and monitor AI/ML models.',
+    description: 'AI/ML platform for OpenShift. Provides full ML lifecycle capabilities on OpenShift clusters (self-managed or managed ROSA/ARO). Requires OpenShift as the container platform.',
     category: 'AI/ML Platform',
     status: 'GA',
     layer: 'platform',
     required: true,
     connections: ['openshift', 'model-registry', 'trustyai', 'ai-inference'],
-    useCases: ['Distributed AI workloads', 'Large-scale training', 'Production inferencing'],
-    customerProfile: ['MLOps teams', 'Data scientists', 'Enterprise dev teams'],
-    deploymentPattern: 'Hybrid cloud, multi-cluster',
+    useCases: ['Distributed AI workloads', 'Large-scale training', 'Production inferencing', 'Enterprise ML on OpenShift'],
+    customerProfile: ['MLOps teams', 'Data scientists', 'Enterprise dev teams with OpenShift'],
+    deploymentPattern: 'OpenShift (self-managed or ROSA/ARO)',
     resources: {
       docs: 'https://docs.redhat.com',
       contacts: ['#forum-openshift-ai', '#forum-rhai-docs']
@@ -33,15 +33,15 @@ export const products = [
   {
     id: 'rhai',
     name: 'Red Hat AI (RHAI)',
-    description: 'Red Hat AI for non-OpenShift Kubernetes environments (aligned to major cloud Kubernetes and upstream clusters).',
+    description: 'AI/ML platform for standard Kubernetes (non-OpenShift). Provides AI capabilities on EKS, AKS, GKE, and self-managed Kubernetes clusters. Use this when your container platform is not OpenShift.',
     category: 'AI/ML Platform',
     status: 'GA',
     layer: 'platform',
     required: false,
     connections: ['ai-inference', 'model-registry'],
-    useCases: ['Kubernetes-first estates without OpenShift', 'Cloud-managed Kubernetes'],
-    customerProfile: ['Platform teams on EKS/AKS/GKE', 'Kubernetes platform engineering'],
-    deploymentPattern: 'Standard Kubernetes',
+    useCases: ['Cloud-native Kubernetes AI', 'EKS/AKS/GKE deployments', 'Standard K8s without OpenShift'],
+    customerProfile: ['Platform teams on EKS/AKS/GKE', 'Kubernetes platform engineering', 'Cloud-native teams'],
+    deploymentPattern: 'Standard Kubernetes (EKS, AKS, GKE, self-managed)',
     resources: {
       docs: 'https://docs.redhat.com',
       contacts: ['#forum-openshift-ai']
@@ -50,15 +50,15 @@ export const products = [
   {
     id: 'rhel-ai',
     name: 'Red Hat Enterprise Linux AI (RHEL AI)',
-    description: 'A foundation model platform for consistently running large language models (LLMs) in individual Linux server environments.',
+    description: 'Foundation model platform for running LLMs on individual RHEL servers. Single-node only. InstructLab-focused fine-tuning and serving. Not for distributed training or production-scale deployments (use RHOAI or RHAI instead).',
     category: 'Model Platform',
     status: 'GA',
     layer: 'platform',
     required: false,
     connections: ['llama-stack', 'instructlab'],
-    useCases: ['Fine-tuning models', 'Serving models in isolated environments'],
-    customerProfile: ['Developers', 'Small teams starting AI'],
-    deploymentPattern: 'Single Linux server',
+    useCases: ['InstructLab fine-tuning', 'Edge deployments', 'Development environments', 'Single-server serving'],
+    customerProfile: ['Edge deployments', 'Developers', 'Small teams', 'Single-node use cases'],
+    deploymentPattern: 'Single RHEL server (not distributed)',
     resources: {
       docs: 'https://docs.redhat.com',
       contacts: ['#forum-llama-stack']
@@ -82,13 +82,16 @@ export const products = [
   },
   {
     id: 'kserve',
-    name: 'KServe (multi-framework serving)',
-    description: 'Kubernetes-native model serving pattern commonly used with OpenShift AI for multi-model and canary workflows.',
+    name: 'KServe',
+    description: 'Model serving platform built into Red Hat OpenShift AI. Supports multiple runtimes (vLLM, TorchServe, TensorFlow, etc.) with autoscaling (HPA/KEDA/Knative), canary deployments, and InferenceGraph pipelines.',
     category: 'Model Serving',
     status: 'GA',
     layer: 'services',
     required: false,
     connections: ['rhoai', 'ai-inference'],
+    useCases: ['Multi-framework model serving', 'InferenceGraph DAG pipelines', 'Canary deployments', 'A/B testing'],
+    customerProfile: ['ML platform teams', 'MLOps engineers', 'Data scientists'],
+    deploymentPattern: 'Kubernetes-native serving abstraction',
     resources: {
       docs: 'https://docs.redhat.com'
     }
@@ -98,7 +101,7 @@ export const products = [
     name: 'Red Hat Batch Gateway',
     description: 'OpenAI-compatible batch inference API for large asynchronous LLM workloads.',
     category: 'Model Serving',
-    status: 'GA',
+    status: 'Technology Preview',
     layer: 'services',
     required: false,
     connections: ['ai-inference', 'rhoai'],
@@ -229,15 +232,18 @@ export const products = [
   },
   {
     id: 'ai-gateway',
-    name: 'AI Gateway',
-    description: 'Centralized access control, authentication, and policy enforcement for AI services.',
+    name: 'Red Hat AI Gateway',
+    description: 'Model-as-a-Service gateway providing OpenAI-compatible APIs for accessing self-hosted and external models (NVIDIA Nemotron, etc.). Includes usage tracking, policy enforcement, and centralized model catalog management.',
     category: 'Gateway',
     status: 'GA',
     layer: 'application',
     required: false,
     swappable: true,
     byoOption: true,
-    connections: ['rhoai'],
+    connections: ['rhoai', 'ai-inference'],
+    useCases: ['Multi-model API access', 'External model integration', 'Usage tracking and cost control', 'Centralized model governance'],
+    customerProfile: ['Platform teams', 'MLOps engineers', 'App developers needing model access'],
+    deploymentPattern: 'Centralized gateway for model access',
     resources: {
       docs: 'https://docs.redhat.com'
     }

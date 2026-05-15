@@ -50,20 +50,37 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-        <div className="flex items-start gap-3 mb-4">
-          <Layers className="text-purple-600 mt-1" size={28} />
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Architecture Builder
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400">
-              Choose how you want to build your Red Hat AI stack
-            </p>
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex items-start gap-3">
+            <Layers className="text-purple-600 mt-1" size={28} />
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Architecture Builder
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Choose how you want to build your Red Hat AI stack
+              </p>
+            </div>
+          </div>
+
+          {/* Help Link */}
+          <div className="inline-flex items-center gap-2 p-2.5 bg-gradient-to-r from-purple-50 via-blue-50 to-purple-50 dark:from-purple-900/20 dark:via-blue-900/20 dark:to-purple-900/20 border border-purple-200 dark:border-purple-700 rounded-lg flex-shrink-0">
+            <HelpCircle size={16} className="text-purple-600 dark:text-purple-400 flex-shrink-0" />
+            <span className="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
+              Not sure what to choose?
+            </span>
+            <button
+              onClick={onSwitchToDecisions}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg text-sm font-medium hover:shadow-lg hover:scale-105 transition-all group"
+            >
+              <span>Decision Guides</span>
+              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
         </div>
 
         {/* Mode Selector - Dropdown with inline description */}
-        <div className="mb-4">
+        <div className="mb-0">
           <div className="flex items-center gap-3 mb-2">
             <label htmlFor="architecture-mode" className="text-sm font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap">
               Build Mode:
@@ -84,26 +101,6 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
           <p className="text-xs text-gray-500 dark:text-gray-400 ml-24">
             {currentMode.description}
           </p>
-        </div>
-
-        {/* Help Link */}
-        <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-50 via-blue-50 to-purple-50 dark:from-purple-900/20 dark:via-blue-900/20 dark:to-purple-900/20 border-2 border-purple-200 dark:border-purple-700 rounded-xl">
-          <HelpCircle size={24} className="text-purple-600 dark:text-purple-400 flex-shrink-0" />
-          <div className="flex-1">
-            <div className="text-sm font-semibold text-gray-900 dark:text-white">
-              Not sure what to choose?
-            </div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">
-              Get personalized recommendations with our guided decision workflows
-            </div>
-          </div>
-          <button
-            onClick={onSwitchToDecisions}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all group flex-shrink-0"
-          >
-            <span>Decision Guides</span>
-            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-          </button>
         </div>
       </div>
 

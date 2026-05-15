@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Search, Filter, ExternalLink, Check } from 'lucide-react';
+import { Search, Filter, ExternalLink } from 'lucide-react';
 import { products } from '../data/products';
 
-export default function ProductExplorer({ selectedProducts, setSelectedProducts }) {
+export default function ProductExplorer() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterLayer, setFilterLayer] = useState('all');
@@ -15,17 +15,6 @@ export default function ProductExplorer({ selectedProducts, setSelectedProducts 
 
     return matchesSearch && matchesStatus && matchesLayer;
   });
-
-  const toggleProduct = (productId) => {
-    const product = products.find(p => p.id === productId);
-    if (product?.required) return;
-
-    setSelectedProducts(prev =>
-      prev.includes(productId)
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
-  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -40,7 +29,10 @@ export default function ProductExplorer({ selectedProducts, setSelectedProducts 
     <div className="space-y-6">
       {/* Filters */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Product Catalog</h2>
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Red Hat AI Product Catalog</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Browse Red Hat AI portfolio components, maturity status, and documentation</p>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-4">
           <div className="relative">
@@ -82,49 +74,25 @@ export default function ProductExplorer({ selectedProducts, setSelectedProducts 
       {/* Product Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProducts.map(product => {
-          const isSelected = selectedProducts.includes(product.id);
-          const isRequired = product.required;
-
           return (
             <div
               key={product.id}
-              className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border-2 transition-all ${
-                isSelected
-                  ? 'border-purple-500 shadow-lg'
-                  : 'border-gray-200 dark:border-gray-700'
-              }`}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
             >
               <div className="p-6">
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-bold text-lg text-gray-900 dark:text-white flex-1">
+                <div className="mb-3">
+                  <h3 className="font-bold text-lg text-gray-900 dark:text-white">
                     {product.name}
                   </h3>
-                  {!isRequired && (
-                    <button
-                      onClick={() => toggleProduct(product.id)}
-                      className={`p-2 rounded-full transition-all ${
-                        isSelected
-                          ? 'bg-purple-600 text-white'
-                          : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                      }`}
-                    >
-                      <Check size={16} />
-                    </button>
-                  )}
                 </div>
 
-                <div className="flex items-center gap-2 mb-3">
+                <div className="flex flex-wrap items-center gap-2 mb-3">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(product.status)}`}>
                     {product.status}
                   </span>
                   <span className="px-3 py-1 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                     {product.category}
                   </span>
-                  {isRequired && (
-                    <span className="px-3 py-1 rounded-full text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 font-medium">
-                      Required
-                    </span>
-                  )}
                 </div>
 
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">

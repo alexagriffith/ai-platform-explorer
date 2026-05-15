@@ -5,7 +5,6 @@ import ProductExplorer from './components/ProductExplorer';
 import UseCaseView from './components/UseCaseView';
 import DecisionFlowchart from './components/DecisionFlowchart';
 import AcronymGlossary from './components/AcronymGlossary';
-import { products } from './data/products';
 
 function App() {
   const [currentView, setCurrentView] = useState('architecture');
@@ -21,11 +20,9 @@ function App() {
     teamSize: 'small',
     deployment: 'cloud'
   });
-  const [selectedProducts, setSelectedProducts] = useState(
-    products.filter(p => p.required).map(p => p.id)
-  );
   // Canonical architecture blueprint: flat map capabilityId -> optionId (see README "Application state").
   const [selectedCapabilities, setSelectedCapabilities] = useState({});
+  const [selectedDecisionGuide, setSelectedDecisionGuide] = useState('');
 
   const views = [
     { id: 'architecture', name: 'Architecture', icon: Layers },
@@ -47,19 +44,15 @@ function App() {
           />
         );
       case 'products':
-        return (
-          <ProductExplorer
-            selectedProducts={selectedProducts}
-            setSelectedProducts={setSelectedProducts}
-          />
-        );
+        return <ProductExplorer />;
       case 'decisions':
         return (
           <DecisionFlowchart
-            key="decision-flowchart"
             selectedCapabilities={selectedCapabilities}
             setSelectedCapabilities={setSelectedCapabilities}
             onSwitchToArchitecture={() => setCurrentView('architecture')}
+            selectedDecisionGuide={selectedDecisionGuide}
+            setSelectedDecisionGuide={setSelectedDecisionGuide}
           />
         );
       case 'use-cases':
@@ -111,7 +104,13 @@ function App() {
               return (
                 <button
                   key={view.id}
-                  onClick={() => setCurrentView(view.id)}
+                  onClick={() => {
+                    // Reset decision guide when clicking the tab
+                    if (view.id === 'decisions') {
+                      setSelectedDecisionGuide('');
+                    }
+                    setCurrentView(view.id);
+                  }}
                   className={`flex items-center gap-2 px-4 py-3 font-medium text-sm transition-colors border-b-2 ${
                     currentView === view.id
                       ? 'border-purple-600 text-purple-600 dark:text-purple-400'

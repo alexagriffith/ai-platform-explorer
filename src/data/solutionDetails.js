@@ -2,42 +2,43 @@
 export const solutionDetails = {
   'rh-gateway': {
     name: 'Red Hat AI Gateway',
-    description: 'Enterprise-grade API gateway for AI workloads with authentication, rate limiting, and semantic routing',
+    description: 'Model-as-a-Service gateway providing unified access to self-hosted and external AI models through OpenAI-compatible APIs',
     architecture: {
       components: [
-        { name: 'Authorino', role: 'Authentication & Authorization', description: 'Kubernetes-native auth service supporting OAuth, OIDC, API keys, mTLS' },
-        { name: 'Kuadrant (Limitador)', role: 'Rate Limiting & Quotas', description: 'Distributed rate limiting service with token bucket algorithm and quota management' },
-        { name: 'Envoy Proxy', role: 'L7 Proxy', description: 'High-performance proxy for routing, load balancing, and circuit breaking' },
-        { name: 'llm-d Router', role: 'Semantic Routing', description: 'Token-aware scheduling with KV cache-aware routing for GPU optimization' }
+        { name: 'Model Catalog', role: 'Model Discovery', description: 'Centralized catalog of available models (self-hosted and external providers like NVIDIA Nemotron)' },
+        { name: 'OpenAI API Adapter', role: 'API Compatibility', description: 'OpenAI-compatible REST API endpoints for chat completions, embeddings, and completions' },
+        { name: 'Usage Tracking', role: 'Metering & Analytics', description: 'Track token usage, request counts, and latency per user/model for cost allocation' },
+        { name: 'Policy Engine', role: 'Governance', description: 'Enforce access policies, rate limits, and model routing rules based on identity and usage' }
       ],
       integrations: [
-        { name: 'OpenShift Service Mesh', purpose: 'Traffic management and observability' },
-        { name: 'Red Hat SSO / Keycloak', purpose: 'Identity provider integration' },
-        { name: 'Prometheus', purpose: 'Metrics and monitoring' },
-        { name: 'Project Navigator', purpose: 'Intent-based workflow orchestration' },
-        { name: 'AutoRAG', purpose: 'Optimized RAG endpoint routing' }
+        { name: 'Identity Management', purpose: 'Integration with Red Hat SSO/Keycloak for authentication' },
+        { name: 'AI Inference Server', purpose: 'Self-hosted model serving backend' },
+        { name: 'External Model APIs', purpose: 'NVIDIA Nemotron, Azure OpenAI, and other external providers' },
+        { name: 'Prometheus', purpose: 'Metrics and monitoring for gateway operations' },
+        { name: 'OpenShift', purpose: 'Platform deployment and lifecycle management' }
       ]
     },
     capabilities: [
-      'Authentication: OAuth, OIDC, API keys, mTLS',
-      'SLO-based priority routing (latency-sensitive vs throughput-sensitive)',
-      'KV Cache-aware intelligent routing for GPU utilization',
+      'OpenAI-compatible API for chat completions, embeddings, and text generation',
+      'Unified access to self-hosted models (vLLM, KServe) and external providers',
+      'Centralized model catalog with administrator-curated model lists',
+      'Usage tracking and metering for cost allocation and chargeback',
+      'Policy-based access control (who can access which models)',
       'Rate limiting and quota management per user/tenant',
-      'Semantic routing with intent-based model selection',
-      'Request routing and load balancing',
-      'Circuit breaking and retry policies',
-      'API analytics and metrics',
-      'RBAC policy enforcement'
+      'Identity integration with enterprise SSO systems',
+      'Request/response logging for audit and compliance',
+      'Multi-tenant isolation and security'
     ],
     useCases: [
-      'Multi-tenant AI platforms requiring isolation',
-      'Production inference endpoints with SLAs (<200ms TTFT)',
-      'External API exposure with security requirements',
-      'Usage-based billing and quota management',
-      'Intent-based routing to optimal models'
+      'Provide developers with OpenAI-compatible access to internal models',
+      'Integrate external models (NVIDIA Nemotron) alongside self-hosted models',
+      'Track and allocate AI costs across teams and projects',
+      'Enforce governance policies on which teams can use which models',
+      'Simplify migration from external APIs to self-hosted models',
+      'Multi-tenant SaaS platforms offering AI capabilities'
     ],
     documentation: 'https://docs.redhat.com',
-    contacts: ['#forum-ai-gateway', 'ai-gateway-support@redhat.com']
+    contacts: ['#forum-ai-gateway']
   },
   'openshift': {
     name: 'Red Hat OpenShift',
@@ -253,18 +254,18 @@ export const solutionDetails = {
   },
   'ai-inference': {
     name: 'Red Hat AI Inference Server',
-    description: 'High-performance LLM serving powered by vLLM and llm-d for advanced token-aware scheduling, KV cache routing, and SLO-based priority',
+    description: 'High-performance LLM serving powered by vLLM with advanced token-aware scheduling, KV cache routing, and SLO-based priority',
     requirements:
       'Requires compatible GPU drivers/operators where used and a supported serving topology. Validate latency SLOs and model formats with documentation.',
     architecture: {
       components: [
-        { name: 'llm-d Inference Scheduler', role: 'Advanced Scheduling', description: 'Token-aware scheduling, KV cache routing, split-phase prefill/decode, SLO-based priority routing (latency vs throughput)' },
-        { name: 'vLLM Runtime', role: 'Inference Engine', description: 'PagedAttention, continuous batching, multi-GPU support - orchestrated by llm-d' },
+        { name: 'Advanced Inference Scheduler', role: 'Intelligent Scheduling', description: 'Token-aware scheduling, KV cache routing, split-phase prefill/decode, SLO-based priority routing (latency vs throughput)' },
+        { name: 'vLLM Runtime', role: 'Inference Engine', description: 'PagedAttention, continuous batching, multi-GPU support with advanced scheduling capabilities' },
         { name: 'TGIS', role: 'Text Generation', description: 'Alternative runtime for streaming and batch inference' },
         { name: 'Model Cache', role: 'Performance', description: 'In-memory caching and model preloading' }
       ],
       integrations: [
-        { name: 'llm-d Gateway', purpose: 'Semantic routing and intelligent request distribution' },
+        { name: 'Inference Routing Layer', purpose: 'Semantic routing and intelligent request distribution' },
         { name: 'Model Registry', purpose: 'Model versioning and deployment' },
         { name: 'Prometheus', purpose: 'Performance metrics and SLIs' },
         { name: 'AI Gateway', purpose: 'Authentication, rate limiting, and semantic routing integration' },
@@ -272,27 +273,27 @@ export const solutionDetails = {
       ]
     },
     capabilities: [
-      '🚀 llm-d Token-Aware Scheduling: Intelligent request routing based on token count',
-      '🚀 llm-d KV Cache Routing: Maximize GPU utilization with cache-aware scheduling',
-      '🚀 llm-d SLO-Based Priority: Latency-sensitive (<200ms TTFT) vs throughput-sensitive routing',
-      '🚀 llm-d Split-Phase Inference: Disaggregated prefill/decode for cost optimization',
+      '🚀 Token-Aware Scheduling: Intelligent request routing based on token count',
+      '🚀 KV Cache-Aware Routing: Maximize GPU utilization with cache-aware scheduling',
+      '🚀 SLO-Based Priority Routing: Latency-sensitive (<200ms TTFT) vs throughput-sensitive workloads',
+      '🚀 Split-Phase Inference: Disaggregated prefill/decode for cost optimization',
       'vLLM-based high-performance serving with PagedAttention',
       'Continuous batching for maximum throughput',
       'Multi-GPU tensor parallelism',
       'Token streaming for real-time responses',
       'Model quantization (INT8, FP16)',
-      'Auto-scaling based on load and GPU utilization'
+      'Autoscaling via Kubernetes HPA/KEDA based on request queue depth and custom metrics'
     ],
     useCases: [
-      'Production LLM inference requiring <200ms TTFT (llm-d latency-sensitive routing)',
-      'High-throughput background workloads (llm-d throughput-sensitive routing)',
-      'Multi-model serving with intelligent routing (llm-d semantic routing)',
-      'Cost-optimized disaggregated serving (llm-d split-phase prefill/decode)',
+      'Production LLM inference requiring <200ms TTFT (latency-optimized routing)',
+      'High-throughput background workloads (throughput-optimized routing)',
+      'Multi-model serving with intelligent routing',
+      'Cost-optimized disaggregated serving (split-phase prefill/decode)',
       'Real-time chatbot applications at scale',
       'Batch processing of text generation with efficiency'
     ],
     documentation: 'https://docs.redhat.com',
-    contacts: ['#forum-ai-inference', 'Shumaila Yaseen (SME)', '#team-llm-d']
+    contacts: ['#forum-ai-inference', 'Shumaila Yaseen (SME)']
   },
   'rh-model-registry': {
     name: 'Red Hat Model Registry',
@@ -343,13 +344,14 @@ export const solutionDetails = {
       ]
     },
     capabilities: [
-      'Custom metrics for AI workloads',
-      'Pre-built Grafana dashboards for ML',
-      'GPU utilization and memory tracking',
-      'Inference latency and throughput monitoring',
-      'Token usage and cost tracking',
-      'Multi-cluster metrics aggregation',
-      'Alert rules for model degradation'
+      'OpenShift monitoring infrastructure (Prometheus + Grafana + Alertmanager)',
+      'Infrastructure metrics out-of-box (pod CPU, memory, network)',
+      'GPU metrics require NVIDIA DCGM exporter (customer-configured)',
+      'Model-specific metrics require custom ServiceMonitors (customer-defined)',
+      'Custom Grafana dashboards for AI workloads (customer-built)',
+      'Token usage and cost tracking (requires custom instrumentation)',
+      'Multi-cluster metrics aggregation with Thanos',
+      'Alert rules for model performance (customer-configured)'
     ],
     useCases: [
       'Monitor production model performance',
@@ -394,15 +396,15 @@ export const solutionDetails = {
     contacts: ['#forum-trustyai']
   },
   'rh-mcp-full': {
-    name: 'Full MCP Ecosystem',
-    description: 'Complete Model Context Protocol platform with governance, discovery, deployment, and security',
+    name: 'Red Hat MCP Platform (Technology Preview)',
+    description: 'Model Context Protocol platform components for AI agent tool integration. Note: MCP is an emerging standard - verify component availability and maturity with your Red Hat account team.',
     architecture: {
       components: [
-        { name: 'MCP Catalog', role: 'Discovery', description: 'Browse and filter MCP servers by category and trust tier' },
-        { name: 'MCP Lifecycle Operator', role: 'Management', description: 'Kubernetes-native MCP server orchestration' },
-        { name: 'MCP Gateway', role: 'Routing', description: 'Centralized access control and tool aggregation' },
-        { name: 'MCP Registry', role: 'Governance', description: 'Metadata, certification, and security scanning' },
-        { name: 'Ingestion Pipeline', role: 'Validation', description: 'Four-stage validation: Validate → Scan → Sign & Certify → Publish' }
+        { name: 'MCP Catalog', role: 'Discovery', description: 'Browse and discover MCP servers' },
+        { name: 'MCP Lifecycle Operator', role: 'Management', description: 'Kubernetes-native MCP server management (Tech Preview)' },
+        { name: 'MCP Gateway', role: 'Routing', description: 'Access control and tool routing (Tech Preview)' },
+        { name: 'MCP Registry', role: 'Governance', description: 'Metadata and governance registry' },
+        { name: 'Ingestion Pipeline', role: 'Validation', description: 'MCP server ingestion workflow' }
       ],
       integrations: [
         { name: 'Partner MCP Servers', purpose: 'Confluent, MongoDB, Elastic, Azure, AWS, Google Cloud' },
@@ -412,15 +414,13 @@ export const solutionDetails = {
       ]
     },
     capabilities: [
-      'Four-stage ingestion pipeline: Validate → Scan → Sign & Certify → Publish',
-      'Curated marketplace of certified MCP servers',
-      'One-click deployment with security scanning',
-      'CVE detection and vulnerability analysis',
-      'Cryptographic signing and trust verification',
-      'Tool aggregation across multiple backends',
-      'RBAC access control and policy enforcement',
-      'Kubernetes-native management',
-      'Partner integrations (Confluent, MongoDB, Elastic, Azure, AWS, GCP)'
+      'MCP server discovery and catalog',
+      'Governance and metadata registry',
+      'Kubernetes-native deployment patterns',
+      'Partner MCP server integrations',
+      'Tool routing and access control (Tech Preview)',
+      'Security scanning for MCP servers',
+      'RBAC integration with OpenShift'
     ],
     useCases: [
       'Agentic AI with external tool access',
@@ -532,11 +532,11 @@ export const solutionDetails = {
         { name: 'KServe Agent', role: 'Model Management', description: 'Logging, batching, multi-model serving management' },
         { name: 'KServe Router', role: 'InferenceGraph', description: 'DAG-based routing for multi-model inference pipelines' },
         { name: 'kube-rbac-proxy', role: 'Authentication', description: 'Sidecar for auth/authz when security annotation enabled' },
-        { name: 'LLMInferenceService Controller', role: 'LLM Serving', description: 'Specialized controller for LLM workloads with llm-d integration' }
+        { name: 'LLMInferenceService Controller', role: 'LLM Serving', description: 'Specialized controller for LLM workloads with advanced scheduling' }
       ],
       integrations: [
         { name: 'Gateway API (HTTPRoute)', purpose: 'Ingress routing via openshift-ai-inference Gateway' },
-        { name: 'llm-d Scheduler', purpose: 'Token-aware scheduling and KV cache routing for LLMs' },
+        { name: 'Advanced Inference Scheduler', purpose: 'Token-aware scheduling and KV cache routing for LLMs' },
         { name: 'Istio/Service Mesh', purpose: 'Optional VirtualService-based ingress (legacy)' },
         { name: 'KEDA', purpose: 'ScaledObject-based autoscaling' },
         { name: 'S3-compatible storage', purpose: 'Model artifact storage' },
@@ -547,14 +547,14 @@ export const solutionDetails = {
       'Multi-framework serving: TensorFlow, PyTorch, ONNX, Scikit-learn, XGBoost',
       'InferenceService API (v1beta1) for single-model serving',
       'InferenceGraph API (v1alpha1) for DAG-based multi-model pipelines',
-      'LLMInferenceService API (v1alpha2) with llm-d integration',
+      'LLMInferenceService API (v1alpha2) with advanced scheduling',
       'TrainedModel API for multi-model serving on shared runtimes',
       'HTTPRoute-based ingress with Gateway API',
       'kube-rbac-proxy authentication when enabled',
       'Model artifact download from S3/GCS/Azure Blob',
-      'Auto-scaling with HPA and KEDA',
+      'Autoscaling via HPA and KEDA (Knative Serving optional for serverless scaling)',
       'Multi-node LLM serving with LeaderWorkerSet',
-      'Token-aware scheduling and KV cache routing (llm-d)',
+      'Token-aware scheduling and KV cache routing',
       'Support for custom serving runtimes (ServingRuntime CRD)'
     ],
     useCases: [
@@ -563,7 +563,7 @@ export const solutionDetails = {
       'LLM serving with advanced scheduling and KV cache optimization',
       'Multi-model serving sharing runtime resources',
       'Production serving with authentication and authorization',
-      'Auto-scaling inference workloads based on load'
+      'Autoscaling inference workloads (HPA/KEDA based on metrics, Knative for serverless)'
     ],
     documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/serving_models',
     contacts: ['#forum-openshift-ai', '#team-kserve']
@@ -763,7 +763,7 @@ export const solutionDetails = {
   },
   'rhel-ai': {
     name: 'Red Hat Enterprise Linux AI',
-    description: 'Granite foundation models and InstructLab on individual RHEL servers for single-node inference and fine-tuning',
+    description: 'Granite foundation models and InstructLab on individual RHEL servers for single-node inference and fine-tuning. Single-server only - not for distributed training or production-scale deployments (use RHOAI or RHAI instead).',
     architecture: {
       components: [
         { name: 'Granite Models', role: 'Foundation Models', description: 'Pre-trained IBM Granite LLMs optimized for enterprise use' },
@@ -783,6 +783,7 @@ export const solutionDetails = {
       'vLLM-based inference serving on RHEL',
       'No Kubernetes/OpenShift required',
       'Optimized for edge and single-server deployments',
+      '⚠️ Single-node only - not for distributed training or production-scale serving',
       'RHEL security and compliance features',
       'Support for NVIDIA GPUs on RHEL',
       'Synthetic data generation with InstructLab',
@@ -810,8 +811,8 @@ export const solutionDetails = {
         { name: 'S3 Storage', role: 'File Storage', description: 'Stores input JSONL files and output results' }
       ],
       integrations: [
-        { name: 'llm-d Gateway', purpose: 'Downstream inference endpoint for batch requests' },
-        { name: 'AI Inference Server', purpose: 'Alternative inference backend (OpenAI-compatible)' },
+        { name: 'AI Inference Server', purpose: 'Downstream inference endpoint for batch requests (OpenAI-compatible)' },
+        { name: 'KServe', purpose: 'Alternative inference backend' },
         { name: 'Redis', purpose: 'Job queue, metadata, and event handling' },
         { name: 'S3-compatible storage', purpose: 'Batch file storage (input/output)' },
         { name: 'PostgreSQL', purpose: 'Alternative metadata backend' }
@@ -838,7 +839,7 @@ export const solutionDetails = {
       'Background tasks requiring LLM inference at scale'
     ],
     documentation: 'https://github.com/red-hat-data-services/batch-gateway',
-    contacts: ['#team-llm-d', '#forum-ai-inference']
+    contacts: ['#forum-ai-inference']
   },
   'fms-guardrails': {
     name: 'FMS Guardrails Orchestrator',

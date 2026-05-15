@@ -52,24 +52,24 @@ export const optionGuides = {
     bestFor: 'Organizations wanting full-stack solution with streamlined procurement'
   },
   'rhoai': {
-    whatItIs: 'AI/ML platform that runs on existing OpenShift clusters',
-    whyChoose: 'You already have OpenShift, or want component flexibility',
-    whenToUse: 'Existing OpenShift deployment, incremental AI adoption, custom configurations',
-    bestFor: 'Teams with OpenShift experience, existing clusters, flexible deployments'
+    whatItIs: 'AI/ML platform for OpenShift - requires OpenShift as the container platform',
+    whyChoose: 'Your container platform is OpenShift (self-managed or ROSA/ARO)',
+    whenToUse: 'When running on OpenShift clusters - this is the only Red Hat AI platform option for OpenShift',
+    bestFor: 'Teams with OpenShift as their container platform'
   },
   'rhai': {
-    whatItIs: 'Red Hat AI offerings aligned to standard Kubernetes (not the OpenShift AI operator stack)',
-    whyChoose: 'Your control plane is non-OpenShift Kubernetes and you still want a supported Red Hat AI path',
-    whenToUse: 'EKS, AKS, GKE, or other Kubernetes where OpenShift is not the platform',
-    bestFor: 'Cloud provider–managed clusters or upstream Kubernetes estates'
+    whatItIs: 'AI/ML platform for standard Kubernetes - use when your platform is NOT OpenShift',
+    whyChoose: 'Your container platform is standard Kubernetes (EKS, AKS, GKE, self-managed K8s)',
+    whenToUse: 'When running on non-OpenShift Kubernetes - this is the Red Hat AI platform for standard K8s',
+    bestFor: 'Cloud-managed Kubernetes (EKS, AKS, GKE) or self-managed standard Kubernetes estates'
   },
   'rhel-ai': {
     whatItIs:
-      'Foundation models and serving on individual RHEL servers; InstructLab-style alignment often pairs here',
-    whyChoose: 'Simple single-server deployment, includes InstructLab for fine-tuning',
+      'Foundation models and InstructLab fine-tuning on individual RHEL servers - single-node only',
+    whyChoose: 'Simple single-server deployment for edge use cases, development, or single-node serving',
     whenToUse:
-      'Edge deployments, single-server inference, fine-tuning. Red Hat MCP SKUs in this app require OpenShift selected as runtime; use hybrid (OpenShift + RHEL AI) or self-hosted MCP if you need both.',
-    bestFor: 'Small teams, edge inference, department pilots'
+      'Edge deployments, development environments, single-server use cases. NOT for distributed training or production-scale serving (use RHOAI or RHAI instead). Red Hat MCP SKUs in this app require OpenShift selected as runtime; use hybrid (OpenShift + RHEL AI) or self-hosted MCP if you need both.',
+    bestFor: 'Edge deployments, small teams, single-node environments, InstructLab fine-tuning'
   },
   'odf': {
     whatItIs: 'OpenShift Data Foundation - integrated S3-compatible object storage',
@@ -112,16 +112,16 @@ export const optionGuides = {
 
   // AI Services Layer - Inference
   'ai-inference': {
-    whatItIs: 'High-performance vLLM-based server for LLM inference',
-    whyChoose: 'Optimized for speed and throughput, GPU-accelerated, industry-leading performance',
-    whenToUse: 'Production LLM APIs, high request volume, low latency requirements',
-    bestFor: 'LLM serving workloads demanding maximum performance'
+    whatItIs: 'High-performance vLLM-based server for LLM inference - can deploy via KServe or standalone',
+    whyChoose: 'Optimized for LLMs with advanced scheduling, GPU-accelerated, industry-leading performance',
+    whenToUse: 'Production LLM APIs, high request volume, low latency requirements, LLM-specific optimizations needed',
+    bestFor: 'LLM-only serving workloads demanding maximum performance and advanced scheduling features'
   },
   'kserve': {
-    whatItIs: 'Multi-framework model serving (part of OpenShift AI)',
-    whyChoose: 'Supports multiple frameworks, Kubernetes-native, flexible routing',
-    whenToUse: 'Multiple model types, A/B testing, canary deployments, framework flexibility',
-    bestFor: 'Teams serving diverse model types beyond just LLMs'
+    whatItIs: 'Model serving platform built into RHOAI - provides abstraction layer for multiple runtimes',
+    whyChoose: 'Platform layer supporting vLLM, TorchServe, TensorFlow, ONNX, etc. with autoscaling and deployment patterns',
+    whenToUse: 'Multiple frameworks needed, InferenceGraph pipelines, canary/A/B deployments, non-LLM models',
+    bestFor: 'Teams serving diverse model types or needing advanced deployment workflows'
   },
   'rh-model-registry': {
     whatItIs: 'Red Hat Model Registry for versioning and metadata',
@@ -195,10 +195,10 @@ export const optionGuides = {
 
   // Application Layer
   'rh-gateway': {
-    whatItIs: 'Red Hat AI Gateway - Authorino + Limitador + Envoy for AI APIs',
-    whyChoose: 'Built for AI workloads, rate limiting, authentication, routing',
-    whenToUse: 'Production APIs, multi-tenancy, auth/rate limiting needed',
-    bestFor: 'Production AI services requiring enterprise API management'
+    whatItIs: 'Red Hat AI Gateway - Model-as-a-Service gateway with OpenAI-compatible APIs',
+    whyChoose: 'Unified access to self-hosted and external models, usage tracking, policy enforcement',
+    whenToUse: 'Need OpenAI-compatible APIs, multi-model access, cost tracking, or external model integration (NVIDIA Nemotron, etc.)',
+    bestFor: 'Enterprise platforms providing developer access to curated model catalogs with governance'
   },
   'project-navigator': {
     whatItIs: 'Intent-based AI workflow orchestrator',
