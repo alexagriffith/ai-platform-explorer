@@ -39,19 +39,25 @@ const guideGroups = [
     id: 'getting-started',
     title: 'Getting Started',
     description: 'Choose your platform and overall architecture',
-    guides: ['product', 'deployment', 'architecture']
+    guides: ['product', 'deployment', 'architecture'],
+    accentColor: 'purple',
+    bgGradient: 'from-purple-50 to-pink-50 dark:from-purple-900/10 dark:to-pink-900/10'
   },
   {
     id: 'infrastructure',
     title: 'Infrastructure & Resources',
     description: 'Select hardware, storage, and data infrastructure',
-    guides: ['gpu', 'storage', 'vectordb']
+    guides: ['gpu', 'storage', 'vectordb'],
+    accentColor: 'blue',
+    bgGradient: 'from-blue-50 to-cyan-50 dark:from-blue-900/10 dark:to-cyan-900/10'
   },
   {
     id: 'technical',
     title: 'Technical Implementation',
     description: 'Configure serving, training, and evaluation approaches',
-    guides: ['servingChoice', 'batchVsRealtime', 'trainingApproach', 'evaluationFramework']
+    guides: ['servingChoice', 'batchVsRealtime', 'trainingApproach', 'evaluationFramework'],
+    accentColor: 'green',
+    bgGradient: 'from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10'
   }
 ];
 
@@ -1405,56 +1411,64 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
 
       {!selectedDecision ? (
         <div className="space-y-8">
-          {guideGroups.map((group) => (
-            <div key={group.id}>
-              {/* Group Header */}
-              <div className="mb-4">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
-                  {group.title}
-                </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {group.description}
-                </p>
-              </div>
+          {guideGroups.map((group) => {
+            const hoverClasses = {
+              purple: 'hover:border-purple-400 dark:hover:border-purple-500 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 group-hover:text-purple-600 dark:group-hover:text-purple-400',
+              blue: 'hover:border-blue-400 dark:hover:border-blue-500 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 group-hover:text-blue-600 dark:group-hover:text-blue-400',
+              green: 'hover:border-green-400 dark:hover:border-green-500 group-hover:bg-green-100 dark:group-hover:bg-green-900/30 group-hover:text-green-600 dark:group-hover:text-green-400'
+            };
 
-              {/* Group Guides */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {group.guides.map((guideKey) => {
-                  const flowData = decisionFlows[guideKey];
-                  const meta = guideMetadata[guideKey];
-                  const Icon = meta.icon;
+            return (
+              <div key={group.id} className={`p-5 rounded-xl bg-gradient-to-br ${group.bgGradient} border border-gray-200 dark:border-gray-700`}>
+                {/* Group Header */}
+                <div className="mb-4">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                    {group.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {group.description}
+                  </p>
+                </div>
 
-                  return (
-                    <button
-                      key={guideKey}
-                      onClick={() => {
-                        setApplyNotice(null);
-                        setSelectedDecision(guideKey);
-                      }}
-                      className="p-4 text-left rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-purple-400 dark:hover:border-purple-500 hover:shadow-lg transition-all group"
-                    >
-                      <div className="flex items-start gap-3 mb-2">
-                        <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors">
-                          <Icon size={20} className="text-gray-600 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
-                            {meta.category}
+                {/* Group Guides */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {group.guides.map((guideKey) => {
+                    const flowData = decisionFlows[guideKey];
+                    const meta = guideMetadata[guideKey];
+                    const Icon = meta.icon;
+
+                    return (
+                      <button
+                        key={guideKey}
+                        onClick={() => {
+                          setApplyNotice(null);
+                          setSelectedDecision(guideKey);
+                        }}
+                        className={`p-4 text-left rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 ${hoverClasses[group.accentColor]} hover:shadow-lg transition-all group`}
+                      >
+                        <div className="flex items-start gap-3 mb-2">
+                          <div className={`p-2 bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors ${hoverClasses[group.accentColor]}`}>
+                            <Icon size={20} className={`text-gray-600 dark:text-gray-400 transition-colors ${hoverClasses[group.accentColor]}`} />
                           </div>
-                          <h4 className="font-bold text-gray-900 dark:text-white text-sm leading-tight">
-                            {flowData.title}
-                          </h4>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+                              {meta.category}
+                            </div>
+                            <h4 className="font-bold text-gray-900 dark:text-white text-sm leading-tight">
+                              {flowData.title}
+                            </h4>
+                          </div>
                         </div>
-                      </div>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                        {flowData.description}
-                      </p>
-                    </button>
-                  );
-                })}
+                        <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                          {flowData.description}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div>
