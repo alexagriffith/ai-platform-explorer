@@ -310,7 +310,7 @@ export const capabilities = {
     {
       id: 'mcp',
       name: 'Model Context Protocol (MCP)',
-      description: 'Connect AI models to external tools and data sources',
+      description: 'Connect AI agents to external tools and data sources',
       required: false,
       subLayer: 'orchestration', // Higher level - connects to tools
       position: 'orchestration',
@@ -349,7 +349,7 @@ export const capabilities = {
     {
       id: 'llama-stack',
       name: 'Llama Stack Platform',
-      description: 'Meta\'s unified API for inference, agents, safety, eval, and vector I/O',
+      description: 'Unified API for inference, agents, safety, and evaluation',
       required: false,
       subLayer: 'orchestration',
       position: 'orchestration',
@@ -358,7 +358,7 @@ export const capabilities = {
           id: 'llama-stack-distribution',
           provider: 'Red Hat',
           name: 'Llama Stack Distribution',
-          description: 'RHOAI-integrated Llama Stack with vLLM, TrustyAI, and RAGAS',
+          description: 'Red Hat packaging of Llama Stack',
           status: 'Tech Preview',
           recommended: true
         }
@@ -408,23 +408,31 @@ export const capabilities = {
           id: 'rhaie',
           provider: 'Red Hat',
           name: 'Red Hat AI Enterprise (RHAIE)',
-          description: 'Complete integrated AI platform (OpenShift + OpenShift AI)',
+          description: 'Integrated OpenShift + AI platform (single offering)',
           status: 'GA',
-          recommended: true
+          recommended: false
         },
         {
           id: 'rhoai',
           provider: 'Red Hat',
           name: 'Red Hat OpenShift AI (RHOAI)',
-          description: 'AI/ML platform on existing OpenShift',
+          description: 'AI/ML platform for existing OpenShift clusters',
           status: 'GA',
           recommended: true
+        },
+        {
+          id: 'rhai',
+          provider: 'Red Hat',
+          name: 'Red Hat AI (RHAI)',
+          description: 'AI platform for non-OpenShift Kubernetes',
+          status: 'GA',
+          recommended: false
         },
         {
           id: 'rhel-ai',
           provider: 'Red Hat',
           name: 'Red Hat Enterprise Linux AI',
-          description: 'Foundation models on individual RHEL servers',
+          description: 'Foundation models on RHEL bare metal or VMs',
           status: 'GA'
         }
       ]
@@ -463,8 +471,8 @@ export const capabilities = {
   infrastructure: [
     {
       id: 'container-platform',
-      name: 'Container Platform',
-      description: 'Kubernetes platform for running AI workloads',
+      name: 'Platform & Runtime',
+      description: 'Where workloads run',
       required: true,
       options: [
         {
@@ -479,8 +487,16 @@ export const capabilities = {
           id: 'kubernetes',
           provider: 'Customer',
           name: 'Existing Kubernetes',
-          description: 'Customer-managed Kubernetes cluster',
+          description: 'Non-OpenShift Kubernetes (EKS, AKS, GKE, self-managed)',
           isCustomer: true
+        },
+        {
+          id: 'rhel-hosts',
+          provider: 'Red Hat',
+          name: 'RHEL servers (bare metal / VMs)',
+          description: 'Red Hat Enterprise Linux hosts',
+          status: 'GA',
+          recommended: false
         }
       ]
     },
@@ -494,7 +510,7 @@ export const capabilities = {
           id: 'nvidia-gpu',
           provider: 'NVIDIA',
           name: 'NVIDIA GPUs',
-          description: 'A100, H100, etc. with CUDA support',
+          description: 'NVIDIA',
           status: 'GA',
           recommended: true
         },
@@ -502,28 +518,28 @@ export const capabilities = {
           id: 'amd-gpu',
           provider: 'AMD',
           name: 'AMD GPUs',
-          description: 'MI-series accelerators',
+          description: 'AMD',
           status: 'GA'
         },
         {
           id: 'intel-gpu',
           provider: 'Intel',
           name: 'Intel GPUs/Gaudi',
-          description: 'Intel Data Center GPU and Gaudi accelerators',
+          description: 'Intel',
           status: 'GA'
         },
         {
           id: 'google-tpu',
           provider: 'Google',
           name: 'Google TPU',
-          description: 'Tensor Processing Units',
+          description: 'Google',
           status: 'GA'
         },
         {
           id: 'cpu-only',
           provider: 'CPU',
           name: 'CPU Only',
-          description: 'Run on standard CPUs without accelerators',
+          description: 'No accelerators',
           isNone: true
         }
       ]
