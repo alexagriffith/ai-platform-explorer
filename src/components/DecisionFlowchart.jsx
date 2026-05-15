@@ -22,17 +22,38 @@ import { capabilities } from '../data/capabilities';
 import { reconcileContainerAiPlatform } from '../lib/platformAiConstraints';
 
 const guideMetadata = {
-  product: { icon: Package, category: 'Product Selection', color: 'blue' },
-  deployment: { icon: Cloud, category: 'Deployment Strategy', color: 'cyan' },
-  architecture: { icon: GitBranch, category: 'Architecture Design', color: 'purple' },
-  gpu: { icon: Cpu, category: 'Hardware Selection', color: 'orange' },
-  vectordb: { icon: Database, category: 'Technical Choice', color: 'green' },
-  storage: { icon: HardDrive, category: 'Storage Strategy', color: 'indigo' },
-  batchVsRealtime: { icon: Zap, category: 'Inference Pattern', color: 'yellow' },
-  evaluationFramework: { icon: Target, category: 'Evaluation Tools', color: 'pink' },
-  trainingApproach: { icon: GraduationCap, category: 'Training Method', color: 'teal' },
-  servingChoice: { icon: Server, category: 'Serving Platform', color: 'violet' }
+  product: { icon: Package, category: 'Product Selection', group: 'getting-started' },
+  deployment: { icon: Cloud, category: 'Deployment Strategy', group: 'getting-started' },
+  architecture: { icon: GitBranch, category: 'Architecture Design', group: 'getting-started' },
+  gpu: { icon: Cpu, category: 'Hardware', group: 'infrastructure' },
+  storage: { icon: HardDrive, category: 'Storage', group: 'infrastructure' },
+  vectordb: { icon: Database, category: 'Vector Database', group: 'infrastructure' },
+  servingChoice: { icon: Server, category: 'Serving Platform', group: 'technical' },
+  batchVsRealtime: { icon: Zap, category: 'Inference Pattern', group: 'technical' },
+  trainingApproach: { icon: GraduationCap, category: 'Training Method', group: 'technical' },
+  evaluationFramework: { icon: Target, category: 'Evaluation Tools', group: 'technical' }
 };
+
+const guideGroups = [
+  {
+    id: 'getting-started',
+    title: 'Getting Started',
+    description: 'Choose your platform and overall architecture',
+    guides: ['product', 'deployment', 'architecture']
+  },
+  {
+    id: 'infrastructure',
+    title: 'Infrastructure & Resources',
+    description: 'Select hardware, storage, and data infrastructure',
+    guides: ['gpu', 'storage', 'vectordb']
+  },
+  {
+    id: 'technical',
+    title: 'Technical Implementation',
+    description: 'Configure serving, training, and evaluation approaches',
+    guides: ['servingChoice', 'batchVsRealtime', 'trainingApproach', 'evaluationFramework']
+  }
+];
 
 export default function DecisionFlowchart({ selectedCapabilities, setSelectedCapabilities, onSwitchToArchitecture }) {
   const [selectedDecision, setSelectedDecision] = useState('');
@@ -1383,56 +1404,57 @@ export default function DecisionFlowchart({ selectedCapabilities, setSelectedCap
       </h3>
 
       {!selectedDecision ? (
-        <div>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Choose a guide to get started with a decision workflow:
-          </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Object.entries(decisionFlows).map(([key, flowData]) => {
-              const meta = guideMetadata[key] || { icon: GitBranch, category: 'Guide', color: 'gray' };
-              const Icon = meta.icon;
-              const colorClasses = {
-                blue: 'from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/30 border-blue-300 dark:border-blue-700 hover:border-blue-500 dark:hover:border-blue-500',
-                cyan: 'from-cyan-50 to-cyan-100 dark:from-cyan-900/20 dark:to-cyan-800/30 border-cyan-300 dark:border-cyan-700 hover:border-cyan-500 dark:hover:border-cyan-500',
-                purple: 'from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/30 border-purple-300 dark:border-purple-700 hover:border-purple-500 dark:hover:border-purple-500',
-                orange: 'from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/30 border-orange-300 dark:border-orange-700 hover:border-orange-500 dark:hover:border-orange-500',
-                green: 'from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/30 border-green-300 dark:border-green-700 hover:border-green-500 dark:hover:border-green-500',
-                indigo: 'from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/30 border-indigo-300 dark:border-indigo-700 hover:border-indigo-500 dark:hover:border-indigo-500',
-                yellow: 'from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/30 border-yellow-300 dark:border-yellow-700 hover:border-yellow-500 dark:hover:border-yellow-500',
-                pink: 'from-pink-50 to-pink-100 dark:from-pink-900/20 dark:to-pink-800/30 border-pink-300 dark:border-pink-700 hover:border-pink-500 dark:hover:border-pink-500',
-                teal: 'from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/30 border-teal-300 dark:border-teal-700 hover:border-teal-500 dark:hover:border-teal-500',
-                violet: 'from-violet-50 to-violet-100 dark:from-violet-900/20 dark:to-violet-800/30 border-violet-300 dark:border-violet-700 hover:border-violet-500 dark:hover:border-violet-500'
-              };
+        <div className="space-y-8">
+          {guideGroups.map((group) => (
+            <div key={group.id}>
+              {/* Group Header */}
+              <div className="mb-4">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                  {group.title}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {group.description}
+                </p>
+              </div>
 
-              return (
-                <button
-                  key={key}
-                  onClick={() => {
-                    setApplyNotice(null);
-                    setSelectedDecision(key);
-                  }}
-                  className={`p-5 text-left rounded-xl border-2 bg-gradient-to-br transition-all hover:shadow-xl hover:scale-[1.02] ${colorClasses[meta.color]}`}
-                >
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-                      <Icon size={24} className="text-gray-700 dark:text-gray-300" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
-                        {meta.category}
+              {/* Group Guides */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {group.guides.map((guideKey) => {
+                  const flowData = decisionFlows[guideKey];
+                  const meta = guideMetadata[guideKey];
+                  const Icon = meta.icon;
+
+                  return (
+                    <button
+                      key={guideKey}
+                      onClick={() => {
+                        setApplyNotice(null);
+                        setSelectedDecision(guideKey);
+                      }}
+                      className="p-4 text-left rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-purple-400 dark:hover:border-purple-500 hover:shadow-lg transition-all group"
+                    >
+                      <div className="flex items-start gap-3 mb-2">
+                        <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors">
+                          <Icon size={20} className="text-gray-600 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+                            {meta.category}
+                          </div>
+                          <h4 className="font-bold text-gray-900 dark:text-white text-sm leading-tight">
+                            {flowData.title}
+                          </h4>
+                        </div>
                       </div>
-                      <h4 className="font-bold text-gray-900 dark:text-white leading-tight">
-                        {flowData.title}
-                      </h4>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                    {flowData.description}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                        {flowData.description}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <div>
