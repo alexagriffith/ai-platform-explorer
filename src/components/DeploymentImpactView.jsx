@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileCode, Table, GitCompare } from 'lucide-react';
+import { FileCode, Table, GitCompare, ChevronDown, ChevronRight } from 'lucide-react';
 import DeploymentComparisonSelector from './DeploymentComparisonSelector';
 import YAMLDiffView from './YAMLDiffView';
 import CapabilityDeltaTable from './CapabilityDeltaTable';
@@ -15,6 +15,7 @@ import { getComparisonById } from '../data/deploymentComparisons';
 export default function DeploymentImpactView() {
   const [selectedComparisonId, setSelectedComparisonId] = useState(null);
   const [activeTab, setActiveTab] = useState('yaml');
+  const [migrationNotesExpanded, setMigrationNotesExpanded] = useState(false);
 
   const comparison = selectedComparisonId ? getComparisonById(selectedComparisonId) : null;
 
@@ -80,22 +81,39 @@ export default function DeploymentImpactView() {
 
           {/* Migration Notes */}
           {comparison.migrationNotes && comparison.migrationNotes.length > 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                Migration Notes
-              </h3>
-              <ul className="space-y-2">
-                {comparison.migrationNotes.map((note, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center text-xs font-semibold mt-0.5">
-                      {idx + 1}
-                    </span>
-                    <span className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                      {note}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => setMigrationNotesExpanded(!migrationNotesExpanded)}
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+              >
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  {migrationNotesExpanded ? (
+                    <ChevronDown size={20} className="text-gray-400" />
+                  ) : (
+                    <ChevronRight size={20} className="text-gray-400" />
+                  )}
+                  Migration Notes
+                  <span className="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+                    ({comparison.migrationNotes.length} tips)
+                  </span>
+                </h3>
+              </button>
+              {migrationNotesExpanded && (
+                <div className="px-6 pb-6">
+                  <ul className="space-y-2">
+                    {comparison.migrationNotes.map((note, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <span className="flex-shrink-0 w-6 h-6 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center text-xs font-semibold mt-0.5">
+                          {idx + 1}
+                        </span>
+                        <span className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                          {note}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
 

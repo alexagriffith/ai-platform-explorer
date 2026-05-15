@@ -250,6 +250,7 @@ spec:
             ]
           },
           { kind: 'Service', name: 'llama-model-predictor', plane: 'data', children: [] },
+          { kind: 'VirtualService', name: 'llama-model', plane: 'control', children: [] },
           { kind: 'Route', name: 'llama-model', plane: 'data', children: [] }
         ]
       },
