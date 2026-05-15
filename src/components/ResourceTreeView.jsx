@@ -22,6 +22,22 @@ export default function ResourceTreeView({ comparison }) {
 
   const { before, after } = comparison;
 
+  // Build sets of resource kinds for diffing
+  const getResourceKinds = (resources) => {
+    const kinds = new Set();
+    const traverse = (node) => {
+      kinds.add(node.kind);
+      if (node.children) {
+        node.children.forEach(traverse);
+      }
+    };
+    resources.forEach(traverse);
+    return kinds;
+  };
+
+  const beforeKinds = getResourceKinds(before.clusterResources);
+  const afterKinds = getResourceKinds(after.clusterResources);
+
   return (
     <div className="space-y-6 relative">
       <div>
@@ -54,6 +70,8 @@ export default function ResourceTreeView({ comparison }) {
                 node={resource}
                 onSelectKind={setSelectedResourceKind}
                 selectedKind={selectedResourceKind}
+                diffStatus="before"
+                otherKinds={afterKinds}
               />
             ))}
           </div>
@@ -75,6 +93,8 @@ export default function ResourceTreeView({ comparison }) {
                 node={resource}
                 onSelectKind={setSelectedResourceKind}
                 selectedKind={selectedResourceKind}
+                diffStatus="after"
+                otherKinds={beforeKinds}
               />
             ))}
           </div>
@@ -83,19 +103,35 @@ export default function ResourceTreeView({ comparison }) {
 
       {/* Legend */}
       <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
-        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Resource Type</h4>
-        <div className="grid md:grid-cols-2 gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <Workflow size={16} className="text-purple-600 dark:text-purple-400" />
-            <span className="text-gray-700 dark:text-gray-300">
-              <strong>Control Plane:</strong> Manages resources (Deployments, InferenceServices, etc.)
-            </span>
+        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Legend</h4>
+        <div className="space-y-3">
+          <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <Workflow size={16} className="text-purple-600 dark:text-purple-400" />
+              <span className="text-gray-700 dark:text-gray-300">
+                <strong>Control Plane:</strong> Configuration & management
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Server size={16} className="text-blue-600 dark:text-blue-400" />
+              <span className="text-gray-700 dark:text-gray-300">
+                <strong>Data Plane:</strong> Runtime workloads
+              </span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Server size={16} className="text-blue-600 dark:text-blue-400" />
-            <span className="text-gray-700 dark:text-gray-300">
-              <strong>Data Plane:</strong> Runs workloads (Pods, Services, Routes)
-            </span>
+          <div className="flex items-center gap-4 text-sm pt-2 border-t border-gray-200 dark:border-gray-600">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded">
+                NEW
+              </span>
+              <span className="text-gray-700 dark:text-gray-300">Added by platform</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 rounded">
+                REMOVED
+              </span>
+              <span className="text-gray-700 dark:text-gray-300">No longer needed</span>
+            </div>
           </div>
         </div>
       </div>
@@ -114,7 +150,7 @@ export default function ResourceTreeView({ comparison }) {
 /**
  * ResourceTreeNode - Individual node in the tree with expand/collapse and clickable resource kind
  */
-function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind }) {
+function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffStatus, otherKinds }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const hasChildren = node.children && node.children.length > 0;
 
@@ -126,6 +162,14 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind }) {
   const config = planeConfig[node.plane] || planeConfig.control;
   const PlaneIcon = config.icon;
   const isSelected = selectedKind === node.kind;
+
+  // Determine if this resource is new or removed
+  let badge = null;
+  if (diffStatus === 'after' && !otherKinds.has(node.kind)) {
+    badge = { text: 'NEW', className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' };
+  } else if (diffStatus === 'before' && !otherKinds.has(node.kind)) {
+    badge = { text: 'REMOVED', className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' };
+  }
 
   return (
     <div>
@@ -156,7 +200,7 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind }) {
         <PlaneIcon size={16} className={config.color} />
 
         {/* Resource kind (clickable) and name */}
-        <div className="flex items-baseline gap-2">
+        <div className="flex items-center gap-2 flex-1">
           <button
             onClick={() => onSelectKind(node.kind)}
             className="font-mono text-sm font-semibold text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 underline decoration-dotted underline-offset-2 cursor-pointer transition-colors"
@@ -166,6 +210,11 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind }) {
           <span className="text-xs text-gray-600 dark:text-gray-400 font-mono">
             {node.name}
           </span>
+          {badge && (
+            <span className={`ml-auto px-2 py-0.5 text-xs font-semibold rounded ${badge.className}`}>
+              {badge.text}
+            </span>
+          )}
         </div>
       </div>
 
@@ -179,6 +228,8 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind }) {
               depth={depth + 1}
               onSelectKind={onSelectKind}
               selectedKind={selectedKind}
+              diffStatus={diffStatus}
+              otherKinds={otherKinds}
             />
           ))}
         </div>
