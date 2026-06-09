@@ -1,0 +1,34 @@
+apiVersion: serving.kserve.io/v1alpha2
+kind: LLMInferenceService
+metadata:
+  name: qwen-cpu
+  namespace: llm-test
+  annotations:
+    serving.kserve.io/deploymentMode: RawDeployment
+spec:
+  model:
+    uri: hf://Qwen/Qwen2.5-0.5B-Instruct
+    name: Qwen/Qwen2.5-0.5B-Instruct
+  replicas: 1
+  router:
+    scheduler:
+      template:
+        imagePullSecrets:
+        - name: rhai-pull-secret
+        containers:
+        - name: main
+        - name: tokenizer
+    route: {}
+    gateway: {}
+  template:
+    imagePullSecrets:
+    - name: rhai-pull-secret
+    containers:
+    - name: main
+      resources:
+        limits:
+          cpu: "2"
+          memory: 8Gi
+        requests:
+          cpu: "1"
+          memory: 4Gi
