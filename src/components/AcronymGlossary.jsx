@@ -113,6 +113,12 @@ export default function AcronymGlossary() {
       fullName: 'Time to First Token',
       explanation: 'Latency metric measuring time until the first output token is generated.',
       whenToUse: 'When optimizing real-time inference performance for chatbots.'
+    },
+    {
+      acronym: 'BOM',
+      fullName: 'Bill of Materials',
+      explanation: 'The list of components that ship inside a product — for AI platforms: operators, container images, and their versions per release.',
+      whenToUse: 'When clarifying what is actually included in a Red Hat AI product versus what is an add-on.'
     }
   ];
 

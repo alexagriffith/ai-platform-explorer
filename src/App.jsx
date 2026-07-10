@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Layers, Target, Package, GitBranch, AlertCircle, GitCompare } from 'lucide-react';
+import { Layers, Target, Package, GitBranch, AlertCircle, GitCompare, Scale } from 'lucide-react';
 import ArchitectureHub from './components/ArchitectureHub';
 import ProductExplorer from './components/ProductExplorer';
 import UseCaseView from './components/UseCaseView';
 import DecisionFlowchart from './components/DecisionFlowchart';
 import DeploymentImpactView from './components/DeploymentImpactView';
+import ProductComparisonView from './components/ProductComparisonView';
 import AcronymGlossary from './components/AcronymGlossary';
 
 function App() {
@@ -30,7 +31,8 @@ function App() {
     { id: 'decisions', name: 'Decision Guides', icon: GitBranch },
     { id: 'use-cases', name: 'Use Cases', icon: Target },
     { id: 'products', name: 'Products', icon: Package },
-    { id: 'deployment-impact', name: 'Deployment Impact', icon: GitCompare }
+    { id: 'deployment-impact', name: 'Deployment Impact', icon: GitCompare },
+    { id: 'product-comparison', name: 'Product Comparison', icon: Scale }
   ];
 
   const renderView = () => {
@@ -61,6 +63,8 @@ function App() {
         return <UseCaseView />;
       case 'deployment-impact':
         return <DeploymentImpactView />;
+      case 'product-comparison':
+        return <ProductComparisonView />;
       default:
         return null;
     }
