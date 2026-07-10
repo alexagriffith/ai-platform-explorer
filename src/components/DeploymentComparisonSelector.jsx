@@ -27,7 +27,7 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
         </h2>
         <p className="text-gray-600 dark:text-gray-400">
           Understand the concrete implementation changes when adopting Red Hat AI platform components.
-          Compare before and after states for YAML, resource trees, capabilities, and operational responsibilities.
+          Compare before and after states for YAML, resource trees, and capabilities.
         </p>
       </div>
 

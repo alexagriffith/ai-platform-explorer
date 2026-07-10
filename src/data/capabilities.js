@@ -11,8 +11,8 @@ export const capabilities = {
           id: 'rh-gateway',
           provider: 'Red Hat',
           name: 'Red Hat AI Gateway',
-          description: 'Model-as-a-Service gateway with OpenAI-compatible APIs. Governs access to self-hosted and external models with usage tracking and policy enforcement.',
-          status: 'GA',
+          description: 'Model-as-a-Service gateway with OpenAI-compatible APIs. Governs access to self-hosted and external models with usage tracking and policy enforcement. Not announced as a standalone generally available product - confirm availability with your Red Hat account team.',
+          status: 'Tech Preview',
           recommended: true
         },
         {
@@ -131,7 +131,7 @@ export const capabilities = {
           id: 'kserve',
           provider: 'Red Hat',
           name: 'KServe',
-          description: 'Model serving platform built into RHOAI. Supports multiple runtimes (vLLM, TorchServe, TensorFlow, etc.) with autoscaling (HPA/KEDA/Knative) and advanced deployment patterns.',
+          description: 'Model serving platform built into RHOAI. Supports multiple runtimes (vLLM, TorchServe, TensorFlow, etc.) with autoscaling (Horizontal Pod Autoscaler, KEDA event-driven scaling, or Knative serverless scaling) and advanced deployment patterns.',
           status: 'GA'
         },
         {
@@ -188,7 +188,7 @@ export const capabilities = {
           provider: 'Red Hat',
           name: 'Red Hat Batch Gateway',
           description: 'OpenAI-compatible batch inference API (up to 50K requests per batch)',
-          status: 'Technology Preview',
+          status: 'Dev Preview',
           recommended: true
         },
         {
@@ -287,9 +287,8 @@ export const capabilities = {
           id: 'rh-evaluation',
           provider: 'Red Hat',
           name: 'Integrated Evaluation (RHOAI)',
-          description: 'Built-in model evaluation pipelines',
-          status: 'GA',
-          recommended: true
+          description: 'Model evaluation (EvalHub pattern) - Technology Preview; confirm scope with your Red Hat account team.',
+          status: 'Tech Preview'
         },
         {
           id: 'instructlab-eval',
@@ -367,7 +366,7 @@ export const capabilities = {
     {
       id: 'vector-db',
       name: 'Vector Database',
-      description: 'Store and retrieve embeddings for RAG and semantic search',
+      description: 'Store and retrieve embeddings for retrieval-augmented generation (RAG) and semantic search',
       required: false,
       subLayer: 'core', // Same level as serving - adjacent (for RAG)
       position: 'adjacent',
@@ -375,10 +374,9 @@ export const capabilities = {
         {
           id: 'elastic',
           provider: 'Partner',
-          name: 'Elastic (Preferred)',
-          description: 'Red Hat partnership - preferred vector DB',
-          status: 'GA',
-          recommended: true
+          name: 'Elasticsearch',
+          description: 'Elasticsearch vector database - partner option',
+          status: 'GA'
         },
         {
           id: 'pgvector',
@@ -423,8 +421,7 @@ export const capabilities = {
           id: 'rhai',
           provider: 'Red Hat',
           name: 'Red Hat AI (RHAI)',
-          description: 'AI/ML platform for non-OpenShift Kubernetes (EKS, AKS, GKE, self-managed). Use this if your container platform is standard Kubernetes.',
-          status: 'GA'
+          description: 'This explorer\'s name for the Red Hat AI path on standard Kubernetes (Amazon EKS, Azure AKS, Google GKE, self-managed) - not a distinct generally available product SKU. Use this if your container platform is standard Kubernetes, and confirm packaging with your Red Hat account team.'
         },
         {
           id: 'rhel-ai',

@@ -58,7 +58,7 @@ function App() {
           />
         );
       case 'use-cases':
-        return <UseCaseView customerEnv={customerEnv} />;
+        return <UseCaseView />;
       case 'deployment-impact':
         return <DeploymentImpactView />;
       default:

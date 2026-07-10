@@ -33,19 +33,19 @@ export default function AcronymGlossary() {
     {
       acronym: 'RAG',
       fullName: 'Retrieval-Augmented Generation',
-      explanation: 'Grounding AI in your own data to stop hallucinations.',
+      explanation: 'Grounding AI in your own data to reduce hallucinations.',
       whenToUse: 'When you need accurate answers from your documents.'
     },
     {
       acronym: 'KServe',
-      fullName: 'Kubernetes Model Serving',
-      explanation: 'The engine that hosts and "serves" the model for apps.',
+      fullName: 'KServe (a project name, formerly KFServing — not an acronym)',
+      explanation: 'Open source model serving platform for Kubernetes that hosts and "serves" models for apps.',
       whenToUse: 'To provide a model as a production-ready API.'
     },
     {
       acronym: 'vLLM',
-      fullName: 'Versatile LLM',
-      explanation: 'A specialized high-speed engine for serving large models.',
+      fullName: 'vLLM (not an abbreviation; the "v" refers to virtual-memory-style management of the model\'s key-value cache)',
+      explanation: 'An open source, high-throughput inference engine for serving large language models.',
       whenToUse: 'To maximize GPU performance and lower response times.'
     },
     {

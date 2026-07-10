@@ -11,7 +11,7 @@ export default function FineTuningDecisionMatrix() {
         'Specialized industry jargon or terminology',
         'Complex domain knowledge not in training data',
         'Specific writing style or tone requirements',
-        'Intricate reasoning patterns needed'
+        'Parameter-efficient options (LoRA adapters) reduce cost and hardware needs significantly'
       ],
       pros: [
         'Model learns domain-specific patterns',
@@ -22,16 +22,16 @@ export default function FineTuningDecisionMatrix() {
       cons: [
         'Requires training data and infrastructure',
         'Time-consuming (hours to days)',
-        'Expensive GPU compute costs',
+        'GPU compute costs (much lower with parameter-efficient methods like LoRA — low-rank adaptation)',
         'Model becomes static until retrained'
       ],
       effort: 'High',
-      cost: 'High',
+      cost: 'Medium-High (low with LoRA)',
       latency: 'Low (inference)',
-      accuracy: 'Excellent'
+      accuracy: 'Excellent (style & domain patterns)'
     },
     {
-      name: 'RAG',
+      name: 'RAG (Retrieval-Augmented Generation)',
       icon: Database,
       color: 'blue',
       bestFor: 'Dynamic, frequently changing information that requires citations',
@@ -56,7 +56,7 @@ export default function FineTuningDecisionMatrix() {
       effort: 'Medium',
       cost: 'Medium',
       latency: 'Medium (retrieval)',
-      accuracy: 'Very Good'
+      accuracy: 'Excellent (current facts, cited)'
     },
     {
       name: 'Pre-trained',
@@ -84,7 +84,7 @@ export default function FineTuningDecisionMatrix() {
       effort: 'Low',
       cost: 'Low',
       latency: 'Low',
-      accuracy: 'Good'
+      accuracy: 'Good (general knowledge)'
     }
   ];
 
@@ -112,13 +112,13 @@ export default function FineTuningDecisionMatrix() {
         badge: 'bg-green-600 text-white'
       }
     };
-    return colors[color];
+    return colors[color] || 'bg-gray-600 text-white';
   };
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-        Fine-Tuning vs. RAG vs. Pre-trained: Decision Matrix
+        Fine-Tuning vs. Retrieval-Augmented Generation (RAG) vs. Pre-trained: Decision Matrix
       </h3>
       <p className="text-gray-600 dark:text-gray-400 mb-6">
         Choose the right approach for your AI application based on your requirements
@@ -173,7 +173,7 @@ export default function FineTuningDecisionMatrix() {
                     Advantages
                   </h5>
                   <ul className="space-y-1">
-                    {approach.pros.slice(0, 3).map((pro, i) => (
+                    {approach.pros.map((pro, i) => (
                       <li key={i} className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2">
                         <CheckCircle size={14} className="text-green-600 mt-0.5 flex-shrink-0" />
                         <span>{pro}</span>
@@ -188,7 +188,7 @@ export default function FineTuningDecisionMatrix() {
                     Tradeoffs
                   </h5>
                   <ul className="space-y-1">
-                    {approach.cons.slice(0, 3).map((con, i) => (
+                    {approach.cons.map((con, i) => (
                       <li key={i} className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2">
                         <XCircle size={14} className="text-red-600 mt-0.5 flex-shrink-0" />
                         <span>{con}</span>
@@ -212,7 +212,7 @@ export default function FineTuningDecisionMatrix() {
                     <div className={`text-sm font-semibold ${colors.text}`}>{approach.latency}</div>
                   </div>
                   <div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Accuracy</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Domain fit</div>
                     <div className={`text-sm font-semibold ${colors.text}`}>{approach.accuracy}</div>
                   </div>
                 </div>
@@ -224,7 +224,7 @@ export default function FineTuningDecisionMatrix() {
 
       {/* Decision Helper */}
       <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Quick Decision Guide</h4>
+        <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Which approach fits?</h4>
         <div className="space-y-2 text-sm">
           <div className="flex items-start gap-2">
             <Sparkles className="text-purple-600 mt-0.5" size={16} />

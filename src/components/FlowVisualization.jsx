@@ -8,7 +8,6 @@ import {
   collectBridgeStructuralEdges,
   getFocusNeighborSet
 } from '../lib/flowVisualizationData';
-import html2canvas from 'html2canvas';
 
 function nameById(flow, id) {
   for (const layer of flow) {
@@ -49,6 +48,114 @@ function LayerBridge({ edges }) {
   );
 }
 
+function ComponentBox({
+  component,
+  canExpand,
+  expandedComponent,
+  onToggleExpand,
+  focusActive,
+  focusNeighborSet,
+  resolvedFocusId,
+  edgeHintsByNode,
+  onCardClick
+}) {
+  const Icon = component.icon || Layers;
+  const isExpanded = expandedComponent === component.id;
+  const hasSubComponents = canExpand && subComponents[component.optionId];
+  const dimmed = focusActive && focusNeighborSet && !focusNeighborSet.has(component.id);
+  const isSuggested = Boolean(component.isSuggested);
+  const edgeHint = edgeHintsByNode.get(component.id);
+
+  const typeClass =
+    component.type === 'core'
+      ? 'bg-blue-600 border-blue-700'
+      : component.type === 'wrapper'
+        ? 'bg-purple-600 border-purple-700'
+        : component.type === 'orchestration'
+          ? 'bg-green-600 border-green-700'
+          : component.type === 'adjacent'
+            ? 'bg-cyan-600 border-cyan-700'
+            : 'bg-gray-700 border-gray-600';
+
+  return (
+    <div className={`relative transition-all duration-200 ${dimmed ? 'opacity-[0.22] scale-[0.98]' : ''}`}>
+      <div
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onCardClick(component.id);
+          }
+        }}
+        onClick={() => onCardClick(component.id)}
+        className={`relative p-4 rounded-lg border-2 shadow-lg transition-all cursor-pointer hover:ring-2 hover:ring-white/25 ${
+          isSuggested ? 'border-dashed border-cyan-300/70 ring-1 ring-cyan-400/30 bg-opacity-90' : ''
+        } ${typeClass} ${resolvedFocusId === component.id ? 'ring-2 ring-amber-300/90 ring-offset-2 ring-offset-gray-900' : ''}`}
+        style={{ minWidth: '200px', maxWidth: '280px' }}
+        title={
+          isSuggested
+            ? [component.suggestionHint, edgeHint].filter(Boolean).join('\n\n')
+            : [component.description, edgeHint].filter(Boolean).join('\n\n') || undefined
+        }
+      >
+        {hasSubComponents && (
+          <button
+            type="button"
+            data-expand-toggle
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleExpand(isExpanded ? null : component.id);
+            }}
+            className="absolute top-2 right-2 p-1 rounded hover:bg-white/10 z-[1]"
+            aria-label={isExpanded ? 'Collapse internal view' : 'Expand internal components'}
+          >
+            {isExpanded ? (
+              <Minimize2 size={16} className="text-white opacity-70" />
+            ) : (
+              <Maximize2 size={16} className="text-white opacity-70" />
+            )}
+          </button>
+        )}
+        <div className="flex items-start gap-3 mb-2 pr-6">
+          <Icon size={20} className="text-white flex-shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <div className="font-bold text-white text-sm mb-1 leading-tight">{component.name}</div>
+            {isSuggested && component.suggestionHint && (
+              <p className="text-[11px] text-cyan-100/90 leading-snug mb-1">{component.suggestionHint}</p>
+            )}
+            <div className="text-xs text-white/80">{component.description}</div>
+            {component.operationsStewardLabel && (
+              <div className="text-[10px] mt-1.5 text-white/70 border-t border-white/10 pt-1.5">
+                {component.operationsStewardLabel}
+              </div>
+            )}
+          </div>
+        </div>
+        {isSuggested && (
+          <div className="text-[10px] uppercase tracking-wide text-cyan-200/80 border-t border-white/15 pt-2 mt-1">
+            Not in current stack
+          </div>
+        )}
+      </div>
+
+      {isExpanded && hasSubComponents && (
+        <div className="mt-3 p-3 bg-gray-800 rounded-lg border border-gray-600" onClick={(e) => e.stopPropagation()}>
+          <div className="text-xs font-bold text-gray-400 mb-2 uppercase">Internal components</div>
+          <div className="space-y-2">
+            {subComponents[component.optionId].components.map((sub, idx) => (
+              <div key={idx} className="p-2 bg-gray-700 rounded border border-gray-600 text-xs">
+                <div className="font-semibold text-white">{sub.name}</div>
+                <div className="text-gray-400 text-xs">{sub.role}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function FlowVisualization({ selectedCapabilities, onClose }) {
   const [expandedComponent, setExpandedComponent] = useState(null);
   const [exportingPng, setExportingPng] = useState(false);
@@ -79,13 +186,19 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
 
   const focusActive = Boolean(resolvedFocusId);
 
+  // Escape clears component focus first; when nothing is focused it closes the modal.
   useEffect(() => {
     const onKey = (ev) => {
-      if (ev.key === 'Escape') setFocusedId(null);
+      if (ev.key !== 'Escape') return;
+      if (focusedId) {
+        setFocusedId(null);
+      } else {
+        onClose();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [focusedId, onClose]);
 
   const edgeHintsByNode = useMemo(() => {
     const m = new Map();
@@ -109,18 +222,17 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
 
     setExportingPng(true);
     try {
-      const canvas = await html2canvas(captureEl, {
-        backgroundColor: '#1e40af',
-        scale: 2,
-        logging: false
+      // Lazy-load the export library so it stays out of the main bundle.
+      const { toPng } = await import('html-to-image');
+      const dataUrl = await toPng(captureEl, {
+        pixelRatio: 2,
+        cacheBust: true,
+        backgroundColor: '#1e40af'
       });
-      const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
-      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
+      a.href = dataUrl;
       a.download = `red-hat-ai-architecture-flow-${new Date().toISOString().split('T')[0]}.png`;
       a.click();
-      URL.revokeObjectURL(url);
     } catch (err) {
       console.error('PNG export failed:', err);
     } finally {
@@ -132,110 +244,15 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
     setFocusedId((cur) => (cur === componentId ? null : componentId));
   }, []);
 
-  const ComponentBox = ({ component, canExpand }) => {
-    const Icon = component.icon || Layers;
-    const isExpanded = expandedComponent === component.id;
-    const hasSubComponents = canExpand && subComponents[component.optionId];
-    const dimmed = focusActive && focusNeighborSet && !focusNeighborSet.has(component.id);
-    const isSuggested = Boolean(component.isSuggested);
-    const edgeHint = edgeHintsByNode.get(component.id);
-
-    const typeClass =
-      component.type === 'core'
-        ? 'bg-blue-600 border-blue-700'
-        : component.type === 'wrapper'
-          ? 'bg-purple-600 border-purple-700'
-          : component.type === 'orchestration'
-            ? 'bg-green-600 border-green-700'
-            : component.type === 'adjacent'
-              ? 'bg-cyan-600 border-cyan-700'
-              : 'bg-gray-700 border-gray-600';
-
-    return (
-      <div className={`relative transition-all duration-200 ${dimmed ? 'opacity-[0.22] scale-[0.98]' : ''}`}>
-        <div
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              handleCardClick(component.id);
-            }
-          }}
-          onClick={() => handleCardClick(component.id)}
-          className={`relative p-4 rounded-lg border-2 shadow-lg transition-all cursor-pointer hover:ring-2 hover:ring-white/25 ${
-            isSuggested ? 'border-dashed border-cyan-300/70 ring-1 ring-cyan-400/30 bg-opacity-90' : ''
-          } ${typeClass} ${resolvedFocusId === component.id ? 'ring-2 ring-amber-300/90 ring-offset-2 ring-offset-gray-900' : ''}`}
-          style={{ minWidth: '200px', maxWidth: '280px' }}
-          title={
-            isSuggested
-              ? [component.suggestionHint, edgeHint].filter(Boolean).join('\n\n')
-              : [component.description, edgeHint].filter(Boolean).join('\n\n') || undefined
-          }
-        >
-          {hasSubComponents && (
-            <button
-              type="button"
-              data-expand-toggle
-              onClick={(e) => {
-                e.stopPropagation();
-                setExpandedComponent(isExpanded ? null : component.id);
-              }}
-              className="absolute top-2 right-2 p-1 rounded hover:bg-white/10 z-[1]"
-              aria-label={isExpanded ? 'Collapse internal view' : 'Expand internal components'}
-            >
-              {isExpanded ? (
-                <Minimize2 size={16} className="text-white opacity-70" />
-              ) : (
-                <Maximize2 size={16} className="text-white opacity-70" />
-              )}
-            </button>
-          )}
-          <div className="flex items-start gap-3 mb-2 pr-6">
-            <Icon size={20} className="text-white flex-shrink-0 mt-0.5" />
-            <div className="flex-1 min-w-0">
-              <div className="font-bold text-white text-sm mb-1 leading-tight">{component.name}</div>
-              {isSuggested && component.suggestionHint && (
-                <p className="text-[11px] text-cyan-100/90 leading-snug mb-1">{component.suggestionHint}</p>
-              )}
-              <div className="text-xs text-white/80">{component.description}</div>
-              {component.operationsStewardLabel && (
-                <div className="text-[10px] mt-1.5 text-white/70 border-t border-white/10 pt-1.5">
-                  {component.operationsStewardLabel}
-                </div>
-              )}
-            </div>
-          </div>
-          {isSuggested && (
-            <div className="text-[10px] uppercase tracking-wide text-cyan-200/80 border-t border-white/15 pt-2 mt-1">
-              Not in current stack
-            </div>
-          )}
-        </div>
-
-        {isExpanded && hasSubComponents && (
-          <div className="mt-3 p-3 bg-gray-800 rounded-lg border border-gray-600" onClick={(e) => e.stopPropagation()}>
-            <div className="text-xs font-bold text-gray-400 mb-2 uppercase">Internal components</div>
-            <div className="space-y-2">
-              {subComponents[component.optionId].components.map((sub, idx) => (
-                <div key={idx} className="p-2 bg-gray-700 rounded border border-gray-600 text-xs">
-                  <div className="font-semibold text-white">{sub.name}</div>
-                  <div className="text-gray-400 text-xs">{sub.role}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
     <div
       className="fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50"
       onClick={onClose}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Architecture flow"
         className="bg-gray-900 rounded-lg shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto border border-gray-700"
         onClick={(e) => e.stopPropagation()}
       >
@@ -288,7 +305,18 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
 
                   <div className="flex items-center justify-center gap-4 flex-wrap">
                     {layer.components.map((component, cidx) => (
-                      <ComponentBox key={`${component.id}-${cidx}`} component={component} canExpand={true} />
+                      <ComponentBox
+                        key={`${component.id}-${cidx}`}
+                        component={component}
+                        canExpand={true}
+                        expandedComponent={expandedComponent}
+                        onToggleExpand={setExpandedComponent}
+                        focusActive={focusActive}
+                        focusNeighborSet={focusNeighborSet}
+                        resolvedFocusId={resolvedFocusId}
+                        edgeHintsByNode={edgeHintsByNode}
+                        onCardClick={handleCardClick}
+                      />
                     ))}
                   </div>
 

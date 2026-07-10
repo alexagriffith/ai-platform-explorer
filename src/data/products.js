@@ -2,15 +2,14 @@ export const products = [
   {
     id: 'rhaie',
     name: 'Red Hat AI Enterprise (RHAIE)',
-    description: 'A comprehensive, integrated AI platform combining OpenShift AI and OpenShift for building, tuning, and deploying AI models and applications.',
+    description: 'The name this explorer uses for the combined OpenShift plus OpenShift AI platform path — building, tuning, and deploying AI models and applications on one integrated stack. Confirm current packaging and naming with your Red Hat account team.',
     category: 'Integrated Platform',
-    status: 'GA',
+    status: 'Check with Red Hat',
     layer: 'platform',
     required: true,
     connections: ['rhoai', 'openshift'],
     resources: {
-      docs: 'https://docs.redhat.com',
-      contacts: ['#forum-openshift-ai']
+      docs: 'https://docs.redhat.com'
     }
   },
   {
@@ -26,42 +25,39 @@ export const products = [
     customerProfile: ['MLOps teams', 'Data scientists', 'Enterprise dev teams with OpenShift'],
     deploymentPattern: 'OpenShift (self-managed or ROSA/ARO)',
     resources: {
-      docs: 'https://docs.redhat.com',
-      contacts: ['#forum-openshift-ai', '#forum-rhai-docs']
+      docs: 'https://docs.redhat.com'
     }
   },
   {
     id: 'rhai',
-    name: 'Red Hat AI (RHAI)',
-    description: 'AI/ML platform for standard Kubernetes (non-OpenShift). Provides AI capabilities on EKS, AKS, GKE, and self-managed Kubernetes clusters. Use this when your container platform is not OpenShift.',
+    name: 'Red Hat AI (portfolio name)',
+    description: 'Red Hat AI is the umbrella name for the Red Hat AI portfolio, not a separate product. This explorer uses it for the Red Hat AI path on standard Kubernetes clusters (Amazon EKS, Azure AKS, Google GKE, or self-managed) when your container platform is not OpenShift. Confirm the supported offering and scope with your Red Hat account team.',
     category: 'AI/ML Platform',
-    status: 'GA',
+    status: 'Check with Red Hat',
     layer: 'platform',
     required: false,
     connections: ['ai-inference', 'model-registry'],
-    useCases: ['Cloud-native Kubernetes AI', 'EKS/AKS/GKE deployments', 'Standard K8s without OpenShift'],
+    useCases: ['Cloud-native Kubernetes AI', 'EKS/AKS/GKE deployments', 'Standard Kubernetes without OpenShift'],
     customerProfile: ['Platform teams on EKS/AKS/GKE', 'Kubernetes platform engineering', 'Cloud-native teams'],
     deploymentPattern: 'Standard Kubernetes (EKS, AKS, GKE, self-managed)',
     resources: {
-      docs: 'https://docs.redhat.com',
-      contacts: ['#forum-openshift-ai']
+      docs: 'https://docs.redhat.com'
     }
   },
   {
     id: 'rhel-ai',
     name: 'Red Hat Enterprise Linux AI (RHEL AI)',
-    description: 'Foundation model platform for running LLMs on individual RHEL servers. Single-node only. InstructLab-focused fine-tuning and serving. Not for distributed training or production-scale deployments (use RHOAI or RHAI instead).',
+    description: 'Foundation model platform for running large language models (LLMs) on individual RHEL servers. Single-node only. InstructLab-focused fine-tuning and serving. Not for distributed training or production-scale deployments (use OpenShift AI or the Red Hat AI path for standard Kubernetes instead).',
     category: 'Model Platform',
     status: 'GA',
     layer: 'platform',
     required: false,
-    connections: ['llama-stack', 'instructlab'],
+    connections: ['llama-stack-distribution', 'instructlab'],
     useCases: ['InstructLab fine-tuning', 'Edge deployments', 'Development environments', 'Single-server serving'],
     customerProfile: ['Edge deployments', 'Developers', 'Small teams', 'Single-node use cases'],
     deploymentPattern: 'Single RHEL server (not distributed)',
     resources: {
-      docs: 'https://docs.redhat.com',
-      contacts: ['#forum-llama-stack']
+      docs: 'https://docs.redhat.com'
     }
   },
   {
@@ -83,7 +79,7 @@ export const products = [
   {
     id: 'kserve',
     name: 'KServe',
-    description: 'Model serving platform built into Red Hat OpenShift AI. Supports multiple runtimes (vLLM, TorchServe, TensorFlow, etc.) with autoscaling (HPA/KEDA/Knative), canary deployments, and InferenceGraph pipelines.',
+    description: 'Model serving platform built into Red Hat OpenShift AI. Supports multiple runtimes (vLLM, TorchServe, TensorFlow, etc.) with autoscaling (Horizontal Pod Autoscaler, KEDA, or Knative), canary deployments, and InferenceGraph pipelines.',
     category: 'Model Serving',
     status: 'GA',
     layer: 'services',
@@ -99,9 +95,9 @@ export const products = [
   {
     id: 'batch-gateway',
     name: 'Red Hat Batch Gateway',
-    description: 'OpenAI-compatible batch inference API for large asynchronous LLM workloads.',
+    description: 'Early-stage capability — availability and scope not confirmed; check with your Red Hat account team. OpenAI-compatible batch inference API for large asynchronous large language model (LLM) workloads.',
     category: 'Model Serving',
-    status: 'Technology Preview',
+    status: 'Dev Preview',
     layer: 'services',
     required: false,
     connections: ['ai-inference', 'rhoai'],
@@ -112,7 +108,7 @@ export const products = [
   {
     id: 'rh-evaluation',
     name: 'OpenShift AI evaluation (EvalHub pattern)',
-    description: 'Evaluation workflows and harness integration for model quality — treat as a capability area to confirm with documentation.',
+    description: 'Model evaluation (EvalHub pattern) — Technology Preview; confirm scope with your Red Hat account team.',
     category: 'Evaluation',
     status: 'Tech Preview',
     layer: 'services',
@@ -177,7 +173,7 @@ export const products = [
   {
     id: 'project-navigator',
     name: 'Project Navigator',
-    description: 'An intent-based AI workflow orchestrator that simplifies model selection and infrastructure optimization via natural language.',
+    description: 'Early-stage capability — availability and scope not confirmed; check with your Red Hat account team. An intent-based AI workflow orchestrator that aims to simplify model selection and infrastructure choices via natural language.',
     category: 'AI Orchestration',
     status: 'Dev Preview',
     layer: 'application',
@@ -192,7 +188,7 @@ export const products = [
   {
     id: 'gen-ai-studio',
     name: 'Gen AI Studio',
-    description: 'A central point in the dashboard for access to generative AI asset consumption, experimentation, and prompt testing.',
+    description: 'Early-stage capability — availability and scope not confirmed; check with your Red Hat account team. A central point in the dashboard for generative AI asset consumption, experimentation, and prompt testing.',
     category: 'AI Developer Tool',
     status: 'Tech Preview',
     layer: 'application',
@@ -233,9 +229,9 @@ export const products = [
   {
     id: 'ai-gateway',
     name: 'Red Hat AI Gateway',
-    description: 'Model-as-a-Service gateway providing OpenAI-compatible APIs for accessing self-hosted and external models (NVIDIA Nemotron, etc.). Includes usage tracking, policy enforcement, and centralized model catalog management.',
+    description: 'Model-as-a-Service gateway providing OpenAI-compatible APIs for accessing self-hosted and external models. Includes usage tracking, policy enforcement, and centralized model catalog management. Confirm availability and scope with your Red Hat account team.',
     category: 'Gateway',
-    status: 'GA',
+    status: 'Check with Red Hat',
     layer: 'application',
     required: false,
     swappable: true,
@@ -287,7 +283,7 @@ export const thirdPartyOptions = [
     id: 'elastic-vector',
     name: 'Elastic Vector DB',
     category: 'Data',
-    description: 'Preferred vector database for RAG implementations',
+    description: 'A partner vector database option for retrieval-augmented generation (RAG) implementations',
     connections: ['rhoai']
   },
   {

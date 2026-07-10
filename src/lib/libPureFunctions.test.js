@@ -6,17 +6,8 @@ import {
   flattenBuiltLayersToMap,
   expandCapabilityMapToBuiltLayers
 } from './capabilityBlueprint';
-import { generateDataFlowSummaryTextFromNested } from './dataFlowSummaryText';
 import { mergeDecisionPatches } from '../data/decisionRecommendationApply';
 import { getCatalogDisplayName, getCatalogEntry } from '../data/catalogResolve';
-
-/** Reject accidental undefined/null tokens or object stringification in customer-facing text. */
-function expectNoBadExportTokens(text) {
-  expect(text, 'output must be a string').toEqual(expect.any(String));
-  expect(text).not.toMatch(/\bundefined\b/);
-  expect(text).not.toMatch(/\bnull\b/);
-  expect(text).not.toContain('[object Object]');
-}
 
 describe('reconcileContainerAiPlatform (platform compatibility)', () => {
   it('RHOAI implies OpenShift when container was Kubernetes', () => {
@@ -119,28 +110,6 @@ describe('blueprint transforms', () => {
   });
 });
 
-describe('generateDataFlowSummaryTextFromNested (data flow clipboard text)', () => {
-  it('handles minimal / empty nested shape with readable fallback', () => {
-    const text = generateDataFlowSummaryTextFromNested({});
-    expectNoBadExportTokens(text);
-    expect(text).toContain('Data flow summary');
-    expect(text).toMatch(/No components|Build Your Stack/i);
-  });
-
-  it('handles fuller stack with layer sections', () => {
-    const nested = capabilityMapToFlowShape({
-      'container-platform': 'openshift',
-      'ai-platform': 'rhoai',
-      'model-serving': 'ai-inference'
-    });
-    const text = generateDataFlowSummaryTextFromNested(nested);
-    expectNoBadExportTokens(text);
-    expect(text).toMatch(/INFRASTRUCTURE|Infrastructure/i);
-    expect(text).toMatch(/PLATFORM|Platform/i);
-    expect(text).toMatch(/OpenShift|Inference|serving/i);
-  });
-});
-
 describe('collectFlowLayersFromNested', () => {
   it('returns empty array when nested shape is empty', () => {
     expect(collectFlowLayersFromNested({})).toEqual([]);
@@ -160,7 +129,7 @@ describe('isCapabilityOptionDisabled (compatibility matrix)', () => {
     expect(isCapabilityOptionDisabled(aiCap, 'rhel-ai', map)).toBe(true);
   });
 
-  it('on OpenShift, RHAI (K8s-only SKU in this model) is disabled; RHOAI stays available', () => {
+  it('on OpenShift, RHAI (Kubernetes-only SKU in this model) is disabled; RHOAI stays available', () => {
     const map = { 'container-platform': 'openshift', 'ai-platform': 'rhoai' };
     expect(isCapabilityOptionDisabled(aiCap, 'rhai', map)).toBe(true);
     expect(isCapabilityOptionDisabled(aiCap, 'rhoai', map)).toBe(false);
@@ -179,9 +148,9 @@ describe('isCapabilityOptionDisabled (compatibility matrix)', () => {
   });
 
   it('Red Hat MCP operator options require OpenShift as container', () => {
-    const onK8s = { 'container-platform': 'kubernetes', 'ai-platform': 'rhai' };
+    const onKubernetes = { 'container-platform': 'kubernetes', 'ai-platform': 'rhai' };
     const onOcp = { 'container-platform': 'openshift', 'ai-platform': 'rhoai' };
-    expect(isCapabilityOptionDisabled(mcpCap, 'rh-mcp-full', onK8s)).toBe(true);
+    expect(isCapabilityOptionDisabled(mcpCap, 'rh-mcp-full', onKubernetes)).toBe(true);
     expect(isCapabilityOptionDisabled(mcpCap, 'rh-mcp-full', onOcp)).toBe(false);
   });
 

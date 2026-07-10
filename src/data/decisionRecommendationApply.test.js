@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { DECISION_RECOMMENDATION_PATCHES, getPatchesForRecommendationKey } from './decisionRecommendationApply';
+import { capabilities } from './capabilities';
 
 describe('Decision Recommendation Mappings', () => {
   it('should have non-empty patches for all registered keys', () => {
@@ -160,6 +161,27 @@ describe('Decision Recommendation Mappings', () => {
       const patches = DECISION_RECOMMENDATION_PATCHES[key];
       expect(patches).toBeDefined();
       expect(patches.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('should only reference capability IDs and option IDs that exist in capabilities.js', () => {
+    const capabilityById = new Map(
+      Object.values(capabilities)
+        .flat()
+        .map((capability) => [capability.id, capability])
+    );
+
+    for (const [key, patches] of Object.entries(DECISION_RECOMMENDATION_PATCHES)) {
+      for (const { capabilityId, optionId } of patches) {
+        const capability = capabilityById.get(capabilityId);
+        expect(capability, `Recommendation '${key}' references unknown capability '${capabilityId}'`).toBeDefined();
+
+        const optionIds = capability.options.map((option) => option.id);
+        expect(
+          optionIds,
+          `Recommendation '${key}' references unknown option '${optionId}' on capability '${capabilityId}'`
+        ).toContain(optionId);
+      }
     }
   });
 });

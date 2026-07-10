@@ -42,10 +42,10 @@ spec:
     spec:
       containers:
       - name: vllm
-        image: vllm/vllm-openai:v0.4.2
+        image: vllm/vllm-openai:latest  # pin to the current vLLM release for production
         args:
           - "--model"
-          - "meta-llama/Llama-2-7b-chat-hf"
+          - "meta-llama/Llama-3.1-8B-Instruct"
           - "--dtype"
           - "float16"
           - "--max-model-len"
@@ -103,7 +103,7 @@ spec:
   tls:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect`,
-        description: 'External access (OpenShift Route or Ingress on vanilla K8s)'
+        description: 'External access (OpenShift Route or Ingress on standard Kubernetes)'
       }
     ],
 
@@ -129,7 +129,7 @@ spec:
     ],
 
     controlPlane: [
-      { name: 'Kubernetes Controllers', type: 'controller', description: 'Standard K8s reconciliation (Deployment, ReplicaSet)', optional: false }
+      { name: 'Kubernetes Controllers', type: 'controller', description: 'Standard Kubernetes reconciliation (Deployment, ReplicaSet)', optional: false }
     ],
 
     dataPlane: [
@@ -185,7 +185,7 @@ spec:
       modelFormat:
         name: vllm
       runtime: vllm-runtime
-      storageUri: "s3://my-models/llama-2-7b-chat-hf"
+      storageUri: "s3://my-models/llama-3.1-8b-instruct"
       resources:
         limits:
           nvidia.com/gpu: 1
@@ -208,10 +208,10 @@ spec:
       version: "1"
   containers:
     - name: kserve-container
-      image: vllm/vllm-openai:v0.4.2
+      image: vllm/vllm-openai:latest  # pin to the current vLLM release for production
       args:
-        - "--model"
-        - "{{.Name}}"
+        - "--model=/mnt/models"
+        - "--served-model-name={{.Name}}"
         - "--dtype"
         - "float16"
       env:
@@ -264,7 +264,7 @@ spec:
     controlPlane: [
       { name: 'KServe Controller', type: 'controller', description: 'Reconciles InferenceService CRDs into Deployments/Services', optional: false },
       { name: 'KServe Webhook', type: 'webhook', description: 'Validates and mutates InferenceService specs', optional: false },
-      { name: 'Kubernetes Controllers', type: 'controller', description: 'Standard K8s reconciliation for generated resources', optional: false }
+      { name: 'Kubernetes Controllers', type: 'controller', description: 'Standard Kubernetes reconciliation for generated resources', optional: false }
     ],
 
     dataPlane: [
@@ -351,14 +351,14 @@ spec:
     },
     {
       capability: 'Operational complexity',
-      beforeState: 'Lower upfront (just K8s)',
+      beforeState: 'Lower upfront (just Kubernetes)',
       afterState: 'Higher platform abstraction',
       impact: 'tradeoff',
       notes: 'More controllers to understand, but centralized management reduces per-app burden'
     },
     {
       capability: 'CRDs and controllers',
-      beforeState: 'None (standard K8s)',
+      beforeState: 'None (standard Kubernetes)',
       afterState: 'KServe CRDs + controllers',
       impact: 'tradeoff',
       notes: 'Increased control plane complexity, requires KServe expertise'
@@ -417,7 +417,7 @@ spec:
     'Existing vLLM Deployments can coexist with KServe workloads during migration - migrate incrementally',
     'Test KServe controller reconciliation in non-prod first - watch controller logs for CRD validation errors',
     'GPU node affinity and tolerations may need adjustment depending on KServe runtime pod template',
-    'If using S3 storage, ensure pods have IRSA (AWS) or Workload Identity (GCP) for credentials',
+    'If using S3 storage, ensure pods have IAM Roles for Service Accounts (IRSA) on AWS or Workload Identity on Google Cloud for credentials',
     'KServe raw deployment mode (used above) keeps familiar Deployment behavior; serverless mode (Knative) adds scale-to-zero but requires Knative Serving',
     'Monitor InferenceService .status.conditions for reconciliation errors - more detailed than Deployment status'
   ],
@@ -558,7 +558,7 @@ spec:
     ],
 
     controlPlane: [
-      { name: 'Kubernetes Controllers', type: 'controller', description: 'Standard K8s reconciliation only', optional: false }
+      { name: 'Kubernetes Controllers', type: 'controller', description: 'Standard Kubernetes reconciliation only', optional: false }
     ],
 
     dataPlane: [
@@ -631,10 +631,10 @@ spec:
         description: 'Platform-level configuration - enables integrated ML services'
       },
       {
-        kind: 'Workbench',
-        apiVersion: 'workbench.kubeflow.org/v1beta1',
+        kind: 'Notebook',
+        apiVersion: 'kubeflow.org/v1',
         name: 'data-science-workbench',
-        yamlSnippet: `apiVersion: workbench.kubeflow.org/v1beta1
+        yamlSnippet: `apiVersion: kubeflow.org/v1
 kind: Notebook
 metadata:
   name: data-science-workbench
@@ -825,9 +825,9 @@ spec:
         ]
       },
 
-      // User Workbench (created by user)
+      // User workbench notebook (created by user)
       {
-        kind: 'Workbench',
+        kind: 'Notebook',
         name: 'data-science-workbench',
         plane: 'control',
         children: [
@@ -883,12 +883,12 @@ spec:
     dataPlane: [
       { name: 'Workbench Pods', type: 'pod', description: 'Managed Jupyter notebooks with integrated tooling', optional: false },
       { name: 'Model Server Pods', type: 'pod', description: 'KServe-managed inference endpoints', optional: false },
-      { name: 'Pipeline Pods', type: 'pod', description: 'Workflow execution (Argo/Tekton)', optional: false },
+      { name: 'Pipeline Pods', type: 'pod', description: 'Workflow execution (Argo Workflows)', optional: false },
       { name: 'Dashboard', type: 'service', description: 'Central UI for platform access', optional: false }
     ],
 
     capabilities: [
-      'Integrated JupyterHub workbenches with templates',
+      'Integrated workbenches (managed notebooks via the Kubeflow notebook controller) with templates',
       'Data Science Pipelines (Kubeflow Pipelines)',
       'Model Registry for versioning and lineage',
       'KServe model serving (multi-framework)',
@@ -992,11 +992,11 @@ spec:
   ],
 
   migrationNotes: [
-    'RHOAI requires OpenShift 4.12+ - verify cluster version before installation',
+    'RHOAI requires a currently supported OpenShift version - check the Red Hat OpenShift AI documentation for the supported version matrix before installation',
     'Plan for DataScienceCluster configuration - decide which components to enable (dashboard, workbenches, pipelines, KServe, model registry)',
     'Existing notebook Deployments can run alongside RHOAI workbenches during migration - migrate teams incrementally',
     'Model Registry requires S3-compatible storage - ensure object storage is available (ODF, AWS S3, MinIO)',
-    'Data Science Pipelines uses Argo Workflows or Tekton - existing CI/CD pipelines can coexist',
+    'Data Science Pipelines v2 runs on Argo Workflows (the earlier Tekton-based v1 backend was removed) - existing CI/CD pipelines can coexist',
     'GPU nodes must have NVIDIA GPU Operator installed - RHOAI does not install GPU drivers',
     'Set up Data Science Projects (namespaces) for team isolation before onboarding users',
     'Pre-pull notebook images to worker nodes to reduce workbench startup time',

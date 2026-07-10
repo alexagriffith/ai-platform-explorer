@@ -29,12 +29,14 @@ export default function QuickComparisonTable({ comparison }) {
   };
 
   // Combine decision factors from both sides
-  const categories = before.decisionFactors.map((beforeFactor, idx) => {
-    const afterFactor = after.decisionFactors[idx];
+  const beforeFactors = before.decisionFactors || [];
+  const afterFactors = after.decisionFactors || [];
+  const categories = beforeFactors.map((beforeFactor, idx) => {
+    const afterFactor = afterFactors[idx];
     return {
       category: beforeFactor.category,
       beforeValue: beforeFactor.value,
-      afterValue: afterFactor.value,
+      afterValue: afterFactor?.value ?? '—',
       icon: beforeFactor.icon,
       weight: beforeFactor.weight
     };
@@ -47,7 +49,7 @@ export default function QuickComparisonTable({ comparison }) {
           Quick Comparison: At-a-Glance
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
-          Users choose between these platforms based on governance, hardware strategy, and K8s approach.
+          Users choose between these platforms based on governance, hardware strategy, and Kubernetes approach.
           Both leverage similar underlying technologies but with different operational models.
         </p>
       </div>
@@ -58,7 +60,7 @@ export default function QuickComparisonTable({ comparison }) {
           <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          What They Share (Why Performance Is Similar)
+          What They Share
         </h4>
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
@@ -71,7 +73,7 @@ export default function QuickComparisonTable({ comparison }) {
             <div className="flex items-start gap-2">
               <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
               <span className="text-sm text-gray-700 dark:text-gray-300">
-                <strong>NIXL for KV transfer</strong> - GPU-to-GPU cache movement over InfiniBand/RoCE
+                <strong>NIXL (NVIDIA's inference transfer library) for key-value (KV) cache transfer</strong> - GPU-to-GPU cache movement over InfiniBand or RDMA over Converged Ethernet (RoCE)
               </span>
             </div>
             <div className="flex items-start gap-2">
@@ -97,7 +99,7 @@ export default function QuickComparisonTable({ comparison }) {
             <div className="flex items-start gap-2">
               <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
               <span className="text-sm text-gray-700 dark:text-gray-300">
-                <strong>Can work together</strong> - NVIDIA blog: "Dynamo Accelerates llm-d"
+                <strong>Can work together</strong> - Shared components (such as NIXL) let the projects interoperate rather than compete outright
               </span>
             </div>
           </div>
@@ -113,7 +115,8 @@ export default function QuickComparisonTable({ comparison }) {
           Key Differences (Where You Choose)
         </h4>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          Since performance is similar, your choice depends on governance model, hardware diversity, and Kubernetes integration approach.
+          Published head-to-head benchmarks are limited, so evaluate performance on your own workload.
+          In practice, the choice usually comes down to governance model, hardware diversity, and Kubernetes integration approach.
         </p>
       </div>
 
@@ -125,10 +128,10 @@ export default function QuickComparisonTable({ comparison }) {
               <th className="px-4 py-3 text-left text-sm font-semibold text-gray-400 border-r border-gray-700 w-1/4">
                 Category
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-orange-400 border-r border-gray-700 w-3/8">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-orange-400 border-r border-gray-700 w-[37.5%]">
                 {before.label}
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-blue-400 w-3/8">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-blue-400 w-[37.5%]">
                 {after.label}
               </th>
             </tr>
@@ -222,30 +225,30 @@ export default function QuickComparisonTable({ comparison }) {
               rows={[
                 {
                   label: "API Standard",
-                  before: "Own K8s CRDs + Grove abstraction",
-                  after: "Extends Gateway API (CNCF standard)",
+                  before: "Own Kubernetes custom resource definitions (CRDs) + Grove abstraction",
+                  after: "Extends Gateway API, a Cloud Native Computing Foundation (CNCF) standard",
                   similar: false
                 },
                 {
                   label: "Inference Engine",
-                  before: "vLLM, TRT-LLM, SGLang, PyTorch",
+                  before: "vLLM, TensorRT-LLM, SGLang, PyTorch",
                   after: "vLLM",
                   similar: false
                 },
                 {
                   label: "Routing",
                   before: "Built-in router, global radix tree, GPU-level",
-                  after: "EPP at Gateway API layer, cluster-wide pod scoring",
+                  after: "Endpoint picker (EPP) at the Gateway API layer, cluster-wide pod scoring",
                   similar: false
                 },
                 {
-                  label: "P/D Disaggregation",
+                  label: "Prefill/Decode Disaggregation",
                   before: "NIXL, conditional (dynamic per-request decision)",
                   after: "NIXL, static pool configuration",
                   similar: false
                 },
                 {
-                  label: "KV Cache",
+                  label: "Key-Value (KV) Cache",
                   before: "Cross-node, prefix-aware, tiered offload",
                   after: "Cross-node, prefix-aware, tiered offload",
                   similar: true
@@ -270,25 +273,25 @@ export default function QuickComparisonTable({ comparison }) {
                 {
                   label: "Hardware",
                   before: "NVIDIA GPUs",
-                  after: "NVIDIA, AMD (MI300X, MI355X, MI350P), More Potentials",
+                  after: "NVIDIA and AMD Instinct accelerators (MI300X, MI325X, MI355X), with more platforms emerging",
                   similar: false
                 },
                 {
                   label: "Control Plane",
                   before: "NVIDIA-native orchestration primitives",
-                  after: "Kubernetes CRD, managed by KServe (CNCF Incubator)",
+                  after: "Kubernetes custom resources, deployed via KServe (a CNCF incubating project)",
                   similar: false
                 },
                 {
                   label: "Governance",
                   before: "Open source (Apache 2.0), NVIDIA-controlled",
-                  after: "CNCF Sandbox, multi-vendor steering",
+                  after: "Open source (Apache 2.0), led by Red Hat with founding contributors including Google, IBM, NVIDIA, and CoreWeave",
                   similar: false
                 },
                 {
                   label: "Enterprise Distribution",
                   before: "NVIDIA AI Enterprise",
-                  after: "RHOAI (OpenShift) / RHAIE + RHAII (any K8s)",
+                  after: "Red Hat OpenShift AI (on OpenShift) / Red Hat AI Inference Server (on any Kubernetes)",
                   similar: false
                 },
                 {
@@ -310,8 +313,9 @@ export default function QuickComparisonTable({ comparison }) {
         </h4>
         <div className="space-y-3">
           <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-            <strong>Performance is similar</strong> (within 5-10% - both use vLLM + NIXL + disaggregation).
-            They share core technologies and can even work together, but users still choose one as their primary platform.
+            <strong>Published head-to-head benchmarks are limited; evaluate on your own workload.</strong>{' '}
+            They share core technologies (vLLM, NIXL, disaggregated serving) and can even work together,
+            but users still choose one as their primary platform.
           </p>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
             <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
@@ -326,9 +330,9 @@ export default function QuickComparisonTable({ comparison }) {
             <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
               <h5 className="font-semibold text-gray-900 dark:text-white mb-2">Choose llm-d if:</h5>
               <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-                <li>• Need multi-vendor hardware (AMD, Intel, TPU)</li>
-                <li>• Prefer CNCF community governance</li>
-                <li>• Want Gateway API standard (not vendor CRDs)</li>
+                <li>• Need multi-vendor hardware (AMD, Intel, Google tensor processing units)</li>
+                <li>• Prefer open, multi-vendor community governance</li>
+                <li>• Want the Gateway API standard (not vendor-specific custom resources)</li>
                 <li>• Need deep OpenShift integration</li>
               </ul>
             </div>
