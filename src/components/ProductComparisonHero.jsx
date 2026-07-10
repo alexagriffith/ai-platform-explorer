@@ -76,10 +76,14 @@ function HeroCell({ resolved, zone }) {
     : `${resolved.label} — open source`;
 
   return (
+    // rel="noopener" (NOT "noopener noreferrer"): keep the security-critical noopener, but do not
+    // strip the Referer. Some first-party docs/CDN edges (docs.redhat.com/access.redhat.com behind
+    // Akamai) serve a blank/blocked body to referrer-less hits — a click that opened blank. Sending
+    // the app's origin as the Referer is safe here (linking to Red Hat's own public docs).
     <a
       href={resolved.sourceUrl}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener"
       className={className}
       title={resolved.sourceLabel || resolved.detail || resolved.label}
       aria-label={accessible}

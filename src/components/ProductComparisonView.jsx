@@ -71,7 +71,7 @@ function ProductCell({ cell, kind }) {
         <a
           href={cell.sourceUrl}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener"
           title={cell.sourceLabel || 'Open source'}
           className="inline-flex items-start gap-1 text-xs font-medium text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline transition-colors"
         >
@@ -412,7 +412,7 @@ export default function ProductComparisonView() {
                     <a
                       href={link.url}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="noopener"
                       className="inline-flex items-center gap-2 text-sm font-medium text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline transition-colors"
                     >
                       <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
