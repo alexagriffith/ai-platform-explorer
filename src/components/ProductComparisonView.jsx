@@ -16,61 +16,51 @@ import {
  * placeholders behind a visible draft banner until a human curates it (see src/data/CURATION-TODO.md).
  */
 
-// Shared badge palette — complete Tailwind literals (no template-built class strings). One config per
-// vocabulary value; `.label` is reused by the copyable summary so the text matches the badges.
+// Status vocabulary → human labels. The label text is the single, self-explanatory cell
+// representation (plain neutral text, no colored pills) and is reused verbatim by the copyable
+// summary so copied text matches what's on screen. BADGE_BASE/AMBER remain only for the amber
+// "Draft" chip in the selector — the one place a colored badge is still meaningful.
 const CAPTURE_ROOT_ID = 'product-comparison-capture-root';
 
 const BADGE_BASE = 'inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium border rounded-full';
-const GREEN = 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800';
-const BLUE = 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800';
-const GRAY = 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600';
-const YELLOW = 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800';
 const AMBER = 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800';
 
-const INCLUSION_BADGE = {
-  'included': { label: 'Included', className: GREEN },
-  'add-on': { label: 'Add-on', className: BLUE },
-  'not-included': { label: 'Not included', className: GRAY },
-  'confirm': { label: 'Confirm with Red Hat', className: AMBER }
+const INCLUSION_LABEL = {
+  'included': 'Included',
+  'add-on': 'Add-on',
+  'not-included': 'Not included',
+  'confirm': 'Confirm with Red Hat'
 };
 
-const SUPPORT_BADGE = {
-  'yes': { label: 'Yes', className: GREEN },
-  'partial': { label: 'Partial', className: YELLOW },
-  'no': { label: 'No', className: GRAY },
-  'confirm': { label: 'Confirm with Red Hat', className: AMBER }
+const SUPPORT_LABEL = {
+  'yes': 'Yes',
+  'partial': 'Partial',
+  'no': 'No',
+  'confirm': 'Confirm with Red Hat'
 };
 
 const DRAFT_BANNER_TEXT =
   'Draft — pending bill of materials (BOM) curation. Rows below are illustrative placeholders, not confirmed product contents. Confirm anything here with your Red Hat account team.';
 
-function inclusionConfig(value) {
-  return INCLUSION_BADGE[value] || { label: value || 'Unknown', className: GRAY };
+function inclusionLabel(value) {
+  return INCLUSION_LABEL[value] || value || 'Unknown';
 }
 
-function supportConfig(value) {
-  return SUPPORT_BADGE[value] || { label: value || 'Unknown', className: GRAY };
+function supportLabel(value) {
+  return SUPPORT_LABEL[value] || value || 'Unknown';
 }
 
-function InclusionBadge({ value }) {
-  const config = inclusionConfig(value);
-  return <span className={`${BADGE_BASE} ${config.className}`}>{config.label}</span>;
-}
-
-function SupportBadge({ value }) {
-  const config = supportConfig(value);
-  return <span className={`${BADGE_BASE} ${config.className}`}>{config.label}</span>;
-}
-
-/** One product cell: a badge plus the detail line, with per-cell status appended when present. */
+/** One product cell: a single plain-text status label (neutral styling — no colored pill or
+ *  circle) above the detail line, with per-cell maturity status appended to the detail when present. */
 function ProductCell({ cell, kind }) {
   if (!cell) {
     return <span className="text-xs text-gray-400 dark:text-gray-500">—</span>;
   }
+  const label = kind === 'bom' ? inclusionLabel(cell.included) : supportLabel(cell.support);
   const detail = cell.status ? `${cell.detail} — ${cell.status}` : cell.detail;
   return (
-    <div className="space-y-1.5">
-      {kind === 'bom' ? <InclusionBadge value={cell.included} /> : <SupportBadge value={cell.support} />}
+    <div className="space-y-1">
+      <div className="text-sm font-semibold text-gray-900 dark:text-white">{label}</div>
       <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{detail}</div>
     </div>
   );
@@ -78,14 +68,7 @@ function ProductCell({ cell, kind }) {
 
 function OverlapCell({ overlap }) {
   if (overlap === true) {
-    return (
-      <span className="inline-flex items-center gap-1.5 text-sm font-medium text-green-700 dark:text-green-300">
-        <svg className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        Shared
-      </span>
-    );
+    return <span className="text-sm font-medium text-gray-900 dark:text-white">Shared</span>;
   }
   return <span className="text-sm text-gray-400 dark:text-gray-500">—</span>;
 }
@@ -233,15 +216,15 @@ function buildProductComparisonCopyText(comparison, view) {
   if (view === 'bom') {
     lines.push('Bill of materials (BOM):');
     for (const row of comparison.bomRows) {
-      const aWord = inclusionConfig(row.a?.included).label;
-      const bWord = inclusionConfig(row.b?.included).label;
+      const aWord = inclusionLabel(row.a?.included);
+      const bWord = inclusionLabel(row.b?.included);
       lines.push(`${row.area}: ${aLabel} = ${aWord}; ${bLabel} = ${bWord}`);
     }
   } else {
     lines.push('Capabilities:');
     for (const row of comparison.capabilityRows) {
-      const aWord = supportConfig(row.a?.support).label;
-      const bWord = supportConfig(row.b?.support).label;
+      const aWord = supportLabel(row.a?.support);
+      const bWord = supportLabel(row.b?.support);
       lines.push(`${row.capability}: ${aLabel} = ${aWord}; ${bLabel} = ${bWord}`);
     }
   }
@@ -377,28 +360,29 @@ export default function ProductComparisonView() {
             </div>
           </div>
 
-          {/* Documentation links (outside the capture root) */}
+          {/* Documentation links (outside the capture root). Rendered as a compact, left-aligned
+              link list that lines up with the tables above — a single resource reads as one inline
+              icon + text row, not a lone oversized card. */}
           {comparison.docsLinks && comparison.docsLinks.length > 0 && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Additional Resources</h3>
-              <div className="grid md:grid-cols-2 gap-3">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">Additional Resources</h3>
+              <ul className="space-y-2">
                 {comparison.docsLinks.map((link) => (
-                  <a
-                    key={link.url}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
-                  >
-                    <svg className="w-5 h-5 text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">
-                      {link.label}
-                    </span>
-                  </a>
+                  <li key={link.url}>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline transition-colors"
+                    >
+                      <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      <span>{link.label}</span>
+                    </a>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           )}
         </div>
