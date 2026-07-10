@@ -177,7 +177,7 @@ function ComparisonTableShell({ columns, children }) {
 function BomTable({ comparison }) {
   const { a, b } = comparison.products;
   return (
-    <ComparisonTableShell columns={['Component area', a.label, b.label, 'Notes']}>
+    <ComparisonTableShell columns={['Component area', a.label, b.label]}>
       {comparison.bomRows.map((row) => (
         <tr key={row.area} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
@@ -188,9 +188,6 @@ function BomTable({ comparison }) {
           </td>
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
             <ProductCell cell={row.b} kind="bom" />
-          </td>
-          <td className="px-3 sm:px-4 py-3 sm:py-4 align-top text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-            {row.notes || '—'}
           </td>
         </tr>
       ))}

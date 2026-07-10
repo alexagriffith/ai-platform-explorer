@@ -41,7 +41,6 @@ export const aiInferenceVsRhoai = {
       area: 'Inference engine',
       a: { included: 'included', detail: 'vLLM Engine — high-throughput large language model (LLM) inference' },
       b: { included: 'included', detail: 'KServe model serving with vLLM runtime support' },
-      notes: 'Both products serve models with vLLM under the hood.',
       illustrative: true,
       sourceRef: 'Placeholder from subComponents.js (ai-inference.vllm-engine; rhoai.kserve) — pending BOM curation'
     },
@@ -91,7 +90,6 @@ export const aiInferenceVsRhoai = {
       area: 'Operators, container images, and versions per release',
       a: { included: 'confirm', detail: PENDING },
       b: { included: 'confirm', detail: PENDING },
-      notes: 'This is the heart of the bill of materials — filled only from the supported-configurations article during curation.',
       illustrative: true,
       sourceRef: 'No in-repo source — pending BOM curation'
     }
