@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { capabilities } from './capabilities';
 import { products, thirdPartyOptions } from './products';
 import { subComponents } from './subComponents';
+import { productComparisons } from './productComparisons';
 
 // CLAUDE.md locks the status vocabulary. This test fails the build if any catalog
 // record drifts outside it (e.g. 'Technology Preview' instead of 'Tech Preview',
@@ -24,7 +25,7 @@ function collect(node, key, path = 'root', out = []) {
   return out;
 }
 
-const sources = { capabilities, products, thirdPartyOptions, subComponents };
+const sources = { capabilities, products, thirdPartyOptions, subComponents, productComparisons };
 
 describe('catalog vocabulary integrity', () => {
   it('every status value is in the canonical set', () => {
