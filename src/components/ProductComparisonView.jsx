@@ -1,11 +1,12 @@
 import { useState, useCallback } from 'react';
-import { AlertCircle, Users, Download, Copy, Check } from 'lucide-react';
+import { AlertCircle, Users, Download, Copy, Check, ExternalLink } from 'lucide-react';
 import {
   productComparisons,
   getProductComparisonById,
   getProductComparisonList,
   isComparisonDraft
 } from '../data/productComparisons';
+import ProductComparisonHero from './ProductComparisonHero';
 
 /**
  * ProductComparisonView
@@ -51,17 +52,38 @@ function supportLabel(value) {
 }
 
 /** One product cell: a single plain-text status label (neutral styling — no colored pill or
- *  circle) above the detail line, with per-cell maturity status appended to the detail when present. */
+ *  circle) above the detail line, with per-cell maturity status appended to the detail when present.
+ *  Every fact links to its source: when the cell carries a `sourceUrl` it renders a compact
+ *  external-link row (the human-readable `sourceLabel`, never a raw URL) plus a "Pending verification"
+ *  note for inferred/unresolved-tier cells — the same provenance the hero cells resolve. */
 function ProductCell({ cell, kind }) {
   if (!cell) {
     return <span className="text-xs text-gray-400 dark:text-gray-500">—</span>;
   }
   const label = kind === 'bom' ? inclusionLabel(cell.included) : supportLabel(cell.support);
   const detail = cell.status ? `${cell.detail} — ${cell.status}` : cell.detail;
+  const pending = cell.tier && cell.tier !== 'clear';
   return (
     <div className="space-y-1">
       <div className="text-sm font-semibold text-gray-900 dark:text-white">{label}</div>
       <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{detail}</div>
+      {cell.sourceUrl && (
+        <a
+          href={cell.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={cell.sourceLabel || 'Open source'}
+          className="inline-flex items-start gap-1 text-xs font-medium text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline transition-colors"
+        >
+          <ExternalLink size={12} className="mt-0.5 flex-shrink-0" />
+          <span>{cell.sourceLabel || 'Source'}</span>
+        </a>
+      )}
+      {pending && (
+        <div className="text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
+          Pending verification
+        </div>
+      )}
     </div>
   );
 }
@@ -211,6 +233,13 @@ function buildProductComparisonCopyText(comparison, view) {
   }
   lines.push(comparison.title);
   lines.push('');
+  const hero = comparison.hero;
+  if (hero?.outer && hero?.inner) {
+    const outerTag = hero.outer.tagline ? ` (${hero.outer.tagline})` : '';
+    const innerTag = hero.inner.tagline ? ` (${hero.inner.tagline})` : '';
+    lines.push(`Nesting: ${hero.outer.label}${outerTag} contains ${hero.inner.label}${innerTag}.`);
+    lines.push('');
+  }
   const aLabel = comparison.products.a.label;
   const bLabel = comparison.products.b.label;
   if (view === 'bom') {
@@ -335,10 +364,21 @@ export default function ProductComparisonView() {
               </div>
             </div>
 
-            {/* View toggle + active table */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-              <div className="border-b border-gray-200 dark:border-gray-700">
-                <nav className="flex gap-1 px-4">
+            {/* PRIMARY VIEW — nested-containment hero: the Inference Server core inside the OpenShift AI
+                platform, as a strict uniform grid of source-linked cells. Sits inside the capture root
+                so the PNG export includes it. */}
+            <ProductComparisonHero comparison={comparison} />
+
+            {/* SECONDARY — detailed provenance tables, collapsed by default. The hero is the headline;
+                these back it with the full bill of materials + capability rows, each cell linked to its
+                source. Kept inside the capture root so an expanded export still captures them. */}
+            <details className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+              <summary className="cursor-pointer select-none px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-2 text-sm font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700/40 rounded-lg">
+                <span>Detailed provenance tables (bill of materials + capabilities)</span>
+                <span className="text-xs font-normal text-gray-500 dark:text-gray-400">every cell links to its source</span>
+              </summary>
+              <div className="border-t border-gray-200 dark:border-gray-700">
+                <nav className="flex gap-1 px-4 border-b border-gray-200 dark:border-gray-700">
                   {TOGGLES.map((toggle) => (
                     <button
                       key={toggle.id}
@@ -353,11 +393,11 @@ export default function ProductComparisonView() {
                     </button>
                   ))}
                 </nav>
+                <div key={comparison.id} className="p-4 sm:p-6">
+                  {view === 'bom' ? <BomTable comparison={comparison} /> : <CapabilityTable comparison={comparison} />}
+                </div>
               </div>
-              <div key={comparison.id} className="p-4 sm:p-6">
-                {view === 'bom' ? <BomTable comparison={comparison} /> : <CapabilityTable comparison={comparison} />}
-              </div>
-            </div>
+            </details>
           </div>
 
           {/* Documentation links (outside the capture root). Rendered as a compact, left-aligned
