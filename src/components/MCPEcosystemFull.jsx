@@ -19,7 +19,7 @@ export default function MCPEcosystemFull() {
       color: 'blue',
       servers: [
         { name: 'Confluent Cloud', description: 'Apache Kafka managed streaming platform' },
-        { name: 'EDB Postgres® AI', description: 'Enterprise PostgreSQL with AI extensions' },
+        { name: 'EDB Postgres AI', description: 'Enterprise PostgreSQL with AI extensions' },
         { name: 'HashiCorp (Terraform)', description: 'Infrastructure as code and cloud provisioning' },
         { name: 'Microsoft Azure', description: 'Azure cloud services and resources' },
         { name: 'Dynatrace', description: 'Application performance monitoring and observability' },
@@ -30,11 +30,11 @@ export default function MCPEcosystemFull() {
       title: 'Community',
       color: 'green',
       servers: [
-        { name: 'MongoDB', description: 'NoSQL document database' },
+        { name: 'MongoDB', description: 'Document database (stores JSON-like records)' },
         { name: 'MariaDB', description: 'Open source relational database' },
         { name: 'PostgreSQL', description: 'Advanced open source database' },
         { name: 'GitHub', description: 'Code repository and version control' },
-        { name: 'GitLab', description: 'DevOps platform and CI/CD' }
+        { name: 'GitLab', description: 'DevOps platform with built-in build and release automation' }
       ]
     }
   };
@@ -47,7 +47,7 @@ export default function MCPEcosystemFull() {
       subtitle: 'Governance Backbone • Source of Truth',
       color: 'green',
       icon: Database,
-      description: 'Central system of record for all MCP servers with governance and metadata management'
+      description: 'Central system of record for all MCP servers with governance and metadata management (Technology Preview)'
     },
     {
       id: 'catalog',
@@ -55,7 +55,7 @@ export default function MCPEcosystemFull() {
       role: 'Discover • Browse • Launch',
       color: 'blue',
       icon: Package,
-      description: 'User-facing interface to discover, browse, and deploy MCP servers'
+      description: 'User-facing interface to discover, browse, and deploy MCP servers (Technology Preview)'
     },
     {
       id: 'lifecycle',
@@ -63,7 +63,7 @@ export default function MCPEcosystemFull() {
       role: 'Deploy • Configure • Update',
       color: 'yellow',
       icon: Workflow,
-      description: 'Kubernetes operator managing MCP server lifecycle on OpenShift'
+      description: 'Kubernetes operator managing MCP server lifecycle on OpenShift (Technology Preview)'
     },
     {
       id: 'gateway',
@@ -71,7 +71,7 @@ export default function MCPEcosystemFull() {
       role: 'Secure • Aggregate • Enforce',
       color: 'purple',
       icon: Shield,
-      description: 'Centralized access control, tool aggregation, and policy enforcement'
+      description: 'Centralized access control, tool aggregation, and policy enforcement (Technology Preview)'
     }
   ];
 
@@ -116,19 +116,22 @@ export default function MCPEcosystemFull() {
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg shadow-lg p-6 text-white">
         <h2 className="text-2xl font-bold mb-2">
-          The MCP Ecosystem on OpenShift AI
+          The Model Context Protocol (MCP) Ecosystem on OpenShift AI
         </h2>
         <p className="text-purple-100 mb-4">
           A platform approach for discovering, deploying, securing, and governing MCP servers
         </p>
+        <div className="mb-4 px-3 py-2 bg-white/20 border border-white/40 rounded-lg text-sm font-medium">
+          Technology Preview — verify availability with your Red Hat account team
+        </div>
         <a
-          href="https://solaius.github.io/ai-asset-registry/mcps/ecosystem/mcp-ecosystem.html#s=1"
+          href="https://modelcontextprotocol.io"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
         >
           <ExternalLink size={16} />
-          <span className="text-sm font-medium">View Full MCP Ecosystem Guide</span>
+          <span className="text-sm font-medium">MCP specification (modelcontextprotocol.io)</span>
         </a>
       </div>
 
@@ -148,7 +151,7 @@ export default function MCPEcosystemFull() {
           ))}
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400 text-center mt-3">
-          Every MCP server goes through security scanning and certification before being published
+          The planned ingestion workflow validates, scans, and signs MCP servers before publication — confirm certification status in product documentation.
         </p>
       </div>
 
@@ -174,7 +177,7 @@ export default function MCPEcosystemFull() {
               Central repository for all MCP server metadata, certification status, and governance
             </p>
             <div className="mt-2 inline-block px-3 py-1 bg-green-600 text-white text-xs font-bold rounded-full">
-              SOURCE OF TRUTH
+              System of record
             </div>
           </div>
         </div>

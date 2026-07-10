@@ -7,40 +7,54 @@ export default function RAGArchitecture() {
       icon: Zap,
       color: 'purple',
       description: 'Routing, rate-limiting, and authentication',
-      details: ['Request routing', 'Rate limiting', 'Auth (OAuth, OIDC, mTLS)', 'SLO-based priority']
+      details: [
+        'Request routing',
+        'Rate limiting',
+        'Authentication — single sign-on standards (OAuth, OIDC) and mutual TLS certificates (mTLS)',
+        'service-level objective (SLO) based priority'
+      ]
+    },
+    {
+      stage: 'Retrieval',
+      icon: FileText,
+      color: 'blue',
+      description: 'Embed the query and fetch relevant document chunks from the vector database',
+      details: ['Query embedding', 'Vector similarity search', 'Top-K chunk selection', 'Context assembly into the prompt']
     },
     {
       stage: 'Model Serving',
       icon: Cpu,
       color: 'blue',
-      description: 'vLLM/KServe inference engine',
-      details: ['vLLM runtime', 'Advanced routing (llm-d)', 'KV cache awareness', 'Multi-GPU support']
-    },
-    {
-      stage: 'GPU',
-      icon: Cpu,
-      color: 'green',
-      description: 'Optimized hardware acceleration',
-      details: ['NVIDIA GPUs', 'Tensor parallelism', 'PagedAttention', 'Memory optimization']
+      description: 'vLLM/KServe inference engine on NVIDIA, AMD, or Intel accelerators',
+      details: [
+        'vLLM runtime',
+        'Advanced routing (llm-d)',
+        'key-value cache (KV cache) awareness',
+        'Tensor parallelism, PagedAttention, and multi-GPU support'
+      ]
     },
     {
       stage: 'Response',
       icon: ArrowRight,
       color: 'orange',
-      description: 'Grounded output with citations',
-      details: ['Token streaming', 'Source citations', 'Grounded answers', 'Low latency']
+      description: 'Answer generated from the retrieved context',
+      details: [
+        'Token streaming',
+        'Source references when the application surfaces them',
+        'Answers constrained to retrieved context (reduces, does not eliminate, unsupported statements)'
+      ]
     }
   ];
 
   const documentFormats = [
-    { format: 'PDF', icon: FileText, technique: 'OCR for scans' },
+    { format: 'PDF', icon: FileText, technique: 'optical character recognition (OCR) for scans' },
     { format: 'DOCX', icon: FileText, technique: 'Text extraction' },
     { format: 'PPTX', icon: FileText, technique: 'Slide parsing' },
     { format: 'Markdown', icon: FileText, technique: 'Direct parsing' },
-    { format: 'HTML', icon: FileText, technique: 'Web scraping' },
+    { format: 'HTML', icon: FileText, technique: 'Markup parsing' },
     { format: 'Plain Text', icon: FileText, technique: 'Direct ingestion' },
     { format: 'Images', icon: Image, technique: 'OCR extraction' },
-    { format: 'Audio', icon: Mic, technique: 'ASR conversion' }
+    { format: 'Audio', icon: Mic, technique: 'automatic speech recognition (ASR) conversion' }
   ];
 
   const autoRAGOptimizations = [
@@ -73,7 +87,7 @@ export default function RAGArchitecture() {
       green: 'bg-green-600',
       orange: 'bg-orange-600'
     };
-    return colors[color];
+    return colors[color] || 'bg-gray-600';
   };
 
   return (
@@ -84,7 +98,7 @@ export default function RAGArchitecture() {
           RAG Architecture Pipeline
         </h3>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
-          API Gateway → Model Serving → GPU → Response
+          API Gateway → Retrieval → Model Serving → Response
         </p>
 
         <div className="grid md:grid-cols-4 gap-4 mb-6">
@@ -132,7 +146,7 @@ export default function RAGArchitecture() {
           Document Processing & Ingestion
         </h3>
         <p className="text-gray-600 dark:text-gray-400 mb-4">
-          Supports diverse data formats with specialized processing techniques
+          Common source formats a RAG ingestion pipeline needs to handle, and the typical processing technique for each
         </p>
 
         <div className="grid md:grid-cols-4 gap-3">
@@ -158,16 +172,16 @@ export default function RAGArchitecture() {
         </div>
       </div>
 
-      {/* AutoRAG Optimization */}
+      {/* RAG Configuration Tuning */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center gap-3 mb-4">
           <Settings className="text-purple-600" size={24} />
           <div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-              AutoRAG Optimization
+              RAG Configuration Tuning
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Automated testing to find the highest-performing RAG configuration
+              Parameters worth testing systematically to improve retrieval quality
             </p>
           </div>
         </div>
@@ -193,7 +207,7 @@ export default function RAGArchitecture() {
 
         <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
           <p className="text-sm text-gray-700 dark:text-gray-300">
-            <strong>Result:</strong> AutoRAG automatically deploys the best-performing configuration as an optimized RAG endpoint
+            <strong>Goal:</strong> systematically test these parameters against a labeled question set, then deploy the best-scoring configuration
           </p>
         </div>
       </div>

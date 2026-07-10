@@ -29,15 +29,19 @@
 - Multi-user collaboration features
 - Full export formats (JSON, Terraform, YAML)
 
-## V2: Deployment Impact Explorer (Planned)
+## V2: Deployment Impact Explorer (Phase 1 shipped)
 
 **Goal:** Technical deep-dive tool for understanding migration impact when changing deployment patterns.
 
-**Planned features:**
+**Shipped (Phase 1 — live as the "Deployment Impact" tab):**
 
 - Before/after comparison for deployment changes (e.g., vLLM → KServe)
+- Kubernetes resource definitions with clickable details (resource trees)
+- YAML configuration diff view
+
+**Still planned:**
+
 - Control plane vs data plane impact analysis
-- Kubernetes resource definitions with clickable details
 - Migration effort estimation
 - Component dependency visualization
 

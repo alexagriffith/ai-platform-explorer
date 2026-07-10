@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { X, ExternalLink, BookOpen, ListChecks, Layers, GitBranch } from 'lucide-react';
 import { solutionDetails } from '../data/solutionDetails';
 
@@ -19,6 +20,14 @@ function Section({ title, icon: Icon, children }) {
 export default function DeepDiveModal({ optionId, onClose }) {
   const details = solutionDetails[optionId];
 
+  useEffect(() => {
+    const onKey = (ev) => {
+      if (ev.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
   if (!details) return null;
 
   const reqs = details.requirements || DEFAULT_REQUIREMENTS;
@@ -34,6 +43,9 @@ export default function DeepDiveModal({ optionId, onClose }) {
       onClick={onClose}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={details.name}
         className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >

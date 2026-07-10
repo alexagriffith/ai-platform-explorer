@@ -51,8 +51,8 @@ export default function YAMLDiffView({ comparison }) {
             </h4>
           </div>
 
-          {before.submittedResources.map((resource, idx) => (
-            <YAMLResource key={idx} resource={resource} state={leftConfig.state} />
+          {before.submittedResources.map((resource) => (
+            <YAMLResource key={resource.name} resource={resource} state={leftConfig.state} />
           ))}
         </div>
 
@@ -65,8 +65,8 @@ export default function YAMLDiffView({ comparison }) {
             </h4>
           </div>
 
-          {after.submittedResources.map((resource, idx) => (
-            <YAMLResource key={idx} resource={resource} state={rightConfig.state} />
+          {after.submittedResources.map((resource) => (
+            <YAMLResource key={resource.name} resource={resource} state={rightConfig.state} />
           ))}
         </div>
       </div>
@@ -80,6 +80,7 @@ export default function YAMLDiffView({ comparison }) {
  */
 function YAMLResource({ resource, state }) {
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleCopy = async () => {
@@ -89,6 +90,8 @@ function YAMLResource({ resource, state }) {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
+      setCopyFailed(true);
+      setTimeout(() => setCopyFailed(false), 2000);
     }
   };
 
@@ -103,9 +106,18 @@ function YAMLResource({ resource, state }) {
   return (
     <div className={`border-2 ${stateColor} rounded-lg overflow-hidden bg-white dark:bg-gray-800`}>
       {/* Header - clickable to expand/collapse */}
-      <button
+      <div
+        role="button"
+        tabIndex={0}
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsExpanded(!isExpanded);
+          }
+        }}
+        aria-expanded={isExpanded}
+        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left cursor-pointer"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 flex-1">
@@ -142,6 +154,11 @@ function YAMLResource({ resource, state }) {
                 <Check size={14} className="text-green-600" />
                 <span>Copied!</span>
               </>
+            ) : copyFailed ? (
+              <>
+                <Copy size={14} className="text-red-600" />
+                <span>Copy failed</span>
+              </>
             ) : (
               <>
                 <Copy size={14} />
@@ -150,12 +167,12 @@ function YAMLResource({ resource, state }) {
             )}
           </button>
         </div>
-      </button>
+      </div>
 
       {/* YAML Content - collapsible */}
       {isExpanded && (
-        <div className="overflow-x-auto">
-          <pre className="p-4 text-xs font-mono leading-relaxed text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900">
+        <div className="overflow-x-auto border-t border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto">
+          <pre className="p-4 text-xs font-mono leading-relaxed text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-950">
             <code>{resource.yamlSnippet}</code>
           </pre>
         </div>

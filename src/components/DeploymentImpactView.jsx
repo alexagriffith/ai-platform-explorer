@@ -51,7 +51,7 @@ export default function DeploymentImpactView() {
 
       {/* Comparison Content */}
       {comparison && (
-        <div className="space-y-6">
+        <div key={comparison.id} className="space-y-6">
           {/* Comparison Header */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
@@ -101,6 +101,7 @@ export default function DeploymentImpactView() {
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
               <button
                 onClick={() => setMigrationNotesExpanded(!migrationNotesExpanded)}
+                aria-expanded={migrationNotesExpanded}
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
               >
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">

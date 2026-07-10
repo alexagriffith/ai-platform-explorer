@@ -1,5 +1,5 @@
 import { ChevronRight, ChevronDown, Server, Workflow, X, ExternalLink, Info } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getResourceDefinition } from '../data/resourceDefinitions';
 
 /**
@@ -58,7 +58,7 @@ export default function ResourceTreeView({ comparison }) {
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
           {isAlternative
-            ? 'Compare what K8s resources each platform creates from similar user inputs.'
+            ? 'Compare what Kubernetes resources each platform creates from similar user inputs.'
             : 'See how the resource structure changes when adopting this platform component.'}
           {' '}
           <span className="inline-flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400">
@@ -206,6 +206,8 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
         {hasChildren ? (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
+            aria-label={isExpanded ? `Collapse ${node.kind}` : `Expand ${node.kind}`}
+            aria-expanded={isExpanded}
             className="flex-shrink-0 p-0.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
           >
             {isExpanded ? (
@@ -252,6 +254,7 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
               selectedKind={selectedKind}
               diffStatus={diffStatus}
               otherKinds={otherKinds}
+              isAlternative={isAlternative}
             />
           ))}
         </div>
@@ -266,6 +269,16 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
 function ResourceDetailPanel({ resourceKind, onClose }) {
   const resource = getResourceDefinition(resourceKind);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   return (
     <>
       {/* Backdrop */}
@@ -275,7 +288,12 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
       />
 
       {/* Panel */}
-      <div className="fixed top-0 right-0 bottom-0 w-full max-w-2xl bg-white dark:bg-gray-800 shadow-2xl z-50 overflow-y-auto">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={resourceKind}
+        className="fixed top-0 right-0 bottom-0 w-full max-w-2xl bg-white dark:bg-gray-800 shadow-2xl z-50 overflow-y-auto"
+      >
         {/* Header */}
         <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex items-start justify-between">
           <div>

@@ -11,7 +11,7 @@ export const solutionDetails = {
         { name: 'Policy Engine', role: 'Governance', description: 'Enforce access policies, rate limits, and model routing rules based on identity and usage' }
       ],
       integrations: [
-        { name: 'Identity Management', purpose: 'Integration with Red Hat SSO/Keycloak for authentication' },
+        { name: 'Identity Management', purpose: 'Integration with Red Hat single sign-on (SSO)/Keycloak for authentication' },
         { name: 'AI Inference Server', purpose: 'Self-hosted model serving backend' },
         { name: 'External Model APIs', purpose: 'NVIDIA Nemotron, Azure OpenAI, and other external providers' },
         { name: 'Prometheus', purpose: 'Metrics and monitoring for gateway operations' },
@@ -38,7 +38,7 @@ export const solutionDetails = {
       'Multi-tenant SaaS platforms offering AI capabilities'
     ],
     documentation: 'https://docs.redhat.com',
-    contacts: ['#forum-ai-gateway']
+    contacts: ['Ask your Red Hat account team.']
   },
   'openshift': {
     name: 'Red Hat OpenShift',
@@ -47,7 +47,7 @@ export const solutionDetails = {
       components: [
         { name: 'Control Plane', role: 'Cluster Management', description: 'API Server, etcd, Controller Manager, Scheduler' },
         { name: 'Compute Nodes', role: 'Workload Execution', description: 'Worker nodes with kubelet, GPU support, auto-scaling' },
-        { name: 'OpenShift SDN/OVN', role: 'Networking', description: 'Software-defined networking with network policies' },
+        { name: 'OVN-Kubernetes', role: 'Networking', description: 'The OpenShift network layer, providing software-defined networking with network policies' },
         { name: 'Storage Operators', role: 'Persistent Storage', description: 'Dynamic provisioning with CSI drivers' },
         { name: 'Internal Registry', role: 'Container Images', description: 'Integrated image registry with signing' },
         { name: 'Monitoring Stack', role: 'Observability', description: 'Prometheus, Grafana, Alertmanager' }
@@ -74,20 +74,19 @@ export const solutionDetails = {
       'Edge AI deployments'
     ],
     documentation: 'https://docs.openshift.com',
-    contacts: ['#forum-openshift', 'openshift-support@redhat.com']
+    contacts: ['Ask your Red Hat account team.']
   },
   'rhoai': {
     name: 'Red Hat OpenShift AI (RHOAI)',
-    description: 'Comprehensive AI/ML platform for the full machine learning lifecycle with AutoRAG and InstructLab',
+    description: 'Comprehensive AI/ML platform for the full machine learning lifecycle, including model development, training, serving, and fine-tuning with InstructLab',
     requirements:
       'Requires a supported Red Hat OpenShift footprint. Confirm version compatibility, GPU scheduling, and storage classes with your platform team.',
     architecture: {
       components: [
-        { name: 'JupyterHub / Workbenches', role: 'Development', description: 'Multi-user notebooks with GPU support and custom images' },
+        { name: 'Workbenches', role: 'Development', description: 'Multi-user notebook environments (managed by the Kubeflow notebook controller) with GPU support and custom images' },
         { name: 'Data Science Pipelines', role: 'MLOps', description: 'Kubeflow Pipelines (KFP) for workflow orchestration' },
         { name: 'Model Serving (KServe)', role: 'Inference', description: 'Multi-framework serving with auto-scaling' },
         { name: 'Distributed Workloads', role: 'Training', description: 'CodeFlare/Ray for distributed training' },
-        { name: 'AutoRAG', role: 'RAG Optimization', description: 'Automated optimization of chunking, embeddings, and top-K retrieval' },
         { name: 'InstructLab', role: 'Fine-Tuning', description: 'LAB-based synthetic data generation and model fine-tuning' },
         { name: 'Dashboard', role: 'Management', description: 'Unified UI for projects and resources' }
       ],
@@ -96,7 +95,7 @@ export const solutionDetails = {
         { name: 'Model Registry', purpose: 'Version control and metadata' },
         { name: 'TrustyAI', purpose: 'Model explainability and monitoring' },
         { name: 'OpenShift Pipelines', purpose: 'CI/CD integration' },
-        { name: 'Vector Databases', purpose: 'RAG with Elastic, pgvector, etc.' }
+        { name: 'Vector Databases', purpose: 'Retrieval-augmented generation (RAG) with partner and open source vector databases such as Elastic and pgvector' }
       ]
     },
     capabilities: [
@@ -104,10 +103,9 @@ export const solutionDetails = {
       'Pipeline-based ML workflows (KFP)',
       'Multi-framework model serving (TensorFlow, PyTorch, ONNX, etc.)',
       'Distributed training across multiple GPUs/nodes',
-      'AutoRAG: Automated chunking strategy, embedding model, and top-K optimization',
       'InstructLab integration: LAB-based fine-tuning with synthetic data generation',
       'Document processing: PDF, docx, pptx, md, html, plain text',
-      'OCR for image-based text and ASR for audio conversion',
+      'Optical character recognition (OCR) for image-based text and automatic speech recognition (ASR) for audio conversion',
       'Experiment tracking and versioning',
       'Model evaluation with MMLU, HumanEval, and custom benchmarks',
       'Model monitoring and drift detection',
@@ -117,18 +115,18 @@ export const solutionDetails = {
       'Enterprise ML platform for data science teams',
       'Production model deployment and serving',
       'Distributed training of large models',
-      'RAG applications with AutoRAG optimization',
+      'Retrieval-augmented generation (RAG) applications',
       'Fine-tuning with InstructLab',
       'MLOps automation and governance'
     ],
     documentation: 'https://docs.redhat.com/rhoai',
-    contacts: ['#forum-openshift-ai', '#forum-rhai-docs', 'Suhas Kashyap (AutoRAG/Navigator SME)']
+    contacts: ['Ask your Red Hat account team.']
   },
   'rhai': {
-    name: 'Red Hat AI (RHAI)',
-    description: 'Red Hat AI for standard Kubernetes clusters where OpenShift is not the container platform',
+    name: 'Red Hat AI (portfolio name)',
+    description: 'Red Hat AI is the umbrella name for the Red Hat AI portfolio. This explorer uses it for the Red Hat AI path on standard Kubernetes clusters where OpenShift is not the container platform.',
     requirements:
-      'Requires a supported non-OpenShift Kubernetes distribution and validated integrations for networking, storage, and observability. Confirm SKU and scope with your account team.',
+      'Requires a supported non-OpenShift Kubernetes distribution and validated integrations for networking, storage, and observability. Confirm the supported offering and scope with your Red Hat account team.',
     architecture: {
       components: [
         { name: 'Kubernetes-native services', role: 'Runtime', description: 'Serving, routing, and platform integrations designed for upstream or cloud-managed Kubernetes' },
@@ -140,16 +138,16 @@ export const solutionDetails = {
       ]
     },
     capabilities: [
-      'Workshop placement: choose RHAI when the footprint is non-OpenShift Kubernetes',
+      'Workshop placement: choose this path when the footprint is non-OpenShift Kubernetes',
       'Not interchangeable with OpenShift AI (RHOAI), which assumes OpenShift',
-      'Use RHOAI or RHAIE when OpenShift is the agreed container platform'
+      'Use OpenShift AI or Red Hat AI Enterprise when OpenShift is the agreed container platform'
     ],
     useCases: [
       'EKS, AKS, or GKE estates standardizing on Kubernetes without OpenShift',
       'Upstream Kubernetes with a supported Red Hat AI software path'
     ],
     documentation: 'https://docs.redhat.com',
-    contacts: ['#forum-openshift-ai']
+    contacts: ['Ask your Red Hat account team.']
   },
   'rhoai-distributed': {
     name: 'RHOAI Distributed Workloads',
@@ -161,7 +159,7 @@ export const solutionDetails = {
         { name: 'CodeFlare', role: 'Resource Management', description: 'Manages distributed resources on OpenShift' }
       ],
       integrations: [
-        { name: 'JupyterHub', purpose: 'Development environment for training code' },
+        { name: 'Workbenches', purpose: 'Notebook development environment for training code' },
         { name: 'Model Registry', purpose: 'Register and version trained models' },
         { name: 'S3-compatible storage', purpose: 'Store datasets and checkpoints' },
         { name: 'GPU Operator', purpose: 'Multi-GPU and multi-node GPU scheduling' }
@@ -183,7 +181,7 @@ export const solutionDetails = {
       'Enterprise-scale model development'
     ],
     documentation: 'https://docs.redhat.com/rhoai',
-    contacts: ['#forum-openshift-ai', 'Mustafa (Training-Hub SME)']
+    contacts: ['Ask your Red Hat account team.']
   },
   'instructlab': {
     name: 'InstructLab',
@@ -216,7 +214,7 @@ export const solutionDetails = {
       'Alignment for specific use cases or industries'
     ],
     documentation: 'https://docs.redhat.com/instructlab',
-    contacts: ['#forum-instructlab', 'Abhishek Bhanwalder (SDG SME)']
+    contacts: ['Ask your Red Hat account team.']
   },
   'data-science-pipelines': {
     name: 'Data Science Pipelines',
@@ -230,7 +228,7 @@ export const solutionDetails = {
       integrations: [
         { name: 'S3-compatible storage', purpose: 'Pipeline artifacts and data' },
         { name: 'Model Registry', purpose: 'Register trained models' },
-        { name: 'JupyterHub', purpose: 'Develop and test pipelines' },
+        { name: 'Workbenches', purpose: 'Develop and test pipelines' },
         { name: 'Distributed Workloads', purpose: 'Execute training steps at scale' }
       ]
     },
@@ -250,18 +248,17 @@ export const solutionDetails = {
       'End-to-end ML lifecycle management'
     ],
     documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/working_with_data_science_pipelines',
-    contacts: ['#forum-openshift-ai', '#team-openshift-ai-platform']
+    contacts: ['Ask your Red Hat account team.']
   },
   'ai-inference': {
     name: 'Red Hat AI Inference Server',
-    description: 'High-performance LLM serving powered by vLLM with advanced token-aware scheduling, KV cache routing, and SLO-based priority',
+    description: 'High-performance large language model (LLM) serving powered by vLLM with advanced token-aware scheduling, key-value cache (KV cache) routing, and priority routing based on service level objectives (SLOs)',
     requirements:
-      'Requires compatible GPU drivers/operators where used and a supported serving topology. Validate latency SLOs and model formats with documentation.',
+      'Requires compatible GPU drivers/operators where used and a supported serving topology. Validate latency objectives and model formats with documentation.',
     architecture: {
       components: [
         { name: 'Advanced Inference Scheduler', role: 'Intelligent Scheduling', description: 'Token-aware scheduling, KV cache routing, split-phase prefill/decode, SLO-based priority routing (latency vs throughput)' },
         { name: 'vLLM Runtime', role: 'Inference Engine', description: 'PagedAttention, continuous batching, multi-GPU support with advanced scheduling capabilities' },
-        { name: 'TGIS', role: 'Text Generation', description: 'Alternative runtime for streaming and batch inference' },
         { name: 'Model Cache', role: 'Performance', description: 'In-memory caching and model preloading' }
       ],
       integrations: [
@@ -273,19 +270,19 @@ export const solutionDetails = {
       ]
     },
     capabilities: [
-      '🚀 Token-Aware Scheduling: Intelligent request routing based on token count',
-      '🚀 KV Cache-Aware Routing: Maximize GPU utilization with cache-aware scheduling',
-      '🚀 SLO-Based Priority Routing: Latency-sensitive (<200ms TTFT) vs throughput-sensitive workloads',
-      '🚀 Split-Phase Inference: Disaggregated prefill/decode for cost optimization',
+      'Token-Aware Scheduling: Intelligent request routing based on token count',
+      'KV Cache-Aware Routing: Maximize GPU utilization with cache-aware scheduling',
+      'SLO-Based Priority Routing: Latency-sensitive (low time to first token) vs throughput-sensitive workloads',
+      'Split-Phase Inference: Disaggregated prefill/decode for cost optimization',
       'vLLM-based high-performance serving with PagedAttention',
       'Continuous batching for maximum throughput',
       'Multi-GPU tensor parallelism',
       'Token streaming for real-time responses',
-      'Model quantization (INT8, FP16)',
-      'Autoscaling via Kubernetes HPA/KEDA based on request queue depth and custom metrics'
+      'Quantization and reduced-precision formats such as FP8 and INT4 (GPTQ, AWQ)',
+      'Autoscaling via Kubernetes Horizontal Pod Autoscaler (HPA) or KEDA based on request queue depth and custom metrics'
     ],
     useCases: [
-      'Production LLM inference requiring <200ms TTFT (latency-optimized routing)',
+      'Production LLM inference needing low time to first token (latency-optimized routing)',
       'High-throughput background workloads (throughput-optimized routing)',
       'Multi-model serving with intelligent routing',
       'Cost-optimized disaggregated serving (split-phase prefill/decode)',
@@ -293,7 +290,7 @@ export const solutionDetails = {
       'Batch processing of text generation with efficiency'
     ],
     documentation: 'https://docs.redhat.com',
-    contacts: ['#forum-ai-inference', 'Shumaila Yaseen (SME)']
+    contacts: ['Ask your Red Hat account team.']
   },
   'rh-model-registry': {
     name: 'Red Hat Model Registry',
@@ -325,7 +322,7 @@ export const solutionDetails = {
       'Audit trails for compliance'
     ],
     documentation: 'https://docs.redhat.com',
-    contacts: ['#forum-model-registry']
+    contacts: ['Ask your Red Hat account team.']
   },
   'rh-observability': {
     name: 'OpenShift Monitoring Stack',
@@ -360,7 +357,7 @@ export const solutionDetails = {
       'Capacity planning for inference workloads'
     ],
     documentation: 'https://docs.redhat.com/openshift/monitoring',
-    contacts: ['#forum-openshift-monitoring']
+    contacts: ['Ask your Red Hat account team.']
   },
   'trustyai': {
     name: 'TrustyAI',
@@ -393,7 +390,7 @@ export const solutionDetails = {
       'Explainable AI requirements'
     ],
     documentation: 'https://docs.redhat.com/trustyai',
-    contacts: ['#forum-trustyai']
+    contacts: ['Ask your Red Hat account team.']
   },
   'rh-mcp-full': {
     name: 'Red Hat MCP Platform (Technology Preview)',
@@ -409,8 +406,7 @@ export const solutionDetails = {
       integrations: [
         { name: 'Partner MCP Servers', purpose: 'Confluent, MongoDB, Elastic, Azure, AWS, Google Cloud' },
         { name: 'Model Serving', purpose: 'Connect models to external tools' },
-        { name: 'AI Gateway', purpose: 'Authentication and policy enforcement' },
-        { name: 'Project Navigator', purpose: 'Intent-based agent orchestration' }
+        { name: 'AI Gateway', purpose: 'Authentication and policy enforcement' }
       ]
     },
     capabilities: [
@@ -429,7 +425,7 @@ export const solutionDetails = {
       'Secure tool integration with certified partners'
     ],
     documentation: 'https://docs.redhat.com/mcp',
-    contacts: ['#forum-mcp-gateway', '#team-rh-ai-agent-ops', 'Catherine (Cat) Weeks (SME)']
+    contacts: ['Ask your Red Hat account team.']
   },
   'rh-mcp-catalog': {
     name: 'MCP Catalog & Registry',
@@ -458,7 +454,7 @@ export const solutionDetails = {
       'Governance-focused deployments'
     ],
     documentation: 'https://docs.redhat.com/mcp',
-    contacts: ['#forum-mcp-gateway', 'Catherine (Cat) Weeks (SME)']
+    contacts: ['Ask your Red Hat account team.']
   },
   'rh-mcp-registry': {
     name: 'MCP Registry Only',
@@ -486,7 +482,7 @@ export const solutionDetails = {
       'Advanced users with custom workflows'
     ],
     documentation: 'https://docs.redhat.com/mcp',
-    contacts: ['#forum-mcp-gateway', 'Catherine (Cat) Weeks (SME)']
+    contacts: ['Ask your Red Hat account team.']
   },
   'odf': {
     name: 'OpenShift Data Foundation',
@@ -520,23 +516,23 @@ export const solutionDetails = {
       'Multi-cloud data management'
     ],
     documentation: 'https://docs.redhat.com/odf',
-    contacts: ['#forum-odf', '#forum-storage']
+    contacts: ['Ask your Red Hat account team.']
   },
   'kserve': {
     name: 'KServe (via RHOAI)',
     description: 'Kubernetes-native multi-framework model serving with HTTPRoute-based ingress and advanced LLM capabilities',
     architecture: {
       components: [
-        { name: 'KServe Controller', role: 'Orchestration', description: 'Reconciles InferenceService, InferenceGraph, TrainedModel, LLMInferenceService CRs' },
+        { name: 'KServe Controller', role: 'Orchestration', description: 'Reconciles InferenceService, InferenceGraph, TrainedModel, and LLMInferenceService custom resources' },
         { name: 'Storage Initializer', role: 'Model Loading', description: 'Downloads model artifacts from S3, GCS, Azure Blob into serving containers' },
         { name: 'KServe Agent', role: 'Model Management', description: 'Logging, batching, multi-model serving management' },
-        { name: 'KServe Router', role: 'InferenceGraph', description: 'DAG-based routing for multi-model inference pipelines' },
+        { name: 'KServe Router', role: 'InferenceGraph', description: 'Directed acyclic graph (DAG) based routing for multi-model inference pipelines' },
         { name: 'kube-rbac-proxy', role: 'Authentication', description: 'Sidecar for auth/authz when security annotation enabled' },
         { name: 'LLMInferenceService Controller', role: 'LLM Serving', description: 'Specialized controller for LLM workloads with advanced scheduling' }
       ],
       integrations: [
         { name: 'Gateway API (HTTPRoute)', purpose: 'Ingress routing via openshift-ai-inference Gateway' },
-        { name: 'Advanced Inference Scheduler', purpose: 'Token-aware scheduling and KV cache routing for LLMs' },
+        { name: 'Advanced Inference Scheduler', purpose: 'Token-aware scheduling and key-value cache (KV cache) routing for large language models' },
         { name: 'Istio/Service Mesh', purpose: 'Optional VirtualService-based ingress (legacy)' },
         { name: 'KEDA', purpose: 'ScaledObject-based autoscaling' },
         { name: 'S3-compatible storage', purpose: 'Model artifact storage' },
@@ -547,7 +543,7 @@ export const solutionDetails = {
       'Multi-framework serving: TensorFlow, PyTorch, ONNX, Scikit-learn, XGBoost',
       'InferenceService API (v1beta1) for single-model serving',
       'InferenceGraph API (v1alpha1) for DAG-based multi-model pipelines',
-      'LLMInferenceService API (v1alpha2) with advanced scheduling',
+      'LLMInferenceService API (v1alpha1) with advanced scheduling',
       'TrainedModel API for multi-model serving on shared runtimes',
       'HTTPRoute-based ingress with Gateway API',
       'kube-rbac-proxy authentication when enabled',
@@ -566,16 +562,16 @@ export const solutionDetails = {
       'Autoscaling inference workloads (HPA/KEDA based on metrics, Knative for serverless)'
     ],
     documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/serving_models',
-    contacts: ['#forum-openshift-ai', '#team-kserve']
+    contacts: ['Ask your Red Hat account team.']
   },
   'rh-evaluation': {
     name: 'EvalHub (RHOAI Model Evaluation)',
-    description: 'Kubernetes-native evaluation orchestration platform routing to multiple benchmark frameworks with MLflow integration',
+    description: 'Technology Preview — Kubernetes-native evaluation orchestration routing to multiple benchmark frameworks with MLflow integration; confirm scope with your Red Hat account team',
     architecture: {
       components: [
         { name: 'EvalHub API Server', role: 'Orchestration', description: 'REST API for creating, managing, and tracking evaluation jobs' },
         { name: 'Kubernetes Runtime', role: 'Job Execution', description: 'Creates batch Jobs and ConfigMaps for evaluation workloads in tenant namespaces' },
-        { name: 'lm-evaluation-harness Adapter', role: 'LLM Benchmarks', description: 'Runs 167+ LLM benchmarks (MMLU, HellaSwag, TruthfulQA, etc.)' },
+        { name: 'lm-evaluation-harness Adapter', role: 'LLM Benchmarks', description: 'Runs a broad set of large language model benchmarks (MMLU, HellaSwag, TruthfulQA, and others)' },
         { name: 'GuideLLM Adapter', role: 'Performance', description: 'LLM performance and throughput benchmarking' },
         { name: 'LightEval Adapter', role: 'Benchmarks', description: 'Additional evaluation framework support' },
         { name: 'RAGAS Adapter', role: 'RAG Evaluation', description: 'RAG pipeline quality assessment' },
@@ -591,7 +587,7 @@ export const solutionDetails = {
     },
     capabilities: [
       'Unified REST API for multi-framework evaluation orchestration',
-      'lm-evaluation-harness: 167+ benchmarks (MMLU, HellaSwag, TruthfulQA, etc.)',
+      'lm-evaluation-harness: a broad set of benchmarks (MMLU, HellaSwag, TruthfulQA, and others)',
       'GuideLLM: Performance and throughput benchmarking',
       'RAGAS: RAG pipeline evaluation (answer correctness, faithfulness)',
       'Garak: LLM security and vulnerability testing',
@@ -612,7 +608,7 @@ export const solutionDetails = {
       'Continuous model evaluation in MLOps pipelines'
     ],
     documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/evaluating_models',
-    contacts: ['#forum-trustyai', '#team-trustyai']
+    contacts: ['Ask your Red Hat account team.']
   },
   'instructlab-eval': {
     name: 'InstructLab Evaluation',
@@ -646,51 +642,36 @@ export const solutionDetails = {
       'Domain-specific model quality assessment'
     ],
     documentation: 'https://docs.redhat.com/instructlab',
-    contacts: ['#forum-instructlab', 'Abhishek Bhanwalder (SDG SME)']
+    contacts: ['Ask your Red Hat account team.']
   },
   'project-navigator': {
     name: 'Project Navigator',
-    description: 'Intent-based AI workflow orchestrator with AutoRAG optimization and multi-agent coordination',
+    description: 'Early-stage capability — availability and scope not confirmed; check with your Red Hat account team. An intent-based AI workflow orchestrator that aims to simplify model selection and workflow coordination.',
     architecture: {
       components: [
-        { name: 'Intent Router', role: 'Request Analysis', description: 'Analyzes user intent and routes to optimal workflow' },
-        { name: 'AutoRAG Optimizer', role: 'RAG Configuration', description: 'Automated optimization of chunking, embeddings, and top-K retrieval' },
-        { name: 'Workflow Engine', role: 'Orchestration', description: 'Coordinates multi-step AI workflows and agent interactions' },
-        { name: 'Model Selector', role: 'Routing', description: 'Selects optimal model based on intent and SLO requirements' }
+        { name: 'Workflow Orchestration', role: 'Coordination', description: 'Interprets what the user is trying to do and coordinates multi-step AI workflows' },
+        { name: 'Model Selection', role: 'Routing', description: 'Helps pick a suitable model for the task at hand' }
       ],
       integrations: [
-        { name: 'Red Hat AI Gateway', purpose: 'Semantic routing and authentication' },
         { name: 'Model Serving', purpose: 'Execute model inference requests' },
-        { name: 'Vector Databases', purpose: 'RAG with optimized retrieval strategies' },
-        { name: 'MCP Servers', purpose: 'External tool integration for agentic workflows' }
+        { name: 'Vector Databases', purpose: 'Retrieval-augmented generation (RAG) workflows' }
       ]
     },
     capabilities: [
-      'Intent-based routing to optimal models and workflows',
-      'AutoRAG: Automated chunking strategy optimization',
-      'AutoRAG: Embedding model selection and tuning',
-      'AutoRAG: Top-K retrieval parameter optimization',
-      'Multi-agent workflow coordination',
-      'SLO-aware model selection (latency vs throughput)',
-      'Document processing: PDF, docx, pptx, md, html, plain text',
-      'OCR for image-based text extraction',
-      'ASR for audio-to-text conversion',
-      'Workflow templates for common AI patterns',
-      'Integration with Red Hat AI Gateway for semantic routing'
+      'Intent-based routing to models and workflows (early stage)',
+      'Multi-step AI workflow coordination (early stage)',
+      'Details and feature set are not confirmed — ask your Red Hat account team'
     ],
     useCases: [
-      'RAG applications with automated optimization',
-      'Intent-based model routing for multi-model systems',
-      'Multi-step AI workflows requiring orchestration',
-      'Agentic AI with tool integration via MCP',
-      'Production AI systems with SLO requirements'
+      'Simplifying model selection for multi-model systems',
+      'Multi-step AI workflows requiring orchestration'
     ],
     documentation: 'https://docs.redhat.com',
-    contacts: ['Suhas Kashyap (AutoRAG/Navigator SME)', '#forum-project-navigator']
+    contacts: ['Ask your Red Hat account team.']
   },
   'gen-ai-studio': {
     name: 'Gen AI Studio',
-    description: 'Prompt testing, experimentation, and AI asset management platform',
+    description: 'Early-stage capability — availability and scope not confirmed; check with your Red Hat account team. Prompt testing, experimentation, and AI asset management.',
     architecture: {
       components: [
         { name: 'Prompt Lab', role: 'Development', description: 'Interactive environment for prompt engineering and testing' },
@@ -722,11 +703,11 @@ export const solutionDetails = {
       'Managing prompt libraries across projects'
     ],
     documentation: 'https://docs.redhat.com/rhoai',
-    contacts: ['#forum-openshift-ai']
+    contacts: ['Ask your Red Hat account team.']
   },
   'rhaie': {
     name: 'Red Hat AI Enterprise (RHAIE)',
-    description: 'Complete integrated AI platform bundling OpenShift and OpenShift AI with optimized deployment',
+    description: 'The name this explorer uses for the combined OpenShift plus OpenShift AI platform path. Confirm current packaging and naming with your Red Hat account team.',
     architecture: {
       components: [
         { name: 'OpenShift Platform', role: 'Infrastructure', description: 'Enterprise Kubernetes with GPU support and networking' },
@@ -736,7 +717,7 @@ export const solutionDetails = {
       ],
       integrations: [
         { name: 'OpenShift Data Foundation', purpose: 'Integrated storage solution (optional)' },
-        { name: 'Red Hat SSO', purpose: 'Unified identity and access management' },
+        { name: 'Red Hat single sign-on (SSO)', purpose: 'Unified identity and access management' },
         { name: 'Advanced Cluster Management', purpose: 'Multi-cluster orchestration (optional)' }
       ]
     },
@@ -759,11 +740,11 @@ export const solutionDetails = {
       'Enterprise AI with comprehensive support'
     ],
     documentation: 'https://docs.redhat.com/rhoai',
-    contacts: ['#forum-openshift-ai', 'Red Hat Sales']
+    contacts: ['Ask your Red Hat account team.']
   },
   'rhel-ai': {
     name: 'Red Hat Enterprise Linux AI',
-    description: 'Granite foundation models and InstructLab on individual RHEL servers for single-node inference and fine-tuning. Single-server only - not for distributed training or production-scale deployments (use RHOAI or RHAI instead).',
+    description: 'Granite foundation models and InstructLab on individual RHEL servers for single-node inference and fine-tuning. Single-server only - not for distributed training or production-scale deployments (use OpenShift AI or the Red Hat AI path for standard Kubernetes instead).',
     architecture: {
       components: [
         { name: 'Granite Models', role: 'Foundation Models', description: 'Pre-trained IBM Granite LLMs optimized for enterprise use' },
@@ -778,12 +759,12 @@ export const solutionDetails = {
       ]
     },
     capabilities: [
-      'Granite foundation models (3B, 8B, 20B, 34B parameters)',
+      'Granite family foundation models in a range of sizes',
       'InstructLab for single-server fine-tuning with LAB method',
       'vLLM-based inference serving on RHEL',
       'No Kubernetes/OpenShift required',
       'Optimized for edge and single-server deployments',
-      '⚠️ Single-node only - not for distributed training or production-scale serving',
+      'Single-node only - not for distributed training or production-scale serving',
       'RHEL security and compliance features',
       'Support for NVIDIA GPUs on RHEL',
       'Synthetic data generation with InstructLab',
@@ -798,48 +779,34 @@ export const solutionDetails = {
       'Development and testing before scaling to RHOAI'
     ],
     documentation: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai',
-    contacts: ['#forum-rhel-ai', 'RHEL AI Product Team']
+    contacts: ['Ask your Red Hat account team.']
   },
   'batch-gateway': {
     name: 'Red Hat Batch Gateway',
-    description: 'OpenAI-compatible batch inference API gateway for processing bulk LLM requests asynchronously',
+    description: 'Early-stage capability — availability and scope not confirmed; check with your Red Hat account team. An OpenAI-compatible batch inference gateway for processing bulk large language model (LLM) requests asynchronously.',
     architecture: {
       components: [
-        { name: 'API Server', role: 'REST API', description: 'OpenAI-compatible /v1/files and /v1/batches endpoints' },
-        { name: 'Batch Processor', role: 'Worker Pool', description: 'Polls priority queue and dispatches jobs to inference backends' },
-        { name: 'Redis Queue', role: 'Job Queue', description: 'Priority queue for pending batch jobs with tenant isolation' },
-        { name: 'S3 Storage', role: 'File Storage', description: 'Stores input JSONL files and output results' }
+        { name: 'Batch API', role: 'REST API', description: 'OpenAI-compatible batch and file endpoints for submitting bulk requests' },
+        { name: 'Batch Processing', role: 'Job Handling', description: 'Queues and dispatches batch jobs to inference backends asynchronously' }
       ],
       integrations: [
         { name: 'AI Inference Server', purpose: 'Downstream inference endpoint for batch requests (OpenAI-compatible)' },
         { name: 'KServe', purpose: 'Alternative inference backend' },
-        { name: 'Redis', purpose: 'Job queue, metadata, and event handling' },
-        { name: 'S3-compatible storage', purpose: 'Batch file storage (input/output)' },
-        { name: 'PostgreSQL', purpose: 'Alternative metadata backend' }
+        { name: 'S3-compatible storage', purpose: 'Batch file storage (input/output)' }
       ]
     },
     capabilities: [
-      'OpenAI-compatible Batch API (/v1/batches)',
-      'Files API for JSONL upload/download (/v1/files)',
-      'Up to 50,000 requests per batch file (200 MB max)',
-      'Asynchronous processing with priority queue',
-      'Multi-tenant support via X-MaaS-User header',
-      'Configurable worker pool for concurrent processing',
-      'Redis or PostgreSQL backend for metadata',
-      'S3 or local filesystem for file storage',
-      'Retry logic with exponential backoff',
-      'mTLS support for inference backend connections',
-      'Prometheus metrics and health endpoints'
+      'OpenAI-compatible batch and file APIs (early stage)',
+      'Asynchronous processing of bulk inference requests (early stage)',
+      'Details and limits are not confirmed — ask your Red Hat account team'
     ],
     useCases: [
-      'High-volume offline inference (e.g., processing 100K+ documents overnight)',
-      'Cost-optimized inference (batch requests use resources more efficiently)',
-      'Asynchronous workflows where real-time response not needed',
-      'Large-scale data processing and analysis',
-      'Background tasks requiring LLM inference at scale'
+      'High-volume offline inference (for example, processing large document sets overnight)',
+      'Cost-conscious inference where batch requests use resources more efficiently',
+      'Asynchronous workflows where a real-time response is not needed'
     ],
-    documentation: 'https://github.com/red-hat-data-services/batch-gateway',
-    contacts: ['#forum-ai-inference']
+    documentation: 'https://docs.redhat.com',
+    contacts: ['Ask your Red Hat account team.']
   },
   'fms-guardrails': {
     name: 'FMS Guardrails Orchestrator',
@@ -847,14 +814,13 @@ export const solutionDetails = {
     architecture: {
       components: [
         { name: 'Orchestrator Server', role: 'Middleware', description: 'Routes requests through detector → chunker → LLM pipeline (Rust/Axum)' },
-        { name: 'Detector Client', role: 'Safety Analysis', description: 'Connects to HAP and other detector services for content analysis' },
+        { name: 'Detector Client', role: 'Safety Analysis', description: 'Connects to hate, abuse, and profanity (HAP) detection and other detector services for content analysis' },
         { name: 'Chunker Client', role: 'Tokenization', description: 'Text segmentation for detector processing (gRPC)' },
-        { name: 'Generation Client', role: 'LLM Backend', description: 'Connects to TGIS, caikit-nlp, or OpenAI-compatible APIs' }
+        { name: 'Generation Client', role: 'LLM Backend', description: 'Connects to vLLM or other OpenAI-compatible model servers' }
       ],
       integrations: [
-        { name: 'TGIS / caikit-nlp', purpose: 'Text generation backends (gRPC)' },
-        { name: 'vLLM / OpenAI-compatible', purpose: 'Alternative generation backend (HTTP)' },
-        { name: 'HAP Detector', purpose: 'Hate, Abuse, Profanity detection service' },
+        { name: 'vLLM / OpenAI-compatible', purpose: 'Text generation backend' },
+        { name: 'HAP Detector', purpose: 'Hate, abuse, and profanity detection service' },
         { name: 'Custom Detectors', purpose: 'Configurable content safety services' },
         { name: 'OpenTelemetry', purpose: 'Distributed tracing and metrics' }
       ]
@@ -881,7 +847,7 @@ export const solutionDetails = {
       'Real-time content filtering for production APIs'
     ],
     documentation: 'https://github.com/red-hat-data-services/fms-guardrails-orchestrator',
-    contacts: ['#forum-ai-safety', '#team-fms-guardrails']
+    contacts: ['Ask your Red Hat account team.']
   },
   'llama-stack-distribution': {
     name: 'Llama Stack Distribution',
@@ -932,6 +898,6 @@ export const solutionDetails = {
       'Developers familiar with Meta\'s Llama Stack ecosystem'
     ],
     documentation: 'https://github.com/red-hat-data-services/llama-stack-distribution',
-    contacts: ['#forum-llama-stack', '#team-rhoai-platform']
+    contacts: ['Ask your Red Hat account team.']
   }
 };

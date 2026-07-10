@@ -9,9 +9,9 @@ export default function SecurityOverview() {
       provider: 'Red Hat Connectivity Link (Authorino)',
       methods: [
         { name: 'OAuth 2.0', description: 'Industry-standard authorization framework' },
-        { name: 'OIDC', description: 'OpenID Connect identity layer' },
+        { name: 'OpenID Connect (OIDC)', description: 'Identity layer built on OAuth 2.0' },
         { name: 'API Keys', description: 'Simple token-based authentication' },
-        { name: 'mTLS', description: 'Mutual TLS certificate-based auth' }
+        { name: 'Mutual TLS (mTLS)', description: 'Certificate-based authentication in both directions' }
       ]
     },
     {
@@ -23,16 +23,16 @@ export default function SecurityOverview() {
         { name: 'Per-User Limits', description: 'Individual user rate limiting' },
         { name: 'Tenant Quotas', description: 'Multi-tenant resource allocation' },
         { name: 'Token Budgets', description: 'Cost control per API key' },
-        { name: 'Burst Protection', description: 'Prevent traffic spikes' }
+        { name: 'Burst Protection', description: 'Smooth out sudden traffic spikes' }
       ]
     },
     {
       name: 'Access Control',
       icon: Lock,
       color: 'purple',
-      provider: 'OpenShift RBAC',
+      provider: 'OpenShift role-based access control (RBAC)',
       methods: [
-        { name: 'RBAC', description: 'Role-Based Access Control' },
+        { name: 'Role-Based Access Control (RBAC)', description: 'Grant access based on user roles' },
         { name: 'Project-Level Permissions', description: 'Namespace isolation' },
         { name: 'Admin Controls', description: 'Administrative access management' },
         { name: 'Policy Enforcement', description: 'Centralized policy management' }
@@ -46,7 +46,7 @@ export default function SecurityOverview() {
       methods: [
         { name: 'Bias Detection', description: 'Identify fairness issues' },
         { name: 'Explainability (LIME, SHAP)', description: 'Understand model decisions' },
-        { name: 'Audit Trails', description: 'Complete inference logging' },
+        { name: 'Audit Trails', description: 'Detailed inference logging' },
         { name: 'Compliance Reporting', description: 'Regulatory documentation' }
       ]
     },
@@ -54,9 +54,9 @@ export default function SecurityOverview() {
       name: 'Model & Asset Security',
       icon: FileCheck,
       color: 'red',
-      provider: 'MCP Ingestion Pipeline',
+      provider: 'Model Context Protocol (MCP) Ingestion Pipeline',
       methods: [
-        { name: 'CVE Scanning', description: 'Vulnerability detection' },
+        { name: 'Vulnerability (CVE) Scanning', description: 'Detection of known vulnerabilities (Common Vulnerabilities and Exposures)' },
         { name: 'Cryptographic Signing', description: 'Trust and provenance' },
         { name: 'Certification', description: 'Red Hat trusted signatures' },
         { name: 'Malware Detection', description: 'Security scanning' }
@@ -127,7 +127,7 @@ export default function SecurityOverview() {
             Enterprise Security & Governance
           </h3>
           <p className="text-gray-600 dark:text-gray-400">
-            Comprehensive security across authentication, access control, and compliance
+            Security building blocks for authentication, access control, and compliance
           </p>
         </div>
       </div>
@@ -188,8 +188,10 @@ export default function SecurityOverview() {
           Defense-in-Depth Strategy
         </h4>
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          Red Hat AI provides multiple layers of security from authentication at the gateway, through RBAC in OpenShift,
-          to governance and explainability with TrustyAI. Every asset is scanned, signed, and certified before deployment.
+          Red Hat AI provides multiple layers of security from authentication at the gateway, through role-based access
+          control in OpenShift, to governance and explainability with TrustyAI. Red Hat's supply chain practices include
+          scanning and signing for Red Hat-shipped content; extend the same controls to your own models and assets
+          before deployment.
         </p>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Layers, Hammer, Settings, Info, HelpCircle, ArrowRight } from 'lucide-react';
+import { Layers, Hammer, Settings, HelpCircle, ArrowRight } from 'lucide-react';
 import CapabilityArchitectureView from './CapabilityArchitectureView';
 import InteractiveBuilder from './InteractiveBuilder';
 import CustomerConfig from './CustomerConfig';

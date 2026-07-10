@@ -46,6 +46,11 @@ Utilities for converting wizard layer maps and flow-visualization shapes live in
 - **Architecture Patterns**: How should I architect my solution?
 - **Tradeoff Analysis**: Understand pros/cons of each decision
 
+### 🔀 Deployment Impact
+- **Before/After Deployment Comparison**: See what changes when moving between deployment patterns
+- **Resource Trees**: Kubernetes resource definitions with expandable details
+- **YAML Diff**: Side-by-side configuration differences
+
 ### 💡 Use Case Guides
 - Model Inference & Serving
 - Model Training & Fine-tuning
@@ -108,11 +113,11 @@ Covers pure helpers in `src/lib` (architecture flow clipboard text, reconcile ru
 
 ### Decision Guides
 
-Navigate to **Use Cases** tab and follow the guided questions for personalized recommendations.
+Navigate to the **Decision Guides** tab and follow the guided questions for personalized recommendations.
 
 ## 🛠️ Technology Stack
 
-- React 18
+- React 19
 - Vite
 - Tailwind CSS v3
 - Lucide React (icons)

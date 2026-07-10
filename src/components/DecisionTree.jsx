@@ -4,14 +4,27 @@ import { CheckCircle, RotateCcw, ChevronLeft } from 'lucide-react';
 export default function DecisionTree({ flow, onRecommendation }) {
   const [selectedPath, setSelectedPath] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
+  // Ordered stack of answered step indexes along the actual visited path. Flows use
+  // non-linear `next` jumps, so "previous step" must come from this history, not index math.
+  const [stepHistory, setStepHistory] = useState([]);
 
   const handleNodeClick = (stepIndex, optionValue, nextStep) => {
+    // If an earlier step is re-answered, drop the history (and answers) recorded after it.
+    const historyIdx = stepHistory.indexOf(stepIndex);
+    const keptHistory = historyIdx >= 0 ? stepHistory.slice(0, historyIdx) : stepHistory;
+    const droppedSteps = historyIdx >= 0 ? stepHistory.slice(historyIdx + 1) : [];
+
     const newPath = { ...selectedPath, [stepIndex]: optionValue };
+    for (const dropped of droppedSteps) {
+      delete newPath[dropped];
+    }
     setSelectedPath(newPath);
 
     if (nextStep !== undefined) {
+      setStepHistory([...keptHistory, stepIndex]);
       setCurrentStep(nextStep);
     } else {
+      setStepHistory(keptHistory);
       // End of path - find recommendation
       const currentFlowStep = flow.steps[stepIndex];
       const selectedOption = currentFlowStep.options.find(opt => opt.value === optionValue);
@@ -25,20 +38,21 @@ export default function DecisionTree({ flow, onRecommendation }) {
   };
 
   const goBack = () => {
-    const completedSteps = Object.keys(selectedPath).map(Number).sort((a, b) => b - a);
-    if (completedSteps.length === 0) return;
+    if (stepHistory.length === 0) return;
 
-    const lastCompletedStep = completedSteps[0];
+    const previousStep = stepHistory[stepHistory.length - 1];
     const newPath = { ...selectedPath };
-    delete newPath[lastCompletedStep];
+    delete newPath[previousStep];
 
     setSelectedPath(newPath);
-    setCurrentStep(Math.max(0, lastCompletedStep - 1));
+    setStepHistory(stepHistory.slice(0, -1));
+    setCurrentStep(previousStep);
     onRecommendation(null);
   };
 
   const resetTree = () => {
     setSelectedPath({});
+    setStepHistory([]);
     setCurrentStep(0);
     onRecommendation(null);
   };
@@ -78,7 +92,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
       .join(' → ');
   };
 
-  const canGoBack = Object.keys(selectedPath).length > 0;
+  const canGoBack = stepHistory.length > 0;
 
   // Calculate visible question number (not array index)
   const getVisibleQuestionNumber = (targetStepIndex) => {
@@ -163,6 +177,9 @@ export default function DecisionTree({ flow, onRecommendation }) {
                     </div>
                     <div className="flex-1">
                       <h4 className="font-bold text-lg text-gray-900 dark:text-white mb-4">
+                        <span className="text-purple-600 dark:text-purple-400 mr-1">
+                          Question {visibleNumber}:
+                        </span>
                         {step.question}
                       </h4>
 

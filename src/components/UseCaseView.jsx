@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Lightbulb, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { getCatalogDisplayName } from '../data/catalogResolve';
+import { getCatalogDisplayName, getCatalogEntry } from '../data/catalogResolve';
 import MCPEcosystemFull from './MCPEcosystemFull';
 import FineTuningDecisionMatrix from './FineTuningDecisionMatrix';
 import RAGArchitecture from './RAGArchitecture';
@@ -71,37 +71,35 @@ export default function UseCaseView() {
       id: 'agentic',
       title: 'Agentic AI & Orchestration',
       description: 'Build autonomous agents and complex AI workflows',
-      recommendedProducts: ['project-navigator', 'rhoai', 'ai-gateway', 'openshift'],
+      recommendedProducts: ['llama-stack-distribution', 'rhoai', 'ai-gateway', 'openshift'],
       customerProfiles: ['AI Engineers', 'Senior Architects', 'Innovation teams'],
       deploymentPatterns: ['Multi-agent systems', 'Workflow orchestration', 'Tool integration'],
       considerations: [
         'Agent coordination and communication',
         'External tool integration',
         'Error handling and retry logic',
-        'Security and access control'
+        'Security and access control',
+        'Llama Stack provides the agent and tool-calling APIs; Model Context Protocol (MCP) connects agents to external tools — see the MCP ecosystem section below'
       ]
     },
     {
       id: 'rag',
-      title: 'RAG (Retrieval Augmented Generation) with AutoRAG',
-      description: 'Build RAG applications with automated chunking, embedding, and retrieval optimization',
+      title: 'Retrieval Augmented Generation (RAG)',
+      description: 'Build RAG applications that ground model answers in your own documents',
       recommendedProducts: ['project-navigator', 'rhoai', 'ai-inference', 'gen-ai-studio', 'ai-gateway'],
       customerProfiles: ['Enterprise developers', 'Knowledge management teams', 'Customer support'],
       deploymentPatterns: [
-        'AutoRAG optimization pipeline: chunking → embedding → top-K tuning',
+        'Retrieval pipeline: chunking → embedding → top-K tuning',
         'Document processing: PDF, docx, pptx, md, html, text',
-        'OCR for images, ASR for audio',
-        'Vector database integration (Elastic, pgvector)',
+        'Vector database integration (Elasticsearch, pgvector, Milvus, others)',
         'Intent-based routing via Project Navigator'
       ],
       considerations: [
-        'AutoRAG automates chunking strategy (character, recursive, semantic)',
+        'Choose a chunking strategy (fixed-size, recursive, or semantic splitting) and validate it against your documents',
         'Embedding model selection (Granite, sentence-transformers, etc.)',
         'Top-K retrieval optimization for precision/recall',
-        'Document formats: PDF, docx, pptx, md, html, plain text',
-        'OCR for image-based text, ASR for audio conversion',
-        'Vector DB choice: Elastic (preferred partner), pgvector, others',
-        'RAGAS evaluation for answer correctness and faithfulness',
+        'Vector database choice: Elasticsearch (partner option), PostgreSQL with pgvector (open source), Milvus, or your existing vector database',
+        'RAGAS (an open source RAG evaluation framework) for answer correctness and faithfulness',
         'Project Navigator for intent-based workflow orchestration'
       ]
     },
@@ -117,7 +115,7 @@ export default function UseCaseView() {
         'Robustness validation before release'
       ],
       considerations: [
-        'Garak runs 100+ attack vectors (can be slow)',
+        'Garak runs a large library of attack probes — full scans can take hours',
         'Requires security expertise to interpret results',
         'Should be part of pre-deployment checklist',
         'Combine with guardrails for runtime protection',
@@ -135,19 +133,19 @@ export default function UseCaseView() {
       customerProfiles: ['Cost-conscious teams', 'High-volume inference', 'Infrastructure engineers'],
       deploymentPatterns: [
         'Split prefill (prompt processing) and decode (token generation)',
-        'Advanced routing (llm-d) with KV cache awareness',
-        'LeaderWorkerSet for multi-node coordination',
+        'Advanced routing (llm-d) with key-value cache (KV cache) awareness',
+        'LeaderWorkerSet (a Kubernetes resource for multi-pod model serving) for multi-node coordination',
         'GPU optimization for different phases'
       ],
       considerations: [
-        'Prefill is compute-bound (benefits from high FLOPS GPUs)',
+        'Prefill is compute-bound (benefits from high-throughput GPUs)',
         'Decode is memory-bound (benefits from high memory bandwidth)',
         'Can use different GPU types for each phase',
-        'Advanced scheduler (llm-d) handles KV cache routing between phases',
+        'Advanced scheduler (llm-d) handles key-value (KV) cache routing between phases',
         'Reduces overall GPU costs for large-scale deployments',
         'Requires understanding of LLM inference internals',
-        'Best for high-volume production workloads (1M+ requests/day)',
-        'LLMInferenceService API (v1alpha2) supports this pattern'
+        'Best suited to sustained high-volume production workloads where GPU cost dominates',
+        'Served through the LLMInferenceService resource in KServe (early-stage API — confirm the current version with your Red Hat team)'
       ]
     },
     {
@@ -157,19 +155,18 @@ export default function UseCaseView() {
       recommendedProducts: ['batch-gateway', 'ai-inference', 'openshift'],
       customerProfiles: ['Data processing teams', 'Analytics teams', 'Cost-optimization engineers'],
       deploymentPatterns: [
-        'OpenAI-compatible Batch API (/v1/batches)',
-        'JSONL file upload with 50K+ requests per batch',
+        'OpenAI-compatible batch API (endpoint details subject to change)',
+        'JSONL (JSON Lines) file upload for large request batches',
         'Asynchronous processing with priority queue',
         'S3-backed file storage for inputs/outputs'
       ],
       considerations: [
+        'Early-stage capability — availability and scope not confirmed; check with your Red Hat account team',
         'Cost-efficient: better GPU utilization than real-time',
-        'Up to 50,000 requests per batch (200 MB max file size)',
+        'Large batches per job — confirm current request and file-size limits with your Red Hat team',
         'Asynchronous: results available after minutes/hours',
         'OpenAI-compatible API for easy migration',
-        'Multi-tenant support via X-MaaS-User header',
-        'Redis or PostgreSQL for job metadata',
-        'S3-compatible storage for batch files',
+        'S3-compatible object storage for batch files',
         'Use cases: document processing, data analysis, offline tasks',
         'Not suitable for real-time or interactive workloads'
       ]
@@ -279,14 +276,20 @@ export default function UseCaseView() {
                   Recommended Products
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  {useCase.recommendedProducts.map(productId => (
-                    <span
-                      key={productId}
-                      className="px-3 py-1.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-lg text-sm font-medium"
-                    >
-                      {getCatalogDisplayName(productId)}
-                    </span>
-                  ))}
+                  {useCase.recommendedProducts.map(productId => {
+                    const entry = getCatalogEntry(productId);
+                    const name = entry ? entry.name : getCatalogDisplayName(productId);
+                    const statusSuffix =
+                      entry && entry.status && entry.status !== 'GA' ? ` — ${entry.status}` : '';
+                    return (
+                      <span
+                        key={productId}
+                        className="px-3 py-1.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-lg text-sm font-medium"
+                      >
+                        {name}{statusSuffix}
+                      </span>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -383,7 +386,7 @@ export default function UseCaseView() {
           <div className="flex items-start gap-3">
             <ArrowRight className="text-purple-600 mt-0.5" size={16} />
             <p className="text-gray-700 dark:text-gray-300">
-              <strong>Red Hat AI Enterprise</strong> for complete platform with simplified procurement
+              <strong>Red Hat AI Enterprise</strong> for the combined OpenShift + OpenShift AI platform path — confirm current packaging with your Red Hat account team
             </p>
           </div>
           <div className="flex items-start gap-3">

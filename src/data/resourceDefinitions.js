@@ -103,7 +103,7 @@ export const resourceDefinitions = {
     keyFields: [
       { name: 'spec.predictor', description: 'Main model serving component (required)' },
       { name: 'spec.predictor.model', description: 'Model configuration (format, runtime, storage)' },
-      { name: 'spec.predictor.runtime', description: 'ServingRuntime to use (e.g., vllm-runtime)' },
+      { name: 'spec.predictor.model.runtime', description: 'ServingRuntime to use (e.g., vllm-runtime)' },
       { name: 'spec.transformer', description: 'Optional preprocessing component' },
       { name: 'spec.explainer', description: 'Optional model explanation component' },
       { name: 'metadata.annotations', description: 'Deployment mode, autoscaling config, etc.' }
@@ -196,6 +196,51 @@ export const resourceDefinitions = {
     ],
     docsUrl: 'https://kubernetes.io/docs/concepts/configuration/secret/',
     usedBy: 'user'
+  },
+
+  // OpenShift AI (RHOAI) Resources
+  DataScienceCluster: {
+    kind: 'DataScienceCluster',
+    apiVersion: 'datasciencecluster.opendatahub.io/v1',
+    category: 'OpenShift AI',
+    description: 'Top-level OpenShift AI resource that turns platform components (model serving, workbenches, pipelines, distributed workloads) on or off for the cluster. Platform teams create one DataScienceCluster to configure which capabilities are available.',
+    keyFields: [
+      { name: 'spec.components', description: 'Which OpenShift AI components are enabled (Managed, Removed, or Unmanaged)' },
+      { name: 'spec.components.kserve', description: 'Model serving configuration' },
+      { name: 'spec.components.workbenches', description: 'Jupyter workbench (notebook) configuration' },
+      { name: 'spec.components.dashboard', description: 'OpenShift AI dashboard configuration' }
+    ],
+    docsUrl: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/',
+    usedBy: 'platform'
+  },
+
+  Notebook: {
+    kind: 'Notebook',
+    apiVersion: 'kubeflow.org/v1',
+    category: 'OpenShift AI',
+    description: 'A single-user Jupyter workbench in OpenShift AI. Each data scientist gets a Notebook that runs their development environment (Python, libraries, GPU access) as a long-lived pod they can start and stop.',
+    keyFields: [
+      { name: 'spec.template', description: 'Pod template for the workbench container (image, resources)' },
+      { name: 'metadata.annotations', description: 'Idle-culling, image selection, and stop/start state' },
+      { name: 'spec.template.spec.containers', description: 'Workbench container with notebook image and GPU requests' }
+    ],
+    docsUrl: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/',
+    usedBy: 'user'
+  },
+
+  StatefulSet: {
+    kind: 'StatefulSet',
+    apiVersion: 'apps/v1',
+    category: 'Kubernetes Workload',
+    description: 'Manages a set of Pods with stable, unique identities and stable storage. Unlike a Deployment, each pod keeps its name and attached volume across restarts, which suits workloads that need per-pod state (such as a single-user workbench).',
+    keyFields: [
+      { name: 'spec.replicas', description: 'Number of pod instances to run' },
+      { name: 'spec.serviceName', description: 'The headless Service that governs pod network identity' },
+      { name: 'spec.volumeClaimTemplates', description: 'Per-pod persistent storage templates' },
+      { name: 'spec.template', description: 'Pod template (containers, volumes, etc.)' }
+    ],
+    docsUrl: 'https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/',
+    usedBy: 'controller'
   }
 };
 

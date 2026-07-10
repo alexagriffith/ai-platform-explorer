@@ -89,7 +89,7 @@ export const subComponents = {
         id: 'ray-tune',
         name: 'Ray Tune',
         description: 'Hyperparameter optimization at scale',
-        role: 'HPO'
+        role: 'Hyperparameter Optimization'
       }
     ]
   },
@@ -156,9 +156,9 @@ export const subComponents = {
     name: 'Red Hat OpenShift AI',
     components: [
       {
-        id: 'jupyterhub',
-        name: 'JupyterHub',
-        description: 'Multi-user notebook environment for data science',
+        id: 'workbenches',
+        name: 'Workbenches',
+        description: 'Multi-user notebook environments for data science, managed by the Kubeflow notebook controller',
         role: 'Experimentation'
       },
       {
@@ -178,12 +178,6 @@ export const subComponents = {
         name: 'Distributed Workloads',
         description: 'Training across multiple nodes and GPUs',
         role: 'Training'
-      },
-      {
-        id: 'model-mesh',
-        name: 'ModelMesh',
-        description: 'Intelligent model routing and serving',
-        role: 'Model Management'
       }
     ]
   },
@@ -222,8 +216,8 @@ export const subComponents = {
       },
       {
         id: 'sdn-ovn',
-        name: 'SDN/OVN',
-        description: 'Software-defined networking with network policies',
+        name: 'OVN-Kubernetes',
+        description: 'The OpenShift network layer, providing software-defined networking with network policies',
         role: 'Networking'
       },
       {

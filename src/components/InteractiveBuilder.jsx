@@ -25,11 +25,18 @@ function fillLayerDefaults(layer) {
   return layerSelections;
 }
 
+// Build from infrastructure up (reverse of display order). Static — safe at module scope.
+const buildOrder = [...capabilityLayers].reverse();
+
 /** Only the first wizard layer — avoids locking Platform & Runtime from a not-yet-chosen AI / ML platform. */
 function buildInitialBuiltLayers(buildOrder) {
   if (!buildOrder.length) return {};
   const first = buildOrder[0];
   return { [first.id]: fillLayerDefaults(first) };
+}
+
+function getLayerColor(layerId) {
+  return capabilityLayers.find(l => l.id === layerId)?.color || '#8B5CF6';
 }
 
 function truncateBuiltLayersAfter(prev, lastIndexInclusive, buildOrder) {
@@ -41,41 +48,269 @@ function truncateBuiltLayersAfter(prev, lastIndexInclusive, buildOrder) {
   return expandCapabilityMapToBuiltLayers(reconcileContainerAiPlatform(flattenBuiltLayersToMap(kept)));
 }
 
+function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
+  const layerCaps = capabilities[layer.id] || [];
+  const selectedCount = Object.keys(selectedCaps).length;
+  const layerColor = getLayerColor(layer.id);
+
+  return (
+    <div
+      className="rounded-lg border-2 bg-white dark:bg-gray-800 shadow-md transition-all"
+      style={{ borderColor: layerColor }}
+    >
+      <div
+        className="px-4 py-2 flex items-center justify-between rounded-t-lg"
+        style={{
+          background: `linear-gradient(135deg, ${layerColor}15, ${layerColor}05)`,
+          borderBottom: `2px solid ${layerColor}30`
+        }}
+      >
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-6 rounded-full" style={{ backgroundColor: layerColor }} />
+          <div>
+            <h4 className="font-bold text-sm text-gray-900 dark:text-white">{layer.name}</h4>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              {selectedCount} component{selectedCount !== 1 ? 's' : ''} configured
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => onEdit(index)}
+          className="text-xs text-purple-600 dark:text-purple-400 hover:underline"
+        >
+          Edit
+        </button>
+      </div>
+      <div className="p-3">
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(selectedCaps).map(([capId, optionId]) => {
+            const capability = layerCaps.find(c => c.id === capId);
+            const option = capability?.options.find(o => o.id === optionId);
+            if (!capability || !option) return null;
+
+            const canDeepDive = option.provider === 'Red Hat';
+
+            return (
+              <button
+                key={capId}
+                onClick={() => canDeepDive && onDeepDive(optionId)}
+                className={`px-2 py-1 rounded text-xs font-medium border transition-all ${
+                  canDeepDive ? 'cursor-pointer hover:shadow-md hover:scale-105' : ''
+                } ${
+                  option.isCustomer
+                    ? 'bg-blue-50 border-blue-300 text-blue-800 dark:bg-blue-900/20 dark:border-blue-700 dark:text-blue-200'
+                    : option.provider === 'Red Hat'
+                    ? 'bg-green-50 border-green-300 text-green-800 dark:bg-green-900/20 dark:border-green-700 dark:text-green-200'
+                    : 'bg-purple-50 border-purple-300 text-purple-800 dark:bg-purple-900/20 dark:border-purple-700 dark:text-purple-200'
+                }`}
+                title={canDeepDive ? 'Click for deep dive' : ''}
+              >
+                {capability.name}
+                {option.isCustomer && (
+                  <Building2 size={10} className="inline ml-1 mb-0.5" />
+                )}
+                {canDeepDive && (
+                  <Microscope size={10} className="inline ml-1 mb-0.5" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CapabilitySelector({
+  capability,
+  layerId,
+  builtLayers,
+  expandedGuide,
+  setExpandedGuide,
+  onToggle,
+  onRemove
+}) {
+  const flatForRules = flattenBuiltLayersToMap(builtLayers);
+  const selectedOptionId = builtLayers[layerId]?.[capability.id];
+  const isSelected = !!selectedOptionId;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <div>
+          <h4 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            {capability.name}
+            {capability.required && (
+              <span className="px-2 py-0.5 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-xs rounded">
+                Required
+              </span>
+            )}
+          </h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{capability.description}</p>
+        </div>
+        {isSelected && !capability.required && (
+          <button
+            onClick={() => onRemove(layerId, capability.id)}
+            className="text-sm text-red-600 hover:underline"
+          >
+            Remove
+          </button>
+        )}
+      </div>
+
+      <div className="grid gap-2">
+        {capability.options.map((option) => {
+          const isOptionSelected = selectedOptionId === option.id;
+          const guide = optionGuides[option.id];
+          const isGuideExpanded = expandedGuide === option.id;
+          const disabled = isCapabilityOptionDisabled(capability, option.id, flatForRules);
+
+          return (
+            <div key={option.id} className="space-y-2">
+              <button
+                type="button"
+                aria-disabled={disabled}
+                onClick={() => {
+                  if (disabled) return;
+                  onToggle(layerId, capability.id, option.id);
+                }}
+                className={`w-full p-3 rounded-lg border-2 transition-all text-left ${
+                  disabled
+                    ? 'cursor-not-allowed border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900/40 opacity-55'
+                    : isOptionSelected
+                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-purple-300'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={`mt-0.5 ${isOptionSelected ? 'text-purple-600' : 'text-gray-400'}`}>
+                    {isOptionSelected ? (
+                      <Check size={20} />
+                    ) : (
+                      <div className="w-5 h-5 rounded-full border-2 border-current" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-gray-900 dark:text-white">
+                          {option.name}
+                        </span>
+                        {disabled && (
+                          <span className="px-2 py-0.5 bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-200 text-xs rounded">
+                            N/A
+                          </span>
+                        )}
+                        {option.isCustomer && (
+                          <span className="px-2 py-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded">
+                            Customer
+                          </span>
+                        )}
+                        {option.recommended && (
+                          <span className="px-2 py-0.5 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs rounded">
+                            Recommended
+                          </span>
+                        )}
+                        {option.status && (
+                          <span className="px-2 py-0.5 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 text-xs rounded">
+                            {option.status}
+                          </span>
+                        )}
+                      </div>
+                      {guide && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandedGuide(isGuideExpanded ? null : option.id);
+                          }}
+                          className={`p-1 rounded-full transition-colors ${
+                            isGuideExpanded
+                              ? 'bg-blue-100 dark:bg-blue-900 text-blue-600'
+                              : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500'
+                          }`}
+                          title="Learn more about this option"
+                        >
+                          <HelpCircle size={16} />
+                        </button>
+                      )}
+                    </div>
+                    <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      Provider: <span className="font-semibold">{option.provider}</span>
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {option.description}
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+              {/* Expanded Guide */}
+              {guide && isGuideExpanded && (
+                <div className="ml-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                  <div className="grid gap-3 text-sm">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Info size={14} className="text-blue-600" />
+                        <span className="font-bold text-gray-900 dark:text-white">What it is:</span>
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-300">{guide.whatItIs}</p>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Check size={14} className="text-green-600" />
+                        <span className="font-bold text-gray-900 dark:text-white">Why choose:</span>
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-300">{guide.whyChoose}</p>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <ArrowRight size={14} className="text-purple-600" />
+                        <span className="font-bold text-gray-900 dark:text-white">When to use:</span>
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-300">{guide.whenToUse}</p>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Sparkles size={14} className="text-orange-600" />
+                        <span className="font-bold text-gray-900 dark:text-white">Best for:</span>
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-300">{guide.bestFor}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function InteractiveBuilder({ selectedCapabilities = {}, setSelectedCapabilities }) {
   const [currentLayerIndex, setCurrentLayerIndex] = useState(0);
-  const [builtLayers, setBuiltLayers] = useState({});
+  // Hydrate from canonical Build Your Stack map when present; otherwise required-option defaults.
+  const [builtLayers, setBuiltLayers] = useState(() => {
+    if (Object.keys(selectedCapabilities).length > 0) {
+      return expandCapabilityMapToBuiltLayers(reconcileContainerAiPlatform(selectedCapabilities));
+    }
+    const initial = buildInitialBuiltLayers(buildOrder);
+    const flat = reconcileContainerAiPlatform(flattenBuiltLayersToMap(initial));
+    return expandCapabilityMapToBuiltLayers(flat);
+  });
   const [isComplete, setIsComplete] = useState(false);
   const [deepDiveOption, setDeepDiveOption] = useState(null);
   const [viewOrder, setViewOrder] = useState('bottom-up'); // 'bottom-up' or 'top-down'
   const [showFlowViz, setShowFlowViz] = useState(false);
   const [expandedGuide, setExpandedGuide] = useState(null);
 
-  // Start from infrastructure (reverse of display order)
-  const buildOrder = [...capabilityLayers].reverse();
   const currentLayer = buildOrder[currentLayerIndex];
 
-  // Hydrate from canonical Build Your Stack map when present; otherwise required-option defaults.
+  // Continuously sync wizard selections up to the single blueprint map so partial progress
+  // survives mode switches and rollbacks (Back / Edit) are never reverted by stale parent state.
   useEffect(() => {
-    queueMicrotask(() => {
-      if (Object.keys(selectedCapabilities).length > 0) {
-        setBuiltLayers(
-          expandCapabilityMapToBuiltLayers(reconcileContainerAiPlatform(selectedCapabilities))
-        );
-      } else {
-        const initial = buildInitialBuiltLayers(buildOrder);
-        const flat = reconcileContainerAiPlatform(flattenBuiltLayersToMap(initial));
-        setBuiltLayers(expandCapabilityMapToBuiltLayers(flat));
-      }
-    });
-    // Intentionally mount-only: remount when switching hub modes picks up latest parent map.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // When the wizard reaches the completion screen, push selections to the single blueprint map.
-  useEffect(() => {
-    if (!isComplete) return;
     setSelectedCapabilities(reconcileContainerAiPlatform(flattenBuiltLayersToMap(builtLayers)));
-  }, [isComplete, builtLayers, setSelectedCapabilities]);
+  }, [builtLayers, setSelectedCapabilities]);
 
   const toggleCapability = (layerId, capabilityId, optionId) => {
     setBuiltLayers((prev) => {
@@ -141,251 +376,12 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
   };
 
   const resetBuilder = () => {
-    const wasComplete = isComplete;
     setCurrentLayerIndex(0);
     setIsComplete(false);
-    if (wasComplete) {
-      setSelectedCapabilities({});
-    }
+    // The sync effect pushes the reset selections up to the blueprint map.
     const initial = buildInitialBuiltLayers(buildOrder);
     const flat = reconcileContainerAiPlatform(flattenBuiltLayersToMap(initial));
     setBuiltLayers(expandCapabilityMapToBuiltLayers(flat));
-  };
-
-  const getLayerColor = (layerId) => {
-    return capabilityLayers.find(l => l.id === layerId)?.color || '#8B5CF6';
-  };
-
-  const BuiltLayerCard = ({ layer, index }) => {
-    const layerCaps = capabilities[layer.id] || [];
-    const selectedCaps = builtLayers[layer.id] || {};
-    const selectedCount = Object.keys(selectedCaps).length;
-    const layerColor = getLayerColor(layer.id);
-
-    return (
-      <div
-        className="rounded-lg border-2 bg-white dark:bg-gray-800 shadow-md transition-all"
-        style={{ borderColor: layerColor }}
-      >
-        <div
-          className="px-4 py-2 flex items-center justify-between rounded-t-lg"
-          style={{
-            background: `linear-gradient(135deg, ${layerColor}15, ${layerColor}05)`,
-            borderBottom: `2px solid ${layerColor}30`
-          }}
-        >
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-6 rounded-full" style={{ backgroundColor: layerColor }} />
-            <div>
-              <h4 className="font-bold text-sm text-gray-900 dark:text-white">{layer.name}</h4>
-              <p className="text-xs text-gray-600 dark:text-gray-400">
-                {selectedCount} component{selectedCount !== 1 ? 's' : ''} configured
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => goBackToLayer(index)}
-            className="text-xs text-purple-600 dark:text-purple-400 hover:underline"
-          >
-            Edit
-          </button>
-        </div>
-        <div className="p-3">
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(selectedCaps).map(([capId, optionId]) => {
-              const capability = layerCaps.find(c => c.id === capId);
-              const option = capability?.options.find(o => o.id === optionId);
-              if (!capability || !option) return null;
-
-              const canDeepDive = option.provider === 'Red Hat';
-
-              return (
-                <button
-                  key={capId}
-                  onClick={() => canDeepDive && setDeepDiveOption(optionId)}
-                  className={`px-2 py-1 rounded text-xs font-medium border transition-all ${
-                    canDeepDive ? 'cursor-pointer hover:shadow-md hover:scale-105' : ''
-                  } ${
-                    option.isCustomer
-                      ? 'bg-blue-50 border-blue-300 text-blue-800 dark:bg-blue-900/20 dark:border-blue-700 dark:text-blue-200'
-                      : option.provider === 'Red Hat'
-                      ? 'bg-green-50 border-green-300 text-green-800 dark:bg-green-900/20 dark:border-green-700 dark:text-green-200'
-                      : 'bg-purple-50 border-purple-300 text-purple-800 dark:bg-purple-900/20 dark:border-purple-700 dark:text-purple-200'
-                  }`}
-                  title={canDeepDive ? 'Click for deep dive' : ''}
-                >
-                  {capability.name}
-                  {option.isCustomer && (
-                    <Building2 size={10} className="inline ml-1 mb-0.5" />
-                  )}
-                  {canDeepDive && (
-                    <Microscope size={10} className="inline ml-1 mb-0.5" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const CapabilitySelector = ({ capability, layerId }) => {
-    const flatForRules = flattenBuiltLayersToMap(builtLayers);
-    const selectedOptionId = builtLayers[layerId]?.[capability.id];
-    const isSelected = !!selectedOptionId;
-
-    return (
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <div>
-            <h4 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              {capability.name}
-              {capability.required && (
-                <span className="px-2 py-0.5 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-xs rounded">
-                  Required
-                </span>
-              )}
-            </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{capability.description}</p>
-          </div>
-          {isSelected && !capability.required && (
-            <button
-              onClick={() => removeCapability(layerId, capability.id)}
-              className="text-sm text-red-600 hover:underline"
-            >
-              Remove
-            </button>
-          )}
-        </div>
-
-        <div className="grid gap-2">
-          {capability.options.map((option) => {
-            const isOptionSelected = selectedOptionId === option.id;
-            const guide = optionGuides[option.id];
-            const isGuideExpanded = expandedGuide === option.id;
-            const disabled = isCapabilityOptionDisabled(capability, option.id, flatForRules);
-
-            return (
-              <div key={option.id} className="space-y-2">
-                <button
-                  type="button"
-                  aria-disabled={disabled}
-                  onClick={() => {
-                    if (disabled) return;
-                    toggleCapability(layerId, capability.id, option.id);
-                  }}
-                  className={`w-full p-3 rounded-lg border-2 transition-all text-left ${
-                    disabled
-                      ? 'cursor-not-allowed border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900/40 opacity-55'
-                      : isOptionSelected
-                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-purple-300'
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className={`mt-0.5 ${isOptionSelected ? 'text-purple-600' : 'text-gray-400'}`}>
-                      {isOptionSelected ? (
-                        <Check size={20} />
-                      ) : (
-                        <div className="w-5 h-5 rounded-full border-2 border-current" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-bold text-gray-900 dark:text-white">
-                            {option.name}
-                          </span>
-                          {disabled && (
-                            <span className="px-2 py-0.5 bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-200 text-xs rounded">
-                              N/A
-                            </span>
-                          )}
-                          {option.isCustomer && (
-                            <span className="px-2 py-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded">
-                              Customer
-                            </span>
-                          )}
-                          {option.recommended && (
-                            <span className="px-2 py-0.5 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs rounded">
-                              Recommended
-                            </span>
-                          )}
-                          {option.status && (
-                            <span className="px-2 py-0.5 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 text-xs rounded">
-                              {option.status}
-                            </span>
-                          )}
-                        </div>
-                        {guide && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setExpandedGuide(isGuideExpanded ? null : option.id);
-                            }}
-                            className={`p-1 rounded-full transition-colors ${
-                              isGuideExpanded
-                                ? 'bg-blue-100 dark:bg-blue-900 text-blue-600'
-                                : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500'
-                            }`}
-                            title="Learn more about this option"
-                          >
-                            <HelpCircle size={16} />
-                          </button>
-                        )}
-                      </div>
-                      <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">
-                        Provider: <span className="font-semibold">{option.provider}</span>
-                      </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {option.description}
-                      </p>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Expanded Guide */}
-                {guide && isGuideExpanded && (
-                  <div className="ml-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
-                    <div className="grid gap-3 text-sm">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <Info size={14} className="text-blue-600" />
-                          <span className="font-bold text-gray-900 dark:text-white">What it is:</span>
-                        </div>
-                        <p className="text-gray-700 dark:text-gray-300">{guide.whatItIs}</p>
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <Check size={14} className="text-green-600" />
-                          <span className="font-bold text-gray-900 dark:text-white">Why choose:</span>
-                        </div>
-                        <p className="text-gray-700 dark:text-gray-300">{guide.whyChoose}</p>
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <ArrowRight size={14} className="text-purple-600" />
-                          <span className="font-bold text-gray-900 dark:text-white">When to use:</span>
-                        </div>
-                        <p className="text-gray-700 dark:text-gray-300">{guide.whenToUse}</p>
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <Sparkles size={14} className="text-orange-600" />
-                          <span className="font-bold text-gray-900 dark:text-white">Best for:</span>
-                        </div>
-                        <p className="text-gray-700 dark:text-gray-300">{guide.bestFor}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
   };
 
   if (isComplete) {
@@ -469,7 +465,13 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
               const originalIndex = viewOrder === 'bottom-up' ? buildOrder.length - 1 - index : index;
               return (
                 <div key={layer.id}>
-                  <BuiltLayerCard layer={layer} index={originalIndex} />
+                  <BuiltLayerCard
+                    layer={layer}
+                    index={originalIndex}
+                    selectedCaps={builtLayers[layer.id] || {}}
+                    onEdit={goBackToLayer}
+                    onDeepDive={setDeepDiveOption}
+                  />
                   {index < buildOrder.length - 1 && (
                     <div className="flex justify-center py-1">
                       <ArrowDown size={16} className="text-gray-400" />
@@ -578,7 +580,16 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
 
             <div className="space-y-6">
               {layerCaps.map(capability => (
-                <CapabilitySelector key={capability.id} capability={capability} layerId={currentLayer.id} />
+                <CapabilitySelector
+                  key={capability.id}
+                  capability={capability}
+                  layerId={currentLayer.id}
+                  builtLayers={builtLayers}
+                  expandedGuide={expandedGuide}
+                  setExpandedGuide={setExpandedGuide}
+                  onToggle={toggleCapability}
+                  onRemove={removeCapability}
+                />
               ))}
             </div>
 

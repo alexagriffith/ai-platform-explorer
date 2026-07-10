@@ -10,17 +10,17 @@ export default function TrainingDeepDive() {
     {
       step: 'Environment Setup',
       description: 'Configure notebooks and dependencies',
-      tools: ['JupyterHub Workbenches', 'Custom images']
+      tools: ['Workbenches (managed notebooks)', 'Custom images']
     },
     {
       step: 'Training Execution',
       description: 'Run distributed training jobs',
-      tools: ['Ray', 'Training Operator', 'CodeFlare']
+      tools: ['Ray (distributed compute)', 'Kubeflow Training Operator']
     },
     {
       step: 'Evaluation',
       description: 'Test model performance',
-      tools: ['Evaluation pipelines', 'MMLU', 'HumanEval']
+      tools: ['Evaluation pipelines', 'Benchmark suites (e.g., MMLU knowledge test, HumanEval coding test)']
     },
     {
       step: 'Registration',
@@ -60,18 +60,18 @@ export default function TrainingDeepDive() {
   const decisionMatrix = [
     {
       choose: 'RHEL AI',
-      when: 'Single-server, out-of-the-box environment for LAB-tuning foundation models',
+      when: 'Single-server, out-of-the-box environment for serving and light fine-tuning of foundation models on one machine',
       bestFor: 'Edge deployments, getting started, simple fine-tuning'
     },
     {
-      choose: 'RHOAI Distributed Workloads',
+      choose: 'Red Hat OpenShift AI (RHOAI) Distributed Workloads',
       when: 'Enterprise-scale training jobs across clusters of multiple GPUs/nodes',
       bestFor: 'Large models (70B+ params), multi-node distributed training'
     },
     {
-      choose: 'InstructLab',
-      when: 'Improve model skills or domain knowledge using taxonomy-driven approach',
-      bestFor: 'Limited training data, synthetic data generation, SME-driven improvement'
+      choose: 'InstructLab (open source project)',
+      when: 'You want taxonomy-driven synthetic data generation to add skills or knowledge, and have confirmed current support status with your Red Hat team',
+      bestFor: 'Limited training data, synthetic data generation, subject-matter-expert-driven improvement'
     },
     {
       choose: 'Custom Infrastructure',
@@ -82,10 +82,17 @@ export default function TrainingDeepDive() {
 
   const hardwareComparison = [
     {
+      gpu: 'NVIDIA H200',
+      memory: '141GB HBM3e',
+      bestFor: 'Large model training and inference; successor to H100 with more memory',
+      cost: 'Highest',
+      performance: 'Maximum'
+    },
+    {
       gpu: 'NVIDIA H100',
       memory: '80GB HBM3',
-      bestFor: 'Training largest models (70B-175B+ params), fastest R&D iteration',
-      cost: 'Highest (3-5x A100)',
+      bestFor: 'Training large models (70B+ parameters)',
+      cost: 'Highest',
       performance: 'Maximum'
     },
     {
@@ -98,7 +105,7 @@ export default function TrainingDeepDive() {
     {
       gpu: 'NVIDIA A100',
       memory: '40GB / 80GB',
-      bestFor: 'Most production training (7B-70B params) - often sufficient for 70B with techniques',
+      bestFor: 'Most production fine-tuning (7B-70B parameters) — 70B feasible with parameter-efficient methods and multi-GPU sharding',
       cost: 'High',
       performance: 'Excellent'
     },
@@ -238,6 +245,9 @@ export default function TrainingDeepDive() {
           <Cpu className="text-orange-600" size={20} />
           GPU Hardware for Training
         </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          Representative examples — GPU availability and pricing change quickly; confirm current options with your hardware vendor.
+        </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 dark:bg-gray-900">
@@ -257,8 +267,8 @@ export default function TrainingDeepDive() {
                   <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{hw.bestFor}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      hw.cost === 'Highest' || hw.cost === 'High' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' :
-                      hw.cost === 'Medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                      ['Highest', 'Very High', 'High'].includes(hw.cost) ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' :
+                      ['Medium', 'Medium-Low'].includes(hw.cost) ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
                       'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
                     }`}>
                       {hw.cost}
@@ -267,7 +277,7 @@ export default function TrainingDeepDive() {
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
                       hw.performance === 'Maximum' || hw.performance === 'Excellent' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
-                      hw.performance === 'Good' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
+                      hw.performance === 'Good' || hw.performance.startsWith('Very Good') ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
                       'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
                     }`}>
                       {hw.performance}
@@ -294,7 +304,7 @@ export default function TrainingDeepDive() {
             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <li className="flex items-start gap-2">
                 <span className="text-purple-600">•</span>
-                <span>Builds model from scratch or pre-training</span>
+                <span>Trains a model from scratch (rare for large language models — most organizations start from a foundation model)</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-purple-600">•</span>
@@ -306,14 +316,14 @@ export default function TrainingDeepDive() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-purple-600">•</span>
-                <span>Use RHOAI Distributed Workloads with Ray</span>
+                <span>Red Hat OpenShift AI distributed workloads (Ray) support large multi-node jobs</span>
               </li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold text-pink-700 dark:text-pink-300 mb-2 flex items-center gap-2">
               <Database size={18} />
-              Fine-Tuning (InstructLab)
+              Fine-Tuning
             </h4>
             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <li className="flex items-start gap-2">
@@ -326,11 +336,11 @@ export default function TrainingDeepDive() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-pink-600">•</span>
-                <span>Small-to-medium scale, taxonomy-driven</span>
+                <span>Small-to-medium scale compared to pre-training</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-pink-600">•</span>
-                <span>Use InstructLab for domain-specific alignment</span>
+                <span>Use OpenShift AI fine-tuning workflows (supervised fine-tuning, LoRA adapters); InstructLab is an option for taxonomy-driven synthetic data — confirm current support status with your Red Hat account team</span>
               </li>
             </ul>
           </div>
@@ -344,9 +354,8 @@ export default function TrainingDeepDive() {
           <div className="flex-1">
             <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Resources & Contacts</h4>
             <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-              <p><strong>SMEs:</strong> Mustafa (Training-Hub), Abhishek Bhanwalder (SDG)</p>
-              <p><strong>Slack:</strong> #forum-openshift-ai, #forum-instructlab, #team-openshift-ai-platform</p>
-              <p><strong>Docs:</strong> Working with Data Science Pipelines (docs.redhat.com)</p>
+              <p><strong>Questions:</strong> Ask your Red Hat account team.</p>
+              <p><strong>Docs:</strong> Working with distributed workloads, Red Hat OpenShift AI (docs.redhat.com)</p>
             </div>
           </div>
         </div>

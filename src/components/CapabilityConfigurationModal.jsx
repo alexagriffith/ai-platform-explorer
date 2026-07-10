@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { X, Check, Microscope } from 'lucide-react';
 import { isCapabilityOptionDisabled, MCP_CAPABILITY_ID, LLAMA_STACK_CAPABILITY_ID } from '../lib/platformAiConstraints';
 
@@ -13,6 +14,14 @@ export default function CapabilityConfigurationModal({
   onSelectOption,
   onDeepDive
 }) {
+  useEffect(() => {
+    const onKey = (ev) => {
+      if (ev.key === 'Escape') onBackdropClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onBackdropClose]);
+
   if (!capability) return null;
 
   const anyDisabled = capability.options.some((o) =>
@@ -33,6 +42,9 @@ export default function CapabilityConfigurationModal({
       onClick={onBackdropClose}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Configure: ${capability.name}`}
         className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6"
         onClick={(e) => e.stopPropagation()}
       >

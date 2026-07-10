@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { toPng } from 'html-to-image';
 import {
   Plus,
   Building2,
@@ -52,6 +51,307 @@ function CollapsibleDividerHeader({ title, isOpen, onToggle }) {
       </span>
       <span className="flex-1 h-px bg-gradient-to-r from-gray-300 to-transparent dark:from-gray-600 min-w-[1rem]" />
     </button>
+  );
+}
+
+function CapabilityCard({
+  capability,
+  layerColor,
+  compact = false,
+  selectedCapabilities,
+  detailLevel,
+  expandedComponents,
+  onConfigure,
+  onDeepDive,
+  onToggleExpanded,
+  onRemove
+}) {
+  const availableCount = capability.options.filter(
+    (o) => !isCapabilityOptionDisabled(capability, o.id, selectedCapabilities)
+  ).length;
+  const selectedOptionId = selectedCapabilities[capability.id];
+  const isSelected = selectedOptionId !== undefined;
+  const selectedOption = capability.options.find(o => o.id === selectedOptionId);
+  const hasSubComponents = selectedOptionId && subComponents[selectedOptionId];
+  const isExpanded = expandedComponents.has(selectedOptionId);
+
+  if (!isSelected) {
+    return (
+      <button
+        onClick={() => onConfigure(capability)}
+        className={`rounded-lg border-2 border-dashed hover:border-solid transition-all hover:shadow-md group text-left ${
+          compact ? 'p-2' : 'p-4'
+        } bg-gray-50/50 dark:bg-gray-900/30`}
+        style={{ borderColor: layerColor + '55' }}
+      >
+        <div className="flex items-start gap-2">
+          <Plus size={compact ? 12 : 16} className="mt-0.5 opacity-50 group-hover:opacity-100 flex-shrink-0" style={{ color: layerColor }} />
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">
+              Not selected
+            </p>
+            <h4 className={`font-bold text-gray-900 dark:text-white truncate ${compact ? 'text-xs' : 'text-sm'}`}>
+              {capability.name}
+              {capability.required && (
+                <span className="ml-1 text-xs px-1 py-0.5 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded">
+                  Req
+                </span>
+              )}
+            </h4>
+            {!compact && detailLevel === 2 && (
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
+                {capability.description}
+              </p>
+            )}
+            {detailLevel === 2 && (
+              <div className="mt-1 text-xs text-gray-500 dark:text-gray-500">
+                {availableCount === capability.options.length
+                  ? `${capability.options.length} option${capability.options.length !== 1 ? 's' : ''}`
+                  : `${availableCount} of ${capability.options.length} options match current pairing`}
+              </div>
+            )}
+          </div>
+        </div>
+      </button>
+    );
+  }
+
+  const hasDeepDive = selectedOption?.provider === 'Red Hat' && solutionDetails[selectedOptionId];
+
+  const selectedBannerClass = selectedOption?.isCustomer
+    ? 'bg-blue-600 text-white border-b border-blue-700/80'
+    : selectedOption?.provider === 'Red Hat'
+      ? 'bg-emerald-600 text-white border-b border-emerald-800/80'
+      : 'bg-purple-600 text-white border-b border-purple-800/80';
+
+  return (
+    <div
+      className={`rounded-lg border-[3px] shadow-lg transition-all ring-2 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-900 ${
+        selectedOption?.isCustomer
+          ? 'bg-blue-50 border-blue-400 ring-blue-400/60 dark:bg-blue-950/40 dark:border-blue-500 dark:ring-blue-500/50'
+          : selectedOption?.provider === 'Red Hat'
+            ? 'bg-green-50 border-emerald-500 ring-emerald-500/50 dark:bg-emerald-950/35 dark:border-emerald-400 dark:ring-emerald-400/45'
+            : 'bg-purple-50 border-purple-400 ring-purple-400/55 dark:bg-purple-950/40 dark:border-purple-400 dark:ring-purple-400/45'
+      } ${hasDeepDive ? 'cursor-pointer hover:shadow-xl' : ''}`}
+      style={{ borderLeftWidth: '6px', borderLeftColor: layerColor }}
+      role={hasDeepDive ? 'button' : undefined}
+      tabIndex={hasDeepDive ? 0 : undefined}
+      onClick={() => hasDeepDive && onDeepDive(selectedOptionId)}
+      onKeyDown={(e) => {
+        if (!hasDeepDive || e.target !== e.currentTarget) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onDeepDive(selectedOptionId);
+        }
+      }}
+      aria-label={`Selected: ${capability.name} — ${selectedOption?.name || ''}`}
+    >
+      <div className={`flex items-center gap-2 rounded-t-md ${compact ? 'px-2 py-1.5' : 'px-3 py-2'} ${selectedBannerClass}`}>
+        <CheckCircle2 size={compact ? 14 : 18} className="shrink-0 opacity-95" aria-hidden />
+        <div className="min-w-0 flex-1">
+          <div className={`font-bold uppercase tracking-wide opacity-95 ${compact ? 'text-[9px]' : 'text-[10px]'}`}>
+            Selected
+          </div>
+          <div className={`font-bold leading-tight truncate ${compact ? 'text-xs' : 'text-sm'}`}>
+            {selectedOption?.name}
+          </div>
+        </div>
+      </div>
+      <div className={`${compact ? 'p-2' : 'p-4'}`}>
+        <div className="flex items-start justify-between gap-2 mb-1">
+          <div className="flex flex-1 min-w-0 items-start gap-1">
+            {hasSubComponents && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleExpanded(selectedOptionId);
+                }}
+                className="p-0.5 rounded hover:bg-black/10 dark:hover:bg-white/10 flex-shrink-0 mt-0.5"
+                title={isExpanded ? 'Collapse components' : 'Expand components'}
+                aria-expanded={isExpanded}
+              >
+                {isExpanded ? (
+                  <ChevronDown size={14} className="flex-shrink-0" />
+                ) : (
+                  <ChevronRight size={14} className="flex-shrink-0" />
+                )}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onConfigure(capability);
+              }}
+              className="flex-1 min-w-0 text-left cursor-pointer hover:opacity-80"
+              title="Change option"
+            >
+              <div className="flex items-center gap-1 mb-1">
+                <h4 className={`font-bold text-gray-900 dark:text-white truncate ${compact ? 'text-xs' : 'text-sm'}`}>
+                  {capability.name}
+                </h4>
+                {selectedOption?.isCustomer && (
+                  <Building2 size={compact ? 10 : 14} className="text-blue-600 flex-shrink-0" title="Customer-provided" />
+                )}
+              </div>
+              <div className={`font-semibold text-gray-700 dark:text-gray-300 truncate ${compact ? 'text-xs' : 'text-xs'}`}>
+                {detailLevel === 2 ? `${selectedOption?.provider}: ${selectedOption?.name}` : selectedOption?.name}
+              </div>
+              {detailLevel === 2 && selectedOption?.status && (
+                <div className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+                  {selectedOption.status}
+                </div>
+              )}
+            </button>
+          </div>
+          <div className="flex gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => onConfigure(capability)}
+              className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+              title={capability.required ? 'Change (required)' : 'Change'}
+              aria-label="Change"
+            >
+              <X size={compact ? 10 : 14} />
+            </button>
+            {!capability.required && (
+              <button
+                type="button"
+                onClick={() => onRemove(capability.id)}
+                className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+                title="Remove"
+                aria-label="Remove"
+              >
+                <Trash2 size={compact ? 10 : 14} />
+              </button>
+            )}
+          </div>
+        </div>
+        {!compact && detailLevel === 2 && (
+          <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
+            {selectedOption?.description}
+          </p>
+        )}
+      </div>
+
+      {/* Sub-components (expanded) */}
+      {isExpanded && hasSubComponents && (
+        <div className="border-t border-gray-300 dark:border-gray-600 px-3 py-2 bg-white/50 dark:bg-gray-900/50">
+          <div className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">Components</div>
+          <div className="space-y-1">
+            {subComponents[selectedOptionId].components.map((comp) => (
+              <div
+                key={comp.id}
+                className="p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-xs text-gray-900 dark:text-white">
+                      {comp.name}
+                    </div>
+                    <div className="text-xs text-purple-600 dark:text-purple-400">
+                      {comp.role}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                  {comp.description}
+                </div>
+                {comp.stages && (
+                  <div className="flex gap-1 mt-1 flex-wrap">
+                    {comp.stages.map((stage, idx) => (
+                      <span key={idx} className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded">
+                        {stage}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSub, cardProps }) {
+  const coreBase = getCapabilitiesBySubLayer(layerId, 'core').filter((c) => c.position === 'base');
+  const coreAdjacent = getCapabilitiesBySubLayer(layerId, 'core').filter((c) => c.position === 'adjacent');
+  const wrapper = getCapabilitiesBySubLayer(layerId, 'wrapper');
+  const orchestration = getCapabilitiesBySubLayer(layerId, 'orchestration');
+
+  const hasCore = coreBase.length > 0 || coreAdjacent.length > 0;
+  const hasWrapper = wrapper.length > 0;
+  const hasOrchestration = orchestration.length > 0;
+
+  return (
+    <div className="space-y-3">
+      {hasOrchestration && (
+        <div className="space-y-2">
+          <CollapsibleDividerHeader
+            title="Orchestration Layer"
+            isOpen={servicesSubOpen.orchestration}
+            onToggle={() => onToggleSub('orchestration')}
+          />
+          {servicesSubOpen.orchestration && (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              {orchestration.map((cap) => (
+                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
+              ))}
+            </div>
+          )}
+          {hasWrapper && servicesSubOpen.orchestration && (
+            <div className="flex justify-center">
+              <ArrowDown size={16} className="text-gray-400" />
+            </div>
+          )}
+        </div>
+      )}
+
+      {hasWrapper && (
+        <div className="space-y-2">
+          <CollapsibleDividerHeader
+            title="Cross-Cutting Concerns"
+            isOpen={servicesSubOpen.wrapper}
+            onToggle={() => onToggleSub('wrapper')}
+          />
+          {servicesSubOpen.wrapper && (
+            <div className="grid grid-cols-2 gap-2">
+              {wrapper.map((cap) => (
+                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
+              ))}
+            </div>
+          )}
+          {hasCore && servicesSubOpen.wrapper && (
+            <div className="flex justify-center">
+              <ArrowDown size={16} className="text-gray-400" />
+            </div>
+          )}
+        </div>
+      )}
+
+      {hasCore && (
+        <div className="space-y-2">
+          <CollapsibleDividerHeader
+            title="Core Services"
+            isOpen={servicesSubOpen.core}
+            onToggle={() => onToggleSub('core')}
+          />
+          {servicesSubOpen.core && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+              {coreBase.map((cap) => (
+                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact={false} {...cardProps} />
+              ))}
+              {coreAdjacent.map((cap) => (
+                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -140,294 +440,26 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
     setExportMessage('');
   };
 
-  const CapabilityCard = ({ capability, layerColor, compact = false }) => {
-    const availableCount = capability.options.filter(
-      (o) => !isCapabilityOptionDisabled(capability, o.id, selectedCapabilities)
-    ).length;
-    const isSelected = isCapabilitySelected(capability.id);
-    const selectedOptionId = getSelectedOption(capability.id);
-    const selectedOption = capability.options.find(o => o.id === selectedOptionId);
-    const hasSubComponents = selectedOptionId && subComponents[selectedOptionId];
-    const isExpanded = expandedComponents.has(selectedOptionId);
-
-    if (!isSelected) {
-      return (
-        <button
-          onClick={() => setConfiguringCapability(capability)}
-          className={`rounded-lg border-2 border-dashed hover:border-solid transition-all hover:shadow-md group text-left ${
-            compact ? 'p-2' : 'p-4'
-          } bg-gray-50/50 dark:bg-gray-900/30`}
-          style={{ borderColor: layerColor + '55' }}
-        >
-          <div className="flex items-start gap-2">
-            <Plus size={compact ? 12 : 16} className="mt-0.5 opacity-50 group-hover:opacity-100 flex-shrink-0" style={{ color: layerColor }} />
-            <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">
-                Not selected
-              </p>
-              <h4 className={`font-bold text-gray-900 dark:text-white truncate ${compact ? 'text-xs' : 'text-sm'}`}>
-                {capability.name}
-                {capability.required && (
-                  <span className="ml-1 text-xs px-1 py-0.5 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded">
-                    Req
-                  </span>
-                )}
-              </h4>
-              {!compact && detailLevel === 2 && (
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
-                  {capability.description}
-                </p>
-              )}
-              {detailLevel === 2 && (
-                <div className="mt-1 text-xs text-gray-500 dark:text-gray-500">
-                  {availableCount === capability.options.length
-                    ? `${capability.options.length} option${capability.options.length !== 1 ? 's' : ''}`
-                    : `${availableCount} of ${capability.options.length} options match current pairing`}
-                </div>
-              )}
-            </div>
-          </div>
-        </button>
-      );
-    }
-
-    const hasDeepDive = selectedOption?.provider === 'Red Hat' && solutionDetails[selectedOptionId];
-
-    const selectedBannerClass = selectedOption?.isCustomer
-      ? 'bg-blue-600 text-white border-b border-blue-700/80'
-      : selectedOption?.provider === 'Red Hat'
-        ? 'bg-emerald-600 text-white border-b border-emerald-800/80'
-        : 'bg-purple-600 text-white border-b border-purple-800/80';
-
-    return (
-      <div
-        className={`rounded-lg border-[3px] shadow-lg transition-all ring-2 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-900 ${
-          selectedOption?.isCustomer
-            ? 'bg-blue-50 border-blue-400 ring-blue-400/60 dark:bg-blue-950/40 dark:border-blue-500 dark:ring-blue-500/50'
-            : selectedOption?.provider === 'Red Hat'
-              ? 'bg-green-50 border-emerald-500 ring-emerald-500/50 dark:bg-emerald-950/35 dark:border-emerald-400 dark:ring-emerald-400/45'
-              : 'bg-purple-50 border-purple-400 ring-purple-400/55 dark:bg-purple-950/40 dark:border-purple-400 dark:ring-purple-400/45'
-        } ${hasDeepDive ? 'cursor-pointer hover:shadow-xl' : ''}`}
-        style={{ borderLeftWidth: '6px', borderLeftColor: layerColor }}
-        onClick={() => hasDeepDive && setDeepDiveOption(selectedOptionId)}
-        aria-label={`Selected: ${capability.name} — ${selectedOption?.name || ''}`}
-      >
-        <div className={`flex items-center gap-2 rounded-t-md ${compact ? 'px-2 py-1.5' : 'px-3 py-2'} ${selectedBannerClass}`}>
-          <CheckCircle2 size={compact ? 14 : 18} className="shrink-0 opacity-95" aria-hidden />
-          <div className="min-w-0 flex-1">
-            <div className={`font-bold uppercase tracking-wide opacity-95 ${compact ? 'text-[9px]' : 'text-[10px]'}`}>
-              Selected
-            </div>
-            <div className={`font-bold leading-tight truncate ${compact ? 'text-xs' : 'text-sm'}`}>
-              {selectedOption?.name}
-            </div>
-          </div>
-        </div>
-        <div className={`${compact ? 'p-2' : 'p-4'}`}>
-          <div className="flex items-start justify-between gap-2 mb-1">
-            <div className="flex flex-1 min-w-0 items-start gap-1">
-              {hasSubComponents && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleExpanded(selectedOptionId);
-                  }}
-                  className="p-0.5 rounded hover:bg-black/10 dark:hover:bg-white/10 flex-shrink-0 mt-0.5"
-                  title={isExpanded ? 'Collapse components' : 'Expand components'}
-                  aria-expanded={isExpanded}
-                >
-                  {isExpanded ? (
-                    <ChevronDown size={14} className="flex-shrink-0" />
-                  ) : (
-                    <ChevronRight size={14} className="flex-shrink-0" />
-                  )}
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setConfiguringCapability(capability);
-                }}
-                className="flex-1 min-w-0 text-left cursor-pointer hover:opacity-80"
-                title="Change option"
-              >
-                <div className="flex items-center gap-1 mb-1">
-                  <h4 className={`font-bold text-gray-900 dark:text-white truncate ${compact ? 'text-xs' : 'text-sm'}`}>
-                    {capability.name}
-                  </h4>
-                  {selectedOption?.isCustomer && (
-                    <Building2 size={compact ? 10 : 14} className="text-blue-600 flex-shrink-0" title="Customer-provided" />
-                  )}
-                </div>
-                <div className={`font-semibold text-gray-700 dark:text-gray-300 truncate ${compact ? 'text-xs' : 'text-xs'}`}>
-                  {detailLevel === 2 ? `${selectedOption?.provider}: ${selectedOption?.name}` : selectedOption?.name}
-                </div>
-                {detailLevel === 2 && selectedOption?.status && (
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
-                    {selectedOption.status}
-                  </div>
-                )}
-              </button>
-            </div>
-            <div className="flex gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-              <button
-                type="button"
-                onClick={() => setConfiguringCapability(capability)}
-                className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
-                title={capability.required ? 'Change (required)' : 'Change'}
-                aria-label="Change"
-              >
-                <X size={compact ? 10 : 14} />
-              </button>
-              {!capability.required && (
-                <button
-                  type="button"
-                  onClick={() => removeCapability(capability.id)}
-                  className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
-                  title="Remove"
-                  aria-label="Remove"
-                >
-                  <Trash2 size={compact ? 10 : 14} />
-                </button>
-              )}
-            </div>
-          </div>
-          {!compact && detailLevel === 2 && (
-            <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
-              {selectedOption?.description}
-            </p>
-          )}
-        </div>
-
-        {/* Sub-components (expanded) */}
-        {isExpanded && hasSubComponents && (
-          <div className="border-t border-gray-300 dark:border-gray-600 px-3 py-2 bg-white/50 dark:bg-gray-900/50">
-            <div className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">Components</div>
-            <div className="space-y-1">
-              {subComponents[selectedOptionId].components.map((comp) => (
-                <div
-                  key={comp.id}
-                  className="p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-xs text-gray-900 dark:text-white">
-                        {comp.name}
-                      </div>
-                      <div className="text-xs text-purple-600 dark:text-purple-400">
-                        {comp.role}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                    {comp.description}
-                  </div>
-                  {comp.stages && (
-                    <div className="flex gap-1 mt-1 flex-wrap">
-                      {comp.stages.map((stage, idx) => (
-                        <span key={idx} className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded">
-                          {stage}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  const ServicesLayerContent = ({ layerId, layerColor }) => {
-    const coreBase = getCapabilitiesBySubLayer(layerId, 'core').filter((c) => c.position === 'base');
-    const coreAdjacent = getCapabilitiesBySubLayer(layerId, 'core').filter((c) => c.position === 'adjacent');
-    const wrapper = getCapabilitiesBySubLayer(layerId, 'wrapper');
-    const orchestration = getCapabilitiesBySubLayer(layerId, 'orchestration');
-
-    const hasCore = coreBase.length > 0 || coreAdjacent.length > 0;
-    const hasWrapper = wrapper.length > 0;
-    const hasOrchestration = orchestration.length > 0;
-
-    return (
-      <div className="space-y-3">
-        {hasOrchestration && (
-          <div className="space-y-2">
-            <CollapsibleDividerHeader
-              title="Orchestration Layer"
-              isOpen={servicesSubOpen.orchestration}
-              onToggle={() => toggleServicesSub('orchestration')}
-            />
-            {servicesSubOpen.orchestration && (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {orchestration.map((cap) => (
-                  <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact />
-                ))}
-              </div>
-            )}
-            {hasWrapper && servicesSubOpen.orchestration && (
-              <div className="flex justify-center">
-                <ArrowDown size={16} className="text-gray-400" />
-              </div>
-            )}
-          </div>
-        )}
-
-        {hasWrapper && (
-          <div className="space-y-2">
-            <CollapsibleDividerHeader
-              title="Cross-Cutting Concerns"
-              isOpen={servicesSubOpen.wrapper}
-              onToggle={() => toggleServicesSub('wrapper')}
-            />
-            {servicesSubOpen.wrapper && (
-              <div className="grid grid-cols-2 gap-2">
-                {wrapper.map((cap) => (
-                  <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact />
-                ))}
-              </div>
-            )}
-            {hasCore && servicesSubOpen.wrapper && (
-              <div className="flex justify-center">
-                <ArrowDown size={16} className="text-gray-400" />
-              </div>
-            )}
-          </div>
-        )}
-
-        {hasCore && (
-          <div className="space-y-2">
-            <CollapsibleDividerHeader
-              title="Core Services"
-              isOpen={servicesSubOpen.core}
-              onToggle={() => toggleServicesSub('core')}
-            />
-            {servicesSubOpen.core && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                {coreBase.map((cap) => (
-                  <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact={false} />
-                ))}
-                {coreAdjacent.map((cap) => (
-                  <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  };
-
   const totalSelected = Object.keys(selectedCapabilities).length;
+
+  // Shared props for the module-scope CapabilityCard (state + handlers it used to close over).
+  const cardProps = {
+    selectedCapabilities,
+    detailLevel,
+    expandedComponents,
+    onConfigure: setConfiguringCapability,
+    onDeepDive: setDeepDiveOption,
+    onToggleExpanded: toggleExpanded,
+    onRemove: removeCapability
+  };
 
   const handleDownloadStackPng = useCallback(async () => {
     const el = document.getElementById('stack-capture-root');
     if (!el || stackImageBusy) return;
     setStackImageBusy(true);
     try {
+      // Lazy-load the export library so it stays out of the main bundle.
+      const { toPng } = await import('html-to-image');
       const isDark = document.documentElement.classList.contains('dark');
       const dataUrl = await toPng(el, {
         pixelRatio: 2,
@@ -442,7 +474,8 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
       a.click();
       a.remove();
       setExportMessage('');
-    } catch {
+    } catch (err) {
+      console.error('PNG export failed:', err);
       setExportMessage('Export failed. Try again.');
     } finally {
       setStackImageBusy(false);
@@ -620,7 +653,13 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                   {layerExpanded[layer.id] && (
                   <div className="p-4">
                     {isServicesLayer ? (
-                      <ServicesLayerContent layerId={layer.id} layerColor={layer.color} />
+                      <ServicesLayerContent
+                        layerId={layer.id}
+                        layerColor={layer.color}
+                        servicesSubOpen={servicesSubOpen}
+                        onToggleSub={toggleServicesSub}
+                        cardProps={cardProps}
+                      />
                     ) : (
                       <div className="flex flex-wrap gap-3 justify-center">
                         {layerCapabilities.map(capability => (
@@ -628,6 +667,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                             <CapabilityCard
                               capability={capability}
                               layerColor={layer.color}
+                              {...cardProps}
                             />
                           </div>
                         ))}

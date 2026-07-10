@@ -10,8 +10,8 @@ export const optionGuides = {
   'kubernetes': {
     whatItIs: 'Standard Kubernetes cluster (any distribution)',
     whyChoose: 'You already run Kubernetes and want to reuse that footprint',
-    whenToUse: 'Existing K8s investment, cost optimization, specific K8s distribution requirements',
-    bestFor: 'Organizations with K8s expertise and existing clusters'
+    whenToUse: 'Existing Kubernetes investment, cost optimization, specific Kubernetes distribution requirements',
+    bestFor: 'Organizations with Kubernetes expertise and existing clusters'
   },
   'rhel-hosts': {
     whatItIs: 'Dedicated Red Hat Enterprise Linux systems without OpenShift as the AI runtime',
@@ -53,15 +53,15 @@ export const optionGuides = {
   },
   'rhoai': {
     whatItIs: 'AI/ML platform for OpenShift - requires OpenShift as the container platform',
-    whyChoose: 'Your container platform is OpenShift (self-managed or ROSA/ARO)',
-    whenToUse: 'When running on OpenShift clusters - this is the only Red Hat AI platform option for OpenShift',
+    whyChoose: 'Your container platform is OpenShift (self-managed or the managed ROSA/ARO cloud services)',
+    whenToUse: 'When running on an existing OpenShift cluster - this is the AI platform layer you add on top; Red Hat AI Enterprise (RHAIE) is the alternative that bundles OpenShift and the AI platform together',
     bestFor: 'Teams with OpenShift as their container platform'
   },
   'rhai': {
-    whatItIs: 'AI/ML platform for standard Kubernetes - use when your platform is NOT OpenShift',
-    whyChoose: 'Your container platform is standard Kubernetes (EKS, AKS, GKE, self-managed K8s)',
-    whenToUse: 'When running on non-OpenShift Kubernetes - this is the Red Hat AI platform for standard K8s',
-    bestFor: 'Cloud-managed Kubernetes (EKS, AKS, GKE) or self-managed standard Kubernetes estates'
+    whatItIs: 'This explorer\'s name for the Red Hat AI path on standard Kubernetes - not a distinct generally available product SKU',
+    whyChoose: 'Your container platform is standard Kubernetes (Amazon EKS, Azure AKS, Google GKE, or self-managed)',
+    whenToUse: 'When running on non-OpenShift Kubernetes - confirm packaging and support scope with your Red Hat account team',
+    bestFor: 'Cloud-managed Kubernetes (Amazon EKS, Azure AKS, Google GKE) or self-managed standard Kubernetes estates'
   },
   'rhel-ai': {
     whatItIs:
@@ -136,10 +136,10 @@ export const optionGuides = {
     bestFor: 'Teams already using MLflow or needing its specific features'
   },
   'elastic': {
-    whatItIs: 'Elastic vector database (Red Hat partnership)',
-    whyChoose: 'Red Hat-preferred partner, mature product, excellent search capabilities',
-    whenToUse: 'RAG applications, semantic search, Red Hat support desired',
-    bestFor: 'Production RAG deployments with enterprise support'
+    whatItIs: 'Elasticsearch vector database - partner option',
+    whyChoose: 'Mature product with strong search capabilities and vector search support',
+    whenToUse: 'Retrieval-augmented generation (RAG) applications, semantic search, existing Elasticsearch investment',
+    bestFor: 'Production retrieval-augmented generation deployments with enterprise support from Elastic'
   },
   'pgvector': {
     whatItIs: 'PostgreSQL with vector extension',
