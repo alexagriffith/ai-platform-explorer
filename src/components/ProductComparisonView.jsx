@@ -179,7 +179,7 @@ function BomTable({ comparison }) {
   return (
     <ComparisonTableShell columns={['Component area', a.label, b.label, 'Notes']}>
       {comparison.bomRows.map((row) => (
-        <tr key={row.area} className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+        <tr key={row.area} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
             <div className="font-medium text-sm text-gray-900 dark:text-white">{row.area}</div>
           </td>
@@ -203,7 +203,7 @@ function CapabilityTable({ comparison }) {
   return (
     <ComparisonTableShell columns={['Capability', a.label, b.label, 'Overlap']}>
       {comparison.capabilityRows.map((row) => (
-        <tr key={row.capability} className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+        <tr key={row.capability} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
             <div className="font-medium text-sm text-gray-900 dark:text-white">{row.capability}</div>
           </td>
@@ -335,14 +335,14 @@ export default function ProductComparisonView() {
                     <button
                       onClick={handleDownloadPng}
                       disabled={pngBusy}
-                      className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors disabled:opacity-60"
+                      className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors disabled:opacity-60"
                     >
                       <Download size={16} />
                       {pngBusy ? 'Exporting…' : 'Export PNG'}
                     </button>
                     <button
                       onClick={handleCopy}
-                      className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+                      className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                     >
                       {copyDone ? <Check size={16} /> : <Copy size={16} />}
                       {copyDone ? 'Copied' : 'Copy summary'}
@@ -391,7 +391,7 @@ export default function ProductComparisonView() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors group"
+                    className="flex items-center gap-2 px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
                   >
                     <svg className="w-5 h-5 text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
