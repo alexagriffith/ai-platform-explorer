@@ -2,7 +2,7 @@
 
 Interactive workshop tool for exploring Red Hat AI platform architectures. Helps facilitators and customers align on capabilities, tradeoffs, and next steps.
 
-**Key features:** Architecture builder, decision guides, use case patterns, product catalog, PNG export, and copyable stack summaries.
+**Key features:** Architecture builder, decision guides, use case patterns, product catalog, dual-view product comparison (bill of materials + capabilities, draft), PNG export, and copyable stack summaries.
 
 **Current scope:** Workshop assistant for discussion and alignment. Not a live configurator or automated SKU generator.
 
@@ -50,6 +50,9 @@ Utilities for converting wizard layer maps and flow-visualization shapes live in
 - **Before/After Deployment Comparison**: See what changes when moving between deployment patterns
 - **Resource Trees**: Kubernetes resource definitions with expandable details
 - **YAML Diff**: Side-by-side configuration differences
+
+### ⚖️ Product Comparison
+- **Dual-View Product Comparison**: Compare two Red Hat AI products (Red Hat AI Inference Server vs Red Hat OpenShift AI) in a bill of materials (BOM) view — what ships in each — and a capability view — what each can do and where they overlap. Ships with illustrative placeholder data behind a visible draft banner, pending human curation.
 
 ### 💡 Use Case Guides
 - Model Inference & Serving

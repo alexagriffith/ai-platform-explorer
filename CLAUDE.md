@@ -4,7 +4,7 @@
 
 ## What this is
 
-A **public GitHub Pages workshop tool** (React 19 + Vite + Tailwind v3, static site) that Red Hat field engineers use **live in front of customers** to explore Red Hat AI platform architectures. Five tabs, wired in `src/App.jsx`:
+A **public GitHub Pages workshop tool** (React 19 + Vite + Tailwind v3, static site) that Red Hat field engineers use **live in front of customers** to explore Red Hat AI platform architectures. Six tabs, wired in `src/App.jsx`:
 
 | Tab id | Name | Entry component |
 |---|---|---|
@@ -13,6 +13,7 @@ A **public GitHub Pages workshop tool** (React 19 + Vite + Tailwind v3, static s
 | `use-cases` | Use Cases | `UseCaseView` (hosts `FineTuningDecisionMatrix`, `TrainingDeepDive`, `RAGArchitecture`, `MCPEcosystemFull`, `SecurityOverview`) |
 | `products` | Products | `ProductExplorer` |
 | `deployment-impact` | Deployment Impact | `DeploymentImpactView` (hosts `DeploymentComparisonSelector`, `YAMLDiffView`, `ResourceTreeView`, `CapabilityDeltaTable`, `QuickComparisonTable`) |
+| `product-comparison` | Product Comparison | `ProductComparisonView` (dual-view: bill of materials + capability comparison; draft data) |
 
 **State model:** no router, no store. `App.jsx` owns `customerEnv` and `selectedCapabilities` — the canonical blueprint map `capabilityId → optionId` that Build Your Stack, the Decision Guides, and the Interactive Builder all read and write. `InteractiveBuilder` syncs its local wizard state up to this map continuously (regression-tested in `InteractiveBuilder.test.jsx`). Pure transforms live in `src/lib/capabilityBlueprint.js`; the OpenShift/Kubernetes/RHEL pairing rules live in `src/lib/platformAiConstraints.js`.
 

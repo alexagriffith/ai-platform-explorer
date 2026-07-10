@@ -47,6 +47,22 @@
 
 **Target use case:** Technical architects evaluating migration paths, not initial architecture design.
 
+## V3: Product Comparison Dual-View (Phase 1 shipped as draft)
+
+**Goal:** Help teams see, side by side, what two Red Hat AI products contain and what each lets them do.
+
+**Shipped (Phase 1 — live as the "Product Comparison" tab):**
+
+- Side-by-side bill of materials (BOM) view and capability view for Red Hat AI Inference Server vs Red Hat OpenShift AI, rendered from one comparison object with a toggle
+- Illustrative placeholder data behind a visible draft banner (PNG export and copyable summary both carry the draft marker)
+
+**Still pending:**
+
+- Human curation of the bill-of-materials truth from Red Hat supported-configuration documentation (see `src/data/CURATION-TODO.md`) before any external sharing
+- Possible later comparison pairs (Red Hat AI Enterprise; the standard-Kubernetes path)
+
+**Target use case:** Field engineers and customers clarifying what is actually included in each product versus what is an add-on.
+
 ## Potential Future Enhancements
 
 - **Constraint validation** - Check for incompatible component pairings
