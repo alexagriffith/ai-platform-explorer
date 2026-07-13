@@ -65,7 +65,20 @@ const SRC = {
   // content_stream_tags v3.4) confirms the split; chart bodies stay auth-gated (pull commands in
   // work-log SOURCES.md S3b). Both catalog UI URLs validated HTTP 200.
   rhaiXksChart: 'https://catalog.redhat.com/en/software/containers/rhai/rhai-on-xks-chart/69d5330e2782c2d898f3899e',
-  rhaiOpenshiftChart: 'https://catalog.redhat.com/en/software/containers/rhai/rhai-on-openshift-chart/69d5326b4f12a69777fa181d'
+  rhaiOpenshiftChart: 'https://catalog.redhat.com/en/software/containers/rhai/rhai-on-openshift-chart/69d5326b4f12a69777fa181d',
+  // Verification round 2 (2026-07-13): per-image catalog records that carry the disputed maturity
+  // (release_categories), fetched live from the catalog.redhat.com Pyxis API and rendered-validated
+  // (~2.2 KB body each) in headless Chromium. Each points a weak cell AT the exact catalog fact its
+  // maturity turns on:
+  //  - odh-model-registry-operator-rhel9 → release_categories:['Tech Preview'] (_id 680ce1db…) — settles cell 30
+  //  - odh-feast-operator-rhel9          → ['Tech Preview'] (_id 680cdf22…) — catalog side of the Feast doc-vs-catalog conflict
+  //  - odh-mlflow-operator-rhel9         → ['Beta']         (_id 6943fa39…) — catalog side of the MLflow doc-vs-catalog conflict
+  rhoaiModelRegistryCatalog:
+    'https://catalog.redhat.com/en/software/containers/rhoai/odh-model-registry-operator-rhel9/680ce1dbe9a268d7e393ef08',
+  rhoaiFeastCatalog:
+    'https://catalog.redhat.com/en/software/containers/rhoai/odh-feast-operator-rhel9/680cdf2212946c2aa95e43b7',
+  rhoaiMlflowCatalog:
+    'https://catalog.redhat.com/en/software/containers/rhoai/odh-mlflow-operator-rhel9/6943fa398d961d8560907f31'
 };
 
 export const aiInferenceVsRhoai = {
@@ -252,11 +265,12 @@ export const aiInferenceVsRhoai = {
         included: 'included',
         detail: 'Feature Store (Feast) — documentation says GA 0.62.0; container catalog lists it Tech Preview (conflict)',
         tier: 'inferred',
-        sourceUrl: gam(51),
-        sourceLabel: 'opendatahub-operator get_all_manifests.sh — feastoperator'
+        sourceUrl: SRC.rhoaiFeastCatalog,
+        sourceLabel:
+          'Red Hat OpenShift AI container catalog — odh-feast-operator (release_categories: Tech Preview): the catalog side of a standing conflict with the supported-configs doc ("Feature Store GA 0.62.0"). Both sources current (round 2, 2026-07-13); product team to reconcile — kept inferred, not upgraded.'
       },
       illustrative: true,
-      sourceRef: 'Proposed row from CURATION-ANSWERS.md (Feast) — S1 doc "GA 0.62.0" vs catalog "Tech Preview"; pending BOM curation'
+      sourceRef: 'Proposed row from CURATION-ANSWERS.md (Feast) — CONFLICT STANDS after round 2: S1 doc "GA 0.62.0" vs live catalog "Tech Preview" (2026-07-13); pending BOM curation'
     },
     {
       area: 'Experiment tracking (MLflow)',
@@ -271,11 +285,12 @@ export const aiInferenceVsRhoai = {
         included: 'included',
         detail: 'MLflow experiment tracking — documentation says GA 3.10.1; container catalog lists it Beta (conflict)',
         tier: 'inferred',
-        sourceUrl: gam(55),
-        sourceLabel: 'opendatahub-operator get_all_manifests.sh — mlflowoperator'
+        sourceUrl: SRC.rhoaiMlflowCatalog,
+        sourceLabel:
+          'Red Hat OpenShift AI container catalog — odh-mlflow-operator (release_categories: Beta): the catalog side of a standing conflict with the supported-configs doc ("MLflow GA 3.10.1"). "Beta" is deliberately kept in prose, not the status field (not a canonical status value). Both sources current (round 2, 2026-07-13); product team to reconcile — kept inferred, not upgraded.'
       },
       illustrative: true,
-      sourceRef: 'Proposed row from CURATION-ANSWERS.md (MLflow) — S1 doc "GA 3.10.1" vs catalog "Beta"; pending BOM curation'
+      sourceRef: 'Proposed row from CURATION-ANSWERS.md (MLflow) — CONFLICT STANDS after round 2: S1 doc "GA 3.10.1" vs live catalog "Beta" (2026-07-13); pending BOM curation'
     },
     {
       area: 'Distributed inference (llm-d)',
@@ -291,10 +306,11 @@ export const aiInferenceVsRhoai = {
         detail: 'Distributed Inference with llm-d — mixed maturity across sub-images (kv-cache GA; scheduler/sidecar Tech Preview)',
         tier: 'inferred',
         sourceUrl: SRC.llmdReadme,
-        sourceLabel: 'llm-d README — distributed inference (RHOAI "Distributed Inference with llm-d")'
+        sourceLabel:
+          'llm-d README (what the layer is: distributed inference / prefill-decode disaggregation, RHOAI "Distributed Inference with llm-d"). Maturity is a standing doc-vs-catalog conflict — round-2 catalog check (2026-07-13): odh-llm-d-kv-cache Generally Available, but odh-llm-d-inference-scheduler and odh-llm-d-routing-sidecar Tech Preview, vs the supported-configs doc\'s flat "GA 0.7.1"; product team to confirm the aggregate — kept inferred, not upgraded.'
       },
       illustrative: true,
-      sourceRef: 'Proposed row from CURATION-ANSWERS.md (llm-d) — S1 flat "GA 0.7.1" vs catalog mixed GA/Tech Preview; pending BOM curation'
+      sourceRef: 'Proposed row from CURATION-ANSWERS.md (llm-d) — CONFLICT STANDS after round 2: S1 flat "GA 0.7.1" vs live catalog kv-cache GA + scheduler/sidecar Tech Preview (2026-07-13); pending BOM curation'
     }
   ],
 
@@ -431,15 +447,16 @@ export const aiInferenceVsRhoai = {
       },
       b: {
         support: 'yes',
-        detail: 'Integrates with Model Registry',
+        detail: 'Integrates with Model Registry (registry service Tech Preview; model-catalog front-end GA)',
         status: 'Tech Preview',
-        tier: 'unresolved',
-        sourceUrl: gam(47),
-        sourceLabel: 'opendatahub-operator get_all_manifests.sh — model-registry-operator (ships; GA vs Tech Preview maturity unresolved in docs)'
+        tier: 'clear',
+        sourceUrl: SRC.rhoaiModelRegistryCatalog,
+        sourceLabel:
+          'Red Hat OpenShift AI container catalog — odh-model-registry-operator (release_categories: Tech Preview). Resolves the round-1 "AI Hub vs Model Registry" conflict: the model-registry service/operator ships as Tech Preview, while its catalog front-end (odh-mod-arch-model-registry, the supported-configs "AI Hub GA" line) is Generally Available — different layers, not a contradiction. Live-verified 2026-07-13.'
       },
       overlap: true,
       illustrative: true,
-      sourceRef: 'Placeholder from products.js (model-registry, status Tech Preview, connections include both products) — pending curation'
+      sourceRef: 'From CURATION-ANSWERS.md cell 30 — UNRESOLVED → CLEAR after round 2: live catalog (2026-07-13) settles inclusion + Tech Preview maturity of the model-registry service, GA front-end explains the doc naming gap; still illustrative pending the human flip'
     },
     {
       capability: 'Model fine-tuning and alignment',
