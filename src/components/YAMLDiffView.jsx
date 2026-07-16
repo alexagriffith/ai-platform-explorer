@@ -32,24 +32,24 @@ export default function YAMLDiffView({ comparison }) {
     : { label: after.label, dotClass: 'bg-green-600', prefix: 'After: ', state: 'after' };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <div>
-        <h3 className="text-xl font-bold text-ink mb-2">
+        <h3 className="text-base font-bold text-ink mb-1">
           {isAlternative ? 'What You Submit: Side-by-Side' : 'What You Submit: Before vs After'}
         </h3>
-        <p className="text-muted">
+        <p className="text-sm text-muted">
           {isAlternative
             ? 'Compare the YAML specifications for each platform approach.'
             : 'See how the YAML you write changes when adopting this platform component.'}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Left State */}
-        <div className="space-y-4">
-          <div className="sticky top-0 bg-surface py-2 border-b border-hair">
-            <h4 className="text-lg font-semibold text-ink flex items-center">
-              <span className={`inline-block w-3 h-3 ${leftConfig.dotClass} rounded-full mr-2`}></span>
+        <div className="space-y-2">
+          <div className="sticky top-0 bg-surface py-1.5 border-b border-hair">
+            <h4 className="text-sm font-semibold text-ink flex items-center">
+              <span className={`inline-block w-2.5 h-2.5 ${leftConfig.dotClass} rounded-full mr-2`}></span>
               {leftConfig.prefix}{leftConfig.label}
             </h4>
           </div>
@@ -60,10 +60,10 @@ export default function YAMLDiffView({ comparison }) {
         </div>
 
         {/* Right State */}
-        <div className="space-y-4">
-          <div className="sticky top-0 bg-surface py-2 border-b border-hair">
-            <h4 className="text-lg font-semibold text-ink flex items-center">
-              <span className={`inline-block w-3 h-3 ${rightConfig.dotClass} rounded-full mr-2`}></span>
+        <div className="space-y-2">
+          <div className="sticky top-0 bg-surface py-1.5 border-b border-hair">
+            <h4 className="text-sm font-semibold text-ink flex items-center">
+              <span className={`inline-block w-2.5 h-2.5 ${rightConfig.dotClass} rounded-full mr-2`}></span>
               {rightConfig.prefix}{rightConfig.label}
             </h4>
           </div>
@@ -126,14 +126,14 @@ function YAMLResource({ resource, state }) {
           }
         }}
         aria-expanded={isExpanded}
-        className={`w-full px-4 py-3 bg-tint border-b border-hair hover:bg-tint ${interactive.transition} text-left cursor-pointer`}
+        className={`w-full px-3 py-2 bg-tint border-b border-hair hover:bg-tint ${interactive.transition} text-left cursor-pointer`}
       >
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 flex-1">
+          <div className="flex items-center gap-1.5 flex-1">
             {isExpanded ? (
-              <ChevronDown size={16} className="text-faint flex-shrink-0" />
+              <ChevronDown size={14} className="text-faint flex-shrink-0" />
             ) : (
-              <ChevronRight size={16} className="text-faint flex-shrink-0" />
+              <ChevronRight size={14} className="text-faint flex-shrink-0" />
             )}
             <div className="flex-1">
               <div className="flex items-baseline gap-2">
@@ -144,7 +144,7 @@ function YAMLResource({ resource, state }) {
                   {resource.apiVersion}
                 </span>
               </div>
-              <p className="text-xs text-muted mt-1">
+              <p className="text-xs text-muted">
                 {resource.description}
               </p>
             </div>

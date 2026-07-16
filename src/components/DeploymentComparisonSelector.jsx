@@ -21,18 +21,18 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <div>
-        <h2 className="text-2xl font-bold text-ink mb-2">
+        <h2 className="text-base font-bold text-ink mb-1">
           Deployment Impact Explorer
         </h2>
-        <p className="text-muted">
+        <p className="text-sm text-muted">
           Understand the concrete implementation changes when adopting Red Hat AI platform components.
           Compare before and after states for YAML, resource trees, and capabilities.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         {comparisons.map((comparison) => {
           const isSelected = selectedComparisonId === comparison.id;
 
@@ -41,7 +41,7 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
               key={comparison.id}
               onClick={() => onSelectComparison(comparison.id)}
               className={`
-                text-left p-6 rounded-card border-2 ${interactive.transitionAll}
+                text-left px-4 py-3 rounded-card border-2 ${interactive.transitionAll}
                 ${interactive.focusRing}
                 ${isSelected
                   ? 'border-accent bg-tint'
@@ -49,33 +49,33 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
                 }
               `}
             >
-              <div className="flex items-start justify-between mb-3">
-                <h3 className="text-lg font-semibold text-ink pr-4">
+              <div className="flex items-start justify-between mb-1.5">
+                <h3 className="text-sm font-semibold text-ink pr-3">
                   {comparison.title}
                 </h3>
                 {isSelected && (
-                  <div className="flex-shrink-0 w-6 h-6 bg-accent rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-on-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="flex-shrink-0 w-5 h-5 bg-accent rounded-full flex items-center justify-center">
+                    <svg className="w-3 h-3 text-on-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                 )}
               </div>
 
-              <p className="text-muted mb-4 leading-relaxed">
+              <p className="text-xs text-muted mb-2 leading-snug">
                 {comparison.description}
               </p>
 
-              <div className="flex items-center text-sm text-muted">
-                <Users size={16} className="mr-2" />
+              <div className="flex items-center text-xs text-muted">
+                <Users size={13} className="mr-1.5" />
                 <span className="italic">For: {comparison.audience || 'Technical teams'}</span>
               </div>
 
               {isSelected && (
-                <div className="mt-4 pt-4 border-t border-hair">
-                  <div className="flex items-center text-link font-medium">
+                <div className="mt-2 pt-2 border-t border-hair">
+                  <div className="flex items-center text-link text-sm font-medium">
                     <span>View Comparison</span>
-                    <ArrowRight size={16} className="ml-2" />
+                    <ArrowRight size={14} className="ml-1.5" />
                   </div>
                 </div>
               )}

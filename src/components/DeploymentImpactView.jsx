@@ -43,44 +43,41 @@ export default function DeploymentImpactView() {
       ];
 
   return (
-    <div data-tab="deployment-impact" className="space-y-8">
-      {/* Comparison Selector */}
+    <div data-tab="deployment-impact" className="space-y-4">
       <DeploymentComparisonSelector
         selectedComparisonId={selectedComparisonId}
         onSelectComparison={handleSelectComparison}
       />
 
-      {/* Comparison Content */}
       {comparison && (
-        <div key={comparison.id} className="space-y-6">
+        <div key={comparison.id} className="space-y-3">
           {/* Comparison Header */}
-          <div className="rounded-card border border-edge bg-surface p-6">
-            <h3 className="text-2xl font-bold text-ink mb-2">
+          <div className="rounded-card border border-edge bg-surface px-4 py-3">
+            <h3 className="text-base font-bold text-ink leading-tight mb-1">
               {comparison.title}
             </h3>
-            <p className="text-muted">
+            <p className="text-sm text-muted">
               {comparison.description}
             </p>
           </div>
 
           {/* View Tabs */}
           <div className="rounded-card border border-edge bg-surface">
-            {/* Tab Navigation */}
             <div className="border-b border-hair">
-              <nav className="flex gap-1 px-4">
+              <nav className="flex gap-0.5 px-3">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-4 py-3 font-medium text-sm ${interactive.transition} border-b-2 ${
+                      className={`flex items-center gap-1.5 px-3 py-2 font-medium text-sm ${interactive.transition} border-b-2 ${
                         activeTab === tab.id
                           ? 'border-accent text-link'
                           : 'border-transparent text-muted hover:text-ink'
                       }`}
                     >
-                      <Icon size={18} />
+                      <Icon size={15} />
                       {tab.name}
                     </button>
                   );
@@ -88,8 +85,7 @@ export default function DeploymentImpactView() {
               </nav>
             </div>
 
-            {/* Tab Content */}
-            <div className="p-6">
+            <div className="p-4">
               {activeTab === 'quick' && <QuickComparisonTable comparison={comparison} />}
               {activeTab === 'yaml' && <YAMLDiffView comparison={comparison} />}
               {activeTab === 'resources' && <ResourceTreeView comparison={comparison} />}
@@ -103,29 +99,29 @@ export default function DeploymentImpactView() {
               <button
                 onClick={() => setMigrationNotesExpanded(!migrationNotesExpanded)}
                 aria-expanded={migrationNotesExpanded}
-                className={`w-full px-6 py-4 flex items-center justify-between ${interactive.hoverTint} ${interactive.transition}`}
+                className={`w-full px-4 py-2.5 flex items-center justify-between ${interactive.hoverTint} ${interactive.transition}`}
               >
-                <h3 className="text-lg font-bold text-ink flex items-center gap-2">
+                <h3 className="text-sm font-bold text-ink flex items-center gap-2">
                   {migrationNotesExpanded ? (
-                    <ChevronDown size={20} className="text-faint" />
+                    <ChevronDown size={16} className="text-faint" />
                   ) : (
-                    <ChevronRight size={20} className="text-faint" />
+                    <ChevronRight size={16} className="text-faint" />
                   )}
                   Migration Notes
-                  <span className="ml-2 text-sm font-normal text-muted">
+                  <span className="ml-1 text-xs font-normal text-muted">
                     ({comparison.migrationNotes.length} tips)
                   </span>
                 </h3>
               </button>
               {migrationNotesExpanded && (
-                <div className="px-6 pb-6">
+                <div className="px-4 pb-4">
                   <ul className="space-y-2">
                     {comparison.migrationNotes.map((note, idx) => (
-                      <li key={idx} className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 bg-tint border border-edge text-muted rounded-full flex items-center justify-center text-xs font-semibold mt-0.5">
+                      <li key={idx} className="flex items-start gap-2.5">
+                        <span className="flex-shrink-0 w-5 h-5 bg-tint border border-edge text-muted rounded-full flex items-center justify-center text-xs font-semibold mt-0.5">
                           {idx + 1}
                         </span>
-                        <span className="text-sm text-ink leading-relaxed">
+                        <span className="text-sm text-ink leading-snug">
                           {note}
                         </span>
                       </li>
@@ -138,20 +134,20 @@ export default function DeploymentImpactView() {
 
           {/* Documentation Links */}
           {comparison.docsLinks && comparison.docsLinks.length > 0 && (
-            <div className="rounded-card border border-edge bg-surface p-6">
-              <h3 className={`text-lg font-bold ${text.ink} mb-4`}>
+            <div className="rounded-card border border-edge bg-surface px-4 py-3">
+              <h3 className={`text-sm font-bold ${text.ink} mb-2`}>
                 Additional Resources
               </h3>
-              <div className="grid md:grid-cols-2 gap-3">
+              <div className="grid md:grid-cols-2 gap-2">
                 {comparison.docsLinks.map((link, idx) => (
                   <a
                     key={idx}
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`flex items-center gap-2 px-4 py-3 border border-edge rounded-card ${interactive.hoverTint} ${interactive.transition} group`}
+                    className={`flex items-center gap-2 px-3 py-2 border border-edge rounded-card ${interactive.hoverTint} ${interactive.transition} group`}
                   >
-                    <svg className="w-5 h-5 text-faint group-hover:text-link" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-faint group-hover:text-link flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                     <span className="text-sm font-medium text-ink group-hover:text-link">

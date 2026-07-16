@@ -28,12 +28,12 @@ export default function CapabilityDeltaTable({ comparison }) {
   const isAlternativeComparison = comparison.comparisonType === 'alternative';
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <div>
-        <h3 className="text-xl font-bold text-ink mb-2">
+        <h3 className="text-base font-bold text-ink mb-1">
           {isAlternativeComparison ? 'Feature Comparison' : 'Capability Changes'}
         </h3>
-        <p className="text-muted">
+        <p className="text-sm text-muted">
           {isAlternativeComparison
             ? 'How do these two technologies compare across key capabilities and operational characteristics?'
             : 'What features and operational characteristics change when you adopt this platform component?'
@@ -42,27 +42,27 @@ export default function CapabilityDeltaTable({ comparison }) {
       </div>
 
       {/* Impact Summary — status-semantic badge colors */}
-      <div className="flex flex-wrap gap-4 text-sm">
-        <div className="flex items-center gap-2 px-3 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-card">
-          <TrendingUp size={16} className="text-green-600 dark:text-green-400" />
-          <span className="text-ink">
+      <div className="flex flex-wrap gap-2 text-sm">
+        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-card">
+          <TrendingUp size={14} className="text-green-600 dark:text-green-400" />
+          <span className="text-ink text-xs">
             <strong className="text-green-700 dark:text-green-300">{impactCounts.positive}</strong> {isAlternativeComparison ? 'Advantages' : 'Improvements'}
           </span>
         </div>
 
         {impactCounts.tradeoff > 0 && (
-          <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-card">
-            <AlertTriangle size={16} className="text-amber-600 dark:text-amber-400" />
-            <span className="text-ink">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-card">
+            <AlertTriangle size={14} className="text-amber-600 dark:text-amber-400" />
+            <span className="text-ink text-xs">
               <strong className="text-amber-700 dark:text-amber-300">{impactCounts.tradeoff}</strong> Tradeoffs
             </span>
           </div>
         )}
 
         {impactCounts.neutral > 0 && (
-          <div className="flex items-center gap-2 px-3 py-2 bg-tint border border-hair rounded-card">
-            <Minus size={16} className="text-muted" />
-            <span className="text-ink">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-tint border border-hair rounded-card">
+            <Minus size={14} className="text-muted" />
+            <span className="text-ink text-xs">
               <strong>{impactCounts.neutral}</strong> Neutral
             </span>
           </div>
@@ -75,16 +75,16 @@ export default function CapabilityDeltaTable({ comparison }) {
           <table className="min-w-full">
             <thead className="bg-tint">
               <tr>
-                <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[140px]">
+                <th className="px-3 py-2 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[140px]">
                   Capability
                 </th>
-                <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[120px]">
+                <th className="px-3 py-2 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[120px]">
                   {isAlternativeComparison ? comparison.before.label : 'Before'}
                 </th>
-                <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[120px]">
+                <th className="px-3 py-2 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[120px]">
                   {isAlternativeComparison ? comparison.after.label : 'After'}
                 </th>
-                <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[100px]">
+                <th className="px-3 py-2 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[100px]">
                   Impact
                 </th>
               </tr>
@@ -92,25 +92,25 @@ export default function CapabilityDeltaTable({ comparison }) {
             <tbody className="bg-surface divide-y divide-hair">
               {capabilityDelta.map((delta, idx) => (
                 <tr key={idx} className="hover:bg-tint transition-colors duration-150 ease-out motion-reduce:transition-none">
-                  <td className="px-3 sm:px-4 py-3 sm:py-4">
+                  <td className="px-3 py-2">
                     <div>
                       <div className="font-medium text-sm text-ink">
                         {delta.capability}
                       </div>
                       {delta.notes && (
-                        <div className="text-xs sm:text-sm text-muted mt-1">
+                        <div className="text-xs text-muted mt-0.5">
                           {delta.notes}
                         </div>
                       )}
                     </div>
                   </td>
-                  <td className="px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm text-ink">
+                  <td className="px-3 py-2 text-xs text-ink">
                     {delta.beforeState}
                   </td>
-                  <td className="px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm text-ink font-medium">
+                  <td className="px-3 py-2 text-xs text-ink font-medium">
                     {delta.afterState}
                   </td>
-                  <td className="px-3 sm:px-4 py-3 sm:py-4">
+                  <td className="px-3 py-2">
                     <ImpactBadge impact={delta.impact} isAlternativeComparison={isAlternativeComparison} />
                   </td>
                 </tr>
@@ -121,9 +121,9 @@ export default function CapabilityDeltaTable({ comparison }) {
       </div>
 
       {/* Legend */}
-      <div className="p-4 bg-tint border border-hair rounded-card">
-        <h4 className="text-sm font-semibold text-ink mb-2">Understanding Impact</h4>
-        <div className="grid md:grid-cols-3 gap-4 text-sm text-muted">
+      <div className="px-3 py-2 bg-tint border border-hair rounded-card">
+        <h4 className="text-xs font-semibold text-ink mb-1.5">Understanding Impact</h4>
+        <div className="grid md:grid-cols-3 gap-3 text-xs text-muted">
           <div>
             <span className="font-medium text-green-600 dark:text-green-400">Positive:</span> {isAlternativeComparison
               ? `Advantage of ${comparison.after.label}`
@@ -175,7 +175,7 @@ function ImpactBadge({ impact, isAlternativeComparison }) {
   const Icon = config.icon;
 
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium border rounded-full ${config.className}`}>
+    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium border rounded-card ${config.className}`}>
       <Icon size={12} />
       {config.label}
     </span>
