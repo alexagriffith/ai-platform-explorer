@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle, RotateCcw, ChevronLeft } from 'lucide-react';
-import { button, text, interactive, surface, border } from '../lib/styleTokens';
+import { button, text, interactive, surface, border, density, typeScale } from '../lib/styleTokens';
 
 export default function DecisionTree({ flow, onRecommendation }) {
   const [selectedPath, setSelectedPath] = useState({});
@@ -107,12 +107,12 @@ export default function DecisionTree({ flow, onRecommendation }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className={density.stackGap}>
       {/* Breadcrumb and controls */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
           {canGoBack && (
-            <div className={`text-sm ${text.muted}`}>
+            <div className={`${typeScale.secondary} ${text.muted}`}>
               <span className="font-semibold">Your path: </span>
               <span className="italic">{getBreadcrumb()}</span>
             </div>
@@ -122,18 +122,18 @@ export default function DecisionTree({ flow, onRecommendation }) {
           <button
             onClick={goBack}
             disabled={!canGoBack}
-            className={`flex items-center gap-2 ${button.secondary} disabled:opacity-50 disabled:pointer-events-none`}
+            className={`flex items-center gap-1.5 ${button.secondary} disabled:opacity-50 disabled:pointer-events-none`}
             aria-label="Go back one step"
           >
-            <ChevronLeft size={16} />
+            <ChevronLeft size={14} />
             Back
           </button>
           <button
             onClick={resetTree}
-            className={`flex items-center gap-2 ${button.secondary}`}
+            className={`flex items-center gap-1.5 ${button.secondary}`}
             aria-label="Reset all choices"
           >
-            <RotateCcw size={16} />
+            <RotateCcw size={14} />
             Reset
           </button>
         </div>
@@ -149,43 +149,43 @@ export default function DecisionTree({ flow, onRecommendation }) {
           const visibleNumber = getVisibleQuestionNumber(stepIndex);
 
           return (
-            <div key={stepIndex} className="mb-8">
+            <div key={stepIndex} className="mb-4">
               {/* Connecting line from previous step */}
               {stepIndex > 0 && shouldShowStep(step, stepIndex) && (
-                <div className="flex justify-center mb-4">
-                  <div className={`w-0.5 h-8 ${isCompleted ? 'bg-accent' : 'bg-edge dark:bg-edge'}`}></div>
+                <div className="flex justify-center mb-2">
+                  <div className={`w-0.5 h-4 ${isCompleted ? 'bg-accent' : 'bg-edge dark:bg-edge'}`}></div>
                 </div>
               )}
 
               {/* Question node */}
               <div className="flex flex-col items-center">
-                <div className={`max-w-2xl w-full p-6 rounded-card border ${interactive.transitionAll} ${
+                <div className={`max-w-2xl w-full ${density.sectionPad} rounded-card border ${interactive.transitionAll} ${
                   isActive
                     ? `border-accent ${surface.tint}`
                     : isCompleted
                     ? `border-edge ${surface.raised}`
                     : `${border.edge} ${surface.raised}`
                 }`}>
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 mt-1">
+                  <div className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-0.5">
                       {isCompleted ? (
-                        <CheckCircle size={24} className="text-green-600" />
+                        <CheckCircle size={18} className="text-green-600" />
                       ) : (
-                        <div className={`w-6 h-6 rounded-full border-2 ${
+                        <div className={`w-4 h-4 rounded-full border-2 ${
                           isActive ? 'border-accent bg-accent' : `${border.edge} ${surface.tint}`
                         }`} />
                       )}
                     </div>
                     <div className="flex-1">
-                      <h4 className={`font-bold text-lg ${text.ink} mb-4`}>
+                      <h4 className={`${typeScale.componentName} ${text.ink} mb-2`}>
                         <span className="text-accent mr-1">
-                          Question {visibleNumber}:
+                          Q{visibleNumber}:
                         </span>
                         {step.question}
                       </h4>
 
                       {/* Option nodes */}
-                      <div className="grid md:grid-cols-2 gap-3">
+                      <div className={`grid md:grid-cols-2 ${density.rowGap}`}>
                         {step.options.map((option) => {
                           const selected = isOptionSelected(stepIndex, option.value);
                           const disabled = !isActive && !selected;
@@ -196,7 +196,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
                               onClick={() => !disabled && handleNodeClick(stepIndex, option.value, option.next)}
                               disabled={disabled}
                               aria-current={selected ? 'true' : undefined}
-                              className={`p-4 rounded-card border-2 text-left ${interactive.transitionAll} ${
+                              className={`${density.cardPad} rounded-card border-2 text-left ${interactive.transitionAll} ${
                                 selected
                                   ? `border-accent ${surface.tint}`
                                   : isActive
@@ -204,19 +204,19 @@ export default function DecisionTree({ flow, onRecommendation }) {
                                   : `${border.hair} ${surface.tint} opacity-50 cursor-not-allowed`
                               } ${!disabled ? interactive.focusRing : ''}`}
                             >
-                              <div className="flex items-center gap-2 mb-2">
-                                {selected && <CheckCircle size={16} className="text-accent" />}
-                                <span className={`font-semibold ${selected ? text.ink : text.ink}`}>
+                              <div className="flex items-center gap-1.5 mb-1">
+                                {selected && <CheckCircle size={14} className="text-accent flex-shrink-0" />}
+                                <span className={`${typeScale.secondary} font-semibold ${text.ink}`}>
                                   {option.label}
                                 </span>
                               </div>
                               {option.next !== undefined && (
-                                <div className={`text-xs ${text.faint}`}>
+                                <div className={`${typeScale.meta} ${text.faint}`}>
                                   → Continue to next question
                                 </div>
                               )}
                               {option.recommendation && (
-                                <div className="text-xs text-green-600 dark:text-green-400 font-semibold">
+                                <div className={`${typeScale.meta} text-green-600 dark:text-green-400 font-semibold`}>
                                   View recommendation
                                 </div>
                               )}

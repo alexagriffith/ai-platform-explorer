@@ -112,7 +112,7 @@ function OrientBeat() {
       <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-ink">
         Which Red Hat AI product do you need?
       </h2>
-      <p className="mt-3 text-base sm:text-lg leading-relaxed text-muted">
+      <p className="mt-2 text-base sm:text-lg leading-relaxed text-muted">
         The Inference Server is the engine. OpenShift AI is the platform built around it — and the
         engine is also sold on its own.
       </p>
@@ -127,8 +127,8 @@ function DecisionColumn({ need, product, facts, className = '' }) {
   return (
     <div className={`flex h-full flex-col ${className}`}>
       <h3 className="text-lg font-semibold leading-snug text-ink">{need}</h3>
-      <div className="mt-2 text-base font-semibold text-link">→ {product}</div>
-      <ul className="mt-3 space-y-2">
+      <div className="mt-1.5 text-sm font-semibold text-link">→ {product}</div>
+      <ul className="mt-2 space-y-1.5">
         {facts.map((fact) => (
           <li key={fact} className="flex items-start gap-2 text-sm text-muted">
             <span aria-hidden="true" className="mt-[7px] h-1 w-1 flex-shrink-0 rounded-full bg-accent" />
@@ -147,13 +147,13 @@ function DecisionBeat() {
         need="You just need to serve models, fast"
         product="Red Hat AI Inference Server"
         facts={['One container · vLLM engine', 'Runs anywhere — any Kubernetes, plain Linux']}
-        className="pb-5 md:pb-0 md:pr-8"
+        className="pb-4 md:pb-0 md:pr-8"
       />
       <DecisionColumn
         need="You need the whole machine-learning lifecycle"
         product="Red Hat OpenShift AI"
         facts={['Notebooks → pipelines → serving · includes the Inference Server', 'Requires OpenShift']}
-        className="pt-5 md:pt-0 md:pl-8"
+        className="pt-4 md:pt-0 md:pl-8"
       />
     </div>
   );
@@ -345,7 +345,7 @@ export default function ProductComparisonView() {
       {pngError && <p className="text-right text-xs text-accent">{pngError}</p>}
 
       {/* CAPTURE ROOT — the three beats (+ draft banner) are what the PNG export captures. */}
-      <div id={CAPTURE_ROOT_ID} className="space-y-8">
+      <div id={CAPTURE_ROOT_ID} className="space-y-6">
         {isComparisonDraft(comparison) && <DraftBanner />}
         <OrientBeat />
         <DecisionBeat />
