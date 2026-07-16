@@ -132,7 +132,7 @@ export default function AcronymGlossary() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 bg-purple-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-purple-700 transition-all flex items-center gap-2 z-50"
+        className="fixed bottom-6 right-6 bg-accent text-on-accent px-4 py-3 rounded-full shadow-lg hover:bg-accent-strong transition-all flex items-center gap-2 z-50"
       >
         <BookOpen size={20} />
         <span className="font-medium">Acronym Guide</span>
@@ -144,7 +144,7 @@ export default function AcronymGlossary() {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
+        <div className="bg-accent p-6 text-on-accent">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <BookOpen size={28} />
@@ -157,7 +157,7 @@ export default function AcronymGlossary() {
               <X size={24} />
             </button>
           </div>
-          <p className="text-purple-100">
+          <p className="text-on-accent/90">
             Plain English explanations of Red Hat AI terminology
           </p>
         </div>
@@ -171,7 +171,7 @@ export default function AcronymGlossary() {
               placeholder="Search acronyms..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent"
             />
           </div>
         </div>
@@ -202,7 +202,7 @@ export default function AcronymGlossary() {
                   className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
+                    <span className="text-sm font-bold text-link">
                       {item.acronym}
                     </span>
                   </td>

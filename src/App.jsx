@@ -71,19 +71,19 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-page">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+      <header className="bg-surface border-b border-edge">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-lg sm:text-xl">RH</span>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-accent rounded-card flex items-center justify-center flex-shrink-0">
+              <span className="text-on-accent font-display font-extrabold text-base sm:text-lg tracking-tight">RH</span>
             </div>
             <div className="min-w-0 flex-1">
-              <h1 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
+              <h1 className="font-display text-lg sm:text-2xl font-extrabold tracking-tight text-ink truncate">
                 Red Hat AI Platform Explorer
               </h1>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hidden sm:block">
+              <p className="text-xs sm:text-sm text-muted hidden sm:block">
                 Interactive visualization of Red Hat's AI offerings
               </p>
             </div>
@@ -91,24 +91,25 @@ function App() {
         </div>
       </header>
 
-      {/* WIP Banner */}
-      <div className="bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-          <div className="flex items-center justify-center gap-2 text-white">
-            <AlertCircle size={16} className="flex-shrink-0" />
-            <p className="text-xs sm:text-sm font-medium text-center">
-              Work In Progress: Content and features subject to change
+      {/* Work-in-progress strip — quiet by design; the per-tab draft banner is the loud caution. */}
+      <div className="bg-surface border-b border-hair">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5">
+          <div className="flex items-center justify-center gap-2 text-muted">
+            <AlertCircle size={13} className="flex-shrink-0 text-accent" />
+            <p className="text-xs font-medium text-center">
+              Work in progress — content and features subject to change
             </p>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <nav className="bg-surface border-b border-edge">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
           <div className="flex gap-0.5 sm:gap-1 overflow-x-auto">
             {views.map((view) => {
               const Icon = view.icon;
+              const active = currentView === view.id;
               return (
                 <button
                   key={view.id}
@@ -120,9 +121,9 @@ function App() {
                     setCurrentView(view.id);
                   }}
                   className={`flex items-center justify-center sm:justify-start gap-2 px-2 sm:px-4 py-3 font-medium text-xs sm:text-sm transition-colors border-b-2 whitespace-nowrap ${
-                    currentView === view.id
-                      ? 'border-purple-600 text-purple-600 dark:text-purple-400'
-                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                    active
+                      ? 'border-accent text-link'
+                      : 'border-transparent text-muted hover:text-ink'
                   }`}
                   title={view.name}
                 >
@@ -141,8 +142,8 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-12 py-6 border-t border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-600 dark:text-gray-400">
+      <footer className="mt-12 py-6 border-t border-hair">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-muted">
           <p>Red Hat AI Platform Explorer • Prototype</p>
         </div>
       </footer>

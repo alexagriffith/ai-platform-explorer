@@ -2,13 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
+/* -----------------------------------------------------------------------------
+ * App SEMANTIC token layer — maps app roles to the vendored PatternFly tokens
+ * (src/styles/patternfly-tokens.css). Values are RGB channel triplets so Tailwind
+ * can apply opacity via rgb(var(--x) / <alpha-value>). Each role is annotated with
+ * the PatternFly palette token it equals. The light values are the defaults; the
+ * dark values swap the SAME roles down the gray ramp under prefers-color-scheme,
+ * which is the app's dark-mode signal (Tailwind darkMode = media). Because the
+ * roles switch here, components need almost no per-color dark: variants.
+ * -------------------------------------------------------------------------- */
 @layer base {
   :root {
-    --accent: #aa3bff;
-    --accent-rgb: 170, 59, 255;
+    --app-page: 242 242 242;        /* gray-10  #f2f2f2  — page background        */
+    --app-surface: 255 255 255;     /* #ffffff          — cards / primary surface */
+    --app-tint: 242 242 242;        /* gray-10  #f2f2f2  — shared band / group band*/
+    --app-ink: 21 21 21;            /* gray-95  #151515  — primary text           */
+    --app-muted: 77 77 77;          /* gray-60  #4d4d4d  — secondary text          */
+    --app-faint: 112 112 112;       /* gray-50  #707070  — tertiary / labels       */
+    --app-hair: 224 224 224;        /* gray-20  #e0e0e0  — hairline dividers        */
+    --app-border: 199 199 199;      /* gray-30  #c7c7c7  — surface edge / underline */
+    --app-accent: 238 0 0;          /* red-50   #ee0000  — the single accent (fills)*/
+    --app-accent-strong: 166 0 0;   /* red-60   #a60000  — accent hover / pressed   */
+    --app-link: 238 0 0;            /* red-50   #ee0000  — text links / active tab   */
+    --app-draft-bg: 254 240 240;    /* red-05   #fef0f0  — draft caution surface     */
+    --app-draft-fg: 21 21 21;       /* gray-95          — text on draft surface      */
+    --app-on-accent: 255 255 255;   /* #ffffff          — text/icon on an accent fill*/
+
+    --accent: #ee0000;              /* legacy hook, retained for any --accent readers */
+    --accent-rgb: 238, 0, 0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --app-page: 21 21 21;         /* gray-95  #151515 */
+      --app-surface: 31 31 31;      /* gray-90  #1f1f1f */
+      --app-tint: 41 41 41;         /* gray-80  #292929 */
+      --app-ink: 242 242 242;       /* gray-10  #f2f2f2 */
+      --app-muted: 163 163 163;     /* gray-40  #a3a3a3 */
+      --app-faint: 140 140 140;     /* gray-45  #8c8c8c */
+      --app-hair: 56 56 56;         /* gray-70  #383838 */
+      --app-border: 56 56 56;       /* gray-70  #383838 */
+      --app-accent: 238 0 0;        /* red-50   #ee0000 — brand red still reads on dark */
+      --app-accent-strong: 245 110 110; /* red-40 #f56e6e */
+      --app-link: 245 110 110;      /* red-40   #f56e6e — AA on dark surface */
+      --app-draft-bg: 63 0 0;       /* red-80   #3f0000 */
+      --app-draft-fg: 242 242 242;  /* gray-10          — light text on deep-red draft */
+    }
   }
 
   body {
     @apply font-sans antialiased;
+    background-color: rgb(var(--app-page));
+    color: rgb(var(--app-ink));
+    font-family: var(--pf-t--global--font--family--100);
   }
 }

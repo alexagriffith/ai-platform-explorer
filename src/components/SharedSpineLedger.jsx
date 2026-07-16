@@ -9,52 +9,49 @@ import { buildLedgerModel, LEDGER_PRODUCTS, sideTitle } from '../lib/ledgerModel
  * Red Hat OpenShift AI. One filled mark = present; a faint dash = absent. There are NO status words
  * repeated per row — the mark is the whole statement.
  *
- * CONTAINMENT AS SHAPE: a row present in BOTH products gets a subtle background band spanning the
- * whole row. The "Serve models" group is where both products overlap, so those bands stack into one
- * continuous block at the top — the shared core. Below it only the right column (the platform) keeps
- * marking present, so the left column's short run reads as *contained inside* the right column's long
- * one. The shape is the argument; we never label a row "shared".
+ * SINGLE ACCENT (2026-07-16 restyle): both products use the SAME Red Hat red mark. The product is
+ * told by column POSITION (left vs right), not by hue — so the "shared core / platform keeps going"
+ * shape still reads with colour removed (a design goal: the layout must read in grayscale). Neutral
+ * surfaces, one thin border, hairline row dividers, and a subtle neutral band for the shared core —
+ * no vertical cell borders, no shadow stack (see planning/DESIGN-NOTES.md).
  *
- * CONFIDENCE MADE VISUAL (same rule as resolveHeroCell): a present mark is SOLID when the underlying
- * row-side is clear-tier, and a DASHED-OUTLINE "pending" mark when it is inferred/unresolved-tier.
+ * CONTAINMENT AS SHAPE: a row present in BOTH products gets a subtle neutral background band. The
+ * "Serve models" group is where both overlap, so those bands stack into one continuous block at the
+ * top — the shared core. Below it only the right column keeps marking present, so the left column's
+ * short run reads as *contained inside* the right column's long one. The shape is the argument.
+ *
+ * CONFIDENCE MADE VISUAL: a present mark is SOLID when the row-side is clear-tier, and a
+ * DASHED-OUTLINE "pending" mark when it is inferred/unresolved-tier.
  *
  * All derivation (grouping, short names, presence, confidence, which source a name links to) is pure
  * and lives in ../lib/ledgerModel — this file only renders. Every component NAME is the hyperlink to
  * that row-side's validated public source (rel="noopener"); the external-link icon shows on hover only.
  */
 
-// Full literal Tailwind classes per product + confidence (no runtime-built class fragments, so the
-// JIT compiler keeps them). Solid = present & clear-tier; pending = present & inferred/unresolved.
-const MARK = {
-  a: {
-    solid: 'bg-blue-600 text-white dark:bg-blue-500',
-    pending: 'border-2 border-dashed border-blue-400 text-blue-600 dark:border-blue-500 dark:text-blue-300'
-  },
-  b: {
-    solid: 'bg-purple-600 text-white dark:bg-purple-500',
-    pending: 'border-2 border-dashed border-purple-400 text-purple-600 dark:border-purple-500 dark:text-purple-300'
-  }
-};
+// Present marks share ONE accent (single-accent law); confidence changes the treatment only.
+const MARK_SOLID = 'bg-accent text-on-accent';
+const MARK_PENDING = 'border-2 border-dashed border-accent text-accent';
 
-// Identical column geometry for the sticky header AND every row, so marks align in strict columns.
+// Identical column geometry for the header AND every row. The two PRODUCT columns are exactly equal
+// width (equal peers); the center name column is wider. Enforced by scripts/gate.py.
 const COLS =
-  'grid grid-cols-[64px_minmax(0,1fr)_64px] sm:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_minmax(0,1fr)]';
+  'grid grid-cols-[56px_minmax(0,1fr)_56px] sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)]';
 
 const MARK_BASE = 'inline-flex items-center justify-center h-6 w-6 rounded-full';
 const LEGEND_SAMPLE = 'inline-flex items-center justify-center h-4 w-4 rounded-full';
 
-function PresenceMark({ side, product }) {
+function PresenceMark({ side }) {
   if (!side.present) {
     return (
       <>
-        <span aria-hidden="true" className="text-xl leading-none text-gray-300 dark:text-gray-600 select-none">
+        <span aria-hidden="true" className="text-xl leading-none text-faint select-none">
           –
         </span>
         <span className="sr-only">not included</span>
       </>
     );
   }
-  const cls = side.verified ? MARK[product].solid : MARK[product].pending;
+  const cls = side.verified ? MARK_SOLID : MARK_PENDING;
   return (
     <>
       <span aria-hidden="true" className={`${MARK_BASE} ${cls}`}>
@@ -68,9 +65,7 @@ function PresenceMark({ side, product }) {
 function NameLink({ row }) {
   if (!row.link) {
     return (
-      <span className="text-sm font-medium leading-tight text-gray-900 dark:text-white line-clamp-2">
-        {row.name}
-      </span>
+      <span className="text-sm font-medium leading-tight text-ink line-clamp-2">{row.name}</span>
     );
   }
   return (
@@ -80,7 +75,7 @@ function NameLink({ row }) {
       rel="noopener"
       title={row.link.label || 'Open source'}
       aria-label={row.link.label ? `${row.name} — source: ${row.link.label}` : `${row.name} — open source`}
-      className="group inline-flex items-center justify-center gap-1 text-sm font-medium leading-tight text-gray-900 dark:text-white hover:text-purple-700 dark:hover:text-purple-300 hover:underline transition-colors"
+      className="group inline-flex items-center justify-center gap-1 text-sm font-medium leading-tight text-ink hover:text-link hover:underline transition-colors"
     >
       <span className="line-clamp-2">{row.name}</span>
       <ExternalLink
@@ -93,25 +88,30 @@ function NameLink({ row }) {
 }
 
 function LedgerRow({ row, last }) {
-  // Both-present rows carry the subtle containment band; contiguous bands merge into one block.
-  const band = row.shared ? 'bg-indigo-50/70 dark:bg-indigo-950/30' : 'bg-white dark:bg-gray-800';
-  const rounded = last ? 'rounded-b-lg' : '';
+  // Both-present rows carry the subtle neutral band; contiguous bands merge into one block.
+  const band = row.shared ? 'bg-tint' : 'bg-surface';
+  const rounded = last ? 'rounded-b-card' : '';
   return (
-    <div className={`${COLS} ${band} ${rounded}`}>
+    <div className={`${COLS} ${band} ${rounded}`} data-ledger-row>
       <div
-        className="flex h-12 items-center justify-center border-b border-r border-gray-100 dark:border-gray-800"
+        className="flex h-12 items-center justify-center border-b border-hair"
+        data-ledger-cell="a"
         title={sideTitle(LEDGER_PRODUCTS.a.label, row.a)}
       >
-        <PresenceMark side={row.a} product="a" />
+        <PresenceMark side={row.a} />
       </div>
-      <div className="flex h-12 items-center justify-center border-b border-gray-100 px-2 text-center dark:border-gray-800">
+      <div
+        className="flex h-12 items-center justify-center border-b border-hair px-2 text-center"
+        data-ledger-cell="name"
+      >
         <NameLink row={row} />
       </div>
       <div
-        className="flex h-12 items-center justify-center border-b border-l border-gray-100 dark:border-gray-800"
+        className="flex h-12 items-center justify-center border-b border-hair"
+        data-ledger-cell="b"
         title={sideTitle(LEDGER_PRODUCTS.b.label, row.b)}
       >
-        <PresenceMark side={row.b} product="b" />
+        <PresenceMark side={row.b} />
       </div>
     </div>
   );
@@ -119,28 +119,23 @@ function LedgerRow({ row, last }) {
 
 function GroupHeader({ title }) {
   return (
-    <div className="border-b border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-gray-900/60 sm:px-4">
-      <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-        {title}
-      </span>
+    <div className="border-b border-hair bg-tint px-3 py-2 sm:px-4">
+      <span className="text-xs font-semibold uppercase tracking-wider text-faint">{title}</span>
     </div>
   );
 }
 
 function Legend() {
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-gray-500 dark:text-gray-400">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-faint">
       <span className="inline-flex items-center gap-1.5">
-        <span aria-hidden="true" className={`${LEGEND_SAMPLE} bg-gray-700 text-white dark:bg-gray-300 dark:text-gray-900`}>
+        <span aria-hidden="true" className={`${LEGEND_SAMPLE} bg-accent text-on-accent`}>
           <Check size={11} strokeWidth={3} />
         </span>
         Verified
       </span>
       <span className="inline-flex items-center gap-1.5">
-        <span
-          aria-hidden="true"
-          className={`${LEGEND_SAMPLE} border-2 border-dashed border-gray-400 text-gray-500 dark:border-gray-500 dark:text-gray-300`}
-        >
+        <span aria-hidden="true" className={`${LEGEND_SAMPLE} border-2 border-dashed border-accent text-accent`}>
           <Check size={11} strokeWidth={3} />
         </span>
         Pending verification
@@ -155,29 +150,17 @@ function Legend() {
 
 function StickyHeader() {
   return (
-    <div
-      className={`${COLS} sticky top-0 z-10 border-b-2 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800`}
-    >
-      <div className="flex flex-col items-center justify-center border-r border-gray-100 px-2 py-3 text-center dark:border-gray-800">
-        <span className="text-xs font-bold leading-tight text-blue-800 dark:text-blue-200 sm:text-sm">
-          {LEDGER_PRODUCTS.a.label}
-        </span>
-        <span className="mt-0.5 text-[10px] text-blue-600/80 dark:text-blue-300/70 sm:text-xs">
-          {LEDGER_PRODUCTS.a.descriptor}
-        </span>
+    <div className={`${COLS} sticky top-0 z-10 border-b border-edge bg-surface`}>
+      <div className="flex flex-col items-center justify-center px-2 py-3 text-center">
+        <span className="text-xs font-bold leading-tight text-ink sm:text-sm">{LEDGER_PRODUCTS.a.label}</span>
+        <span className="mt-0.5 text-[10px] text-faint sm:text-xs">{LEDGER_PRODUCTS.a.descriptor}</span>
       </div>
       <div className="flex items-center justify-center px-2 py-3">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 sm:text-xs">
-          Component
-        </span>
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-faint sm:text-xs">Component</span>
       </div>
-      <div className="flex flex-col items-center justify-center border-l border-gray-100 px-2 py-3 text-center dark:border-gray-800">
-        <span className="text-xs font-bold leading-tight text-purple-800 dark:text-purple-200 sm:text-sm">
-          {LEDGER_PRODUCTS.b.label}
-        </span>
-        <span className="mt-0.5 text-[10px] text-purple-600/80 dark:text-purple-300/70 sm:text-xs">
-          {LEDGER_PRODUCTS.b.descriptor}
-        </span>
+      <div className="flex flex-col items-center justify-center px-2 py-3 text-center">
+        <span className="text-xs font-bold leading-tight text-ink sm:text-sm">{LEDGER_PRODUCTS.b.label}</span>
+        <span className="mt-0.5 text-[10px] text-faint sm:text-xs">{LEDGER_PRODUCTS.b.descriptor}</span>
       </div>
     </div>
   );
@@ -195,11 +178,12 @@ export default function SharedSpineLedger({ comparison }) {
   return (
     <section
       aria-label="What ships in each product — side-by-side bill of materials"
-      className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800"
+      data-ledger
+      className="rounded-card border border-edge bg-surface"
     >
-      <div className="border-b border-gray-200 p-4 dark:border-gray-700 sm:p-5">
-        <h3 className="mb-1 text-base font-bold text-gray-900 dark:text-white">What ships in each product</h3>
-        <p className="mb-3 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+      <div className="border-b border-hair p-4 sm:p-5">
+        <h3 className="mb-1 font-display text-base font-bold text-ink">What ships in each product</h3>
+        <p className="mb-3 text-xs leading-relaxed text-muted">
           One component per row, both products side by side. The shaded band is the core they share;
           below it, only the platform keeps going.
         </p>
