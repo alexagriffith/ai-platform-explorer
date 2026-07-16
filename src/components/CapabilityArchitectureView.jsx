@@ -127,7 +127,7 @@ function CapabilityCard({
   return (
     <div
       className={`${status.completeCard} ${interactive.transitionAll} ${
-        hasDeepDive ? card.selectedClickable : ''
+        hasDeepDive ? `${card.selectedClickable} ${interactive.focusRing}` : ''
       }`}
       role={hasDeepDive ? 'button' : undefined}
       tabIndex={hasDeepDive ? 0 : undefined}
@@ -477,7 +477,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
   return (
     <div className="space-y-6">
       {/* Header — one surface */}
-      <div className="rounded-card border border-edge bg-surface p-4">
+      <div className="rounded-card bg-surface p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-4">
           <div className="flex-1 min-w-0">
             <p className={`text-[10px] font-semibold uppercase tracking-wide ${text.faint} mb-1`}>
@@ -593,7 +593,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
             return (
               <div key={layer.id} className="relative">
                 {/* Layer Container — one surface, no per-layer hue */}
-                <div className="rounded-card border border-edge bg-surface">
+                <div className="rounded-card bg-surface">
                   {/* Layer Header (collapsible) */}
                   <button
                     type="button"

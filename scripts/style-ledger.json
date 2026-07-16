@@ -1,13 +1,25 @@
 {
   "migrated": [
+    "src/components/ArchitectureHub.jsx",
+    "src/components/CapabilityArchitectureView.jsx",
+    "src/components/InteractiveBuilder.jsx",
+    "src/components/CustomerConfig.jsx",
+    "src/components/CapabilityConfigurationModal.jsx",
+    "src/components/DeepDiveModal.jsx",
+    "src/components/AcronymGlossary.jsx",
+    "src/lib/styleTokens.js",
     "src/components/ProductComparisonView.jsx",
     "src/components/SharedSpineLedger.jsx"
   ],
   "migratedTabs": [
     {
+      "id": "architecture",
+      "navLabel": "Architecture"
+    },
+    {
       "id": "product-comparison",
       "navLabel": "Product Comparison"
     }
   ],
-  "legacyViolatingFilesMax": 23
+  "legacyViolatingFilesMax": 16
 }

@@ -44,6 +44,11 @@ export const button = {
     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-card border border-edge text-ink text-sm font-medium hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page transition-colors duration-150 ease-out motion-reduce:transition-none',
 };
 
+export const field = {
+  input:
+    'w-full rounded-card border border-edge bg-page px-4 py-2 text-sm text-ink placeholder:text-faint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page transition-colors duration-150 ease-out motion-reduce:transition-none',
+};
+
 /** Segmented control / detail-level chips. */
 export const toggle = {
   active: 'bg-accent text-on-accent',
@@ -73,4 +78,20 @@ export const card = {
     'rounded-card border border-edge bg-surface transition-all duration-150 ease-out motion-reduce:transition-none',
   selectedClickable:
     'cursor-pointer hover:-translate-y-0.5 motion-reduce:hover:translate-y-0',
+};
+
+export const badge = {
+  neutral: 'rounded-card border border-hair bg-page px-2 py-0.5 text-xs text-muted',
+  customer: 'rounded-card px-2 py-0.5 text-xs bg-tint border border-edge text-ink',
+  positive: 'rounded-card px-2 py-0.5 text-xs bg-green-600 text-white',
+};
+
+export const modal = {
+  overlay: 'fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4',
+  panel: 'w-full max-h-[90vh] overflow-y-auto rounded-panel border border-edge bg-surface',
+  panelWide: 'max-w-4xl',
+  panelMedium: 'max-w-2xl',
+  header: 'sticky top-0 z-10 border-b border-hair bg-surface px-5 py-4',
+  body: 'space-y-5 p-5',
+  section: 'space-y-3 border-t border-hair pt-5 first:border-t-0 first:pt-0',
 };

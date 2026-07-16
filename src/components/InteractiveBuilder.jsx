@@ -28,16 +28,14 @@ function fillLayerDefaults(layer) {
 
 // Build from infrastructure up (reverse of display order). Static — safe at module scope.
 const buildOrder = [...capabilityLayers].reverse();
+const layerAccentClass = 'bg-accent';
+const layerStripeClass = 'bg-tint';
 
 /** Only the first wizard layer — avoids locking Platform & Runtime from a not-yet-chosen AI / ML platform. */
 function buildInitialBuiltLayers(buildOrder) {
   if (!buildOrder.length) return {};
   const first = buildOrder[0];
   return { [first.id]: fillLayerDefaults(first) };
-}
-
-function getLayerColor(layerId) {
-  return capabilityLayers.find(l => l.id === layerId)?.color || '#8B5CF6';
 }
 
 function truncateBuiltLayersAfter(prev, lastIndexInclusive, buildOrder) {
@@ -52,22 +50,12 @@ function truncateBuiltLayersAfter(prev, lastIndexInclusive, buildOrder) {
 function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
   const layerCaps = capabilities[layer.id] || [];
   const selectedCount = Object.keys(selectedCaps).length;
-  const layerColor = getLayerColor(layer.id);
 
   return (
-    <div
-      className={`rounded-card border border-edge bg-surface ${interactive.transitionAll}`}
-      style={{ borderColor: layerColor }}
-    >
-      <div
-        className="px-4 py-3 flex items-center justify-between rounded-t-card border-b border-hair"
-        style={{
-          background: `linear-gradient(135deg, ${layerColor}15, ${layerColor}05)`,
-          borderBottom: `2px solid ${layerColor}30`
-        }}
-      >
+    <div className={`rounded-card bg-surface ${interactive.transitionAll}`}>
+      <div className={`px-4 py-3 flex items-center justify-between rounded-t-card border-b border-hair ${layerStripeClass}`}>
         <div className="flex items-center gap-2">
-          <div className="w-1 h-6 rounded-full" style={{ backgroundColor: layerColor }} />
+          <div className={`w-1 h-6 rounded-full ${layerAccentClass}`} />
           <div>
             <h4 className={`font-bold text-sm ${text.ink}`}>{layer.name}</h4>
             <p className={`text-xs ${text.muted}`}>
@@ -435,7 +423,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
         </div>
 
         {/* Complete Stack View */}
-        <div className="bg-tint rounded-card p-6 border border-edge">
+        <div className="bg-tint rounded-card p-6">
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <div>
               <h3 className={`text-xl font-bold ${text.ink}`}>Your Complete Stack</h3>
@@ -503,14 +491,13 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
     );
   }
 
-  const layerColor = getLayerColor(currentLayer?.id);
   const layerCaps = capabilities[currentLayer?.id] || [];
   const progress = ((currentLayerIndex + 1) / buildOrder.length) * 100;
 
   return (
     <div className="space-y-6">
       {/* Progress Header */}
-      <div className="bg-surface rounded-card p-4 border border-edge">
+      <div className="bg-surface rounded-card p-4">
         <div className="flex items-center justify-between mb-3">
           <div>
             <h2 className={`text-xl font-bold ${text.ink}`}>
@@ -563,15 +550,9 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Main Configuration Area */}
         <div className="lg:col-span-2 space-y-4">
-          <div
-            className="bg-surface rounded-card p-6 border"
-            style={{ borderColor: layerColor }}
-          >
+          <div className="bg-surface rounded-card p-6">
             <div className="flex items-center gap-3 mb-6">
-              <div
-                className="w-2 h-12 rounded-full"
-                style={{ backgroundColor: layerColor }}
-              />
+              <div className={`w-2 h-12 rounded-full ${layerAccentClass}`} />
               <div>
                 <h3 className={`text-2xl font-bold ${text.ink}`}>
                   {currentLayer?.name}
@@ -635,7 +616,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
 
         {/* Stack Preview Sidebar */}
         <div className="space-y-4">
-          <div className="bg-surface rounded-card p-4 border border-edge sticky top-4">
+          <div className="bg-surface rounded-card p-4 sticky top-4">
             <div className="flex items-center gap-2 mb-4">
               <Package size={18} className="text-accent" />
               <h4 className={`font-bold ${text.ink}`}>Stack Preview</h4>
@@ -645,8 +626,6 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
               {buildOrder.map((layer, index) => {
                 const isCurrentLayer = index === currentLayerIndex;
                 const isCompleted = index < currentLayerIndex;
-                const layerColor = getLayerColor(layer.id);
-
                 return (
                   <div key={layer.id}>
                     <div
@@ -656,8 +635,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
                           : isCompleted
                           ? 'border-edge bg-surface'
                           : 'border-edge bg-page'
-                      }`}
-                      style={{ borderLeft: `3px solid ${layerColor}` }}
+                      } border-l-4 border-l-accent`}
                     >
                       <div className="flex items-center gap-2 mb-1">
                         {isCompleted ? (

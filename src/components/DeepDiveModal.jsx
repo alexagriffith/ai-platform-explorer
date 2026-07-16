@@ -1,18 +1,19 @@
 import { useEffect } from 'react';
 import { X, ExternalLink, BookOpen, ListChecks, Layers, GitBranch } from 'lucide-react';
 import { solutionDetails } from '../data/solutionDetails';
+import { interactive, modal, text } from '../lib/styleTokens';
 
 const DEFAULT_REQUIREMENTS =
   'Confirm supported versions, cluster capacity, and network policy with official documentation and your platform team.';
 
 function Section({ title, icon: Icon, children }) {
   return (
-    <section className="border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
-      <div className="px-4 py-2 bg-gray-100 dark:bg-gray-700/80 flex items-center gap-2">
-        {Icon && <Icon size={18} className="text-purple-600 flex-shrink-0" />}
-        <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">{title}</h3>
+    <section className={modal.section}>
+      <div className="flex items-center gap-2">
+        {Icon && <Icon size={18} className="text-accent flex-shrink-0" />}
+        <h3 className={`text-sm font-bold uppercase tracking-wide ${text.ink}`}>{title}</h3>
       </div>
-      <div className="p-4 text-sm text-gray-700 dark:text-gray-300 space-y-2">{children}</div>
+      <div className={`space-y-3 text-sm ${text.muted}`}>{children}</div>
     </section>
   );
 }
@@ -39,27 +40,34 @@ export default function DeepDiveModal({ optionId, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
+      className={modal.overlay}
       onClick={onClose}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-label={details.name}
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+        className={`${modal.panel} ${modal.panelWide}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-pink-600 text-white p-5 rounded-t-lg flex items-start justify-between gap-3 z-10">
-          <div>
-            <h2 className="text-2xl font-bold leading-tight">{details.name}</h2>
-            <p className="text-purple-100 text-sm mt-1 line-clamp-3">{details.description}</p>
+        <div className={modal.header}>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h2 className={`text-2xl font-bold leading-tight ${text.ink}`}>{details.name}</h2>
+              <p className={`mt-1 text-sm ${text.muted} line-clamp-3`}>{details.description}</p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className={`flex-shrink-0 rounded-card p-2 ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
+              aria-label="Close"
+            >
+              <X size={22} />
+            </button>
           </div>
-          <button type="button" onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg flex-shrink-0" aria-label="Close">
-            <X size={22} />
-          </button>
         </div>
 
-        <div className="p-5 space-y-4">
+        <div className={modal.body}>
           <Section title="What it provides" icon={BookOpen}>
             <p>{details.description}</p>
             {caps.length > 0 && (
@@ -89,21 +97,18 @@ export default function DeepDiveModal({ optionId, onClose }) {
 
           {showArchitectureDiagram && (
             <Section title="Architecture overview" icon={GitBranch}>
-              <div className="p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg border-2 border-purple-200 dark:border-purple-700 space-y-6">
+              <div className="space-y-5 rounded-card bg-tint p-4 sm:p-5">
                 <div>
-                  <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wide">
+                  <div className={`mb-3 text-xs font-bold uppercase tracking-wide ${text.faint}`}>
                     Core components
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {components.map((component, idx) => (
-                      <div
-                        key={idx}
-                        className="p-3 bg-white dark:bg-gray-800 rounded-lg border-2 border-purple-400 dark:border-purple-500 shadow-sm hover:shadow-md transition-shadow"
-                      >
-                        <div className="font-bold text-sm text-gray-900 dark:text-white mb-1 leading-snug">
+                      <div key={idx} className="rounded-card bg-surface p-3">
+                        <div className={`mb-1 text-sm font-bold leading-snug ${text.ink}`}>
                           {component.name}
                         </div>
-                        <div className="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded inline-block">
+                        <div className="inline-block rounded-card bg-page px-2 py-1 text-xs text-muted">
                           {component.role}
                         </div>
                       </div>
@@ -112,20 +117,17 @@ export default function DeepDiveModal({ optionId, onClose }) {
                 </div>
 
                 {integrations.length > 0 && (
-                  <div className="border-t-2 border-purple-300 dark:border-purple-600 pt-4">
-                    <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wide">
+                  <div className="border-t border-hair pt-4">
+                    <div className={`mb-3 text-xs font-bold uppercase tracking-wide ${text.faint}`}>
                       External integrations
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {integrations.map((integration, idx) => (
-                        <div
-                          key={idx}
-                          className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-300 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
-                        >
-                          <div className="font-semibold text-sm text-gray-900 dark:text-white mb-1">
+                        <div key={idx} className="rounded-card bg-page p-3">
+                          <div className={`mb-1 text-sm font-semibold ${text.ink}`}>
                             {integration.name}
                           </div>
-                          <div className="text-xs text-gray-600 dark:text-gray-400 leading-snug">{integration.purpose}</div>
+                          <div className={`text-xs leading-snug ${text.muted}`}>{integration.purpose}</div>
                         </div>
                       ))}
                     </div>
@@ -139,18 +141,15 @@ export default function DeepDiveModal({ optionId, onClose }) {
             <Section title="Component details" icon={Layers}>
               <div className="grid md:grid-cols-2 gap-3">
                 {components.map((component, idx) => (
-                  <div
-                    key={idx}
-                    className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-gray-200 dark:border-gray-600"
-                  >
+                  <div key={idx} className="rounded-card bg-tint p-4">
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h4 className="font-bold text-gray-900 dark:text-white text-sm leading-snug">{component.name}</h4>
-                      <span className="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded flex-shrink-0">
+                      <h4 className={`text-sm font-bold leading-snug ${text.ink}`}>{component.name}</h4>
+                      <span className="flex-shrink-0 rounded-card bg-page px-2 py-1 text-xs text-muted">
                         {component.role}
                       </span>
                     </div>
                     {component.description ? (
-                      <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{component.description}</p>
+                      <p className={`text-xs sm:text-sm leading-relaxed ${text.muted}`}>{component.description}</p>
                     ) : null}
                   </div>
                 ))}
@@ -160,14 +159,14 @@ export default function DeepDiveModal({ optionId, onClose }) {
 
           {!showArchitectureDiagram && integrations.length > 0 && (
             <Section title="Integrations" icon={Layers}>
-              <ul className="space-y-2">
+              <ul className="divide-y divide-hair">
                 {integrations.map((int, i) => (
                   <li
                     key={i}
-                    className="flex flex-col sm:flex-row sm:justify-between gap-1 border-b border-gray-100 dark:border-gray-700 pb-2 last:border-0"
+                    className="flex flex-col gap-1 py-2 first:pt-0 last:pb-0 sm:flex-row sm:justify-between"
                   >
-                    <span className="font-medium text-gray-900 dark:text-white">{int.name}</span>
-                    <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-right sm:max-w-[55%]">{int.purpose}</span>
+                    <span className={`font-medium ${text.ink}`}>{int.name}</span>
+                    <span className={`text-xs sm:max-w-[55%] sm:text-right ${text.muted}`}>{int.purpose}</span>
                   </li>
                 ))}
               </ul>
@@ -181,7 +180,7 @@ export default function DeepDiveModal({ optionId, onClose }) {
                   href={details.documentation}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                  className={`inline-flex items-center gap-2 font-medium ${text.link} hover:underline ${interactive.focusRing} rounded-card`}
                 >
                   <ExternalLink size={16} />
                   Official documentation
@@ -189,7 +188,7 @@ export default function DeepDiveModal({ optionId, onClose }) {
               )}
               {details.contacts?.length > 0 && (
                 <p>
-                  <span className="font-semibold text-gray-900 dark:text-white">Contacts: </span>
+                  <span className={`font-semibold ${text.ink}`}>Contacts: </span>
                   {details.contacts.join(', ')}
                 </p>
               )}

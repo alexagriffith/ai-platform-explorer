@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BookOpen, Search, X } from 'lucide-react';
+import { field, interactive, modal, text } from '../lib/styleTokens';
 
 export default function AcronymGlossary() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -132,7 +133,7 @@ export default function AcronymGlossary() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 bg-accent text-on-accent px-4 py-3 rounded-full shadow-lg hover:bg-accent-strong transition-all flex items-center gap-2 z-50"
+        className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-card bg-accent px-4 py-3 text-on-accent ${interactive.transitionAll} ${interactive.focusRing} ${interactive.microElevate} hover:bg-accent-strong`}
       >
         <BookOpen size={20} />
         <span className="font-medium">Acronym Guide</span>
@@ -141,37 +142,37 @@ export default function AcronymGlossary() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div className={modal.overlay}>
+      <div className={`${modal.panel} ${modal.panelWide} overflow-hidden flex flex-col`}>
         {/* Header */}
-        <div className="bg-accent p-6 text-on-accent">
+        <div className={modal.header}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <BookOpen size={28} />
-              <h2 className="text-2xl font-bold">Acronym Glossary</h2>
+              <BookOpen size={28} className="text-accent" />
+              <h2 className={`text-2xl font-bold ${text.ink}`}>Acronym Glossary</h2>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+              className={`rounded-card p-2 ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
             >
               <X size={24} />
             </button>
           </div>
-          <p className="text-on-accent/90">
+          <p className={text.muted}>
             Plain English explanations of Red Hat AI terminology
           </p>
         </div>
 
         {/* Search */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="border-b border-hair p-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${text.faint}`} size={20} />
             <input
               type="text"
               placeholder="Search acronyms..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent"
+              className={`${field.input} pl-10`}
             />
           </div>
         </div>
@@ -179,27 +180,27 @@ export default function AcronymGlossary() {
         {/* Glossary Table */}
         <div className="overflow-y-auto flex-1">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-900 sticky top-0">
+            <thead className="sticky top-0 bg-tint">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                <th className={`px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider ${text.muted}`}>
                   Acronym
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                <th className={`px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider ${text.muted}`}>
                   Full Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                <th className={`px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider ${text.muted}`}>
                   What It Means
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                <th className={`px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider ${text.muted}`}>
                   When to Use
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="divide-y divide-hair">
               {filteredGlossary.map((item, index) => (
                 <tr
                   key={index}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                  className={`hover:bg-tint ${interactive.transition}`}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-sm font-bold text-link">
@@ -207,17 +208,17 @@ export default function AcronymGlossary() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    <span className={`text-sm font-medium ${text.ink}`}>
                       {item.fullName}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                    <span className={`text-sm ${text.muted}`}>
                       {item.explanation}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className={`text-sm ${text.muted}`}>
                       {item.whenToUse}
                     </span>
                   </td>
@@ -227,14 +228,14 @@ export default function AcronymGlossary() {
           </table>
 
           {filteredGlossary.length === 0 && (
-            <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            <div className={`py-12 text-center ${text.faint}`}>
               No matches found for "{searchTerm}"
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-center text-sm text-gray-600 dark:text-gray-400">
+        <div className={`border-t border-hair bg-tint p-4 text-center text-sm ${text.muted}`}>
           {filteredGlossary.length} {filteredGlossary.length === 1 ? 'term' : 'terms'} displayed
         </div>
       </div>

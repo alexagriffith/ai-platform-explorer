@@ -50,8 +50,8 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
   return (
     <div data-tab="architecture" className="space-y-6">
       {/* Header — one surface, hairline separators, no nested boxes */}
-      <div className="rounded-card border border-edge bg-surface p-6">
-        <div className="flex items-start justify-between gap-4 mb-4">
+      <div className="rounded-card bg-surface p-6">
+        <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex items-start gap-3">
             <Layers className="text-accent mt-1" size={28} />
             <div>
@@ -65,9 +65,9 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
           </div>
 
           {/* Help — inline row, not a nested bordered box */}
-          <div className="inline-flex items-center gap-2 flex-shrink-0">
+          <div className="flex flex-wrap items-center gap-2 lg:flex-shrink-0">
             <HelpCircle size={16} className={`${text.faint} flex-shrink-0`} />
-            <span className={`text-sm ${text.muted} whitespace-nowrap`}>
+            <span className={`text-sm ${text.muted}`}>
               Not sure what to choose?
             </span>
             <button
@@ -82,7 +82,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
 
         {/* Mode Selector - Dropdown with inline description */}
         <div className="mb-0 border-t border-hair pt-4">
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center mb-2">
             <label htmlFor="architecture-mode" className={`text-sm font-semibold ${text.muted} whitespace-nowrap`}>
               Build Mode:
             </label>
@@ -99,7 +99,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
               ))}
             </select>
           </div>
-          <p className={`text-xs ${text.faint} ml-24`}>
+          <p className={`text-xs ${text.faint} sm:pl-[6.5rem]`}>
             {currentMode.description}
           </p>
         </div>
