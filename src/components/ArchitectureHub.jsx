@@ -3,6 +3,7 @@ import { Layers, Hammer, Settings, HelpCircle, ArrowRight } from 'lucide-react';
 import CapabilityArchitectureView from './CapabilityArchitectureView';
 import InteractiveBuilder from './InteractiveBuilder';
 import CustomerConfig from './CustomerConfig';
+import { button, interactive, text } from '../lib/styleTokens';
 
 export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities }) {
   const [mode, setMode] = useState('build'); // 'build', 'interactive', 'generate'
@@ -47,49 +48,49 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
   const currentMode = modes.find(m => m.id === mode);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+    <div data-tab="architecture" className="space-y-6">
+      {/* Header — one surface, hairline separators, no nested boxes */}
+      <div className="rounded-card border border-edge bg-surface p-6">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex items-start gap-3">
-            <Layers className="text-purple-600 mt-1" size={28} />
+            <Layers className="text-accent mt-1" size={28} />
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              <h2 className={`font-display text-2xl font-bold ${text.ink} mb-2`}>
                 Architecture Builder
               </h2>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className={text.muted}>
                 Choose how you want to build your Red Hat AI stack
               </p>
             </div>
           </div>
 
-          {/* Help Link */}
-          <div className="inline-flex items-center gap-2 p-2.5 bg-gradient-to-r from-purple-50 via-blue-50 to-purple-50 dark:from-purple-900/20 dark:via-blue-900/20 dark:to-purple-900/20 border border-purple-200 dark:border-purple-700 rounded-lg flex-shrink-0">
-            <HelpCircle size={16} className="text-purple-600 dark:text-purple-400 flex-shrink-0" />
-            <span className="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
+          {/* Help — inline row, not a nested bordered box */}
+          <div className="inline-flex items-center gap-2 flex-shrink-0">
+            <HelpCircle size={16} className={`${text.faint} flex-shrink-0`} />
+            <span className={`text-sm ${text.muted} whitespace-nowrap`}>
               Not sure what to choose?
             </span>
             <button
               onClick={onSwitchToDecisions}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg text-sm font-medium hover:shadow-lg hover:scale-105 transition-all group"
+              className={`${button.primary} group`}
             >
               <span>Decision Guides</span>
-              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-150 ease-out motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
             </button>
           </div>
         </div>
 
         {/* Mode Selector - Dropdown with inline description */}
-        <div className="mb-0">
+        <div className="mb-0 border-t border-hair pt-4">
           <div className="flex items-center gap-3 mb-2">
-            <label htmlFor="architecture-mode" className="text-sm font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap">
+            <label htmlFor="architecture-mode" className={`text-sm font-semibold ${text.muted} whitespace-nowrap`}>
               Build Mode:
             </label>
             <select
               id="architecture-mode"
               value={mode}
               onChange={(e) => setMode(e.target.value)}
-              className="flex-1 px-4 py-2 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white font-medium hover:border-purple-400 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-600/20 transition-colors"
+              className={`flex-1 px-4 py-2 bg-surface border border-edge rounded-card ${text.ink} font-medium hover:border-accent ${interactive.focusRing} ${interactive.transition}`}
             >
               {modes.map((modeOption) => (
                 <option key={modeOption.id} value={modeOption.id}>
@@ -98,7 +99,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
               ))}
             </select>
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 ml-24">
+          <p className={`text-xs ${text.faint} ml-24`}>
             {currentMode.description}
           </p>
         </div>

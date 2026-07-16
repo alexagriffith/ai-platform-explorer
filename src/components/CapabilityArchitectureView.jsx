@@ -25,6 +25,15 @@ import {
   isCapabilityOptionDisabled
 } from '../lib/platformAiConstraints';
 import CapabilityConfigurationModal from './CapabilityConfigurationModal';
+import {
+  button,
+  card,
+  interactive,
+  providerMark,
+  status,
+  text,
+  toggle,
+} from '../lib/styleTokens';
 
 function getCapabilitiesByLayer(layerId) {
   return capabilities[layerId] || [];
@@ -41,22 +50,22 @@ function CollapsibleDividerHeader({ title, isOpen, onToggle }) {
       type="button"
       onClick={onToggle}
       aria-expanded={isOpen}
-      className="flex w-full items-center gap-2 px-2 py-1.5 rounded-md text-left hover:bg-gray-100 dark:hover:bg-gray-700/40 transition-colors"
+      className={`flex w-full items-center gap-2 px-2 py-1.5 rounded-card text-left ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
     >
-      <span className="text-gray-500 dark:text-gray-400 shrink-0 flex items-center" aria-hidden>
+      <span className={`${text.faint} shrink-0 flex items-center`} aria-hidden>
         {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
       </span>
-      <span className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide shrink-0">
+      <span className={`text-xs font-bold ${text.muted} uppercase tracking-wide shrink-0`}>
         {title}
       </span>
-      <span className="flex-1 h-px bg-gradient-to-r from-gray-300 to-transparent dark:from-gray-600 min-w-[1rem]" />
+      <span className="flex-1 h-px bg-hair min-w-[1rem]" />
     </button>
   );
 }
 
 function CapabilityCard({
   capability,
-  layerColor,
+  // layerColor retained on callers for props-flow stability; hue theming removed (DESIGN-LAW).
   compact = false,
   selectedCapabilities,
   detailLevel,
@@ -79,32 +88,29 @@ function CapabilityCard({
     return (
       <button
         onClick={() => onConfigure(capability)}
-        className={`rounded-lg border-2 border-dashed hover:border-solid transition-all hover:shadow-md group text-left ${
-          compact ? 'p-2' : 'p-4'
-        } bg-gray-50/50 dark:bg-gray-900/30`}
-        style={{ borderColor: layerColor + '55' }}
+        className={`${card.unselected} group ${compact ? 'p-2' : 'p-4'}`}
       >
         <div className="flex items-start gap-2">
-          <Plus size={compact ? 12 : 16} className="mt-0.5 opacity-50 group-hover:opacity-100 flex-shrink-0" style={{ color: layerColor }} />
+          <Plus size={compact ? 12 : 16} className={`mt-0.5 opacity-50 group-hover:opacity-100 flex-shrink-0 ${text.faint} group-hover:text-accent`} />
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">
+            <p className={`text-[10px] font-bold uppercase tracking-wide ${text.faint} mb-1`}>
               Not selected
             </p>
-            <h4 className={`font-bold text-gray-900 dark:text-white truncate ${compact ? 'text-xs' : 'text-sm'}`}>
+            <h4 className={`font-bold ${text.ink} truncate ${compact ? 'text-xs' : 'text-sm'}`}>
               {capability.name}
               {capability.required && (
-                <span className="ml-1 text-xs px-1 py-0.5 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded">
+                <span className={`ml-1 text-xs px-1 py-0.5 ${status.requiredBadge} rounded-card`}>
                   Req
                 </span>
               )}
             </h4>
             {!compact && detailLevel === 2 && (
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
+              <p className={`text-xs ${text.muted} mt-1 line-clamp-2`}>
                 {capability.description}
               </p>
             )}
             {detailLevel === 2 && (
-              <div className="mt-1 text-xs text-gray-500 dark:text-gray-500">
+              <div className={`mt-1 text-xs ${text.faint}`}>
                 {availableCount === capability.options.length
                   ? `${capability.options.length} option${capability.options.length !== 1 ? 's' : ''}`
                   : `${availableCount} of ${capability.options.length} options match current pairing`}
@@ -118,22 +124,11 @@ function CapabilityCard({
 
   const hasDeepDive = selectedOption?.provider === 'Red Hat' && solutionDetails[selectedOptionId];
 
-  const selectedBannerClass = selectedOption?.isCustomer
-    ? 'bg-blue-600 text-white border-b border-blue-700/80'
-    : selectedOption?.provider === 'Red Hat'
-      ? 'bg-emerald-600 text-white border-b border-emerald-800/80'
-      : 'bg-purple-600 text-white border-b border-purple-800/80';
-
   return (
     <div
-      className={`rounded-lg border-[3px] shadow-lg transition-all ring-2 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-900 ${
-        selectedOption?.isCustomer
-          ? 'bg-blue-50 border-blue-400 ring-blue-400/60 dark:bg-blue-950/40 dark:border-blue-500 dark:ring-blue-500/50'
-          : selectedOption?.provider === 'Red Hat'
-            ? 'bg-green-50 border-emerald-500 ring-emerald-500/50 dark:bg-emerald-950/35 dark:border-emerald-400 dark:ring-emerald-400/45'
-            : 'bg-purple-50 border-purple-400 ring-purple-400/55 dark:bg-purple-950/40 dark:border-purple-400 dark:ring-purple-400/45'
-      } ${hasDeepDive ? 'cursor-pointer hover:shadow-xl' : ''}`}
-      style={{ borderLeftWidth: '6px', borderLeftColor: layerColor }}
+      className={`${status.completeCard} ${interactive.transitionAll} ${
+        hasDeepDive ? card.selectedClickable : ''
+      }`}
       role={hasDeepDive ? 'button' : undefined}
       tabIndex={hasDeepDive ? 0 : undefined}
       onClick={() => hasDeepDive && onDeepDive(selectedOptionId)}
@@ -146,7 +141,7 @@ function CapabilityCard({
       }}
       aria-label={`Selected: ${capability.name} — ${selectedOption?.name || ''}`}
     >
-      <div className={`flex items-center gap-2 rounded-t-md ${compact ? 'px-2 py-1.5' : 'px-3 py-2'} ${selectedBannerClass}`}>
+      <div className={`flex items-center gap-2 rounded-t-card ${compact ? 'px-2 py-1.5' : 'px-3 py-2'} ${status.completeBanner}`}>
         <CheckCircle2 size={compact ? 14 : 18} className="shrink-0 opacity-95" aria-hidden />
         <div className="min-w-0 flex-1">
           <div className={`font-bold uppercase tracking-wide opacity-95 ${compact ? 'text-[9px]' : 'text-[10px]'}`}>
@@ -167,7 +162,7 @@ function CapabilityCard({
                   e.stopPropagation();
                   onToggleExpanded(selectedOptionId);
                 }}
-                className="p-0.5 rounded hover:bg-black/10 dark:hover:bg-white/10 flex-shrink-0 mt-0.5"
+                className={`p-0.5 rounded-card ${interactive.hoverTint} flex-shrink-0 mt-0.5 ${interactive.transition} ${interactive.focusRing}`}
                 title={isExpanded ? 'Collapse components' : 'Expand components'}
                 aria-expanded={isExpanded}
               >
@@ -184,22 +179,22 @@ function CapabilityCard({
                 e.stopPropagation();
                 onConfigure(capability);
               }}
-              className="flex-1 min-w-0 text-left cursor-pointer hover:opacity-80"
+              className={`flex-1 min-w-0 text-left cursor-pointer hover:opacity-80 ${interactive.transition} ${interactive.focusRing}`}
               title="Change option"
             >
               <div className="flex items-center gap-1 mb-1">
-                <h4 className={`font-bold text-gray-900 dark:text-white truncate ${compact ? 'text-xs' : 'text-sm'}`}>
+                <h4 className={`font-bold ${text.ink} truncate ${compact ? 'text-xs' : 'text-sm'}`}>
                   {capability.name}
                 </h4>
                 {selectedOption?.isCustomer && (
-                  <Building2 size={compact ? 10 : 14} className="text-blue-600 flex-shrink-0" title="Customer-provided" />
+                  <Building2 size={compact ? 10 : 14} className={`${text.muted} flex-shrink-0`} title="Customer-provided" />
                 )}
               </div>
-              <div className={`font-semibold text-gray-700 dark:text-gray-300 truncate ${compact ? 'text-xs' : 'text-xs'}`}>
+              <div className={`font-semibold ${text.muted} truncate ${compact ? 'text-xs' : 'text-xs'}`}>
                 {detailLevel === 2 ? `${selectedOption?.provider}: ${selectedOption?.name}` : selectedOption?.name}
               </div>
               {detailLevel === 2 && selectedOption?.status && (
-                <div className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+                <div className={`text-xs ${text.faint} mt-0.5`}>
                   {selectedOption.status}
                 </div>
               )}
@@ -209,7 +204,7 @@ function CapabilityCard({
             <button
               type="button"
               onClick={() => onConfigure(capability)}
-              className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+              className={`p-1 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
               title={capability.required ? 'Change (required)' : 'Change'}
               aria-label="Change"
             >
@@ -219,7 +214,7 @@ function CapabilityCard({
               <button
                 type="button"
                 onClick={() => onRemove(capability.id)}
-                className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+                className={`p-1 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
                 title="Remove"
                 aria-label="Remove"
               >
@@ -229,39 +224,36 @@ function CapabilityCard({
           </div>
         </div>
         {!compact && detailLevel === 2 && (
-          <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
+          <p className={`text-xs ${text.muted} line-clamp-1`}>
             {selectedOption?.description}
           </p>
         )}
       </div>
 
-      {/* Sub-components (expanded) */}
+      {/* Sub-components (expanded) — hairline list, no nested bordered boxes */}
       {isExpanded && hasSubComponents && (
-        <div className="border-t border-gray-300 dark:border-gray-600 px-3 py-2 bg-white/50 dark:bg-gray-900/50">
-          <div className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">Components</div>
-          <div className="space-y-1">
+        <div className="border-t border-hair px-3 py-2 bg-tint">
+          <div className={`text-xs font-semibold ${text.muted} mb-2`}>Components</div>
+          <div className="divide-y divide-hair">
             {subComponents[selectedOptionId].components.map((comp) => (
-              <div
-                key={comp.id}
-                className="p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700"
-              >
+              <div key={comp.id} className="py-2 first:pt-0 last:pb-0">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-xs text-gray-900 dark:text-white">
+                    <div className={`font-semibold text-xs ${text.ink}`}>
                       {comp.name}
                     </div>
-                    <div className="text-xs text-purple-600 dark:text-purple-400">
+                    <div className={`text-xs ${text.link}`}>
                       {comp.role}
                     </div>
                   </div>
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                <div className={`text-xs ${text.muted} mt-1`}>
                   {comp.description}
                 </div>
                 {comp.stages && (
                   <div className="flex gap-1 mt-1 flex-wrap">
                     {comp.stages.map((stage, idx) => (
-                      <span key={idx} className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded">
+                      <span key={idx} className={`text-xs px-2 py-0.5 bg-surface border border-hair ${text.muted} rounded-card`}>
                         {stage}
                       </span>
                     ))}
@@ -304,7 +296,7 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
           )}
           {hasWrapper && servicesSubOpen.orchestration && (
             <div className="flex justify-center">
-              <ArrowDown size={16} className="text-gray-400" />
+              <ArrowDown size={16} className={text.faint} />
             </div>
           )}
         </div>
@@ -326,7 +318,7 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
           )}
           {hasCore && servicesSubOpen.wrapper && (
             <div className="flex justify-center">
-              <ArrowDown size={16} className="text-gray-400" />
+              <ArrowDown size={16} className={text.faint} />
             </div>
           )}
         </div>
@@ -484,20 +476,20 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+      {/* Header — one surface */}
+      <div className="rounded-card border border-edge bg-surface p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-4">
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">
+            <p className={`text-[10px] font-semibold uppercase tracking-wide ${text.faint} mb-1`}>
               Architecture exploration
             </p>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Build Your AI Stack</h2>
+            <h2 className={`font-display text-xl font-bold ${text.ink}`}>Build Your AI Stack</h2>
           </div>
           <div className="flex flex-wrap gap-2 shrink-0">
             <button
               type="button"
               onClick={loadBasicInferenceStack}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-md text-sm font-medium shadow-sm hover:shadow-md transition-all"
+              className={button.primary}
               title="Load starter stack"
             >
               <Sparkles size={14} />
@@ -507,7 +499,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
               type="button"
               onClick={handleDownloadStackPng}
               disabled={stackImageBusy}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white rounded-md text-sm font-medium shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:pointer-events-none"
+              className={button.secondary}
               title="Export as PNG"
             >
               <Image size={14} />
@@ -517,7 +509,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
               <button
                 type="button"
                 onClick={clearEntireStack}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 shadow-sm transition-all"
+                className={button.secondary}
                 title="Clear all"
               >
                 <RotateCcw size={14} />
@@ -528,7 +520,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
               <button
                 type="button"
                 onClick={() => setShowFlowViz(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-md text-sm font-medium shadow-sm hover:shadow-md transition-all"
+                className={button.secondary}
               >
                 <Workflow size={14} />
                 Architecture flow
@@ -537,12 +529,12 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
           </div>
         </div>
         {exportMessage && (
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{exportMessage}</p>
+          <p className={`text-xs ${text.muted} mb-3`}>{exportMessage}</p>
         )}
-        <div className="pt-3 mt-1 border-t border-gray-100 dark:border-gray-700">
+        <div className="pt-3 mt-1 border-t border-hair">
           <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Detail Level:</span>
+              <span className={`text-xs font-medium ${text.muted}`}>Detail Level:</span>
               <div className="flex gap-1">
                 {[
                   { level: 1, label: 'Basic' },
@@ -551,10 +543,8 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                   <button
                     key={level}
                     onClick={() => setDetailLevel(level)}
-                    className={`px-3 py-1 rounded text-xs font-medium transition-all ${
-                      detailLevel === level
-                        ? 'bg-purple-600 text-white shadow-md'
-                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    className={`px-3 py-1 rounded-card text-xs font-medium ${interactive.transition} ${interactive.focusRing} ${
+                      detailLevel === level ? toggle.active : toggle.inactive
                     }`}
                   >
                     {label}
@@ -565,11 +555,11 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
 
             {/* View Order Toggle */}
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-700 dark:text-gray-300">View:</span>
+              <span className={`text-xs font-medium ${text.muted}`}>View:</span>
               <button
                 type="button"
                 onClick={() => setViewOrder(viewOrder === 'bottom-up' ? 'top-down' : 'bottom-up')}
-                className="flex items-center gap-2 px-3 py-1 rounded text-xs font-medium bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+                className={`flex items-center gap-2 px-3 py-1 rounded-card text-xs font-medium ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
               >
                 {viewOrder === 'bottom-up' ? (
                   <>
@@ -591,7 +581,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
       {/* Stack — #stack-capture-root is the PNG capture region (layers + legend) */}
       <div
         id="stack-capture-root"
-        className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-xl p-8 border-2 border-gray-200 dark:border-gray-700"
+        className="rounded-card bg-tint p-8"
       >
         <div className="max-w-5xl mx-auto space-y-1">
           {/* Render layers based on viewOrder */}
@@ -602,49 +592,33 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
 
             return (
               <div key={layer.id} className="relative">
-                {/* Layer Container */}
-                <div
-                  className="rounded-lg border-2 bg-white dark:bg-gray-800 shadow-lg"
-                  style={{ borderColor: layer.color }}
-                >
+                {/* Layer Container — one surface, no per-layer hue */}
+                <div className="rounded-card border border-edge bg-surface">
                   {/* Layer Header (collapsible) */}
                   <button
                     type="button"
                     onClick={() => toggleLayerExpanded(layer.id)}
                     aria-expanded={layerExpanded[layer.id]}
-                    className={`w-full px-4 py-3 flex items-center justify-between text-left cursor-pointer hover:brightness-[0.98] dark:hover:brightness-110 transition-[filter] ${
-                      layerExpanded[layer.id] ? 'rounded-t-lg' : 'rounded-lg'
+                    className={`w-full px-4 py-3 flex items-center justify-between text-left cursor-pointer ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing} ${
+                      layerExpanded[layer.id] ? 'rounded-t-card border-b border-hair' : 'rounded-card'
                     }`}
-                    style={{
-                      background: `linear-gradient(135deg, ${layer.color}15, ${layer.color}05)`,
-                      borderBottom: layerExpanded[layer.id] ? `2px solid ${layer.color}30` : undefined
-                    }}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="text-gray-600 dark:text-gray-300 shrink-0 flex items-center" aria-hidden>
+                      <span className={`${text.muted} shrink-0 flex items-center`} aria-hidden>
                         {layerExpanded[layer.id] ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
                       </span>
-                      <div
-                        className="w-1 h-8 rounded-full shrink-0"
-                        style={{ backgroundColor: layer.color }}
-                      />
+                      <div className="w-1 h-8 rounded-full shrink-0 bg-accent" />
                       <div className="min-w-0">
-                        <h3 className="font-bold text-gray-900 dark:text-white">
+                        <h3 className={`font-bold ${text.ink}`}>
                           {layer.name}
                         </h3>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className={`text-xs ${text.muted}`}>
                           {selectedCount} of {layerCapabilities.length} configured
                           {isServicesLayer && ' • Showing sub-layers'}
                         </p>
                       </div>
                     </div>
-                    <div
-                      className="px-3 py-1 rounded-full text-xs font-bold shrink-0"
-                      style={{
-                        backgroundColor: layer.color + '20',
-                        color: layer.color
-                      }}
-                    >
+                    <div className={`px-3 py-1 rounded-full text-xs font-bold shrink-0 bg-tint ${text.faint}`}>
                       L{index + 1}
                     </div>
                   </button>
@@ -680,10 +654,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                 {/* Connection Arrow (except for top layer) */}
                 {index < capabilityLayers.length - 1 && (
                   <div className="flex justify-center py-1">
-                    <div
-                      className="w-0.5 h-4"
-                      style={{ backgroundColor: layer.color + '40' }}
-                    />
+                    <div className="w-0.5 h-4 bg-hair" />
                   </div>
                 )}
               </div>
@@ -692,17 +663,17 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
         </div>
 
         {/* Legend */}
-        <div className="mt-6 flex items-center justify-center gap-6 text-xs text-gray-600 dark:text-gray-400 flex-wrap">
+        <div className={`mt-6 flex items-center justify-center gap-6 text-xs ${text.muted} flex-wrap`}>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-200 border border-green-400 rounded"></div>
+            <div className={`w-3 h-3 ${providerMark.redHat} rounded-card`}></div>
             <span>Red Hat Solution</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-blue-200 border border-blue-400 rounded"></div>
+            <div className={`w-3 h-3 ${providerMark.customer} rounded-card`}></div>
             <span>Customer Solution</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-purple-200 border border-purple-400 rounded"></div>
+            <div className={`w-3 h-3 ${providerMark.partner} rounded-card`}></div>
             <span>Partner/Other</span>
           </div>
           <div className="flex items-center gap-2">
