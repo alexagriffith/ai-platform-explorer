@@ -51,7 +51,7 @@ This repo — including every string in `src/` — is on public GitHub AND rende
 1. `npm run lint` — zero errors.
 2. `npm test` — all tests green (48+; never delete a failing test to pass).
 3. `npm run build` — must succeed (deploy runs the same gates; a red `main` breaks the public site pipeline).
-4. UI changes: browser-verify the affected tab(s); check dark mode for anything touching backgrounds (dark mode is media-based — there is no toggle; use OS/devtools emulation).
+4. UI changes: browser-verify the affected tab(s); check dark mode for anything touching backgrounds (theming is class-based `html.dark` with a header toggle — system default, explicit choice persisted; flip the toggle or emulate).
 5. Update the checklist state in `docs/BACKLOG.md` for anything you completed.
 
 ## Pointers (don't duplicate content here)

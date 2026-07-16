@@ -15,14 +15,25 @@
   No component re-implements a color map. Tailwind class strings are complete literals,
   never template-built.
 
-## Accent law
+## Accent law (revised 2026-07-16 — Alexa: "we can't just be black, gray, red, and white")
 
-- **Red is the only brand accent.** It must always carry meaning: identity (logo, active
-  tab), primary action, verification marks, source links, the draft banner. Never decorative.
+Color is welcome; *meaningless* color is not. Every hue on the page must answer "what does
+this color tell the reader?"
+
+- **Red = brand and action.** Identity (logo, active tab), primary action, verification
+  marks, source links, the draft banner. In categorical contexts red additionally marks
+  **Red Hat provenance**.
+- **Blue = interactive/informational.** Links-as-affordance, selection outlines, informational
+  callouts.
+- **Categorical marks:** where component type or provenance carries meaning, use a small
+  fixed palette — red (Red Hat), blue (open source), teal (partner/hardware), neutral outline
+  (customer/your organization) — applied as **outlines, dots, or left hairlines on a neutral
+  surface, never as surface fills**. If color encodes a category, a **colored legend is
+  mandatory** and its chips must show the actual mark colors.
 - **Status colors are status-only:** green = success/complete, amber = warning/attention.
-  They never appear as decoration or section identity.
-- **Banned outright:** gradients (`bg-gradient-*`), purple/pink/indigo/violet accent classes,
-  multi-hue section theming, decorative shadows, emoji in customer-visible strings.
+  Never decoration, never section identity.
+- **Banned outright:** gradients (`bg-gradient-*`), purple/pink/indigo/violet/fuchsia classes,
+  multi-hue *surface* theming, decorative shadows, emoji in customer-visible strings.
 
 ## Lightness
 
@@ -31,8 +42,10 @@ The page should feel light and modern without abandoning the token palette:
 - **Light theme:** near-white layered neutrals (page slightly darker than surface), hairline
   separators (`border-hair`) instead of full borders, generous whitespace. Surfaces separate
   by tone and spacing, not by boxes.
-- **Dark theme:** true dark neutrals, same structure. Both themes are first-class; dark mode
-  is media-based (no toggle) — verify with OS/devtools emulation.
+- **Dark theme:** true dark neutrals, same structure. Both themes are first-class. Theming is
+  class-based (`html.dark`) with a header toggle: default follows the operating system, an
+  explicit user choice wins and persists (localStorage `theme`). Verify both themes via the
+  toggle or emulation.
 - **Typography over containers:** hierarchy comes from the type scale and whitespace.
   Headings orient, labels group, containers are a last resort.
 
@@ -47,6 +60,25 @@ The page should feel light and modern without abandoning the token palette:
   genuinely clickable cards only.
 - Disclosure (expand/collapse) animates; content never pops.
 - Respect `prefers-reduced-motion`: all non-essential motion collapses to instant.
+
+## Density & composition law (added 2026-07-16, from Alexa's solution-map direction)
+
+The reference standard is the AI Architect solution-map style: compact, aligned, text-forward.
+
+1. **Text-forward sizing.** The component NAME is the point of every box and gets the size;
+   chrome (padding, borders, badges, group labels) shrinks around it. Secondary text is one
+   step down but readable. Group labels (e.g. a section's "Serving") sit a step ABOVE
+   body-secondary — visible, not shouting.
+2. **The content-hugging exception.** Inner boxes inside a panel size to their text — this is
+   the ONE sanctioned size variance. Everything else obeys the grid.
+3. **Grid discipline.** Sibling boxes equal width; rows middle-aligned vertically (never
+   top-aligned against a taller sibling); even distribution across the row.
+4. **Duplicates compress.** N identical structures render side-by-side (or counted), never as
+   tall stacked repetition. Compression must lose zero information.
+5. **Empty space collapses.** Whitespace separates, it does not pad for its own sake. Target:
+   a tab's primary view reads on roughly one screen at 1440x900.
+6. **Clean, clear, consistent, concise** — when two treatments both satisfy the law, pick the
+   one with less chrome and fewer pixels.
 
 ## Anti-box law (unchanged, now app-wide)
 
