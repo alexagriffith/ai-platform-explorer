@@ -37,6 +37,8 @@ This repo — including every string in `src/` — is on public GitHub AND rende
 
 **Plain language everywhere:** no bare acronyms in any customer-visible string — expand on first use per component ("key-value cache (KV cache)"), then plain. No emojis in customer-facing strings. No hedge-free absolutes ("every", "guaranteed", "prevents hallucinations" — say "reduces").
 
+**Copy edits are extraction, not authorship (added 2026-07-16):** when shortening customer-visible text, preserve facts exactly — no ad-libbed claims, no additions; prefer wording lifted from the verified sources, phrased UI-brief rather than as documentation sentences. Every content box carries a source link whose DESTINATION is verified to support the claim (renders and matches the cited subject/quote — not merely returns 200).
+
 ## Code layout & style rules
 
 - **Content lives in `src/data/`, logic in `src/lib/`, components render.** No static content object over ~50 lines inside a component file (this is how stale claims escaped review — content in components was never swept). Existing violations are catalogued in `docs/BACKLOG.md`.
