@@ -1,20 +1,10 @@
 import { useState } from 'react';
 import { Search, Filter, ExternalLink } from 'lucide-react';
 import { products } from '../data/products';
-import { text, surface, border, interactive, field } from '../lib/styleTokens';
+import { text, surface, border, interactive, field, productStatus } from '../lib/styleTokens';
 
-// Status badge: color-only, no borders — avoids nested-bordered-box violation.
-// Token gap: styleTokens.js lacks a productStatus map; inline here until
-// the integration step adds it.
-const STATUS_TEXT = {
-  'GA':                 'text-green-700 dark:text-green-400',
-  'Tech Preview':       'text-amber-700 dark:text-amber-400',
-  'Dev Preview':        'text-muted',
-  'Check with Red Hat': 'text-faint',
-};
-
-function statusTextClass(status) {
-  return STATUS_TEXT[status] ?? 'text-faint';
+function statusTextClass(s) {
+  return productStatus[s] ?? 'text-faint';
 }
 
 export default function ProductExplorer() {

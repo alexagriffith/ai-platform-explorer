@@ -10,6 +10,11 @@ export const border = {
   divideHair: 'divide-hair',
 };
 
+export const surface = {
+  raised: 'bg-surface',
+  tint: 'bg-tint',
+};
+
 export const text = {
   ink: 'text-ink',
   muted: 'text-muted',
@@ -57,6 +62,25 @@ export const status = {
   completeBanner: 'bg-green-600 text-white',
   completeCard: 'rounded-card border border-edge bg-surface',
   requiredBadge: 'bg-draft-bg text-draft-fg',
+  /** Amber = warning/attention (DESIGN-LAW: status-only, never decorative). */
+  attention: {
+    text: 'text-amber-700 dark:text-amber-400',
+    textStrong: 'text-amber-600 dark:text-amber-400',
+    badge: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
+    badgeBordered: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800',
+    block: 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800',
+  },
+};
+
+/**
+ * Product maturity status text-color map (GA | Tech Preview | Dev Preview | Check with Red Hat).
+ * Formerly inlined in ProductExplorer. Status vocabulary is enforced by catalogIntegrity.test.js.
+ */
+export const productStatus = {
+  'GA':                 'text-green-700 dark:text-green-400',
+  'Tech Preview':       status.attention.text,
+  'Dev Preview':        'text-muted',
+  'Check with Red Hat': 'text-faint',
 };
 
 export const providerMark = {
