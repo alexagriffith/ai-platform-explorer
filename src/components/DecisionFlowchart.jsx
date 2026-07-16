@@ -20,7 +20,7 @@ import DecisionTree from './DecisionTree';
 import { mergeDecisionPatches, getPatchesForRecommendationKey } from '../data/decisionRecommendationApply';
 import { capabilities } from '../data/capabilities';
 import { reconcileContainerAiPlatform } from '../lib/platformAiConstraints';
-import { button, text, interactive, modal, surface, border } from '../lib/styleTokens';
+import { button, text, interactive, modal, surface, border, density, typeScale } from '../lib/styleTokens';
 
 const guideMetadata = {
   product: { icon: Package, category: 'Product Selection', group: 'getting-started' },
@@ -1408,29 +1408,29 @@ export default function DecisionFlowchart({
   const flow = getCurrentFlow();
 
   return (
-    <div data-tab="decisions" className={`rounded-card border ${border.hair} ${surface.raised} p-6`}>
-      <h3 className={`text-xl font-bold ${text.ink} mb-4 flex items-center gap-2`}>
-        <GitBranch size={24} className="text-accent" />
+    <div data-tab="decisions" className={`rounded-card border ${border.hair} ${surface.raised} ${density.panelPad}`}>
+      <h3 className={`${typeScale.groupLabel} ${text.ink} mb-3 flex items-center gap-2`}>
+        <GitBranch size={16} className="text-accent" />
         Decision Guides
       </h3>
 
       {!selectedDecision ? (
-        <div className="space-y-8">
+        <div className={density.stackGap}>
           {guideGroups.map((group) => {
             return (
-              <div key={group.id} className={`border-t ${border.hair} pt-6 first:border-t-0 first:pt-0`}>
+              <div key={group.id} className={`border-t ${border.hair} pt-3 first:border-t-0 first:pt-0`}>
                 {/* Group Header */}
-                <div className="mb-4">
-                  <h3 className={`text-lg font-bold ${text.ink} mb-1`}>
+                <div className="mb-2">
+                  <h3 className={`${typeScale.componentName} ${text.ink}`}>
                     {group.title}
                   </h3>
-                  <p className={`text-sm ${text.muted}`}>
+                  <p className={`${typeScale.secondary} ${text.muted} mt-0.5`}>
                     {group.description}
                   </p>
                 </div>
 
                 {/* Group Guides */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className={`grid md:grid-cols-2 lg:grid-cols-3 ${density.rowGap}`}>
                   {group.guides.map((guideKey) => {
                     const flowData = decisionFlows[guideKey];
                     const meta = guideMetadata[guideKey];
@@ -1443,20 +1443,20 @@ export default function DecisionFlowchart({
                           setApplyNotice(null);
                           setSelectedDecision(guideKey);
                         }}
-                        className={`p-4 text-left rounded-card border ${border.hair} ${surface.tint} hover:border-accent hover:bg-tint ${interactive.transition} ${interactive.focusRing} group`}
+                        className={`${density.sectionPad} text-left rounded-card border ${border.hair} ${surface.tint} hover:border-accent hover:bg-tint ${interactive.transition} ${interactive.focusRing} group`}
                       >
-                        <div className="flex items-start gap-3 mb-2">
-                          <Icon size={20} className={`${text.muted} group-hover:text-accent ${interactive.transition} flex-shrink-0 mt-0.5`} />
+                        <div className="flex items-start gap-2 mb-1">
+                          <Icon size={16} className={`${text.muted} group-hover:text-accent ${interactive.transition} flex-shrink-0 mt-0.5`} />
                           <div className="flex-1 min-w-0">
-                            <div className={`text-xs font-semibold ${text.faint} uppercase tracking-wide mb-1`}>
+                            <div className={`${typeScale.meta} font-semibold ${text.faint} uppercase tracking-wide mb-0.5`}>
                               {meta.category}
                             </div>
-                            <h4 className={`font-bold ${text.ink} text-sm leading-tight`}>
+                            <h4 className={`${typeScale.componentName} ${text.ink}`}>
                               {flowData.title}
                             </h4>
                           </div>
                         </div>
-                        <p className={`text-xs ${text.muted} leading-relaxed`}>
+                        <p className={`${typeScale.secondary} ${text.muted}`}>
                           {flowData.description}
                         </p>
                       </button>
@@ -1470,8 +1470,8 @@ export default function DecisionFlowchart({
       ) : (
         <div>
           {/* Header */}
-          <div className="mb-6 flex items-center justify-between">
-            <h4 className={`font-semibold text-lg ${text.ink}`}>{flow.title}</h4>
+          <div className="mb-3 flex items-center justify-between">
+            <h4 className={`${typeScale.componentName} ${text.ink}`}>{flow.title}</h4>
             <button
               onClick={() => {
                 setApplyNotice(null);
@@ -1495,25 +1495,25 @@ export default function DecisionFlowchart({
             />
           ) : (
             /* Recommendation */
-            <div className="space-y-6">
-              <div className={`p-6 rounded-card border ${border.hair} ${surface.raised}`}>
-                <div className="flex items-start gap-4 mb-4">
-                  <div className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-card border ${border.edge} ${surface.tint}`}>
-                    <CheckCircle size={22} className="text-green-600" />
+            <div className={density.stackGap}>
+              <div className={`${density.sectionPad} rounded-card border ${border.hair} ${surface.raised}`}>
+                <div className="flex items-start gap-3 mb-3">
+                  <div className={`flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-card border ${border.edge} ${surface.tint}`}>
+                    <CheckCircle size={16} className="text-green-600" />
                   </div>
                   <div className="flex-1">
-                    <h4 className={`text-2xl font-bold ${text.ink} mb-2`}>
+                    <h4 className={`${typeScale.componentName} ${text.ink} mb-1`}>
                       {treeRecommendation.product}
                     </h4>
-                    <p className={`${text.muted} mb-3`}>
+                    <p className={`${typeScale.secondary} ${text.muted} mb-2`}>
                       <strong>Why:</strong> {treeRecommendation.why}
                     </p>
                     {treeRecommendation.bestFor && (
-                      <div className="mb-3">
-                        <p className={`text-sm font-semibold ${text.muted} mb-1`}>Best for:</p>
-                        <div className="flex flex-wrap gap-2">
+                      <div className="mb-2">
+                        <p className={`${typeScale.meta} font-semibold ${text.muted} mb-1`}>Best for:</p>
+                        <div className="flex flex-wrap gap-1.5">
                           {treeRecommendation.bestFor.map((item, idx) => (
-                            <span key={idx} className={`px-2 py-1 ${surface.tint} border ${border.hair} rounded-card text-xs ${text.muted}`}>
+                            <span key={idx} className={`px-2 py-0.5 ${surface.tint} border ${border.hair} rounded-card ${typeScale.secondary} ${text.muted}`}>
                               {item}
                             </span>
                           ))}
@@ -1522,10 +1522,10 @@ export default function DecisionFlowchart({
                     )}
                     {treeRecommendation.components && (
                       <div>
-                        <p className={`text-sm font-semibold ${text.muted} mb-1`}>Key components:</p>
-                        <div className="flex flex-wrap gap-2">
+                        <p className={`${typeScale.meta} font-semibold ${text.muted} mb-1`}>Key components:</p>
+                        <div className="flex flex-wrap gap-1.5">
                           {treeRecommendation.components.map((comp, idx) => (
-                            <span key={idx} className={`px-2 py-1 ${surface.tint} border ${border.hair} rounded-card text-xs ${text.ink}`}>
+                            <span key={idx} className={`px-2 py-0.5 ${surface.tint} border ${border.hair} rounded-card ${typeScale.secondary} ${text.ink}`}>
                               {comp}
                             </span>
                           ))}
@@ -1535,15 +1535,15 @@ export default function DecisionFlowchart({
                   </div>
                 </div>
 
-                {/* Tradeoffs */}
+                {/* Tradeoffs — side by side */}
                 {treeRecommendation.tradeoffs && (
-                  <div className={`grid md:grid-cols-2 gap-4 mt-4 pt-4 border-t ${border.hair}`}>
+                  <div className={`grid md:grid-cols-2 gap-3 mt-3 pt-3 border-t ${border.hair}`}>
                     <div>
-                      <h5 className={`font-bold text-green-700 dark:text-green-400 mb-2 flex items-center gap-1 text-sm`}>
-                        <CheckCircle size={16} />
+                      <h5 className={`font-bold text-green-700 dark:text-green-400 mb-1.5 flex items-center gap-1 ${typeScale.secondary}`}>
+                        <CheckCircle size={14} />
                         Advantages
                       </h5>
-                      <ul className="space-y-1 text-sm">
+                      <ul className={`space-y-1 ${typeScale.secondary}`}>
                         {treeRecommendation.tradeoffs.map((t, idx) => (
                           <li key={idx} className={`${text.muted} flex items-start gap-1`}>
                             <span className="text-green-600 flex-shrink-0">✓</span>
@@ -1553,11 +1553,11 @@ export default function DecisionFlowchart({
                       </ul>
                     </div>
                     <div>
-                      <h5 className={`font-bold text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-1 text-sm`}>
-                        <XCircle size={16} />
+                      <h5 className={`font-bold text-amber-700 dark:text-amber-400 mb-1.5 flex items-center gap-1 ${typeScale.secondary}`}>
+                        <XCircle size={14} />
                         Tradeoffs
                       </h5>
-                      <ul className="space-y-1 text-sm">
+                      <ul className={`space-y-1 ${typeScale.secondary}`}>
                         {treeRecommendation.tradeoffs.map((t, idx) => (
                           <li key={idx} className={`${text.muted} flex items-start gap-1`}>
                             <span className="text-amber-600 flex-shrink-0">!</span>
@@ -1571,14 +1571,14 @@ export default function DecisionFlowchart({
 
                 {/* Alternatives */}
                 {treeRecommendation.alternatives && (
-                  <div className={`mt-4 pt-4 border-t ${border.hair}`}>
-                    <p className={`text-sm font-semibold ${text.muted} mb-2`}>
+                  <div className={`mt-3 pt-3 border-t ${border.hair}`}>
+                    <p className={`${typeScale.meta} font-semibold ${text.muted} mb-1.5`}>
                       Alternative options:
                     </p>
-                    <ul className={`space-y-1 text-sm ${text.muted}`}>
+                    <ul className={`space-y-1 ${typeScale.secondary} ${text.muted}`}>
                       {treeRecommendation.alternatives.map((alt, idx) => (
                         <li key={idx} className="flex items-start gap-2">
-                          <ArrowRight size={14} className="text-accent mt-0.5 flex-shrink-0" />
+                          <ArrowRight size={12} className="text-accent mt-0.5 flex-shrink-0" />
                           <span>{alt}</span>
                         </li>
                       ))}
@@ -1594,27 +1594,27 @@ export default function DecisionFlowchart({
                   <div className={modal.overlay} onClick={() => setShowPreview(false)}>
                     <div className={`${modal.panel} ${modal.panelMedium}`} onClick={(e) => e.stopPropagation()}>
                       <div className={modal.header}>
-                        <h4 className={`text-xl font-bold ${text.ink} flex items-center gap-2`}>
-                          <Eye size={20} className="text-accent" />
+                        <h4 className={`${typeScale.componentName} ${text.ink} flex items-center gap-2`}>
+                          <Eye size={16} className="text-accent" />
                           Preview Changes to Your Stack
                         </h4>
                       </div>
                       <div className={modal.body}>
 
                       {preview.changes.length > 0 && (
-                        <div className="mb-4">
-                          <p className={`font-semibold ${text.muted} mb-2`}>Will apply:</p>
-                          <div className="space-y-2">
+                        <div className="mb-3">
+                          <p className={`${typeScale.secondary} font-semibold ${text.muted} mb-1.5`}>Will apply:</p>
+                          <div className="space-y-1.5">
                             {preview.changes.map((change, idx) => (
-                              <div key={idx} className={`p-3 rounded-card border ${border.hair} ${surface.tint}`}>
+                              <div key={idx} className={`${density.cardPad} rounded-card border ${border.hair} ${surface.tint}`}>
                                 {change.type === 'add' && (
-                                  <p className="text-sm">
+                                  <p className={typeScale.secondary}>
                                     <span className="font-semibold text-green-700 dark:text-green-400">Add:</span>{' '}
                                     <span className="font-bold">{change.capName}</span> → {change.optName}
                                   </p>
                                 )}
                                 {change.type === 'update' && (
-                                  <p className="text-sm">
+                                  <p className={typeScale.secondary}>
                                     <span className="font-semibold text-accent">Update:</span>{' '}
                                     <span className="font-bold">{change.capName}</span> → {change.optName}{' '}
                                     <span className={text.faint}>(was: {change.prevOptName})</span>
@@ -1627,12 +1627,12 @@ export default function DecisionFlowchart({
                       )}
 
                       {preview.reconciliationChanges.length > 0 && (
-                        <div className="mb-4">
-                          <p className={`font-semibold ${text.muted} mb-2`}>Also updates (compatibility):</p>
-                          <div className="space-y-2">
+                        <div className="mb-3">
+                          <p className={`${typeScale.secondary} font-semibold ${text.muted} mb-1.5`}>Also updates (compatibility):</p>
+                          <div className="space-y-1.5">
                             {preview.reconciliationChanges.map((change, idx) => (
-                              <div key={idx} className={`p-3 rounded-card border ${border.hair} ${surface.tint}`}>
-                                <p className="text-sm">
+                              <div key={idx} className={`${density.cardPad} rounded-card border ${border.hair} ${surface.tint}`}>
+                                <p className={typeScale.secondary}>
                                   <span className="font-bold">{change.capName}</span> → {change.optName}
                                 </p>
                               </div>
@@ -1642,15 +1642,15 @@ export default function DecisionFlowchart({
                       )}
 
                       {preview.changes.length === 0 && preview.reconciliationChanges.length === 0 && (
-                        <p className={`${text.muted} mb-4`}>No changes to your current stack.</p>
+                        <p className={`${text.muted} mb-3 ${typeScale.secondary}`}>No changes to your current stack.</p>
                       )}
 
-                      <div className="flex gap-3 mt-6">
+                      <div className="flex gap-2 mt-4">
                         <button
                           onClick={addRecommendationToArchitecture}
-                          className={`flex-1 flex items-center justify-center gap-2 ${button.primary} px-6 py-3`}
+                          className={`flex-1 flex items-center justify-center gap-2 ${button.primary}`}
                         >
-                          <Plus size={20} />
+                          <Plus size={16} />
                           Confirm & Add to Stack
                         </button>
                         <button
@@ -1667,7 +1667,7 @@ export default function DecisionFlowchart({
               })()}
 
               {/* Action buttons */}
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => {
                     if (!treeRecommendation?.recommendationKey) {
@@ -1682,9 +1682,9 @@ export default function DecisionFlowchart({
                     setApplyNotice(null);
                     setShowPreview(true);
                   }}
-                  className={`flex items-center gap-2 ${button.primary} px-6 py-3`}
+                  className={`flex items-center gap-1.5 ${button.primary}`}
                 >
-                  <Eye size={20} />
+                  <Eye size={16} />
                   Preview & Add to Stack
                 </button>
                 <button
@@ -1710,7 +1710,7 @@ export default function DecisionFlowchart({
                 </button>
               </div>
               {applyNotice && (
-                <p className={`text-sm text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-card px-3 py-2`}>
+                <p className={`${typeScale.secondary} text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-card px-3 py-2`}>
                   {applyNotice}
                 </p>
               )}
