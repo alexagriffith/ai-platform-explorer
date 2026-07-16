@@ -1,5 +1,5 @@
 import { CheckCircle, XCircle, AlertCircle, Zap, Database, Sparkles } from 'lucide-react';
-import { typeScale, density } from '../lib/styleTokens';
+import { typeScale, density, status } from '../lib/styleTokens';
 
 export default function FineTuningDecisionMatrix() {
   const approaches = [
@@ -144,11 +144,11 @@ export default function FineTuningDecisionMatrix() {
 
                 {/* Cons */}
                 <div>
-                  <h5 className={`${typeScale.groupLabel} text-accent mb-1`}>Tradeoffs</h5>
+                  <h5 className={`${typeScale.groupLabel} ${status.attention.text} mb-1`}>Tradeoffs</h5>
                   <ul className="space-y-0.5">
                     {approach.cons.map((con, i) => (
                       <li key={i} className="flex items-start gap-1.5">
-                        <XCircle size={11} className="text-accent mt-0.5 flex-shrink-0" />
+                        <XCircle size={11} className={`${status.attention.text} mt-0.5 flex-shrink-0`} />
                         <span className={`${typeScale.secondary} text-ink`}>{con}</span>
                       </li>
                     ))}

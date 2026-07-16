@@ -22,16 +22,26 @@ function readCurrentDark() {
  * Minimal hook for the dark/light toggle. Persists explicit choices to
  * localStorage; when no explicit choice exists, listens to the system media
  * query and follows live OS changes.
+ *
+ * localStorage reads/writes are wrapped in try/catch for sandboxed/privacy
+ * contexts where storage access throws (e.g. Firefox strict mode, sandboxed
+ * iframes). The handler checks for a stored preference before acting so an
+ * explicit user choice is never overridden by a subsequent OS change.
  */
 function useTheme() {
   const [isDark, setIsDark] = useState(readCurrentDark);
 
   useEffect(() => {
-    const stored = localStorage.getItem('theme');
+    let stored;
+    try { stored = localStorage.getItem('theme'); } catch { stored = null; }
     if (stored) return; // explicit choice — don't listen to system
 
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e) => {
+      // Bail if the user has since made an explicit choice
+      let currentStored;
+      try { currentStored = localStorage.getItem('theme'); } catch { currentStored = null; }
+      if (currentStored) return;
       document.documentElement.classList.toggle('dark', e.matches);
       setIsDark(e.matches);
     };
@@ -42,7 +52,7 @@ function useTheme() {
   function toggleTheme() {
     const next = !isDark;
     document.documentElement.classList.toggle('dark', next);
-    localStorage.setItem('theme', next ? 'dark' : 'light');
+    try { localStorage.setItem('theme', next ? 'dark' : 'light'); } catch { /* sandboxed */ }
     setIsDark(next);
   }
 

@@ -43,10 +43,10 @@ function providerMarkKey(option) {
   if (!option) return 'customer';
   if (option.isCustomer) return 'customer';
   if (option.provider === 'Red Hat') return 'redHat';
-  if (
-    option.provider === 'Open Source' ||
-    option.provider === 'Customer'
-  ) return 'openSource';
+  if (option.provider === 'Customer') return 'customer';
+  if (option.provider === 'Open Source') return 'openSource';
+  // Unknown/unrecognized providers default to neutral customer mark
+  if (!option.provider) return 'customer';
   return 'partner';
 }
 
@@ -117,11 +117,16 @@ function CapabilityCard({
                 </span>
               )}
             </h4>
+            {detailLevel === 2 && capability.description && (
+              <p className={`${typeScale.secondary} ${text.muted} mt-0.5 line-clamp-2`}>
+                {capability.description}
+              </p>
+            )}
             {detailLevel === 2 && (
               <div className={`${typeScale.meta} ${text.faint} mt-0.5`}>
                 {availableCount === capability.options.length
                   ? `${capability.options.length} option${capability.options.length !== 1 ? 's' : ''}`
-                  : `${availableCount} of ${capability.options.length} available`}
+                  : `${availableCount} of ${capability.options.length} options match current pairing`}
               </div>
             )}
           </div>
@@ -207,6 +212,11 @@ function CapabilityCard({
       {detailLevel === 2 && selectedOption?.status && (
         <div className={`px-2 py-0.5 ${typeScale.meta} ${text.faint}`}>
           {selectedOption.status}
+        </div>
+      )}
+      {detailLevel === 2 && selectedOption?.description && (
+        <div className={`px-2 pb-1 ${typeScale.secondary} ${text.muted} line-clamp-2`}>
+          {selectedOption.description}
         </div>
       )}
 

@@ -179,7 +179,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
                     <div className="flex-1">
                       <h4 className={`${typeScale.componentName} ${text.ink} mb-2`}>
                         <span className="text-accent mr-1">
-                          Q{visibleNumber}:
+                          Question {visibleNumber}:
                         </span>
                         {step.question}
                       </h4>

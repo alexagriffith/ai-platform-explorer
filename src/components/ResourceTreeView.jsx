@@ -210,7 +210,7 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
             onClick={() => setIsExpanded(!isExpanded)}
             aria-label={isExpanded ? `Collapse ${node.kind}` : `Expand ${node.kind}`}
             aria-expanded={isExpanded}
-            className={`flex-shrink-0 p-0.5 hover:bg-tint rounded-card ${interactive.transition}`}
+            className={`flex-shrink-0 p-0.5 hover:bg-surface rounded-card border border-transparent hover:border-hair ${interactive.transition}`}
           >
             {isExpanded ? (
               <ChevronDown size={16} className="text-muted" />

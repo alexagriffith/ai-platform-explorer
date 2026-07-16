@@ -224,10 +224,11 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
     setExportingPng(true);
     try {
       const { toPng } = await import('html-to-image');
+      const isDarkMode = document.documentElement.classList.contains('dark');
       const dataUrl = await toPng(captureEl, {
         pixelRatio: 2,
         cacheBust: true,
-        backgroundColor: '#f8fafc'
+        backgroundColor: isDarkMode ? '#111827' : '#f8fafc'
       });
       const a = document.createElement('a');
       a.href = dataUrl;
@@ -402,7 +403,7 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
             </div>
             <div className={`${typeScale.meta} ${text.faint}`}>
               <Maximize2 size={11} className="inline mr-1 align-text-bottom opacity-70" />
-              Expand icon opens internal detail without changing focus.
+              Expand icon opens internal detail without changing focus. Hover a component for short relationship hints.
             </div>
           </div>
         </div>

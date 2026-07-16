@@ -126,7 +126,7 @@ function YAMLResource({ resource, state }) {
           }
         }}
         aria-expanded={isExpanded}
-        className={`w-full px-3 py-2 bg-tint border-b border-hair hover:bg-tint ${interactive.transition} text-left cursor-pointer`}
+        className={`w-full px-3 py-2 bg-tint border-b border-hair hover:bg-page ${interactive.transition} text-left cursor-pointer`}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5 flex-1">

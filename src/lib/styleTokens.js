@@ -166,6 +166,25 @@ export const categoricalMark = {
 };
 
 /**
+ * Hardware cost/performance badge class maps for GPU comparison tables.
+ * Used by TrainingDeepDive; centralized here per the no-re-implement-color-maps rule.
+ */
+export const hwBadge = {
+  cost: (cost) => {
+    if (['Highest', 'Very High', 'High'].includes(cost)) {
+      return 'rounded-card px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
+    }
+    return 'rounded-card px-2 py-0.5 text-xs font-medium bg-tint text-muted';
+  },
+  performance: (perf) => {
+    if (perf === 'Maximum' || perf === 'Excellent' || perf.startsWith('Very Good')) {
+      return 'rounded-card px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+    }
+    return 'rounded-card px-2 py-0.5 text-xs font-medium bg-tint text-ink';
+  },
+};
+
+/**
  * Legend chip classes matching categoricalMark colors.
  * Pair each chip with the categoricalMark key of the same name.
  */

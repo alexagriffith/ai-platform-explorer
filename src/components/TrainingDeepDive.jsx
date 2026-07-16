@@ -1,5 +1,5 @@
 import { Cpu, Zap, GitBranch, Database, ArrowRight, CheckCircle, Info } from 'lucide-react';
-import { typeScale, density } from '../lib/styleTokens';
+import { typeScale, density, hwBadge } from '../lib/styleTokens';
 
 export default function TrainingDeepDive() {
   const trainingWorkflow = [
@@ -133,20 +133,6 @@ export default function TrainingDeepDive() {
     }
   ];
 
-  const costBadge = (cost) => {
-    if (['Highest', 'Very High', 'High'].includes(cost)) {
-      return 'rounded-card px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
-    }
-    return 'rounded-card px-2 py-0.5 text-xs font-medium bg-tint text-muted';
-  };
-
-  const perfBadge = (performance) => {
-    if (performance === 'Maximum' || performance === 'Excellent') {
-      return 'rounded-card px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
-    }
-    return 'rounded-card px-2 py-0.5 text-xs font-medium bg-tint text-ink';
-  };
-
   return (
     <div className={density.stackGap}>
       {/* Header — no border */}
@@ -264,10 +250,10 @@ export default function TrainingDeepDive() {
                   <td className="px-3 py-1.5 text-muted text-xs">{hw.memory}</td>
                   <td className="px-3 py-1.5 text-muted text-xs">{hw.bestFor}</td>
                   <td className="px-3 py-1.5">
-                    <span className={costBadge(hw.cost)}>{hw.cost}</span>
+                    <span className={hwBadge.cost(hw.cost)}>{hw.cost}</span>
                   </td>
                   <td className="px-3 py-1.5">
-                    <span className={perfBadge(hw.performance)}>{hw.performance}</span>
+                    <span className={hwBadge.performance(hw.performance)}>{hw.performance}</span>
                   </td>
                 </tr>
               ))}
