@@ -48,64 +48,54 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
   const currentMode = modes.find(m => m.id === mode);
 
   return (
-    <div data-tab="architecture" className="space-y-6">
+    <div data-tab="architecture" className="space-y-3">
       {/* Header — one surface, hairline separators, no nested boxes */}
-      <div className="rounded-card bg-surface p-6">
-        <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="flex items-start gap-3">
-            <Layers className="text-accent mt-1" size={28} />
-            <div>
-              <h2 className={`font-display text-2xl font-bold ${text.ink} mb-2`}>
-                Architecture Builder
-              </h2>
-              <p className={text.muted}>
-                Choose how you want to build your Red Hat AI stack
-              </p>
-            </div>
+      <div className="rounded-card bg-surface px-4 py-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <Layers className="text-accent shrink-0" size={20} />
+            <h2 className={`font-display text-base font-bold ${text.ink}`}>
+              Architecture Builder
+            </h2>
           </div>
 
-          {/* Help — inline row, not a nested bordered box */}
-          <div className="flex flex-wrap items-center gap-2 lg:flex-shrink-0">
-            <HelpCircle size={16} className={`${text.faint} flex-shrink-0`} />
-            <span className={`text-sm ${text.muted}`}>
-              Not sure what to choose?
-            </span>
+          {/* Help — inline row */}
+          <div className="flex flex-wrap items-center gap-2 sm:flex-shrink-0">
+            <HelpCircle size={14} className={`${text.faint} flex-shrink-0`} />
+            <span className={`text-xs ${text.muted}`}>Not sure what to choose?</span>
             <button
               onClick={onSwitchToDecisions}
               className={`${button.primary} group`}
             >
               <span>Decision Guides</span>
-              <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-150 ease-out motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
+              <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform duration-150 ease-out motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
             </button>
           </div>
         </div>
 
-        {/* Mode Selector - Dropdown with inline description */}
-        <div className="mb-0 border-t border-hair pt-4">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center mb-2">
-            <label htmlFor="architecture-mode" className={`text-sm font-semibold ${text.muted} whitespace-nowrap`}>
-              Build Mode:
-            </label>
-            <select
-              id="architecture-mode"
-              value={mode}
-              onChange={(e) => setMode(e.target.value)}
-              className={`flex-1 px-4 py-2 bg-surface border border-edge rounded-card ${text.ink} font-medium hover:border-accent ${interactive.focusRing} ${interactive.transition}`}
-            >
-              {modes.map((modeOption) => (
-                <option key={modeOption.id} value={modeOption.id}>
-                  {modeOption.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <p className={`text-xs ${text.faint} sm:pl-[6.5rem]`}>
+        {/* Mode Selector */}
+        <div className="mt-2 pt-2 border-t border-hair flex flex-col gap-1 sm:flex-row sm:items-center">
+          <label htmlFor="architecture-mode" className={`text-xs font-semibold ${text.muted} whitespace-nowrap shrink-0`}>
+            Build mode:
+          </label>
+          <select
+            id="architecture-mode"
+            value={mode}
+            onChange={(e) => setMode(e.target.value)}
+            className={`flex-1 px-2 py-1 bg-surface border border-edge rounded-card text-sm ${text.ink} font-medium hover:border-accent ${interactive.focusRing} ${interactive.transition}`}
+          >
+            {modes.map((modeOption) => (
+              <option key={modeOption.id} value={modeOption.id}>
+                {modeOption.name}
+              </option>
+            ))}
+          </select>
+          <p className={`text-xs ${text.faint} sm:ml-2`}>
             {currentMode.description}
           </p>
         </div>
       </div>
 
-      {/* Active Mode Content */}
       {currentMode.component}
     </div>
   );

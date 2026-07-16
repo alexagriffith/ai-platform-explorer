@@ -24,7 +24,8 @@
     "src/components/TrainingDeepDive.jsx",
     "src/components/RAGArchitecture.jsx",
     "src/components/MCPEcosystemFull.jsx",
-    "src/components/SecurityOverview.jsx"
+    "src/components/SecurityOverview.jsx",
+    "src/components/FlowVisualization.jsx"
   ],
   "migratedTabs": [
     {
@@ -52,5 +53,5 @@
       "navLabel": "Use Cases"
     }
   ],
-  "legacyViolatingFilesMax": 1
+  "legacyViolatingFilesMax": 0
 }

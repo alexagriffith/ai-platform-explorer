@@ -28,12 +28,27 @@ import CapabilityConfigurationModal from './CapabilityConfigurationModal';
 import {
   button,
   card,
+  categoricalMark,
+  density,
   interactive,
-  providerMark,
+  legendChip,
   status,
   text,
   toggle,
+  typeScale,
 } from '../lib/styleTokens';
+
+/** Map option provider string to a categoricalMark key. */
+function providerMarkKey(option) {
+  if (!option) return 'customer';
+  if (option.isCustomer) return 'customer';
+  if (option.provider === 'Red Hat') return 'redHat';
+  if (
+    option.provider === 'Open Source' ||
+    option.provider === 'Customer'
+  ) return 'openSource';
+  return 'partner';
+}
 
 function getCapabilitiesByLayer(layerId) {
   return capabilities[layerId] || [];
@@ -65,8 +80,9 @@ function CollapsibleDividerHeader({ title, isOpen, onToggle }) {
 
 function CapabilityCard({
   capability,
-  // layerColor retained on callers for props-flow stability; hue theming removed (DESIGN-LAW).
-  compact = false,
+  // layerColor/compact retained on callers for props-flow stability; hue/size theming removed (DESIGN-LAW density pass).
+  // eslint-disable-next-line no-unused-vars
+  compact: _compact,
   selectedCapabilities,
   detailLevel,
   expandedComponents,
@@ -88,32 +104,24 @@ function CapabilityCard({
     return (
       <button
         onClick={() => onConfigure(capability)}
-        className={`${card.unselected} group ${compact ? 'p-2' : 'p-4'}`}
+        className={`${card.unselected} group px-2 py-1.5 w-full`}
       >
-        <div className="flex items-start gap-2">
-          <Plus size={compact ? 12 : 16} className={`mt-0.5 opacity-50 group-hover:opacity-100 flex-shrink-0 ${text.faint} group-hover:text-accent`} />
+        <div className="flex items-start gap-1.5">
+          <Plus size={12} className={`mt-0.5 opacity-50 group-hover:opacity-100 flex-shrink-0 ${text.faint} group-hover:text-accent`} />
           <div className="flex-1 min-w-0">
-            <p className={`text-[10px] font-bold uppercase tracking-wide ${text.faint} mb-1`}>
-              Not selected
-            </p>
-            <h4 className={`font-bold ${text.ink} truncate ${compact ? 'text-xs' : 'text-sm'}`}>
+            <h4 className={`${typeScale.componentName} ${text.ink} truncate`}>
               {capability.name}
               {capability.required && (
-                <span className={`ml-1 text-xs px-1 py-0.5 ${status.requiredBadge} rounded-card`}>
+                <span className={`ml-1 px-1 py-0.5 text-[10px] ${status.requiredBadge} rounded-card`}>
                   Req
                 </span>
               )}
             </h4>
-            {!compact && detailLevel === 2 && (
-              <p className={`text-xs ${text.muted} mt-1 line-clamp-2`}>
-                {capability.description}
-              </p>
-            )}
             {detailLevel === 2 && (
-              <div className={`mt-1 text-xs ${text.faint}`}>
+              <div className={`${typeScale.meta} ${text.faint} mt-0.5`}>
                 {availableCount === capability.options.length
                   ? `${capability.options.length} option${capability.options.length !== 1 ? 's' : ''}`
-                  : `${availableCount} of ${capability.options.length} options match current pairing`}
+                  : `${availableCount} of ${capability.options.length} available`}
               </div>
             )}
           </div>
@@ -123,10 +131,11 @@ function CapabilityCard({
   }
 
   const hasDeepDive = selectedOption?.provider === 'Red Hat' && solutionDetails[selectedOptionId];
+  const markClass = categoricalMark[providerMarkKey(selectedOption)];
 
   return (
     <div
-      className={`${status.completeCard} ${interactive.transitionAll} ${
+      className={`rounded-card bg-surface ${interactive.transitionAll} ${markClass} ${
         hasDeepDive ? `${card.selectedClickable} ${interactive.focusRing}` : ''
       }`}
       role={hasDeepDive ? 'button' : undefined}
@@ -141,119 +150,82 @@ function CapabilityCard({
       }}
       aria-label={`Selected: ${capability.name} — ${selectedOption?.name || ''}`}
     >
-      <div className={`flex items-center gap-2 rounded-t-card ${compact ? 'px-2 py-1.5' : 'px-3 py-2'} ${status.completeBanner}`}>
-        <CheckCircle2 size={compact ? 14 : 18} className="shrink-0 opacity-95" aria-hidden />
+      <div className="flex items-center gap-1.5 px-2 py-1 border-b border-hair">
+        <CheckCircle2 size={12} className="text-green-600 shrink-0" aria-hidden />
         <div className="min-w-0 flex-1">
-          <div className={`font-bold uppercase tracking-wide opacity-95 ${compact ? 'text-[9px]' : 'text-[10px]'}`}>
-            Selected
+          <div className={`${typeScale.componentName} ${text.ink} truncate`}>
+            {capability.name}
+            {selectedOption?.isCustomer && (
+              <Building2 size={10} className={`inline ml-1 mb-0.5 ${text.muted}`} title="Customer-provided" />
+            )}
           </div>
-          <div className={`font-bold leading-tight truncate ${compact ? 'text-xs' : 'text-sm'}`}>
-            {selectedOption?.name}
+          <div className={`${typeScale.meta} ${text.muted} truncate`}>
+            {detailLevel === 2 ? `${selectedOption?.provider}: ${selectedOption?.name}` : selectedOption?.name}
           </div>
         </div>
-      </div>
-      <div className={`${compact ? 'p-2' : 'p-4'}`}>
-        <div className="flex items-start justify-between gap-2 mb-1">
-          <div className="flex flex-1 min-w-0 items-start gap-1">
-            {hasSubComponents && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onToggleExpanded(selectedOptionId);
-                }}
-                className={`p-0.5 rounded-card ${interactive.hoverTint} flex-shrink-0 mt-0.5 ${interactive.transition} ${interactive.focusRing}`}
-                title={isExpanded ? 'Collapse components' : 'Expand components'}
-                aria-expanded={isExpanded}
-              >
-                {isExpanded ? (
-                  <ChevronDown size={14} className="flex-shrink-0" />
-                ) : (
-                  <ChevronRight size={14} className="flex-shrink-0" />
-                )}
-              </button>
-            )}
+        <div className="flex gap-0.5 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+          {hasSubComponents && (
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                onConfigure(capability);
+                onToggleExpanded(selectedOptionId);
               }}
-              className={`flex-1 min-w-0 text-left cursor-pointer hover:opacity-80 ${interactive.transition} ${interactive.focusRing}`}
-              title="Change option"
+              className={`p-0.5 rounded-card ${interactive.hoverTint} flex-shrink-0 ${interactive.transition} ${interactive.focusRing}`}
+              title={isExpanded ? 'Collapse components' : 'Expand components'}
+              aria-expanded={isExpanded}
             >
-              <div className="flex items-center gap-1 mb-1">
-                <h4 className={`font-bold ${text.ink} truncate ${compact ? 'text-xs' : 'text-sm'}`}>
-                  {capability.name}
-                </h4>
-                {selectedOption?.isCustomer && (
-                  <Building2 size={compact ? 10 : 14} className={`${text.muted} flex-shrink-0`} title="Customer-provided" />
-                )}
-              </div>
-              <div className={`font-semibold ${text.muted} truncate ${compact ? 'text-xs' : 'text-xs'}`}>
-                {detailLevel === 2 ? `${selectedOption?.provider}: ${selectedOption?.name}` : selectedOption?.name}
-              </div>
-              {detailLevel === 2 && selectedOption?.status && (
-                <div className={`text-xs ${text.faint} mt-0.5`}>
-                  {selectedOption.status}
-                </div>
+              {isExpanded ? (
+                <ChevronDown size={12} className="flex-shrink-0" />
+              ) : (
+                <ChevronRight size={12} className="flex-shrink-0" />
               )}
             </button>
-          </div>
-          <div className="flex gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+          )}
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onConfigure(capability); }}
+            className={`p-0.5 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
+            title={capability.required ? 'Change (required)' : 'Change'}
+            aria-label="Change"
+          >
+            <X size={11} />
+          </button>
+          {!capability.required && (
             <button
               type="button"
-              onClick={() => onConfigure(capability)}
-              className={`p-1 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
-              title={capability.required ? 'Change (required)' : 'Change'}
-              aria-label="Change"
+              onClick={(e) => { e.stopPropagation(); onRemove(capability.id); }}
+              className={`p-0.5 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
+              title="Remove"
+              aria-label="Remove"
             >
-              <X size={compact ? 10 : 14} />
+              <Trash2 size={11} />
             </button>
-            {!capability.required && (
-              <button
-                type="button"
-                onClick={() => onRemove(capability.id)}
-                className={`p-1 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
-                title="Remove"
-                aria-label="Remove"
-              >
-                <Trash2 size={compact ? 10 : 14} />
-              </button>
-            )}
-          </div>
+          )}
         </div>
-        {!compact && detailLevel === 2 && (
-          <p className={`text-xs ${text.muted} line-clamp-1`}>
-            {selectedOption?.description}
-          </p>
-        )}
       </div>
+      {detailLevel === 2 && selectedOption?.status && (
+        <div className={`px-2 py-0.5 ${typeScale.meta} ${text.faint}`}>
+          {selectedOption.status}
+        </div>
+      )}
 
-      {/* Sub-components (expanded) — hairline list, no nested bordered boxes */}
+      {/* Sub-components (expanded) — hairline list */}
       {isExpanded && hasSubComponents && (
-        <div className="border-t border-hair px-3 py-2 bg-tint">
-          <div className={`text-xs font-semibold ${text.muted} mb-2`}>Components</div>
+        <div className="border-t border-hair px-2 py-1 bg-tint">
+          <div className={`${typeScale.groupLabel} ${text.faint} mb-1`}>Components</div>
           <div className="divide-y divide-hair">
             {subComponents[selectedOptionId].components.map((comp) => (
-              <div key={comp.id} className="py-2 first:pt-0 last:pb-0">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className={`font-semibold text-xs ${text.ink}`}>
-                      {comp.name}
-                    </div>
-                    <div className={`text-xs ${text.link}`}>
-                      {comp.role}
-                    </div>
-                  </div>
-                </div>
-                <div className={`text-xs ${text.muted} mt-1`}>
-                  {comp.description}
-                </div>
+              <div key={comp.id} className="py-1 first:pt-0 last:pb-0">
+                <div className={`${typeScale.secondary} font-semibold ${text.ink}`}>{comp.name}</div>
+                <div className={`${typeScale.meta} ${text.link}`}>{comp.role}</div>
+                {comp.description && (
+                  <div className={`${typeScale.meta} ${text.muted}`}>{comp.description}</div>
+                )}
                 {comp.stages && (
-                  <div className="flex gap-1 mt-1 flex-wrap">
+                  <div className="flex gap-1 mt-0.5 flex-wrap">
                     {comp.stages.map((stage, idx) => (
-                      <span key={idx} className={`text-xs px-2 py-0.5 bg-surface border border-hair ${text.muted} rounded-card`}>
+                      <span key={idx} className={`${typeScale.meta} px-1.5 py-0.5 bg-surface border border-hair ${text.muted} rounded-card`}>
                         {stage}
                       </span>
                     ))}
@@ -279,16 +251,16 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
   const hasOrchestration = orchestration.length > 0;
 
   return (
-    <div className="space-y-3">
+    <div className={density.stackGap}>
       {hasOrchestration && (
-        <div className="space-y-2">
+        <div className={density.stackGap}>
           <CollapsibleDividerHeader
             title="Orchestration Layer"
             isOpen={servicesSubOpen.orchestration}
             onToggle={() => onToggleSub('orchestration')}
           />
           {servicesSubOpen.orchestration && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            <div className={`grid grid-cols-2 md:grid-cols-3 ${density.rowGap}`}>
               {orchestration.map((cap) => (
                 <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
@@ -296,21 +268,21 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
           )}
           {hasWrapper && servicesSubOpen.orchestration && (
             <div className="flex justify-center">
-              <ArrowDown size={16} className={text.faint} />
+              <ArrowDown size={14} className={text.faint} />
             </div>
           )}
         </div>
       )}
 
       {hasWrapper && (
-        <div className="space-y-2">
+        <div className={density.stackGap}>
           <CollapsibleDividerHeader
             title="Cross-Cutting Concerns"
             isOpen={servicesSubOpen.wrapper}
             onToggle={() => onToggleSub('wrapper')}
           />
           {servicesSubOpen.wrapper && (
-            <div className="grid grid-cols-2 gap-2">
+            <div className={`grid grid-cols-2 md:grid-cols-3 ${density.rowGap}`}>
               {wrapper.map((cap) => (
                 <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
@@ -318,23 +290,23 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
           )}
           {hasCore && servicesSubOpen.wrapper && (
             <div className="flex justify-center">
-              <ArrowDown size={16} className={text.faint} />
+              <ArrowDown size={14} className={text.faint} />
             </div>
           )}
         </div>
       )}
 
       {hasCore && (
-        <div className="space-y-2">
+        <div className={density.stackGap}>
           <CollapsibleDividerHeader
             title="Core Services"
             isOpen={servicesSubOpen.core}
             onToggle={() => onToggleSub('core')}
           />
           {servicesSubOpen.core && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <div className={`grid grid-cols-2 md:grid-cols-3 ${density.rowGap}`}>
               {coreBase.map((cap) => (
-                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact={false} {...cardProps} />
+                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
               {coreAdjacent.map((cap) => (
                 <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
@@ -475,17 +447,14 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
   }, [stackImageBusy]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header — one surface */}
-      <div className="rounded-card bg-surface p-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-4">
+      <div className="rounded-card bg-surface px-3 py-2">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex-1 min-w-0">
-            <p className={`text-[10px] font-semibold uppercase tracking-wide ${text.faint} mb-1`}>
-              Architecture exploration
-            </p>
-            <h2 className={`font-display text-xl font-bold ${text.ink}`}>Build Your AI Stack</h2>
+            <h2 className={`font-display text-base font-bold ${text.ink}`}>Build Your AI Stack</h2>
           </div>
-          <div className="flex flex-wrap gap-2 shrink-0">
+          <div className="flex flex-wrap gap-1.5 shrink-0">
             <button
               type="button"
               onClick={loadBasicInferenceStack}
@@ -529,62 +498,46 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
           </div>
         </div>
         {exportMessage && (
-          <p className={`text-xs ${text.muted} mb-3`}>{exportMessage}</p>
+          <p className={`text-xs ${text.muted}`}>{exportMessage}</p>
         )}
-        <div className="pt-3 mt-1 border-t border-hair">
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2">
-              <span className={`text-xs font-medium ${text.muted}`}>Detail Level:</span>
-              <div className="flex gap-1">
-                {[
-                  { level: 1, label: 'Basic' },
-                  { level: 2, label: 'Technical' }
-                ].map(({ level, label }) => (
-                  <button
-                    key={level}
-                    onClick={() => setDetailLevel(level)}
-                    className={`px-3 py-1 rounded-card text-xs font-medium ${interactive.transition} ${interactive.focusRing} ${
-                      detailLevel === level ? toggle.active : toggle.inactive
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* View Order Toggle */}
-            <div className="flex items-center gap-2">
-              <span className={`text-xs font-medium ${text.muted}`}>View:</span>
-              <button
-                type="button"
-                onClick={() => setViewOrder(viewOrder === 'bottom-up' ? 'top-down' : 'bottom-up')}
-                className={`flex items-center gap-2 px-3 py-1 rounded-card text-xs font-medium ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
-              >
-                {viewOrder === 'bottom-up' ? (
-                  <>
-                    <ArrowUp size={12} />
-                    Bottom-Up (Infra at Bottom)
-                  </>
-                ) : (
-                  <>
-                    <ArrowDown size={12} />
-                    Top-Down (Infra at Top)
-                  </>
-                )}
-              </button>
+        <div className="pt-2 mt-1 border-t border-hair flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-1.5">
+            <span className={`text-xs font-medium ${text.muted}`}>Detail:</span>
+            <div className="flex gap-1">
+              {[
+                { level: 1, label: 'Basic' },
+                { level: 2, label: 'Technical' }
+              ].map(({ level, label }) => (
+                <button
+                  key={level}
+                  onClick={() => setDetailLevel(level)}
+                  className={`px-2 py-0.5 rounded-card text-xs font-medium ${interactive.transition} ${interactive.focusRing} ${
+                    detailLevel === level ? toggle.active : toggle.inactive
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setViewOrder(viewOrder === 'bottom-up' ? 'top-down' : 'bottom-up')}
+            className={`flex items-center gap-1 px-2 py-0.5 rounded-card text-xs font-medium ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
+          >
+            {viewOrder === 'bottom-up' ? <ArrowUp size={11} /> : <ArrowDown size={11} />}
+            {viewOrder === 'bottom-up' ? 'Infra at bottom' : 'Infra at top'}
+          </button>
         </div>
       </div>
 
       {/* Stack — #stack-capture-root is the PNG capture region (layers + legend) */}
       <div
         id="stack-capture-root"
-        className="rounded-card bg-tint p-8"
+        className="rounded-card bg-tint p-2"
       >
-        <div className="max-w-5xl mx-auto space-y-1">
-          {/* Render layers based on viewOrder */}
+        <div className="space-y-1">
           {(viewOrder === 'bottom-up' ? [...capabilityLayers].reverse() : capabilityLayers).map((layer, index) => {
             const layerCapabilities = getCapabilitiesByLayer(layer.id);
             const selectedCount = layerCapabilities.filter(cap => isCapabilitySelected(cap.id)).length;
@@ -592,69 +545,64 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
 
             return (
               <div key={layer.id} className="relative">
-                {/* Layer Container — one surface, no per-layer hue */}
                 <div className="rounded-card bg-surface">
                   {/* Layer Header (collapsible) */}
                   <button
                     type="button"
                     onClick={() => toggleLayerExpanded(layer.id)}
                     aria-expanded={layerExpanded[layer.id]}
-                    className={`w-full px-4 py-3 flex items-center justify-between text-left cursor-pointer ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing} ${
+                    className={`w-full px-3 py-2 flex items-center justify-between text-left cursor-pointer ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing} ${
                       layerExpanded[layer.id] ? 'rounded-t-card border-b border-hair' : 'rounded-card'
                     }`}
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span className={`${text.muted} shrink-0 flex items-center`} aria-hidden>
-                        {layerExpanded[layer.id] ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className={`${text.faint} shrink-0 flex items-center`} aria-hidden>
+                        {layerExpanded[layer.id] ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                       </span>
-                      <div className="w-1 h-8 rounded-full shrink-0 bg-accent" />
+                      <div className="w-0.5 h-5 rounded-card shrink-0 bg-accent" />
                       <div className="min-w-0">
-                        <h3 className={`font-bold ${text.ink}`}>
-                          {layer.name}
-                        </h3>
-                        <p className={`text-xs ${text.muted}`}>
+                        <h3 className={`font-bold text-sm ${text.ink} leading-tight`}>{layer.name}</h3>
+                        <p className={`${typeScale.meta} ${text.muted}`}>
                           {selectedCount} of {layerCapabilities.length} configured
-                          {isServicesLayer && ' • Showing sub-layers'}
+                          {isServicesLayer && ' · sub-layers'}
                         </p>
                       </div>
                     </div>
-                    <div className={`px-3 py-1 rounded-full text-xs font-bold shrink-0 bg-tint ${text.faint}`}>
+                    <div className={`px-2 py-0.5 rounded-card ${typeScale.meta} font-bold shrink-0 bg-tint ${text.faint}`}>
                       L{index + 1}
                     </div>
                   </button>
 
-                  {/* Layer Content */}
                   {layerExpanded[layer.id] && (
-                  <div className="p-4">
-                    {isServicesLayer ? (
-                      <ServicesLayerContent
-                        layerId={layer.id}
-                        layerColor={layer.color}
-                        servicesSubOpen={servicesSubOpen}
-                        onToggleSub={toggleServicesSub}
-                        cardProps={cardProps}
-                      />
-                    ) : (
-                      <div className="flex flex-wrap gap-3 justify-center">
-                        {layerCapabilities.map(capability => (
-                          <div key={capability.id} className="w-full md:w-[calc(50%-0.375rem)] lg:w-[calc(33.333%-0.5rem)]">
+                    <div className="p-2">
+                      {isServicesLayer ? (
+                        <ServicesLayerContent
+                          layerId={layer.id}
+                          layerColor={layer.color}
+                          servicesSubOpen={servicesSubOpen}
+                          onToggleSub={toggleServicesSub}
+                          cardProps={cardProps}
+                        />
+                      ) : (
+                        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ${density.rowGap}`}>
+                          {layerCapabilities.map(capability => (
                             <CapabilityCard
+                              key={capability.id}
                               capability={capability}
                               layerColor={layer.color}
+                              compact
                               {...cardProps}
                             />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
 
-                {/* Connection Arrow (except for top layer) */}
                 {index < capabilityLayers.length - 1 && (
-                  <div className="flex justify-center py-1">
-                    <div className="w-0.5 h-4 bg-hair" />
+                  <div className="flex justify-center py-0.5">
+                    <div className="w-px h-3 bg-hair" />
                   </div>
                 )}
               </div>
@@ -662,23 +610,23 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
           })}
         </div>
 
-        {/* Legend */}
-        <div className={`mt-6 flex items-center justify-center gap-6 text-xs ${text.muted} flex-wrap`}>
-          <div className="flex items-center gap-2">
-            <div className={`w-3 h-3 ${providerMark.redHat} rounded-card`}></div>
-            <span>Red Hat Solution</span>
+        {/* Categorical legend — colored marks + meanings */}
+        <div className="mt-3 pt-2 border-t border-hair flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-1.5">
+            <span className={legendChip.redHat} />
+            <span className={`${typeScale.meta} ${text.muted}`}>Red Hat</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className={`w-3 h-3 ${providerMark.customer} rounded-card`}></div>
-            <span>Customer Solution</span>
+          <div className="flex items-center gap-1.5">
+            <span className={legendChip.openSource} />
+            <span className={`${typeScale.meta} ${text.muted}`}>Open source</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className={`w-3 h-3 ${providerMark.partner} rounded-card`}></div>
-            <span>Partner/Other</span>
+          <div className="flex items-center gap-1.5">
+            <span className={legendChip.partner} />
+            <span className={`${typeScale.meta} ${text.muted}`}>Partner / hardware</span>
           </div>
-          <div className="flex items-center gap-2">
-            <ArrowDown size={12} />
-            <span>AI Services shows sub-layers</span>
+          <div className="flex items-center gap-1.5">
+            <span className={legendChip.customer} />
+            <span className={`${typeScale.meta} ${text.muted}`}>Customer / optional</span>
           </div>
         </div>
       </div>

@@ -113,3 +113,65 @@ export const modal = {
   body: 'space-y-5 p-5',
   section: 'space-y-3 border-t border-hair pt-5 first:border-t-0 first:pt-0',
 };
+
+/**
+ * Density law (docs/DESIGN-LAW.md §"Density & composition law").
+ * Compact panel/section chrome — paddings shrink, content dominates.
+ */
+export const density = {
+  /** Outer panel chrome (replace p-4/p-6 on section containers). */
+  panelPad: 'px-3 py-2',
+  /** Inner section chrome within a panel. */
+  sectionPad: 'px-2 py-1.5',
+  /** Header/label row within a panel. */
+  headerPad: 'px-3 py-2',
+  /** Content area within a card box. */
+  cardPad: 'px-2 py-1',
+  /** Gap between sibling boxes in a row. */
+  rowGap: 'gap-2',
+  /** Gap between stacked sections. */
+  stackGap: 'space-y-2',
+};
+
+/**
+ * Type scale for the density law.
+ * component-name > group-label > body-secondary (one step each).
+ */
+export const typeScale = {
+  /** Component / product name — the point of every box. */
+  componentName: 'text-sm font-bold leading-tight',
+  /** Group / section label — visible, not shouting. */
+  groupLabel: 'text-xs font-semibold uppercase tracking-wide',
+  /** Secondary / supporting text — one step below component name. */
+  secondary: 'text-xs leading-snug',
+  /** Faint / tertiary metadata. */
+  meta: 'text-[11px] leading-snug',
+};
+
+/**
+ * Categorical mark tokens (Accent law + Density law).
+ * Applied as outlines, left hairlines, or dots on neutral surfaces — NEVER surface fills.
+ * Meanings: redHat = Red Hat provenance, openSource = community/open-source,
+ *           partner = hardware / partner / third-party, customer = your organization.
+ */
+export const categoricalMark = {
+  /** Red Hat — red left hairline + subtle red tint outline. */
+  redHat: 'border-l-2 border-l-red-600 border border-red-200 dark:border-red-900',
+  /** Open Source — blue left hairline + subtle blue tint outline. */
+  openSource: 'border-l-2 border-l-blue-500 border border-blue-200 dark:border-blue-900',
+  /** Partner / Hardware / Third-party — teal left hairline + subtle teal tint outline. */
+  partner: 'border-l-2 border-l-teal-500 border border-teal-200 dark:border-teal-900',
+  /** Customer / Your organization — neutral outline only (no hue). */
+  customer: 'border border-dashed border-edge',
+};
+
+/**
+ * Legend chip classes matching categoricalMark colors.
+ * Pair each chip with the categoricalMark key of the same name.
+ */
+export const legendChip = {
+  redHat: 'w-3 h-3 rounded-card bg-red-600',
+  openSource: 'w-3 h-3 rounded-card bg-blue-500',
+  partner: 'w-3 h-3 rounded-card bg-teal-500',
+  customer: 'w-3 h-3 rounded-card border-2 border-dashed border-edge bg-page',
+};
