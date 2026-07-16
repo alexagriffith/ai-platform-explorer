@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Search, Filter, ExternalLink } from 'lucide-react';
 import { products } from '../data/products';
-import { text, surface, border, interactive, field, productStatus } from '../lib/styleTokens';
+import { text, surface, border, interactive, field, productStatus, density, typeScale } from '../lib/styleTokens';
 
 function statusTextClass(s) {
   return productStatus[s] ?? 'text-faint';
@@ -22,17 +22,17 @@ export default function ProductExplorer() {
   });
 
   return (
-    <div data-tab="products" className="space-y-6">
+    <div data-tab="products" className={density.stackGap}>
       {/* Filters — flat section, no box container (inputs are boxed themselves) */}
       <div>
-        <div className="mb-4">
-          <h2 className={`text-xl font-bold ${text.ink}`}>Red Hat AI Product Catalog</h2>
-          <p className={`text-sm ${text.muted} mt-1`}>Browse Red Hat AI portfolio components, maturity status, and documentation</p>
+        <div className="mb-2">
+          <h2 className={`${typeScale.componentName} ${text.ink}`}>Red Hat AI Product Catalog</h2>
+          <p className={`${typeScale.secondary} ${text.muted} mt-0.5`}>Browse Red Hat AI portfolio components, maturity status, and documentation</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className={`grid md:grid-cols-3 ${density.rowGap}`}>
           <div className="relative">
-            <Search className={`absolute left-3 top-2.5 ${text.faint}`} size={18} />
+            <Search className={`absolute left-3 top-2.5 ${text.faint}`} size={16} />
             <input
               type="text"
               placeholder="Search products..."
@@ -68,40 +68,40 @@ export default function ProductExplorer() {
       </div>
 
       {/* Product Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className={`grid md:grid-cols-2 lg:grid-cols-3 ${density.rowGap}`}>
         {filteredProducts.map(product => {
           return (
             <div
               key={product.id}
               className={`rounded-card border ${border.hair} ${surface.raised} hover:-translate-y-0.5 ${interactive.transitionAll}`}
             >
-              <div className="p-6">
-                <div className="mb-2">
-                  <h3 className={`font-bold text-lg ${text.ink}`}>
+              <div className={density.sectionPad}>
+                <div className="mb-1">
+                  <h3 className={`${typeScale.componentName} ${text.ink}`}>
                     {product.name}
                   </h3>
                 </div>
 
                 {/* Status and category — text-only, no bordered badges inside card */}
-                <div className="flex flex-wrap items-center gap-3 mb-3">
-                  <span className={`text-xs font-semibold uppercase tracking-wide ${statusTextClass(product.status)}`}>
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <span className={`${typeScale.meta} font-semibold uppercase tracking-wide ${statusTextClass(product.status)}`}>
                     {product.status}
                   </span>
-                  <span className={`text-xs ${text.faint}`}>
+                  <span className={`${typeScale.meta} ${text.faint}`}>
                     {product.category}
                   </span>
                 </div>
 
-                <p className={`text-sm ${text.muted} mb-4`}>
+                <p className={`${typeScale.secondary} ${text.muted} mb-2`}>
                   {product.description}
                 </p>
 
                 {product.useCases && (
-                  <div className="mb-4">
-                    <h4 className={`text-xs font-semibold ${text.faint} uppercase tracking-wide mb-2`}>
+                  <div className="mb-2">
+                    <h4 className={`${typeScale.meta} font-semibold ${text.faint} uppercase tracking-wide mb-1`}>
                       Use Cases
                     </h4>
-                    <ul className={`text-xs ${text.muted} space-y-1`}>
+                    <ul className={`${typeScale.secondary} ${text.muted} space-y-0.5`}>
                       {product.useCases.slice(0, 2).map((useCase, i) => (
                         <li key={i}>• {useCase}</li>
                       ))}
@@ -110,11 +110,11 @@ export default function ProductExplorer() {
                 )}
 
                 {product.customerProfile && (
-                  <div className="mb-4">
-                    <h4 className={`text-xs font-semibold ${text.faint} uppercase tracking-wide mb-2`}>
+                  <div className="mb-2">
+                    <h4 className={`${typeScale.meta} font-semibold ${text.faint} uppercase tracking-wide mb-1`}>
                       Typical Users
                     </h4>
-                    <p className={`text-xs ${text.muted}`}>
+                    <p className={`${typeScale.secondary} ${text.muted}`}>
                       {product.customerProfile.slice(0, 2).join(' · ')}
                     </p>
                   </div>
@@ -125,9 +125,9 @@ export default function ProductExplorer() {
                     href={product.resources.docs}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-1 text-sm text-link hover:underline ${interactive.transition} mt-2`}
+                    className={`inline-flex items-center gap-1 ${typeScale.secondary} text-link hover:underline ${interactive.transition} mt-1`}
                   >
-                    <ExternalLink size={14} />
+                    <ExternalLink size={12} />
                     Documentation
                   </a>
                 )}
@@ -138,9 +138,9 @@ export default function ProductExplorer() {
       </div>
 
       {filteredProducts.length === 0 && (
-        <div className="text-center py-12">
-          <Filter size={48} className={`mx-auto ${text.faint} mb-3`} />
-          <p className={text.muted}>No products match your filters</p>
+        <div className="text-center py-8">
+          <Filter size={36} className={`mx-auto ${text.faint} mb-2`} />
+          <p className={`${typeScale.secondary} ${text.muted}`}>No products match your filters</p>
         </div>
       )}
     </div>
