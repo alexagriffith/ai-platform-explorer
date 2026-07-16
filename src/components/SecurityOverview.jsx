@@ -5,7 +5,6 @@ export default function SecurityOverview() {
     {
       name: 'Authentication',
       icon: Key,
-      color: 'blue',
       provider: 'Red Hat Connectivity Link (Authorino)',
       methods: [
         { name: 'OAuth 2.0', description: 'Industry-standard authorization framework' },
@@ -17,7 +16,6 @@ export default function SecurityOverview() {
     {
       name: 'Rate Limiting & Quotas',
       icon: Shield,
-      color: 'yellow',
       provider: 'Kuadrant',
       methods: [
         { name: 'Per-User Limits', description: 'Individual user rate limiting' },
@@ -29,7 +27,6 @@ export default function SecurityOverview() {
     {
       name: 'Access Control',
       icon: Lock,
-      color: 'purple',
       provider: 'OpenShift role-based access control (RBAC)',
       methods: [
         { name: 'Role-Based Access Control (RBAC)', description: 'Grant access based on user roles' },
@@ -41,7 +38,6 @@ export default function SecurityOverview() {
     {
       name: 'Governance & Explainability',
       icon: Eye,
-      color: 'green',
       provider: 'TrustyAI',
       methods: [
         { name: 'Bias Detection', description: 'Identify fairness issues' },
@@ -53,7 +49,6 @@ export default function SecurityOverview() {
     {
       name: 'Model & Asset Security',
       icon: FileCheck,
-      color: 'red',
       provider: 'Model Context Protocol (MCP) Ingestion Pipeline',
       methods: [
         { name: 'Vulnerability (CVE) Scanning', description: 'Detection of known vulnerabilities (Common Vulnerabilities and Exposures)' },
@@ -65,7 +60,6 @@ export default function SecurityOverview() {
     {
       name: 'Multi-Tenancy',
       icon: Users,
-      color: 'indigo',
       provider: 'OpenShift & AI Gateway',
       methods: [
         { name: 'Namespace Isolation', description: 'Hard tenant boundaries' },
@@ -76,100 +70,54 @@ export default function SecurityOverview() {
     }
   ];
 
-  const getColorClasses = (color) => {
-    const colors = {
-      blue: {
-        bg: 'bg-blue-100 dark:bg-blue-900/30',
-        text: 'text-blue-700 dark:text-blue-300',
-        border: 'border-blue-300 dark:border-blue-700',
-        icon: 'bg-blue-600'
-      },
-      yellow: {
-        bg: 'bg-yellow-100 dark:bg-yellow-900/30',
-        text: 'text-yellow-700 dark:text-yellow-300',
-        border: 'border-yellow-300 dark:border-yellow-700',
-        icon: 'bg-yellow-600'
-      },
-      purple: {
-        bg: 'bg-purple-100 dark:bg-purple-900/30',
-        text: 'text-purple-700 dark:text-purple-300',
-        border: 'border-purple-300 dark:border-purple-700',
-        icon: 'bg-purple-600'
-      },
-      green: {
-        bg: 'bg-green-100 dark:bg-green-900/30',
-        text: 'text-green-700 dark:text-green-300',
-        border: 'border-green-300 dark:border-green-700',
-        icon: 'bg-green-600'
-      },
-      red: {
-        bg: 'bg-red-100 dark:bg-red-900/30',
-        text: 'text-red-700 dark:text-red-300',
-        border: 'border-red-300 dark:border-red-700',
-        icon: 'bg-red-600'
-      },
-      indigo: {
-        bg: 'bg-indigo-100 dark:bg-indigo-900/30',
-        text: 'text-indigo-700 dark:text-indigo-300',
-        border: 'border-indigo-300 dark:border-indigo-700',
-        icon: 'bg-indigo-600'
-      }
-    };
-    return colors[color];
-  };
-
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Shield className="text-purple-600" size={28} />
+    <div className="rounded-card bg-surface px-6 py-5">
+      <div className="flex items-center gap-3 mb-5">
+        <Shield className="text-muted flex-shrink-0" size={22} />
         <div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+          <h3 className="text-xl font-bold text-ink">
             Enterprise Security & Governance
           </h3>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted text-sm">
             Security building blocks for authentication, access control, and compliance
           </p>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      {/* Security layers — no outer border cards, use tint + hairline header separator */}
+      <div className="grid md:grid-cols-2 gap-5">
         {securityLayers.map((layer, index) => {
           const Icon = layer.icon;
-          const colors = getColorClasses(layer.color);
 
           return (
             <div
               key={index}
-              className={`border-2 ${colors.border} rounded-lg overflow-hidden`}
+              className="rounded-card bg-tint overflow-hidden"
             >
-              {/* Header */}
-              <div className={`${colors.bg} p-4 border-b-2 ${colors.border}`}>
-                <div className="flex items-center gap-3 mb-1">
-                  <div className={`${colors.icon} text-white p-2 rounded-lg`}>
-                    <Icon size={20} />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className={`font-bold ${colors.text}`}>
-                      {layer.name}
-                    </h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      {layer.provider}
-                    </p>
-                  </div>
+              {/* Header — hairline separator, no full border */}
+              <div className="border-b border-hair px-4 py-3">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <Icon size={15} className="text-muted flex-shrink-0" />
+                  <h4 className="font-bold text-ink text-sm">
+                    {layer.name}
+                  </h4>
                 </div>
+                <p className="text-xs text-muted pl-5">
+                  {layer.provider}
+                </p>
               </div>
 
               {/* Content */}
-              <div className="p-4">
+              <div className="px-4 py-3">
                 <ul className="space-y-2">
                   {layer.methods.map((method, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <span className={`${colors.text} mt-1`}>•</span>
+                      <span className="text-accent mt-1 flex-shrink-0 text-xs">•</span>
                       <div className="flex-1">
-                        <div className="font-semibold text-sm text-gray-900 dark:text-white">
+                        <div className="font-semibold text-sm text-ink">
                           {method.name}
                         </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">
+                        <div className="text-xs text-muted">
                           {method.description}
                         </div>
                       </div>
@@ -182,12 +130,12 @@ export default function SecurityOverview() {
         })}
       </div>
 
-      {/* Summary Banner */}
-      <div className="mt-6 p-4 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg border border-purple-200 dark:border-purple-700">
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+      {/* Summary — tint strip, no border */}
+      <div className="mt-5 rounded-card bg-tint px-4 py-3">
+        <h4 className="font-semibold text-ink mb-1">
           Defense-in-Depth Strategy
         </h4>
-        <p className="text-sm text-gray-700 dark:text-gray-300">
+        <p className="text-sm text-muted">
           Red Hat AI provides multiple layers of security from authentication at the gateway, through role-based access
           control in OpenShift, to governance and explainability with TrustyAI. Red Hat's supply chain practices include
           scanning and signing for Red Hat-shipped content; extend the same controls to your own models and assets

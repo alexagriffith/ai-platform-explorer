@@ -18,7 +18,13 @@
     "src/components/QuickComparisonTable.jsx",
     "src/components/DecisionFlowchart.jsx",
     "src/components/DecisionTree.jsx",
-    "src/components/ProductExplorer.jsx"
+    "src/components/ProductExplorer.jsx",
+    "src/components/UseCaseView.jsx",
+    "src/components/FineTuningDecisionMatrix.jsx",
+    "src/components/TrainingDeepDive.jsx",
+    "src/components/RAGArchitecture.jsx",
+    "src/components/MCPEcosystemFull.jsx",
+    "src/components/SecurityOverview.jsx"
   ],
   "migratedTabs": [
     {
@@ -40,6 +46,10 @@
     {
       "id": "products",
       "navLabel": "Products"
+    },
+    {
+      "id": "use-cases",
+      "navLabel": "Use Cases"
     }
   ],
   "legacyViolatingFilesMax": 10

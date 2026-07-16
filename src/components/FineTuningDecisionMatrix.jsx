@@ -5,7 +5,6 @@ export default function FineTuningDecisionMatrix() {
     {
       name: 'Fine-Tuning',
       icon: Sparkles,
-      color: 'purple',
       bestFor: 'Deep model alignment, complex domain-specific terminology, or intricate document structures',
       whenToUse: [
         'Specialized industry jargon or terminology',
@@ -33,7 +32,6 @@ export default function FineTuningDecisionMatrix() {
     {
       name: 'RAG (Retrieval-Augmented Generation)',
       icon: Database,
-      color: 'blue',
       bestFor: 'Dynamic, frequently changing information that requires citations',
       whenToUse: [
         'Data changes frequently',
@@ -61,7 +59,6 @@ export default function FineTuningDecisionMatrix() {
     {
       name: 'Pre-trained',
       icon: Zap,
-      color: 'green',
       bestFor: 'General tasks with low complexity and common knowledge',
       whenToUse: [
         'General-purpose tasks',
@@ -88,79 +85,49 @@ export default function FineTuningDecisionMatrix() {
     }
   ];
 
-  const getColorClasses = (color) => {
-    const colors = {
-      purple: {
-        bg: 'bg-purple-100 dark:bg-purple-900/30',
-        text: 'text-purple-700 dark:text-purple-300',
-        border: 'border-purple-300 dark:border-purple-600',
-        icon: 'bg-purple-600',
-        badge: 'bg-purple-600 text-white'
-      },
-      blue: {
-        bg: 'bg-blue-100 dark:bg-blue-900/30',
-        text: 'text-blue-700 dark:text-blue-300',
-        border: 'border-blue-300 dark:border-blue-600',
-        icon: 'bg-blue-600',
-        badge: 'bg-blue-600 text-white'
-      },
-      green: {
-        bg: 'bg-green-100 dark:bg-green-900/30',
-        text: 'text-green-700 dark:text-green-300',
-        border: 'border-green-300 dark:border-green-600',
-        icon: 'bg-green-600',
-        badge: 'bg-green-600 text-white'
-      }
-    };
-    return colors[color] || 'bg-gray-600 text-white';
-  };
-
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+    <div className="rounded-card bg-surface px-6 py-5">
+      <h3 className="text-xl font-bold text-ink mb-1">
         Fine-Tuning vs. Retrieval-Augmented Generation (RAG) vs. Pre-trained: Decision Matrix
       </h3>
-      <p className="text-gray-600 dark:text-gray-400 mb-6">
+      <p className="text-muted text-sm mb-5">
         Choose the right approach for your AI application based on your requirements
       </p>
 
-      {/* Comparison Grid */}
-      <div className="grid md:grid-cols-3 gap-6 mb-6">
+      {/* Comparison Grid — no borders on cards, tint background only */}
+      <div className="grid md:grid-cols-3 gap-5 mb-5">
         {approaches.map((approach) => {
           const Icon = approach.icon;
-          const colors = getColorClasses(approach.color);
 
           return (
             <div
               key={approach.name}
-              className={`border-2 ${colors.border} rounded-lg overflow-hidden`}
+              className="rounded-card bg-tint overflow-hidden"
             >
               {/* Header */}
-              <div className={`${colors.bg} p-4 border-b-2 ${colors.border}`}>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className={`${colors.icon} text-white p-2 rounded-lg`}>
-                    <Icon size={24} />
-                  </div>
-                  <h4 className={`font-bold text-lg ${colors.text}`}>
+              <div className="border-b border-hair px-4 py-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <Icon size={18} className="text-muted" />
+                  <h4 className="font-bold text-ink">
                     {approach.name}
                   </h4>
                 </div>
-                <p className="text-sm text-gray-700 dark:text-gray-300">
+                <p className="text-xs text-muted">
                   {approach.bestFor}
                 </p>
               </div>
 
               {/* Content */}
-              <div className="p-4 space-y-4">
+              <div className="px-4 py-3 space-y-4">
                 {/* When to Use */}
                 <div>
-                  <h5 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">
+                  <h5 className="text-xs font-semibold text-faint uppercase tracking-wide mb-1.5">
                     When to Use
                   </h5>
                   <ul className="space-y-1">
                     {approach.whenToUse.map((item, i) => (
-                      <li key={i} className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2">
-                        <AlertCircle size={14} className={colors.text + ' mt-0.5 flex-shrink-0'} />
+                      <li key={i} className="text-sm text-ink flex items-start gap-2">
+                        <AlertCircle size={12} className="text-muted mt-0.5 flex-shrink-0" />
                         <span>{item}</span>
                       </li>
                     ))}
@@ -169,13 +136,13 @@ export default function FineTuningDecisionMatrix() {
 
                 {/* Pros */}
                 <div>
-                  <h5 className="text-xs font-semibold text-green-600 dark:text-green-400 uppercase mb-2">
+                  <h5 className="text-xs font-semibold text-green-600 uppercase tracking-wide mb-1.5">
                     Advantages
                   </h5>
                   <ul className="space-y-1">
                     {approach.pros.map((pro, i) => (
-                      <li key={i} className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2">
-                        <CheckCircle size={14} className="text-green-600 mt-0.5 flex-shrink-0" />
+                      <li key={i} className="text-sm text-ink flex items-start gap-2">
+                        <CheckCircle size={12} className="text-green-600 mt-0.5 flex-shrink-0" />
                         <span>{pro}</span>
                       </li>
                     ))}
@@ -184,13 +151,13 @@ export default function FineTuningDecisionMatrix() {
 
                 {/* Cons */}
                 <div>
-                  <h5 className="text-xs font-semibold text-red-600 dark:text-red-400 uppercase mb-2">
+                  <h5 className="text-xs font-semibold text-accent uppercase tracking-wide mb-1.5">
                     Tradeoffs
                   </h5>
                   <ul className="space-y-1">
                     {approach.cons.map((con, i) => (
-                      <li key={i} className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2">
-                        <XCircle size={14} className="text-red-600 mt-0.5 flex-shrink-0" />
+                      <li key={i} className="text-sm text-ink flex items-start gap-2">
+                        <XCircle size={12} className="text-accent mt-0.5 flex-shrink-0" />
                         <span>{con}</span>
                       </li>
                     ))}
@@ -198,22 +165,22 @@ export default function FineTuningDecisionMatrix() {
                 </div>
 
                 {/* Metrics */}
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-hair">
                   <div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Effort</div>
-                    <div className={`text-sm font-semibold ${colors.text}`}>{approach.effort}</div>
+                    <div className="text-xs text-faint">Effort</div>
+                    <div className="text-sm font-semibold text-ink">{approach.effort}</div>
                   </div>
                   <div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Cost</div>
-                    <div className={`text-sm font-semibold ${colors.text}`}>{approach.cost}</div>
+                    <div className="text-xs text-faint">Cost</div>
+                    <div className="text-sm font-semibold text-ink">{approach.cost}</div>
                   </div>
                   <div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Latency</div>
-                    <div className={`text-sm font-semibold ${colors.text}`}>{approach.latency}</div>
+                    <div className="text-xs text-faint">Latency</div>
+                    <div className="text-sm font-semibold text-ink">{approach.latency}</div>
                   </div>
                   <div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Domain fit</div>
-                    <div className={`text-sm font-semibold ${colors.text}`}>{approach.accuracy}</div>
+                    <div className="text-xs text-faint">Domain fit</div>
+                    <div className="text-sm font-semibold text-ink">{approach.accuracy}</div>
                   </div>
                 </div>
               </div>
@@ -222,25 +189,25 @@ export default function FineTuningDecisionMatrix() {
         })}
       </div>
 
-      {/* Decision Helper */}
-      <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Which approach fits?</h4>
+      {/* Decision Helper — tint background, no border */}
+      <div className="rounded-card bg-tint px-4 py-3">
+        <h4 className="font-semibold text-ink mb-2">Which approach fits?</h4>
         <div className="space-y-2 text-sm">
           <div className="flex items-start gap-2">
-            <Sparkles className="text-purple-600 mt-0.5" size={16} />
-            <p className="text-gray-700 dark:text-gray-300">
+            <Sparkles className="text-muted mt-0.5 flex-shrink-0" size={14} />
+            <p className="text-ink">
               <strong>Choose Fine-Tuning</strong> if you need the model to deeply understand complex domain knowledge and can invest in training infrastructure
             </p>
           </div>
           <div className="flex items-start gap-2">
-            <Database className="text-blue-600 mt-0.5" size={16} />
-            <p className="text-gray-700 dark:text-gray-300">
+            <Database className="text-muted mt-0.5 flex-shrink-0" size={14} />
+            <p className="text-ink">
               <strong>Choose RAG</strong> if your data changes frequently, you need citations, or you want to avoid model training
             </p>
           </div>
           <div className="flex items-start gap-2">
-            <Zap className="text-green-600 mt-0.5" size={16} />
-            <p className="text-gray-700 dark:text-gray-300">
+            <Zap className="text-muted mt-0.5 flex-shrink-0" size={14} />
+            <p className="text-ink">
               <strong>Choose Pre-trained</strong> if you need fast deployment for general tasks without specialized knowledge requirements
             </p>
           </div>

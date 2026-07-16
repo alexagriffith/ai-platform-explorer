@@ -5,7 +5,6 @@ export default function RAGArchitecture() {
     {
       stage: 'API Gateway',
       icon: Zap,
-      color: 'purple',
       description: 'Routing, rate-limiting, and authentication',
       details: [
         'Request routing',
@@ -17,14 +16,12 @@ export default function RAGArchitecture() {
     {
       stage: 'Retrieval',
       icon: FileText,
-      color: 'blue',
       description: 'Embed the query and fetch relevant document chunks from the vector database',
       details: ['Query embedding', 'Vector similarity search', 'Top-K chunk selection', 'Context assembly into the prompt']
     },
     {
       stage: 'Model Serving',
       icon: Cpu,
-      color: 'blue',
       description: 'vLLM/KServe inference engine on NVIDIA, AMD, or Intel accelerators',
       details: [
         'vLLM runtime',
@@ -36,7 +33,6 @@ export default function RAGArchitecture() {
     {
       stage: 'Response',
       icon: ArrowRight,
-      color: 'orange',
       description: 'Answer generated from the retrieved context',
       details: [
         'Token streaming',
@@ -80,28 +76,18 @@ export default function RAGArchitecture() {
     }
   ];
 
-  const getColorClasses = (color) => {
-    const colors = {
-      purple: 'bg-purple-600',
-      blue: 'bg-blue-600',
-      green: 'bg-green-600',
-      orange: 'bg-orange-600'
-    };
-    return colors[color] || 'bg-gray-600';
-  };
-
   return (
     <div className="space-y-6">
-      {/* RAG Pipeline Flow */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+      {/* RAG Pipeline Flow — no border on outer panel, no border on stage cards */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-xl font-bold text-ink mb-1">
           RAG Architecture Pipeline
         </h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
+        <p className="text-muted text-sm mb-5">
           API Gateway → Retrieval → Model Serving → Response
         </p>
 
-        <div className="grid md:grid-cols-4 gap-4 mb-6">
+        <div className="grid md:grid-cols-4 gap-4">
           {pipeline.map((stage, index) => {
             const Icon = stage.icon;
 
@@ -109,26 +95,24 @@ export default function RAGArchitecture() {
               <div key={index} className="relative">
                 {index < pipeline.length - 1 && (
                   <div className="hidden md:block absolute top-8 -right-2 z-10">
-                    <ArrowRight className="text-gray-400" size={20} />
+                    <ArrowRight className="text-muted" size={18} />
                   </div>
                 )}
 
-                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700 relative z-20">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={`${getColorClasses(stage.color)} text-white p-2 rounded-lg`}>
-                      <Icon size={20} />
-                    </div>
-                    <h4 className="font-bold text-gray-900 dark:text-white">
+                <div className="rounded-card bg-tint p-4 relative z-20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Icon size={15} className="text-muted flex-shrink-0" />
+                    <h4 className="font-bold text-ink text-sm">
                       {stage.stage}
                     </h4>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  <p className="text-xs text-muted mb-2">
                     {stage.description}
                   </p>
                   <ul className="space-y-1">
                     {stage.details.map((detail, i) => (
-                      <li key={i} className="text-xs text-gray-700 dark:text-gray-300 flex items-start gap-1">
-                        <span className="text-purple-600">•</span>
+                      <li key={i} className="text-xs text-ink flex items-start gap-1">
+                        <span className="text-accent flex-shrink-0">•</span>
                         <span>{detail}</span>
                       </li>
                     ))}
@@ -140,12 +124,12 @@ export default function RAGArchitecture() {
         </div>
       </div>
 
-      {/* Document Processing */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+      {/* Document Processing — no border on outer, no border on format items */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-xl font-bold text-ink mb-1">
           Document Processing & Ingestion
         </h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">
+        <p className="text-muted text-sm mb-4">
           Common source formats a RAG ingestion pipeline needs to handle, and the typical processing technique for each
         </p>
 
@@ -155,14 +139,14 @@ export default function RAGArchitecture() {
             return (
               <div
                 key={index}
-                className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700"
+                className="flex items-center gap-2 py-2 border-b border-hair last:border-b-0 md:border-b-0 md:py-0"
               >
-                <Icon className="text-blue-600" size={20} />
+                <Icon className="text-muted flex-shrink-0" size={15} />
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-sm text-gray-900 dark:text-white">
+                  <div className="font-semibold text-sm text-ink">
                     {doc.format}
                   </div>
-                  <div className="text-xs text-gray-600 dark:text-gray-400 truncate">
+                  <div className="text-xs text-muted">
                     {doc.technique}
                   </div>
                 </div>
@@ -172,15 +156,15 @@ export default function RAGArchitecture() {
         </div>
       </div>
 
-      {/* RAG Configuration Tuning */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      {/* RAG Configuration Tuning — no border on outer, grid items use tint, no border */}
+      <div className="rounded-card bg-surface px-6 py-5">
         <div className="flex items-center gap-3 mb-4">
-          <Settings className="text-purple-600" size={24} />
+          <Settings className="text-muted" size={18} />
           <div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h3 className="text-xl font-bold text-ink">
               RAG Configuration Tuning
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-muted text-sm">
               Parameters worth testing systematically to improve retrieval quality
             </p>
           </div>
@@ -190,23 +174,23 @@ export default function RAGArchitecture() {
           {autoRAGOptimizations.map((opt, index) => (
             <div
               key={index}
-              className="p-4 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg border border-purple-200 dark:border-purple-700"
+              className="rounded-card bg-tint px-4 py-3"
             >
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+              <h4 className="font-semibold text-ink mb-1">
                 {opt.name}
               </h4>
-              <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+              <p className="text-sm text-muted mb-1.5">
                 {opt.description}
               </p>
-              <div className="text-xs text-purple-700 dark:text-purple-300 font-medium">
+              <div className="text-xs text-muted">
                 Optimizes: {opt.optimizes}
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
-          <p className="text-sm text-gray-700 dark:text-gray-300">
+        <div className="mt-4 border-t border-hair pt-3">
+          <p className="text-sm text-ink">
             <strong>Goal:</strong> systematically test these parameters against a labeled question set, then deploy the best-scoring configuration
           </p>
         </div>

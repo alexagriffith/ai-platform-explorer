@@ -7,7 +7,6 @@ export default function MCPEcosystemFull() {
   const mcpServers = {
     'red-hat': {
       title: 'Red Hat',
-      color: 'red',
       servers: [
         { name: 'OpenShift', description: 'Kubernetes cluster management and deployment automation' },
         { name: 'Ansible Automation Platform', description: 'Infrastructure and application automation' },
@@ -16,7 +15,6 @@ export default function MCPEcosystemFull() {
     },
     'isv-partners': {
       title: 'Technology Partners',
-      color: 'blue',
       servers: [
         { name: 'Confluent Cloud', description: 'Apache Kafka managed streaming platform' },
         { name: 'EDB Postgres AI', description: 'Enterprise PostgreSQL with AI extensions' },
@@ -28,7 +26,6 @@ export default function MCPEcosystemFull() {
     },
     'community': {
       title: 'Community',
-      color: 'green',
       servers: [
         { name: 'MongoDB', description: 'Document database (stores JSON-like records)' },
         { name: 'MariaDB', description: 'Open source relational database' },
@@ -41,19 +38,9 @@ export default function MCPEcosystemFull() {
 
   const components = [
     {
-      id: 'registry',
-      name: 'MCP Registry',
-      role: 'System of Record',
-      subtitle: 'Governance Backbone • Source of Truth',
-      color: 'green',
-      icon: Database,
-      description: 'Central system of record for all MCP servers with governance and metadata management (Technology Preview)'
-    },
-    {
       id: 'catalog',
       name: 'MCP Catalog',
       role: 'Discover • Browse • Launch',
-      color: 'blue',
       icon: Package,
       description: 'User-facing interface to discover, browse, and deploy MCP servers (Technology Preview)'
     },
@@ -61,7 +48,6 @@ export default function MCPEcosystemFull() {
       id: 'lifecycle',
       name: 'Lifecycle Operator',
       role: 'Deploy • Configure • Update',
-      color: 'yellow',
       icon: Workflow,
       description: 'Kubernetes operator managing MCP server lifecycle on OpenShift (Technology Preview)'
     },
@@ -69,142 +55,100 @@ export default function MCPEcosystemFull() {
       id: 'gateway',
       name: 'MCP Gateway',
       role: 'Secure • Aggregate • Enforce',
-      color: 'purple',
       icon: Shield,
       description: 'Centralized access control, tool aggregation, and policy enforcement (Technology Preview)'
     }
   ];
 
-  const getColorClasses = (color) => {
-    const colors = {
-      red: {
-        bg: 'bg-red-100 dark:bg-red-900/30',
-        border: 'border-red-300 dark:border-red-700',
-        text: 'text-red-700 dark:text-red-300',
-        badge: 'bg-red-600'
-      },
-      blue: {
-        bg: 'bg-blue-100 dark:bg-blue-900/30',
-        border: 'border-blue-300 dark:border-blue-700',
-        text: 'text-blue-700 dark:text-blue-300',
-        badge: 'bg-blue-600'
-      },
-      green: {
-        bg: 'bg-green-100 dark:bg-green-900/30',
-        border: 'border-green-300 dark:border-green-700',
-        text: 'text-green-700 dark:text-green-300',
-        badge: 'bg-green-600'
-      },
-      yellow: {
-        bg: 'bg-yellow-100 dark:bg-yellow-900/30',
-        border: 'border-yellow-300 dark:border-yellow-700',
-        text: 'text-yellow-700 dark:text-yellow-300',
-        badge: 'bg-yellow-600'
-      },
-      purple: {
-        bg: 'bg-purple-100 dark:bg-purple-900/30',
-        border: 'border-purple-300 dark:border-purple-700',
-        text: 'text-purple-700 dark:text-purple-300',
-        badge: 'bg-purple-600'
-      }
-    };
-    return colors[color];
-  };
-
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg shadow-lg p-6 text-white">
-        <h2 className="text-2xl font-bold mb-2">
+      {/* Header — no border on outer */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h2 className="text-2xl font-bold text-ink mb-1">
           The Model Context Protocol (MCP) Ecosystem on OpenShift AI
         </h2>
-        <p className="text-purple-100 mb-4">
+        <p className="text-muted text-sm mb-3">
           A platform approach for discovering, deploying, securing, and governing MCP servers
         </p>
-        <div className="mb-4 px-3 py-2 bg-white/20 border border-white/40 rounded-lg text-sm font-medium">
+        <p className="text-xs font-medium text-muted mb-3">
           Technology Preview — verify availability with your Red Hat account team
-        </div>
+        </p>
         <a
           href="https://modelcontextprotocol.io"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-link hover:text-accent transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
         >
-          <ExternalLink size={16} />
-          <span className="text-sm font-medium">MCP specification (modelcontextprotocol.io)</span>
+          <ExternalLink size={13} />
+          <span>MCP specification (modelcontextprotocol.io)</span>
         </a>
       </div>
 
-      {/* Ingestion Pipeline */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+      {/* Ingestion Pipeline — no border on outer, pipeline steps use tint */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-lg font-bold text-ink mb-4">
           Ingestion Pipeline
         </h3>
         <div className="flex items-center justify-center gap-2 flex-wrap">
           {['Validate', 'Scan', 'Sign', 'Certify', 'Publish'].map((stage, index) => (
             <div key={stage} className="flex items-center gap-2">
-              <div className="px-4 py-2 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg text-red-700 dark:text-red-300 font-medium text-sm">
+              <div className="px-4 py-2 rounded-card bg-tint text-ink font-medium text-sm">
                 {stage}
               </div>
-              {index < 4 && <div className="text-gray-400">→</div>}
+              {index < 4 && <div className="text-muted text-sm">→</div>}
             </div>
           ))}
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400 text-center mt-3">
+        <p className="text-sm text-muted text-center mt-3">
           The planned ingestion workflow validates, scans, and signs MCP servers before publication — confirm certification status in product documentation.
         </p>
       </div>
 
-      {/* Core Components */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+      {/* Core Components — no border on outer, registry + components use tint */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-lg font-bold text-ink mb-4">
           Core Platform Components
         </h3>
 
-        {/* Registry at center */}
-        <div className="mb-6">
-          <div className={`border-2 ${getColorClasses('green').border} ${getColorClasses('green').bg} rounded-lg p-4 text-center`}>
-            <div className="flex items-center justify-center gap-3 mb-2">
-              <Database className="text-green-600" size={24} />
-              <h4 className="text-lg font-bold text-gray-900 dark:text-white">
-                MCP Registry
-              </h4>
-            </div>
-            <p className="text-sm font-semibold text-green-700 dark:text-green-300 mb-1">
-              System of Record • Governance Backbone
-            </p>
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              Central repository for all MCP server metadata, certification status, and governance
-            </p>
-            <div className="mt-2 inline-block px-3 py-1 bg-green-600 text-white text-xs font-bold rounded-full">
-              System of record
-            </div>
+        {/* Registry at center — tint background, no border */}
+        <div className="rounded-card bg-tint p-4 text-center mb-4">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <Database className="text-green-600" size={20} />
+            <h4 className="text-base font-bold text-ink">
+              MCP Registry
+            </h4>
+          </div>
+          <p className="text-xs font-semibold text-muted mb-1">
+            System of Record • Governance Backbone
+          </p>
+          <p className="text-xs text-muted">
+            Central repository for all MCP server metadata, certification status, and governance
+          </p>
+          <div className="mt-2 inline-block rounded-full bg-page px-2.5 py-0.5 text-xs font-medium text-muted">
+            System of record
           </div>
         </div>
 
-        {/* Other components */}
+        {/* Other components — tint, no border */}
         <div className="grid md:grid-cols-3 gap-4">
-          {components.filter(c => c.id !== 'registry').map((component) => {
+          {components.map((component) => {
             const Icon = component.icon;
-            const colors = getColorClasses(component.color);
 
             return (
               <div
                 key={component.id}
-                className={`border-2 ${colors.border} ${colors.bg} rounded-lg p-4`}
+                className="rounded-card bg-tint p-4"
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className={`${colors.badge} text-white p-2 rounded-lg`}>
-                    <Icon size={18} />
-                  </div>
-                  <h4 className="font-bold text-gray-900 dark:text-white text-sm">
+                <div className="flex items-center gap-2 mb-1">
+                  <Icon size={16} className="text-muted flex-shrink-0" />
+                  <h4 className="font-bold text-ink text-sm">
                     {component.name}
                   </h4>
                 </div>
-                <p className={`text-xs font-semibold ${colors.text} mb-2`}>
+                <p className="text-xs font-semibold text-muted mb-1">
                   {component.role}
                 </p>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs text-muted">
                   {component.description}
                 </p>
               </div>
@@ -212,66 +156,65 @@ export default function MCPEcosystemFull() {
           })}
         </div>
 
-        <div className="mt-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-700">
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            <strong className="text-purple-700 dark:text-purple-300">Registry role:</strong> The registry supplies metadata to the catalog, lifecycle operator, and gateway so components share one source of truth.
+        <div className="mt-4 border-t border-hair pt-3">
+          <p className="text-sm text-ink">
+            <strong>Registry role:</strong> The registry supplies metadata to the catalog, lifecycle operator, and gateway so components share one source of truth.
           </p>
         </div>
       </div>
 
-      {/* AI assets, evaluation, agents */}
-      <div className="bg-gradient-to-r from-green-900 to-teal-900 rounded-lg shadow-lg p-6 text-white">
-        <h3 className="text-xl font-bold mb-2">
+      {/* AI assets section */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-lg font-bold text-ink mb-1">
           AI assets, evaluation, and agents
         </h3>
-        <p className="text-green-100 text-sm">
+        <p className="text-muted text-sm">
           Enterprise users consume governed MCP tools through OpenShift AI
         </p>
       </div>
 
-      {/* Ready-to-Use MCP Servers */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+      {/* Curated MCP Servers — disclosure, no border on cards */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-lg font-bold text-ink mb-1">
           Curated MCP servers
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        <p className="text-sm text-muted mb-4">
           Partner catalog expands over time; certification status belongs in product documentation.
         </p>
 
-        <div className="space-y-4">
+        <div className="space-y-2">
           {Object.entries(mcpServers).map(([key, category]) => {
-            const colors = getColorClasses(category.color);
             const isExpanded = expandedCategory === key;
 
             return (
-              <div key={key} className={`border-2 ${colors.border} rounded-lg overflow-hidden`}>
+              <div key={key}>
                 <button
                   onClick={() => setExpandedCategory(isExpanded ? null : key)}
-                  className={`w-full ${colors.bg} p-4 flex items-center justify-between hover:opacity-80 transition-opacity`}
+                  className="w-full rounded-card bg-tint px-4 py-2.5 flex items-center justify-between hover:bg-page transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
                 >
-                  <h4 className={`font-bold ${colors.text}`}>
+                  <h4 className="font-semibold text-ink text-sm">
                     {category.title} ({category.servers.length})
                   </h4>
                   {isExpanded ? (
-                    <ChevronUp className={colors.text} size={20} />
+                    <ChevronUp className="text-muted" size={16} />
                   ) : (
-                    <ChevronDown className={colors.text} size={20} />
+                    <ChevronDown className="text-muted" size={16} />
                   )}
                 </button>
 
                 {isExpanded && (
-                  <div className="p-4 bg-white dark:bg-gray-800 space-y-2">
+                  <div className="mt-1 pl-4 divide-y divide-hair">
                     {category.servers.map((server, index) => (
                       <div
                         key={index}
-                        className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg"
+                        className="py-2 flex items-start gap-3"
                       >
-                        <div className={`w-2 h-2 ${colors.badge} rounded-full mt-1.5`}></div>
+                        <div className="w-1 h-1 rounded-full bg-accent mt-2 flex-shrink-0"></div>
                         <div className="flex-1">
-                          <h5 className="font-semibold text-sm text-gray-900 dark:text-white">
+                          <h5 className="font-semibold text-sm text-ink">
                             {server.name}
                           </h5>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">
+                          <p className="text-xs text-muted">
                             {server.description}
                           </p>
                         </div>
