@@ -9,7 +9,13 @@
     "src/components/AcronymGlossary.jsx",
     "src/lib/styleTokens.js",
     "src/components/ProductComparisonView.jsx",
-    "src/components/SharedSpineLedger.jsx"
+    "src/components/SharedSpineLedger.jsx",
+    "src/components/UseCaseView.jsx",
+    "src/components/FineTuningDecisionMatrix.jsx",
+    "src/components/TrainingDeepDive.jsx",
+    "src/components/RAGArchitecture.jsx",
+    "src/components/MCPEcosystemFull.jsx",
+    "src/components/SecurityOverview.jsx"
   ],
   "migratedTabs": [
     {
@@ -19,7 +25,11 @@
     {
       "id": "product-comparison",
       "navLabel": "Product Comparison"
+    },
+    {
+      "id": "use-cases",
+      "navLabel": "Use Cases"
     }
   ],
-  "legacyViolatingFilesMax": 16
+  "legacyViolatingFilesMax": 10
 }

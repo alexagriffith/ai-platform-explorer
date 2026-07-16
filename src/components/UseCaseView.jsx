@@ -197,31 +197,31 @@ export default function UseCaseView() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+    <div data-tab="use-cases" className="space-y-6">
+      {/* Header — no border on outer, buttons have no border so no nesting violation */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h2 className="text-2xl font-bold text-ink mb-1">
           Use Cases
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">
+        <p className="text-muted mb-4">
           Explore common AI use cases and recommended Red Hat solutions for each scenario.
         </p>
 
-        {/* Quick Jump to Use Case */}
+        {/* Quick Jump */}
         <div className="space-y-3">
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            <span className="text-sm font-semibold text-ink">
               Quick Jump:
             </span>
             <button
               onClick={selectAllUseCases}
-              className="px-3 py-1 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors"
+              className="px-3 py-1 rounded-card bg-accent text-on-accent text-sm font-medium hover:bg-accent-strong transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
             >
               Select All
             </button>
             <button
               onClick={clearUseCases}
-              className="px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white text-sm rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
+              className="px-3 py-1 rounded-card bg-tint text-muted text-sm font-medium hover:text-ink transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
             >
               Clear All
             </button>
@@ -231,10 +231,10 @@ export default function UseCaseView() {
               <button
                 key={useCase.id}
                 onClick={() => toggleUseCase(useCase.id)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`px-3 py-1.5 rounded-card text-sm font-medium transition-all duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page ${
                   selectedUseCases.includes(useCase.id)
-                    ? 'bg-purple-600 text-white shadow-md'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    ? 'bg-accent text-on-accent'
+                    : 'bg-tint text-muted hover:text-ink'
                 }`}
               >
                 {useCase.title}
@@ -252,27 +252,25 @@ export default function UseCaseView() {
           <div
             key={useCase.id}
             ref={(el) => (useCaseRefs.current[useCase.id] = el)}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow scroll-mt-4"
+            className="rounded-card bg-surface overflow-hidden scroll-mt-4"
           >
-            <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
-              <div className="flex items-start gap-3">
-                <Lightbulb className="text-white mt-1" size={24} />
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-1">
-                    {useCase.title}
-                  </h3>
-                  <p className="text-purple-100">
-                    {useCase.description}
-                  </p>
-                </div>
+            <div className="border-b border-hair px-5 py-4 flex items-start gap-3">
+              <Lightbulb className="text-accent mt-1 flex-shrink-0" size={20} />
+              <div>
+                <h3 className="text-lg font-bold text-ink mb-0.5">
+                  {useCase.title}
+                </h3>
+                <p className="text-muted text-sm">
+                  {useCase.description}
+                </p>
               </div>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="px-5 py-4 space-y-4">
               {/* Recommended Products */}
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                  <CheckCircle2 size={18} className="text-green-600" />
+                <h4 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                  <CheckCircle2 size={13} className="text-green-600" />
                   Recommended Products
                 </h4>
                 <div className="flex flex-wrap gap-2">
@@ -284,7 +282,7 @@ export default function UseCaseView() {
                     return (
                       <span
                         key={productId}
-                        className="px-3 py-1.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-lg text-sm font-medium"
+                        className="px-2.5 py-0.5 rounded-full bg-tint text-ink text-xs font-medium"
                       >
                         {name}{statusSuffix}
                       </span>
@@ -295,14 +293,14 @@ export default function UseCaseView() {
 
               {/* Customer Profiles */}
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-2 text-sm">
-                  WHO IS THIS FOR?
+                <h4 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">
+                  Who is this for?
                 </h4>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-x-4 gap-y-1">
                   {useCase.customerProfiles.map((profile, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-sm"
+                      className="text-sm text-muted"
                     >
                       {profile}
                     </span>
@@ -310,40 +308,42 @@ export default function UseCaseView() {
                 </div>
               </div>
 
-              {/* Deployment Patterns */}
-              <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-2 text-sm">
-                  DEPLOYMENT PATTERNS
-                </h4>
-                <div className="grid md:grid-cols-3 gap-2">
-                  {useCase.deploymentPatterns.map((pattern, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
-                    >
-                      <ArrowRight size={14} className="text-purple-600" />
-                      <span>{pattern}</span>
-                    </div>
-                  ))}
+              <div className="border-t border-hair pt-3 grid md:grid-cols-2 gap-4">
+                {/* Deployment Patterns */}
+                <div>
+                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">
+                    Deployment patterns
+                  </h4>
+                  <ul className="space-y-1">
+                    {useCase.deploymentPatterns.map((pattern, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-2 text-sm text-ink"
+                      >
+                        <ArrowRight size={13} className="text-accent mt-0.5 flex-shrink-0" />
+                        <span>{pattern}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
 
-              {/* Key Considerations */}
-              <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-2 text-sm">
-                  KEY CONSIDERATIONS
-                </h4>
-                <ul className="space-y-1">
-                  {useCase.considerations.map((consideration, i) => (
-                    <li
-                      key={i}
-                      className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2"
-                    >
-                      <span className="text-purple-600 mt-1">•</span>
-                      <span>{consideration}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Key Considerations */}
+                <div>
+                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">
+                    Key considerations
+                  </h4>
+                  <ul className="space-y-1">
+                    {useCase.considerations.map((consideration, i) => (
+                      <li
+                        key={i}
+                        className="text-sm text-ink flex items-start gap-2"
+                      >
+                        <span className="text-accent mt-1 flex-shrink-0 text-xs">•</span>
+                        <span>{consideration}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
@@ -365,33 +365,33 @@ export default function UseCaseView() {
       {/* Security Overview */}
       <SecurityOverview />
 
-      {/* When to Use What */}
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg p-6 border border-blue-200 dark:border-blue-700">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+      {/* Quick Decision Guide */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-lg font-bold text-ink mb-3">
           Quick Decision Guide
         </h3>
         <div className="space-y-3 text-sm">
           <div className="flex items-start gap-3">
-            <ArrowRight className="text-purple-600 mt-0.5" size={16} />
-            <p className="text-gray-700 dark:text-gray-300">
+            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={15} />
+            <p className="text-ink">
               <strong>RHEL AI</strong> for individual servers, fine-tuning, and getting started quickly
             </p>
           </div>
           <div className="flex items-start gap-3">
-            <ArrowRight className="text-purple-600 mt-0.5" size={16} />
-            <p className="text-gray-700 dark:text-gray-300">
+            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={15} />
+            <p className="text-ink">
               <strong>OpenShift AI</strong> for distributed workloads, large teams, and production ML
             </p>
           </div>
           <div className="flex items-start gap-3">
-            <ArrowRight className="text-purple-600 mt-0.5" size={16} />
-            <p className="text-gray-700 dark:text-gray-300">
+            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={15} />
+            <p className="text-ink">
               <strong>Red Hat AI Enterprise</strong> for the combined OpenShift + OpenShift AI platform path — confirm current packaging with your Red Hat account team
             </p>
           </div>
           <div className="flex items-start gap-3">
-            <ArrowRight className="text-purple-600 mt-0.5" size={16} />
-            <p className="text-gray-700 dark:text-gray-300">
+            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={15} />
+            <p className="text-ink">
               <strong>AI Inference Server</strong> for high-performance LLM serving with GPU optimization
             </p>
           </div>

@@ -132,39 +132,53 @@ export default function TrainingDeepDive() {
     }
   ];
 
+  const costBadge = (cost) => {
+    if (['Highest', 'Very High', 'High'].includes(cost)) {
+      return 'rounded-full px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
+    }
+    return 'rounded-full px-2 py-0.5 text-xs font-medium bg-tint text-muted';
+  };
+
+  const perfBadge = (performance) => {
+    if (performance === 'Maximum' || performance === 'Excellent') {
+      return 'rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+    }
+    return 'rounded-full px-2 py-0.5 text-xs font-medium bg-tint text-ink';
+  };
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-lg shadow-lg p-6 text-white">
-        <h2 className="text-2xl font-bold mb-2">
+      {/* Header — no border */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h2 className="text-2xl font-bold text-ink mb-1">
           Model Training & Fine-Tuning
         </h2>
-        <p className="text-orange-100">
+        <p className="text-muted text-sm">
           Build, train, and fine-tune AI models at enterprise scale
         </p>
       </div>
 
-      {/* Training vs Inference */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <GitBranch className="text-orange-600" size={20} />
+      {/* Training vs Inference — no border on outer panel */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
+          <GitBranch className="text-muted" size={18} />
           Training vs. Inference
         </h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 dark:bg-gray-900">
+            <thead className="bg-tint">
               <tr>
-                <th className="px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Aspect</th>
-                <th className="px-4 py-2 text-left font-semibold text-orange-700 dark:text-orange-300">Training</th>
-                <th className="px-4 py-2 text-left font-semibold text-blue-700 dark:text-blue-300">Inference</th>
+                <th className="px-4 py-2 text-left font-semibold text-ink border-b border-hair">Aspect</th>
+                <th className="px-4 py-2 text-left font-semibold text-ink border-b border-hair">Training</th>
+                <th className="px-4 py-2 text-left font-semibold text-ink border-b border-hair">Inference</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="divide-y divide-hair">
               {trainingVsInference.map((row, index) => (
-                <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{row.aspect}</td>
-                  <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{row.training}</td>
-                  <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{row.inference}</td>
+                <tr key={index} className="hover:bg-tint transition-colors duration-150 ease-out motion-reduce:transition-none">
+                  <td className="px-4 py-3 font-medium text-ink">{row.aspect}</td>
+                  <td className="px-4 py-3 text-muted">{row.training}</td>
+                  <td className="px-4 py-3 text-muted">{row.inference}</td>
                 </tr>
               ))}
             </tbody>
@@ -172,9 +186,9 @@ export default function TrainingDeepDive() {
         </div>
       </div>
 
-      {/* Training Workflow */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+      {/* Training Workflow — no border on outer, no border on step cards */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-lg font-bold text-ink mb-4">
           Typical Training Workflow
         </h3>
         <div className="grid md:grid-cols-5 gap-4">
@@ -182,23 +196,23 @@ export default function TrainingDeepDive() {
             <div key={index} className="relative">
               {index < trainingWorkflow.length - 1 && (
                 <div className="hidden md:block absolute top-8 -right-2 z-10">
-                  <ArrowRight className="text-gray-400" size={20} />
+                  <ArrowRight className="text-muted" size={18} />
                 </div>
               )}
-              <div className="bg-orange-50 dark:bg-orange-900/20 border-2 border-orange-300 dark:border-orange-700 rounded-lg p-4 relative z-20">
-                <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+              <div className="rounded-card bg-tint p-4 relative z-20">
+                <div className="text-xs font-semibold text-faint mb-1">
                   STEP {index + 1}
                 </div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-2 text-sm">
+                <h4 className="font-bold text-ink mb-1 text-sm">
                   {stage.step}
                 </h4>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                <p className="text-xs text-muted mb-3">
                   {stage.description}
                 </p>
                 <div className="space-y-1">
                   {stage.tools.map((tool, i) => (
-                    <div key={i} className="text-xs text-orange-700 dark:text-orange-300 flex items-start gap-1">
-                      <span>•</span>
+                    <div key={i} className="text-xs text-ink flex items-start gap-1">
+                      <span className="text-accent flex-shrink-0">•</span>
                       <span>{tool}</span>
                     </div>
                   ))}
@@ -209,28 +223,28 @@ export default function TrainingDeepDive() {
         </div>
       </div>
 
-      {/* Decision Matrix */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+      {/* Decision Matrix — no border on outer panel, items use tint only */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-lg font-bold text-ink mb-4">
           Product Decision Matrix
         </h3>
-        <div className="space-y-3">
+        <div className="divide-y divide-hair">
           {decisionMatrix.map((option, index) => (
             <div
               key={index}
-              className="p-4 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-lg border border-orange-200 dark:border-orange-700"
+              className="py-3 first:pt-0 last:pb-0"
             >
               <div className="flex items-start gap-3">
-                <CheckCircle className="text-orange-600 mt-0.5 flex-shrink-0" size={20} />
+                <CheckCircle className="text-green-600 mt-0.5 flex-shrink-0" size={16} />
                 <div className="flex-1">
-                  <h4 className="font-bold text-gray-900 dark:text-white mb-1">
+                  <h4 className="font-bold text-ink mb-0.5">
                     Choose {option.choose}
                   </h4>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
-                    <strong>When:</strong> {option.when}
+                  <p className="text-sm text-muted mb-0.5">
+                    <strong className="text-ink">When:</strong> {option.when}
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    <strong>Best for:</strong> {option.bestFor}
+                  <p className="text-sm text-muted">
+                    <strong className="text-ink">Best for:</strong> {option.bestFor}
                   </p>
                 </div>
               </div>
@@ -239,49 +253,37 @@ export default function TrainingDeepDive() {
         </div>
       </div>
 
-      {/* Hardware Comparison */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <Cpu className="text-orange-600" size={20} />
+      {/* Hardware Comparison — no border on outer */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-lg font-bold text-ink mb-1 flex items-center gap-2">
+          <Cpu className="text-muted" size={18} />
           GPU Hardware for Training
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        <p className="text-sm text-muted mb-4">
           Representative examples — GPU availability and pricing change quickly; confirm current options with your hardware vendor.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 dark:bg-gray-900">
+            <thead className="bg-tint">
               <tr>
-                <th className="px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">GPU</th>
-                <th className="px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Memory</th>
-                <th className="px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Best For</th>
-                <th className="px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Cost</th>
-                <th className="px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Performance</th>
+                <th className="px-4 py-2 text-left font-semibold text-ink border-b border-hair">GPU</th>
+                <th className="px-4 py-2 text-left font-semibold text-ink border-b border-hair">Memory</th>
+                <th className="px-4 py-2 text-left font-semibold text-ink border-b border-hair">Best For</th>
+                <th className="px-4 py-2 text-left font-semibold text-ink border-b border-hair">Cost</th>
+                <th className="px-4 py-2 text-left font-semibold text-ink border-b border-hair">Performance</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="divide-y divide-hair">
               {hardwareComparison.map((hw, index) => (
-                <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td className="px-4 py-3 font-semibold text-gray-900 dark:text-white">{hw.gpu}</td>
-                  <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{hw.memory}</td>
-                  <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{hw.bestFor}</td>
+                <tr key={index} className="hover:bg-tint transition-colors duration-150 ease-out motion-reduce:transition-none">
+                  <td className="px-4 py-3 font-semibold text-ink">{hw.gpu}</td>
+                  <td className="px-4 py-3 text-muted">{hw.memory}</td>
+                  <td className="px-4 py-3 text-muted">{hw.bestFor}</td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      ['Highest', 'Very High', 'High'].includes(hw.cost) ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' :
-                      ['Medium', 'Medium-Low'].includes(hw.cost) ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
-                      'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                    }`}>
-                      {hw.cost}
-                    </span>
+                    <span className={costBadge(hw.cost)}>{hw.cost}</span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      hw.performance === 'Maximum' || hw.performance === 'Excellent' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
-                      hw.performance === 'Good' || hw.performance.startsWith('Very Good') ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
-                      'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
-                    }`}>
-                      {hw.performance}
-                    </span>
+                    <span className={perfBadge(hw.performance)}>{hw.performance}</span>
                   </td>
                 </tr>
               ))}
@@ -290,56 +292,56 @@ export default function TrainingDeepDive() {
         </div>
       </div>
 
-      {/* Training vs Fine-Tuning */}
-      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-6 border border-purple-200 dark:border-purple-700">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+      {/* Training vs Fine-Tuning — no border, two columns separated by hairline */}
+      <div className="rounded-card bg-surface px-6 py-5">
+        <h3 className="text-lg font-bold text-ink mb-4">
           Training vs. Fine-Tuning
         </h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="font-semibold text-purple-700 dark:text-purple-300 mb-2 flex items-center gap-2">
-              <Zap size={18} />
+        <div className="grid md:grid-cols-2 divide-y divide-hair md:divide-y-0 md:divide-x">
+          <div className="pb-4 md:pb-0 md:pr-6">
+            <h4 className="font-semibold text-ink mb-2 flex items-center gap-2">
+              <Zap size={15} className="text-muted" />
               Full Training
             </h4>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <ul className="space-y-2 text-sm text-muted">
               <li className="flex items-start gap-2">
-                <span className="text-purple-600">•</span>
+                <span className="text-accent mt-1 flex-shrink-0">•</span>
                 <span>Trains a model from scratch (rare for large language models — most organizations start from a foundation model)</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-purple-600">•</span>
+                <span className="text-accent mt-1 flex-shrink-0">•</span>
                 <span>Requires massive datasets (TBs of data)</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-purple-600">•</span>
+                <span className="text-accent mt-1 flex-shrink-0">•</span>
                 <span>Multi-node distributed workloads essential</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-purple-600">•</span>
+                <span className="text-accent mt-1 flex-shrink-0">•</span>
                 <span>Red Hat OpenShift AI distributed workloads (Ray) support large multi-node jobs</span>
               </li>
             </ul>
           </div>
-          <div>
-            <h4 className="font-semibold text-pink-700 dark:text-pink-300 mb-2 flex items-center gap-2">
-              <Database size={18} />
+          <div className="pt-4 md:pt-0 md:pl-6">
+            <h4 className="font-semibold text-ink mb-2 flex items-center gap-2">
+              <Database size={15} className="text-muted" />
               Fine-Tuning
             </h4>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <ul className="space-y-2 text-sm text-muted">
               <li className="flex items-start gap-2">
-                <span className="text-pink-600">•</span>
+                <span className="text-accent mt-1 flex-shrink-0">•</span>
                 <span>Adapts existing model to specific data/tasks</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-pink-600">•</span>
+                <span className="text-accent mt-1 flex-shrink-0">•</span>
                 <span>Works with limited data via synthetic generation</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-pink-600">•</span>
+                <span className="text-accent mt-1 flex-shrink-0">•</span>
                 <span>Small-to-medium scale compared to pre-training</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-pink-600">•</span>
+                <span className="text-accent mt-1 flex-shrink-0">•</span>
                 <span>Use OpenShift AI fine-tuning workflows (supervised fine-tuning, LoRA adapters); InstructLab is an option for taxonomy-driven synthetic data — confirm current support status with your Red Hat account team</span>
               </li>
             </ul>
@@ -347,15 +349,15 @@ export default function TrainingDeepDive() {
         </div>
       </div>
 
-      {/* Contacts */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
+      {/* Resources */}
+      <div className="rounded-card bg-surface px-5 py-4">
         <div className="flex items-start gap-2">
-          <Info className="text-blue-600 mt-0.5" size={20} />
+          <Info className="text-muted mt-0.5 flex-shrink-0" size={17} />
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Resources & Contacts</h4>
-            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-              <p><strong>Questions:</strong> Ask your Red Hat account team.</p>
-              <p><strong>Docs:</strong> Working with distributed workloads, Red Hat OpenShift AI (docs.redhat.com)</p>
+            <h4 className="font-semibold text-ink mb-1">Resources & Contacts</h4>
+            <div className="text-sm text-muted space-y-1">
+              <p><strong className="text-ink">Questions:</strong> Ask your Red Hat account team.</p>
+              <p><strong className="text-ink">Docs:</strong> Working with distributed workloads, Red Hat OpenShift AI (docs.redhat.com)</p>
             </div>
           </div>
         </div>
