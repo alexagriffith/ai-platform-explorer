@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle2, AlertCircle, Sparkles, Copy, X } from 'lucide-react';
 import { products, thirdPartyOptions } from '../data/products';
+import { border, button, interactive, text } from '../lib/styleTokens';
 
 function getSuggestedProductIds(customerEnv) {
   const recommended = products.filter((p) => p.required).map((p) => p.id);
@@ -96,11 +97,11 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+      <div className="bg-surface rounded-card p-6 border border-edge">
+        <h2 className={`font-display text-2xl font-bold ${text.ink} mb-2`}>
           Configure Customer Environment
         </h2>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className={text.muted}>
           Capture the customer&apos;s existing footprint and constraints. Use the preview to copy a draft checklist for
           the workshop — nothing here updates the architecture canvas automatically.
         </p>
@@ -108,50 +109,50 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Existing Infrastructure */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <div className="bg-surface rounded-card p-6 border border-edge">
+          <h3 className={`text-lg font-semibold ${text.ink} mb-4 flex items-center gap-2`}>
             <CheckCircle2 size={20} className="text-green-600" />
             Existing Infrastructure
           </h3>
 
-          <div className="space-y-4">
-            <label className="flex items-center gap-3 cursor-pointer">
+          <div className={`space-y-4 divide-y ${border.divideHair}`}>
+            <label className={`flex items-center gap-3 cursor-pointer pt-0 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.hasKubernetes}
                 onChange={(e) => updateEnv('hasKubernetes', e.target.checked)}
-                className="w-5 h-5 text-purple-600 rounded"
+                className={`w-5 h-5 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-gray-700 dark:text-gray-300">Has Kubernetes</span>
+              <span className={text.ink}>Has Kubernetes</span>
             </label>
 
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-4 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.hasOpenShift}
                 onChange={(e) => updateEnv('hasOpenShift', e.target.checked)}
-                className="w-5 h-5 text-purple-600 rounded"
+                className={`w-5 h-5 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-gray-700 dark:text-gray-300">Has OpenShift</span>
+              <span className={text.ink}>Has OpenShift</span>
             </label>
 
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-4 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.hasGPUs}
                 onChange={(e) => updateEnv('hasGPUs', e.target.checked)}
-                className="w-5 h-5 text-purple-600 rounded"
+                className={`w-5 h-5 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-gray-700 dark:text-gray-300">Has GPUs</span>
+              <span className={text.ink}>Has GPUs</span>
             </label>
 
             {customerEnv.hasGPUs && (
-              <div className="ml-8 space-y-2">
-                <label className="block text-sm text-gray-700 dark:text-gray-300">GPU Type:</label>
+              <div className="ml-8 space-y-2 pt-2">
+                <label className={`block text-sm ${text.muted}`}>GPU Type:</label>
                 <select
                   value={customerEnv.gpuType || ''}
                   onChange={(e) => updateEnv('gpuType', e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"
+                  className={`w-full px-3 py-2 bg-page border border-edge rounded-card ${text.ink} ${interactive.transition} ${interactive.focusRing}`}
                 >
                   <option value="">Select...</option>
                   <option value="nvidia">NVIDIA</option>
@@ -162,54 +163,54 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
               </div>
             )}
 
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-4 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.hasApiGateway}
                 onChange={(e) => updateEnv('hasApiGateway', e.target.checked)}
-                className="w-5 h-5 text-purple-600 rounded"
+                className={`w-5 h-5 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-gray-700 dark:text-gray-300">Has API Gateway</span>
+              <span className={text.ink}>Has API Gateway</span>
             </label>
 
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-4 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.hasModelRegistry}
                 onChange={(e) => updateEnv('hasModelRegistry', e.target.checked)}
-                className="w-5 h-5 text-purple-600 rounded"
+                className={`w-5 h-5 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-gray-700 dark:text-gray-300">Has Model Registry (MLflow, etc.)</span>
+              <span className={text.ink}>Has Model Registry (MLflow, etc.)</span>
             </label>
 
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-4 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.hasVectorDB}
                 onChange={(e) => updateEnv('hasVectorDB', e.target.checked)}
-                className="w-5 h-5 text-purple-600 rounded"
+                className={`w-5 h-5 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-gray-700 dark:text-gray-300">Has Vector Database</span>
+              <span className={text.ink}>Has Vector Database</span>
             </label>
           </div>
         </div>
 
         {/* Requirements */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <AlertCircle size={20} className="text-blue-600" />
+        <div className="bg-surface rounded-card p-6 border border-edge">
+          <h3 className={`text-lg font-semibold ${text.ink} mb-4 flex items-center gap-2`}>
+            <AlertCircle size={20} className="text-accent" />
             Requirements & Goals
           </h3>
 
-          <div className="space-y-4">
+          <div className={`space-y-4 divide-y ${border.divideHair}`}>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className={`block text-sm font-medium ${text.muted} mb-2`}>
                 Primary Use Case
               </label>
               <select
                 value={customerEnv.useCase || ''}
                 onChange={(e) => updateEnv('useCase', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"
+                className={`w-full px-3 py-2 bg-page border border-edge rounded-card ${text.ink} ${interactive.transition} ${interactive.focusRing}`}
               >
                 <option value="">Select...</option>
                 <option value="inference">Model Inference/Serving</option>
@@ -221,14 +222,14 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div className="pt-4">
+              <label className={`block text-sm font-medium ${text.muted} mb-2`}>
                 Team Size
               </label>
               <select
                 value={customerEnv.teamSize}
                 onChange={(e) => updateEnv('teamSize', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"
+                className={`w-full px-3 py-2 bg-page border border-edge rounded-card ${text.ink} ${interactive.transition} ${interactive.focusRing}`}
               >
                 <option value="small">Small (1-10 people)</option>
                 <option value="medium">Medium (10-50 people)</option>
@@ -236,14 +237,14 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div className="pt-4">
+              <label className={`block text-sm font-medium ${text.muted} mb-2`}>
                 Deployment Model
               </label>
               <select
                 value={customerEnv.deployment}
                 onChange={(e) => updateEnv('deployment', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"
+                className={`w-full px-3 py-2 bg-page border border-edge rounded-card ${text.ink} ${interactive.transition} ${interactive.focusRing}`}
               >
                 <option value="cloud">Public Cloud</option>
                 <option value="on-premise">On-Premise</option>
@@ -252,14 +253,14 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div className="pt-4">
+              <label className={`block text-sm font-medium ${text.muted} mb-2`}>
                 Expected Scale
               </label>
               <select
                 value={customerEnv.scale || 'medium'}
                 onChange={(e) => updateEnv('scale', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"
+                className={`w-full px-3 py-2 bg-page border border-edge rounded-card ${text.ink} ${interactive.transition} ${interactive.focusRing}`}
               >
                 <option value="small">Small (&lt;100 req/sec)</option>
                 <option value="medium">Medium (100-1000 req/sec)</option>
@@ -268,14 +269,14 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div className="pt-4">
+              <label className={`block text-sm font-medium ${text.muted} mb-2`}>
                 Number of Models
               </label>
               <select
                 value={customerEnv.modelCount || 'few'}
                 onChange={(e) => updateEnv('modelCount', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"
+                className={`w-full px-3 py-2 bg-page border border-edge rounded-card ${text.ink} ${interactive.transition} ${interactive.focusRing}`}
               >
                 <option value="single">Single Model</option>
                 <option value="few">Few Models (2-5)</option>
@@ -284,14 +285,14 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div className="pt-4">
+              <label className={`block text-sm font-medium ${text.muted} mb-2`}>
                 Workload Type
               </label>
               <select
                 value={customerEnv.workloadType || 'inference'}
                 onChange={(e) => updateEnv('workloadType', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"
+                className={`w-full px-3 py-2 bg-page border border-edge rounded-card ${text.ink} ${interactive.transition} ${interactive.focusRing}`}
               >
                 <option value="inference">Inference Only</option>
                 <option value="training">Training Only</option>
@@ -307,109 +308,109 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
       {/* Additional Requirements */}
       <div className="grid md:grid-cols-3 gap-6">
         {/* Compliance & Security */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="bg-surface rounded-card p-6 border border-edge">
+          <h3 className={`text-lg font-semibold ${text.ink} mb-4`}>
             Compliance & Security
           </h3>
-          <div className="space-y-3">
-            <label className="flex items-center gap-3 cursor-pointer">
+          <div className={`space-y-3 divide-y ${border.divideHair}`}>
+            <label className={`flex items-center gap-3 cursor-pointer pt-0 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.requiresCompliance || false}
                 onChange={(e) => updateEnv('requiresCompliance', e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded"
+                className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">Regulatory Compliance (HIPAA, SOC2, etc.)</span>
+              <span className={`text-sm ${text.ink}`}>Regulatory Compliance (HIPAA, SOC2, etc.)</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-3 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.requiresAirGap || false}
                 onChange={(e) => updateEnv('requiresAirGap', e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded"
+                className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">Air-gapped Environment</span>
+              <span className={`text-sm ${text.ink}`}>Air-gapped Environment</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-3 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.requiresDataResidency || false}
                 onChange={(e) => updateEnv('requiresDataResidency', e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded"
+                className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">Data Residency Requirements</span>
+              <span className={`text-sm ${text.ink}`}>Data Residency Requirements</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-3 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.requiresModelGovernance || false}
                 onChange={(e) => updateEnv('requiresModelGovernance', e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded"
+                className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">Model Governance & Audit Trail</span>
+              <span className={`text-sm ${text.ink}`}>Model Governance & Audit Trail</span>
             </label>
           </div>
         </div>
 
         {/* Integration & Data */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="bg-surface rounded-card p-6 border border-edge">
+          <h3 className={`text-lg font-semibold ${text.ink} mb-4`}>
             Integration & Data
           </h3>
-          <div className="space-y-3">
-            <label className="flex items-center gap-3 cursor-pointer">
+          <div className={`space-y-3 divide-y ${border.divideHair}`}>
+            <label className={`flex items-center gap-3 cursor-pointer pt-0 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.needsDataPipeline || false}
                 onChange={(e) => updateEnv('needsDataPipeline', e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded"
+                className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">Data Pipeline Integration</span>
+              <span className={`text-sm ${text.ink}`}>Data Pipeline Integration</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-3 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.needsCICD || false}
                 onChange={(e) => updateEnv('needsCICD', e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded"
+                className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">CI/CD for ML Models</span>
+              <span className={`text-sm ${text.ink}`}>CI/CD for ML Models</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-3 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.needsExperimentTracking || false}
                 onChange={(e) => updateEnv('needsExperimentTracking', e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded"
+                className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">Experiment Tracking</span>
+              <span className={`text-sm ${text.ink}`}>Experiment Tracking</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-3 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.needsFeatureStore || false}
                 onChange={(e) => updateEnv('needsFeatureStore', e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded"
+                className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">Feature Store</span>
+              <span className={`text-sm ${text.ink}`}>Feature Store</span>
             </label>
           </div>
         </div>
 
         {/* Operations & Budget */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="bg-surface rounded-card p-6 border border-edge">
+          <h3 className={`text-lg font-semibold ${text.ink} mb-4`}>
             Operations & Budget
           </h3>
-          <div className="space-y-4">
+          <div className={`space-y-4 divide-y ${border.divideHair}`}>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className={`block text-sm font-medium ${text.muted} mb-2`}>
                 Timeline
               </label>
               <select
                 value={customerEnv.timeline || 'months'}
                 onChange={(e) => updateEnv('timeline', e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"
+                className={`w-full px-3 py-2 text-sm bg-page border border-edge rounded-card ${text.ink} ${interactive.transition} ${interactive.focusRing}`}
               >
                 <option value="weeks">Weeks (POC)</option>
                 <option value="months">1-3 Months</option>
@@ -417,37 +418,37 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
                 <option value="year">6+ Months</option>
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div className="pt-4">
+              <label className={`block text-sm font-medium ${text.muted} mb-2`}>
                 Budget Priority
               </label>
               <select
                 value={customerEnv.budgetPriority || 'balanced'}
                 onChange={(e) => updateEnv('budgetPriority', e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"
+                className={`w-full px-3 py-2 text-sm bg-page border border-edge rounded-card ${text.ink} ${interactive.transition} ${interactive.focusRing}`}
               >
                 <option value="minimal">Cost Optimization</option>
                 <option value="balanced">Balanced</option>
                 <option value="performance">Performance First</option>
               </select>
             </div>
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-4 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.needsMultiCluster || false}
                 onChange={(e) => updateEnv('needsMultiCluster', e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded"
+                className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">Multi-cluster Support</span>
+              <span className={`text-sm ${text.ink}`}>Multi-cluster Support</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className={`flex items-center gap-3 cursor-pointer pt-3 ${interactive.transition}`}>
               <input
                 type="checkbox"
                 checked={customerEnv.needsDisasterRecovery || false}
                 onChange={(e) => updateEnv('needsDisasterRecovery', e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded"
+                className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">Disaster Recovery</span>
+              <span className={`text-sm ${text.ink}`}>Disaster Recovery</span>
             </label>
           </div>
         </div>
@@ -458,43 +459,43 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
         <button
           type="button"
           onClick={openSuggestionPreview}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+          className={`${button.primary} px-6 py-3 font-semibold ${interactive.microElevate}`}
         >
           <Sparkles size={20} />
           Preview workshop suggestions
         </button>
       </div>
 
-      <p className="text-center text-sm text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
+      <p className={`text-center text-sm ${text.faint} max-w-xl mx-auto`}>
         Opens a modal with a plain-text summary you can copy into notes. Build Your Stack is unchanged — record
         architecture choices there when you are ready.
       </p>
 
       {showSuggestionModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60"
           role="dialog"
           aria-modal="true"
           aria-labelledby="suggestion-modal-title"
           onClick={() => setShowSuggestionModal(false)}
         >
           <div
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700"
+            className="bg-surface rounded-card max-w-lg w-full max-h-[90vh] overflow-y-auto border border-edge"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-3 p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-start justify-between gap-3 p-4 border-b border-hair">
               <div>
-                <h3 id="suggestion-modal-title" className="text-lg font-bold text-gray-900 dark:text-white">
+                <h3 id="suggestion-modal-title" className={`text-lg font-bold ${text.ink}`}>
                   Suggestion preview
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <p className={`text-sm ${text.muted} mt-1`}>
                   Draft only — for facilitator notes. Does not update Build Your Stack or the Products tab.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowSuggestionModal(false)}
-                className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+                className={`p-2 rounded-card ${text.faint} hover:bg-tint ${interactive.transition} ${interactive.focusRing}`}
                 aria-label="Close"
               >
                 <X size={20} />
@@ -502,14 +503,14 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
             </div>
 
             <div className="p-4 space-y-4">
-              <div className="rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-3 text-sm text-amber-900 dark:text-amber-100">
+              <div className="rounded-card bg-draft-bg border border-draft-border p-3 text-sm text-draft-fg">
                 Work in progress: heuristics are intentionally simple. Treat this as a conversation starter, not an
                 automated design.
               </div>
 
               <div>
-                <p className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Suggested products to discuss</p>
-                <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                <p className={`text-sm font-semibold ${text.ink} mb-2`}>Suggested products to discuss</p>
+                <ul className={`space-y-1 text-sm ${text.muted}`}>
                   {suggestedProductIds.map((id) => (
                     <li key={id}>• {productLabel(id)}</li>
                   ))}
@@ -517,8 +518,8 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
               </div>
 
               <div>
-                <p className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Context summary</p>
-                <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                <p className={`text-sm font-semibold ${text.ink} mb-2`}>Context summary</p>
+                <ul className={`space-y-1 text-sm ${text.muted}`}>
                   {customerEnv.hasOpenShift && <li>✓ OpenShift in environment</li>}
                   {!customerEnv.hasOpenShift && <li>→ OpenShift called out as a typical base to validate</li>}
                   {customerEnv.hasApiGateway && <li>✓ Existing API gateway noted</li>}
@@ -534,12 +535,12 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
                 <button
                   type="button"
                   onClick={copySuggestionText}
-                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-semibold hover:bg-purple-700"
+                  className={button.primary}
                 >
                   <Copy size={16} />
                   Copy full text
                 </button>
-                {copyDone && <span className="text-sm text-green-600 dark:text-green-400 self-center">Copied.</span>}
+                {copyDone && <span className="text-sm text-green-600 self-center">Copied.</span>}
               </div>
             </div>
           </div>

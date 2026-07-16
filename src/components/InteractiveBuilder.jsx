@@ -8,6 +8,7 @@ import {
   capabilityMapToFlowShape
 } from '../lib/capabilityBlueprint';
 import { reconcileContainerAiPlatform, isCapabilityOptionDisabled } from '../lib/platformAiConstraints';
+import { button, interactive, providerMark, status, text, toggle } from '../lib/styleTokens';
 import DeepDiveModal from './DeepDiveModal';
 import FlowVisualization from './FlowVisualization';
 
@@ -55,11 +56,11 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
 
   return (
     <div
-      className="rounded-lg border-2 bg-white dark:bg-gray-800 shadow-md transition-all"
+      className={`rounded-card border border-edge bg-surface ${interactive.transitionAll}`}
       style={{ borderColor: layerColor }}
     >
       <div
-        className="px-4 py-2 flex items-center justify-between rounded-t-lg"
+        className="px-4 py-3 flex items-center justify-between rounded-t-card border-b border-hair"
         style={{
           background: `linear-gradient(135deg, ${layerColor}15, ${layerColor}05)`,
           borderBottom: `2px solid ${layerColor}30`
@@ -68,15 +69,15 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
         <div className="flex items-center gap-2">
           <div className="w-1 h-6 rounded-full" style={{ backgroundColor: layerColor }} />
           <div>
-            <h4 className="font-bold text-sm text-gray-900 dark:text-white">{layer.name}</h4>
-            <p className="text-xs text-gray-600 dark:text-gray-400">
+            <h4 className={`font-bold text-sm ${text.ink}`}>{layer.name}</h4>
+            <p className={`text-xs ${text.muted}`}>
               {selectedCount} component{selectedCount !== 1 ? 's' : ''} configured
             </p>
           </div>
         </div>
         <button
           onClick={() => onEdit(index)}
-          className="text-xs text-purple-600 dark:text-purple-400 hover:underline"
+          className={`text-xs font-medium ${text.link} hover:underline ${interactive.focusRing} rounded-card`}
         >
           Edit
         </button>
@@ -94,14 +95,14 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
               <button
                 key={capId}
                 onClick={() => canDeepDive && onDeepDive(optionId)}
-                className={`px-2 py-1 rounded text-xs font-medium border transition-all ${
-                  canDeepDive ? 'cursor-pointer hover:shadow-md hover:scale-105' : ''
+                className={`px-2 py-1 rounded-card text-xs font-medium border ${interactive.transitionAll} ${
+                  canDeepDive ? 'cursor-pointer hover:-translate-y-0.5 motion-reduce:hover:translate-y-0' : ''
                 } ${
                   option.isCustomer
-                    ? 'bg-blue-50 border-blue-300 text-blue-800 dark:bg-blue-900/20 dark:border-blue-700 dark:text-blue-200'
+                    ? `${providerMark.customer} ${text.ink}`
                     : option.provider === 'Red Hat'
-                    ? 'bg-green-50 border-green-300 text-green-800 dark:bg-green-900/20 dark:border-green-700 dark:text-green-200'
-                    : 'bg-purple-50 border-purple-300 text-purple-800 dark:bg-purple-900/20 dark:border-purple-700 dark:text-purple-200'
+                    ? `${providerMark.redHat} text-white`
+                    : `${providerMark.partner} ${text.ink}`
                 }`}
                 title={canDeepDive ? 'Click for deep dive' : ''}
               >
@@ -138,20 +139,20 @@ function CapabilitySelector({
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <div>
-          <h4 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <h4 className={`font-bold ${text.ink} flex items-center gap-2`}>
             {capability.name}
             {capability.required && (
-              <span className="px-2 py-0.5 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-xs rounded">
+              <span className={`px-2 py-0.5 ${status.requiredBadge} text-xs rounded-card`}>
                 Required
               </span>
             )}
           </h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400">{capability.description}</p>
+          <p className={`text-sm ${text.muted}`}>{capability.description}</p>
         </div>
         {isSelected && !capability.required && (
           <button
             onClick={() => onRemove(layerId, capability.id)}
-            className="text-sm text-red-600 hover:underline"
+            className={`text-sm ${text.link} hover:underline ${interactive.focusRing} rounded-card`}
           >
             Remove
           </button>
@@ -174,16 +175,16 @@ function CapabilitySelector({
                   if (disabled) return;
                   onToggle(layerId, capability.id, option.id);
                 }}
-                className={`w-full p-3 rounded-lg border-2 transition-all text-left ${
+                className={`w-full p-3 rounded-card border ${interactive.transitionAll} ${interactive.focusRing} text-left ${
                   disabled
-                    ? 'cursor-not-allowed border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900/40 opacity-55'
+                    ? 'cursor-not-allowed border-edge bg-page opacity-55'
                     : isOptionSelected
-                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-purple-300'
+                      ? 'border-accent bg-tint'
+                      : 'border-edge bg-surface hover:border-accent hover:bg-tint'
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <div className={`mt-0.5 ${isOptionSelected ? 'text-purple-600' : 'text-gray-400'}`}>
+                  <div className={`mt-0.5 ${isOptionSelected ? 'text-accent' : text.faint}`}>
                     {isOptionSelected ? (
                       <Check size={20} />
                     ) : (
@@ -193,26 +194,26 @@ function CapabilitySelector({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-bold text-gray-900 dark:text-white">
+                        <span className={`font-bold ${text.ink}`}>
                           {option.name}
                         </span>
                         {disabled && (
-                          <span className="px-2 py-0.5 bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-200 text-xs rounded">
+                          <span className={`px-2 py-0.5 bg-page ${text.muted} border border-edge text-xs rounded-card`}>
                             N/A
                           </span>
                         )}
                         {option.isCustomer && (
-                          <span className="px-2 py-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded">
+                          <span className={`px-2 py-0.5 ${providerMark.customer} ${text.ink} text-xs rounded-card`}>
                             Customer
                           </span>
                         )}
                         {option.recommended && (
-                          <span className="px-2 py-0.5 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs rounded">
+                          <span className={`px-2 py-0.5 ${status.completeBanner} text-xs rounded-card`}>
                             Recommended
                           </span>
                         )}
                         {option.status && (
-                          <span className="px-2 py-0.5 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 text-xs rounded">
+                          <span className={`px-2 py-0.5 bg-page ${text.muted} border border-hair text-xs rounded-card`}>
                             {option.status}
                           </span>
                         )}
@@ -223,10 +224,10 @@ function CapabilitySelector({
                             e.stopPropagation();
                             setExpandedGuide(isGuideExpanded ? null : option.id);
                           }}
-                          className={`p-1 rounded-full transition-colors ${
+                          className={`p-1 rounded-card ${interactive.transition} ${interactive.focusRing} ${
                             isGuideExpanded
-                              ? 'bg-blue-100 dark:bg-blue-900 text-blue-600'
-                              : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500'
+                              ? 'bg-tint text-accent'
+                              : `${interactive.hoverTint} ${text.faint}`
                           }`}
                           title="Learn more about this option"
                         >
@@ -234,10 +235,10 @@ function CapabilitySelector({
                         </button>
                       )}
                     </div>
-                    <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+                    <div className={`text-sm ${text.muted} mb-1`}>
                       Provider: <span className="font-semibold">{option.provider}</span>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className={`text-sm ${text.muted}`}>
                       {option.description}
                     </p>
                   </div>
@@ -246,35 +247,35 @@ function CapabilitySelector({
 
               {/* Expanded Guide */}
               {guide && isGuideExpanded && (
-                <div className="ml-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                <div className="ml-8 p-4 bg-tint rounded-card border border-edge">
                   <div className="grid gap-3 text-sm">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <Info size={14} className="text-blue-600" />
-                        <span className="font-bold text-gray-900 dark:text-white">What it is:</span>
+                        <Info size={14} className="text-accent" />
+                        <span className={`font-bold ${text.ink}`}>What it is:</span>
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300">{guide.whatItIs}</p>
+                      <p className={text.muted}>{guide.whatItIs}</p>
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <Check size={14} className="text-green-600" />
-                        <span className="font-bold text-gray-900 dark:text-white">Why choose:</span>
+                        <span className={`font-bold ${text.ink}`}>Why choose:</span>
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300">{guide.whyChoose}</p>
+                      <p className={text.muted}>{guide.whyChoose}</p>
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <ArrowRight size={14} className="text-purple-600" />
-                        <span className="font-bold text-gray-900 dark:text-white">When to use:</span>
+                        <ArrowRight size={14} className="text-accent" />
+                        <span className={`font-bold ${text.ink}`}>When to use:</span>
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300">{guide.whenToUse}</p>
+                      <p className={text.muted}>{guide.whenToUse}</p>
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <Sparkles size={14} className="text-orange-600" />
-                        <span className="font-bold text-gray-900 dark:text-white">Best for:</span>
+                        <Sparkles size={14} className="text-accent" />
+                        <span className={`font-bold ${text.ink}`}>Best for:</span>
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300">{guide.bestFor}</p>
+                      <p className={text.muted}>{guide.bestFor}</p>
                     </div>
                   </div>
                 </div>
@@ -393,7 +394,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
     return (
       <div className="space-y-6">
         {/* Success Header */}
-        <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg p-6 text-white">
+        <div className={`${status.completeBanner} rounded-card p-6`}>
           <div className="flex items-center gap-3 mb-2">
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
               <Check size={24} />
@@ -406,11 +407,11 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
             </div>
           </div>
           <div className="mt-4 flex gap-4">
-            <div className="bg-white/20 rounded-lg px-4 py-2">
+            <div className="bg-white/20 rounded-card px-4 py-2">
               <div className="text-2xl font-bold">{buildOrder.length}</div>
               <div className="text-sm text-green-100">Layers Configured</div>
             </div>
-            <div className="bg-white/20 rounded-lg px-4 py-2">
+            <div className="bg-white/20 rounded-card px-4 py-2">
               <div className="text-2xl font-bold">{totalComponents}</div>
               <div className="text-sm text-green-100">Total Components</div>
             </div>
@@ -418,14 +419,14 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
           <div className="mt-4 flex gap-3">
             <button
               onClick={resetBuilder}
-              className="flex items-center gap-2 px-4 py-2 bg-white text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-colors"
+              className={button.secondary}
             >
               <RotateCcw size={18} />
               Start Over
             </button>
             <button
               onClick={() => setShowFlowViz(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+              className={button.primary}
             >
               <Workflow size={18} />
               See Data Flow
@@ -434,16 +435,16 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
         </div>
 
         {/* Complete Stack View */}
-        <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-xl p-6 border-2 border-gray-200 dark:border-gray-700">
+        <div className="bg-tint rounded-card p-6 border border-edge">
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Your Complete Stack</h3>
+              <h3 className={`text-xl font-bold ${text.ink}`}>Your Complete Stack</h3>
             </div>
             <div className="flex gap-2">
               {/* View Order Toggle */}
               <button
                 onClick={() => setViewOrder(viewOrder === 'bottom-up' ? 'top-down' : 'bottom-up')}
-                className="flex items-center gap-2 px-3 py-2 rounded text-xs font-medium bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+                className={`flex items-center gap-2 px-3 py-2 rounded-card text-xs font-medium border border-edge ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
               >
                 {viewOrder === 'bottom-up' ? (
                   <>
@@ -474,7 +475,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
                   />
                   {index < buildOrder.length - 1 && (
                     <div className="flex justify-center py-1">
-                      <ArrowDown size={16} className="text-gray-400" />
+                      <ArrowDown size={16} className={text.faint} />
                     </div>
                   )}
                 </div>
@@ -509,19 +510,19 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
   return (
     <div className="space-y-6">
       {/* Progress Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+      <div className="bg-surface rounded-card p-4 border border-edge">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className={`text-xl font-bold ${text.ink}`}>
               Interactive Stack Builder
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className={`text-sm ${text.muted}`}>
               Step {currentLayerIndex + 1} of {buildOrder.length}
             </p>
           </div>
           <button
             onClick={resetBuilder}
-            className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 flex items-center gap-1"
+            className={`text-sm ${text.muted} hover:text-ink flex items-center gap-1 ${interactive.transition} ${interactive.focusRing} rounded-card`}
           >
             <RotateCcw size={14} />
             Reset
@@ -529,9 +530,9 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
         </div>
 
         {/* Progress Bar */}
-        <div className="relative w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div className="relative w-full h-2 bg-page rounded-full overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-600 to-pink-600 transition-all duration-500"
+            className="absolute inset-y-0 left-0 bg-accent transition-all duration-200 ease-out motion-reduce:transition-none"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -541,18 +542,18 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
           {buildOrder.map((layer, idx) => (
             <div key={layer.id} className="flex items-center">
               <div
-                className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all ${
+                className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${interactive.transitionAll} ${
                   idx < currentLayerIndex
-                    ? 'bg-green-500 text-white'
+                    ? 'bg-green-600 text-white'
                     : idx === currentLayerIndex
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                    ? 'bg-accent text-on-accent'
+                    : 'bg-page text-muted'
                 }`}
               >
                 {idx < currentLayerIndex ? <Check size={16} /> : idx + 1}
               </div>
               {idx < buildOrder.length - 1 && (
-                <ChevronRight size={16} className="text-gray-400 mx-1" />
+                <ChevronRight size={16} className={`${text.faint} mx-1`} />
               )}
             </div>
           ))}
@@ -563,7 +564,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
         {/* Main Configuration Area */}
         <div className="lg:col-span-2 space-y-4">
           <div
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 border-2"
+            className="bg-surface rounded-card p-6 border"
             style={{ borderColor: layerColor }}
           >
             <div className="flex items-center gap-3 mb-6">
@@ -572,7 +573,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
                 style={{ backgroundColor: layerColor }}
               />
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h3 className={`text-2xl font-bold ${text.ink}`}>
                   {currentLayer?.name}
                 </h3>
               </div>
@@ -594,12 +595,12 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mt-6 pt-6 border-t border-hair">
               {currentLayerIndex > 0 ? (
                 <button
                   type="button"
                   onClick={stepBack}
-                  className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  className={button.secondary}
                 >
                   Back
                 </button>
@@ -610,10 +611,10 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
               <button
                 onClick={proceedToNextLayer}
                 disabled={!canProceed()}
-                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
+                className={`flex items-center gap-2 px-6 py-3 rounded-card font-semibold ${interactive.transitionAll} ${
                   canProceed()
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg'
-                    : 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
+                    ? 'bg-accent text-on-accent hover:bg-accent-strong'
+                    : 'bg-page text-muted cursor-not-allowed'
                 }`}
               >
                 {currentLayerIndex < buildOrder.length - 1 ? (
@@ -634,10 +635,10 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
 
         {/* Stack Preview Sidebar */}
         <div className="space-y-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 sticky top-4">
+          <div className="bg-surface rounded-card p-4 border border-edge sticky top-4">
             <div className="flex items-center gap-2 mb-4">
-              <Package size={18} className="text-purple-600" />
-              <h4 className="font-bold text-gray-900 dark:text-white">Stack Preview</h4>
+              <Package size={18} className="text-accent" />
+              <h4 className={`font-bold ${text.ink}`}>Stack Preview</h4>
             </div>
 
             <div className="space-y-2">
@@ -649,12 +650,12 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
                 return (
                   <div key={layer.id}>
                     <div
-                      className={`p-3 rounded-lg border transition-all ${
+                      className={`p-3 rounded-card border ${interactive.transitionAll} ${
                         isCurrentLayer
-                          ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                          ? 'border-accent bg-tint'
                           : isCompleted
-                          ? 'border-green-300 bg-green-50 dark:bg-green-900/20'
-                          : 'border-gray-200 dark:border-gray-700'
+                          ? 'border-edge bg-surface'
+                          : 'border-edge bg-page'
                       }`}
                       style={{ borderLeft: `3px solid ${layerColor}` }}
                     >
@@ -662,18 +663,18 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
                         {isCompleted ? (
                           <Check size={16} className="text-green-600" />
                         ) : isCurrentLayer ? (
-                          <Sparkles size={16} className="text-purple-600" />
+                          <Sparkles size={16} className="text-accent" />
                         ) : (
-                          <div className="w-4 h-4 rounded-full border-2 border-gray-300" />
+                          <div className="w-4 h-4 rounded-full border-2 border-edge" />
                         )}
-                        <span className="font-semibold text-sm text-gray-900 dark:text-white">
+                        <span className={`font-semibold text-sm ${text.ink}`}>
                           {layer.name}
                         </span>
                       </div>
                     </div>
                     {index < buildOrder.length - 1 && (
                       <div className="flex justify-center py-0.5">
-                        <ArrowDown size={12} className="text-gray-400" />
+                        <ArrowDown size={12} className={text.faint} />
                       </div>
                     )}
                   </div>
