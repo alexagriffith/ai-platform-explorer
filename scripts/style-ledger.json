@@ -9,7 +9,9 @@
     "src/components/AcronymGlossary.jsx",
     "src/lib/styleTokens.js",
     "src/components/ProductComparisonView.jsx",
-    "src/components/SharedSpineLedger.jsx"
+    "src/components/SharedSpineLedger.jsx",
+    "src/components/DecisionFlowchart.jsx",
+    "src/components/DecisionTree.jsx"
   ],
   "migratedTabs": [
     {
@@ -19,6 +21,10 @@
     {
       "id": "product-comparison",
       "navLabel": "Product Comparison"
+    },
+    {
+      "id": "decisions",
+      "navLabel": "Decision Guides"
     }
   ],
   "legacyViolatingFilesMax": 16

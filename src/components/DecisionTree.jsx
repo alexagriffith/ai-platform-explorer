@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle, RotateCcw, ChevronLeft } from 'lucide-react';
+import { button, text, interactive, surface, border } from '../lib/styleTokens';
 
 export default function DecisionTree({ flow, onRecommendation }) {
   const [selectedPath, setSelectedPath] = useState({});
@@ -111,7 +112,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
           {canGoBack && (
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className={`text-sm ${text.muted}`}>
               <span className="font-semibold">Your path: </span>
               <span className="italic">{getBreadcrumb()}</span>
             </div>
@@ -121,7 +122,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
           <button
             onClick={goBack}
             disabled={!canGoBack}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`flex items-center gap-2 ${button.secondary} disabled:opacity-50 disabled:pointer-events-none`}
             aria-label="Go back one step"
           >
             <ChevronLeft size={16} />
@@ -129,7 +130,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
           </button>
           <button
             onClick={resetTree}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            className={`flex items-center gap-2 ${button.secondary}`}
             aria-label="Reset all choices"
           >
             <RotateCcw size={16} />
@@ -152,18 +153,18 @@ export default function DecisionTree({ flow, onRecommendation }) {
               {/* Connecting line from previous step */}
               {stepIndex > 0 && shouldShowStep(step, stepIndex) && (
                 <div className="flex justify-center mb-4">
-                  <div className={`w-0.5 h-8 ${isCompleted ? 'bg-purple-600' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
+                  <div className={`w-0.5 h-8 ${isCompleted ? 'bg-accent' : 'bg-edge dark:bg-edge'}`}></div>
                 </div>
               )}
 
               {/* Question node */}
               <div className="flex flex-col items-center">
-                <div className={`max-w-2xl w-full p-6 rounded-lg border-2 transition-all ${
+                <div className={`max-w-2xl w-full p-6 rounded-card border ${interactive.transitionAll} ${
                   isActive
-                    ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20 shadow-lg scale-105'
+                    ? `border-accent ${surface.tint}`
                     : isCompleted
-                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
+                    ? `border-edge ${surface.raised}`
+                    : `${border.edge} ${surface.raised}`
                 }`}>
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 mt-1">
@@ -171,13 +172,13 @@ export default function DecisionTree({ flow, onRecommendation }) {
                         <CheckCircle size={24} className="text-green-600" />
                       ) : (
                         <div className={`w-6 h-6 rounded-full border-2 ${
-                          isActive ? 'border-purple-600 bg-purple-600' : 'border-gray-400 bg-gray-200 dark:bg-gray-700'
+                          isActive ? 'border-accent bg-accent' : `${border.edge} ${surface.tint}`
                         }`} />
                       )}
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-lg text-gray-900 dark:text-white mb-4">
-                        <span className="text-purple-600 dark:text-purple-400 mr-1">
+                      <h4 className={`font-bold text-lg ${text.ink} mb-4`}>
+                        <span className="text-accent mr-1">
                           Question {visibleNumber}:
                         </span>
                         {step.question}
@@ -195,30 +196,28 @@ export default function DecisionTree({ flow, onRecommendation }) {
                               onClick={() => !disabled && handleNodeClick(stepIndex, option.value, option.next)}
                               disabled={disabled}
                               aria-current={selected ? 'true' : undefined}
-                              className={`p-4 rounded-lg border-2 text-left transition-all ${
+                              className={`p-4 rounded-card border-2 text-left ${interactive.transitionAll} ${
                                 selected
-                                  ? 'border-purple-600 bg-purple-100 dark:bg-purple-800 shadow-md'
+                                  ? `border-accent ${surface.tint}`
                                   : isActive
-                                  ? 'border-gray-300 dark:border-gray-600 hover:border-purple-400 hover:shadow-md bg-white dark:bg-gray-700'
-                                  : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 opacity-50 cursor-not-allowed'
-                              }`}
+                                  ? `${border.edge} hover:border-accent ${surface.raised} ${interactive.hoverTint}`
+                                  : `${border.hair} ${surface.tint} opacity-50 cursor-not-allowed`
+                              } ${!disabled ? interactive.focusRing : ''}`}
                             >
                               <div className="flex items-center gap-2 mb-2">
-                                {selected && <CheckCircle size={16} className="text-purple-600" />}
-                                <span className={`font-semibold ${
-                                  selected ? 'text-purple-900 dark:text-purple-100' : 'text-gray-900 dark:text-white'
-                                }`}>
+                                {selected && <CheckCircle size={16} className="text-accent" />}
+                                <span className={`font-semibold ${selected ? text.ink : text.ink}`}>
                                   {option.label}
                                 </span>
                               </div>
                               {option.next !== undefined && (
-                                <div className="text-xs text-gray-500 dark:text-gray-400">
+                                <div className={`text-xs ${text.faint}`}>
                                   → Continue to next question
                                 </div>
                               )}
                               {option.recommendation && (
                                 <div className="text-xs text-green-600 dark:text-green-400 font-semibold">
-                                  ✓ View recommendation
+                                  View recommendation
                                 </div>
                               )}
                             </button>

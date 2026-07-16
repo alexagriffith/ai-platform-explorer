@@ -20,6 +20,7 @@ import DecisionTree from './DecisionTree';
 import { mergeDecisionPatches, getPatchesForRecommendationKey } from '../data/decisionRecommendationApply';
 import { capabilities } from '../data/capabilities';
 import { reconcileContainerAiPlatform } from '../lib/platformAiConstraints';
+import { button, text, interactive, modal, surface, border } from '../lib/styleTokens';
 
 const guideMetadata = {
   product: { icon: Package, category: 'Product Selection', group: 'getting-started' },
@@ -40,24 +41,18 @@ const guideGroups = [
     title: 'Getting Started',
     description: 'Choose your platform and overall architecture',
     guides: ['product', 'deployment', 'architecture'],
-    accentColor: 'purple',
-    bgGradient: 'from-purple-50 to-pink-50 dark:from-purple-900/10 dark:to-pink-900/10'
   },
   {
     id: 'infrastructure',
     title: 'Infrastructure & Resources',
     description: 'Select hardware, storage, and data infrastructure',
     guides: ['gpu', 'storage', 'vectordb'],
-    accentColor: 'blue',
-    bgGradient: 'from-blue-50 to-cyan-50 dark:from-blue-900/10 dark:to-cyan-900/10'
   },
   {
     id: 'technical',
     title: 'Technical Implementation',
     description: 'Configure serving, training, and evaluation approaches',
     guides: ['servingChoice', 'batchVsRealtime', 'trainingApproach', 'evaluationFramework'],
-    accentColor: 'green',
-    bgGradient: 'from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10'
   }
 ];
 
@@ -1413,29 +1408,23 @@ export default function DecisionFlowchart({
   const flow = getCurrentFlow();
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-        <GitBranch size={24} className="text-purple-600" />
+    <div data-tab="decisions" className={`rounded-card border ${border.hair} ${surface.raised} p-6`}>
+      <h3 className={`text-xl font-bold ${text.ink} mb-4 flex items-center gap-2`}>
+        <GitBranch size={24} className="text-accent" />
         Decision Guides
       </h3>
 
       {!selectedDecision ? (
         <div className="space-y-8">
           {guideGroups.map((group) => {
-            const hoverClasses = {
-              purple: 'hover:border-purple-400 dark:hover:border-purple-500 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 group-hover:text-purple-600 dark:group-hover:text-purple-400',
-              blue: 'hover:border-blue-400 dark:hover:border-blue-500 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 group-hover:text-blue-600 dark:group-hover:text-blue-400',
-              green: 'hover:border-green-400 dark:hover:border-green-500 group-hover:bg-green-100 dark:group-hover:bg-green-900/30 group-hover:text-green-600 dark:group-hover:text-green-400'
-            };
-
             return (
-              <div key={group.id} className={`p-5 rounded-xl bg-gradient-to-br ${group.bgGradient} border border-gray-200 dark:border-gray-700`}>
+              <div key={group.id} className={`border-t ${border.hair} pt-6 first:border-t-0 first:pt-0`}>
                 {/* Group Header */}
                 <div className="mb-4">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                  <h3 className={`text-lg font-bold ${text.ink} mb-1`}>
                     {group.title}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className={`text-sm ${text.muted}`}>
                     {group.description}
                   </p>
                 </div>
@@ -1454,22 +1443,20 @@ export default function DecisionFlowchart({
                           setApplyNotice(null);
                           setSelectedDecision(guideKey);
                         }}
-                        className={`p-4 text-left rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 ${hoverClasses[group.accentColor]} hover:shadow-lg transition-all group`}
+                        className={`p-4 text-left rounded-card border ${border.hair} ${surface.tint} hover:border-accent hover:bg-tint ${interactive.transition} ${interactive.focusRing} group`}
                       >
                         <div className="flex items-start gap-3 mb-2">
-                          <div className={`p-2 bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors ${hoverClasses[group.accentColor]}`}>
-                            <Icon size={20} className={`text-gray-600 dark:text-gray-400 transition-colors ${hoverClasses[group.accentColor]}`} />
-                          </div>
+                          <Icon size={20} className={`${text.muted} group-hover:text-accent ${interactive.transition} flex-shrink-0 mt-0.5`} />
                           <div className="flex-1 min-w-0">
-                            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+                            <div className={`text-xs font-semibold ${text.faint} uppercase tracking-wide mb-1`}>
                               {meta.category}
                             </div>
-                            <h4 className="font-bold text-gray-900 dark:text-white text-sm leading-tight">
+                            <h4 className={`font-bold ${text.ink} text-sm leading-tight`}>
                               {flowData.title}
                             </h4>
                           </div>
                         </div>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                        <p className={`text-xs ${text.muted} leading-relaxed`}>
                           {flowData.description}
                         </p>
                       </button>
@@ -1484,14 +1471,14 @@ export default function DecisionFlowchart({
         <div>
           {/* Header */}
           <div className="mb-6 flex items-center justify-between">
-            <h4 className="font-semibold text-lg text-gray-900 dark:text-white">{flow.title}</h4>
+            <h4 className={`font-semibold text-lg ${text.ink}`}>{flow.title}</h4>
             <button
               onClick={() => {
                 setApplyNotice(null);
                 setSelectedDecision('');
                 setTreeRecommendation(null);
               }}
-              className="text-sm text-purple-600 dark:text-purple-400 hover:underline"
+              className={`text-sm text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
             >
               ← Change Decision Type
             </button>
@@ -1509,25 +1496,24 @@ export default function DecisionFlowchart({
           ) : (
             /* Recommendation */
             <div className="space-y-6">
-              <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border-2 border-green-500 dark:border-green-600">
+              <div className={`p-6 rounded-card border ${border.hair} ${surface.raised}`}>
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="text-4xl">{treeRecommendation.icon}</div>
+                  <div className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-card border ${border.edge} ${surface.tint}`}>
+                    <CheckCircle size={22} className="text-green-600" />
+                  </div>
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle size={24} className="text-green-600" />
-                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {treeRecommendation.product}
-                      </h4>
-                    </div>
-                    <p className="text-gray-700 dark:text-gray-300 mb-3">
+                    <h4 className={`text-2xl font-bold ${text.ink} mb-2`}>
+                      {treeRecommendation.product}
+                    </h4>
+                    <p className={`${text.muted} mb-3`}>
                       <strong>Why:</strong> {treeRecommendation.why}
                     </p>
                     {treeRecommendation.bestFor && (
                       <div className="mb-3">
-                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Best for:</p>
+                        <p className={`text-sm font-semibold ${text.muted} mb-1`}>Best for:</p>
                         <div className="flex flex-wrap gap-2">
                           {treeRecommendation.bestFor.map((item, idx) => (
-                            <span key={idx} className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded text-xs">
+                            <span key={idx} className={`px-2 py-1 ${surface.tint} border ${border.hair} rounded-card text-xs ${text.muted}`}>
                               {item}
                             </span>
                           ))}
@@ -1536,10 +1522,10 @@ export default function DecisionFlowchart({
                     )}
                     {treeRecommendation.components && (
                       <div>
-                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Key components:</p>
+                        <p className={`text-sm font-semibold ${text.muted} mb-1`}>Key components:</p>
                         <div className="flex flex-wrap gap-2">
                           {treeRecommendation.components.map((comp, idx) => (
-                            <span key={idx} className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded text-xs">
+                            <span key={idx} className={`px-2 py-1 ${surface.tint} border ${border.hair} rounded-card text-xs ${text.ink}`}>
                               {comp}
                             </span>
                           ))}
@@ -1551,30 +1537,30 @@ export default function DecisionFlowchart({
 
                 {/* Tradeoffs */}
                 {treeRecommendation.tradeoffs && (
-                  <div className="grid md:grid-cols-2 gap-4 mt-4">
-                    <div className="p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-700">
-                      <h5 className="font-bold text-green-700 dark:text-green-400 mb-2 flex items-center gap-1">
+                  <div className={`grid md:grid-cols-2 gap-4 mt-4 pt-4 border-t ${border.hair}`}>
+                    <div>
+                      <h5 className={`font-bold text-green-700 dark:text-green-400 mb-2 flex items-center gap-1 text-sm`}>
                         <CheckCircle size={16} />
                         Advantages
                       </h5>
                       <ul className="space-y-1 text-sm">
                         {treeRecommendation.tradeoffs.map((t, idx) => (
-                          <li key={idx} className="text-gray-700 dark:text-gray-300 flex items-start gap-1">
-                            <span className="text-green-600">✓</span>
+                          <li key={idx} className={`${text.muted} flex items-start gap-1`}>
+                            <span className="text-green-600 flex-shrink-0">✓</span>
                             <span>{t.pro}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
-                    <div className="p-3 bg-white dark:bg-gray-800 rounded-lg border border-orange-200 dark:border-orange-700">
-                      <h5 className="font-bold text-orange-700 dark:text-orange-400 mb-2 flex items-center gap-1">
+                    <div>
+                      <h5 className={`font-bold text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-1 text-sm`}>
                         <XCircle size={16} />
                         Tradeoffs
                       </h5>
                       <ul className="space-y-1 text-sm">
                         {treeRecommendation.tradeoffs.map((t, idx) => (
-                          <li key={idx} className="text-gray-700 dark:text-gray-300 flex items-start gap-1">
-                            <span className="text-orange-600">!</span>
+                          <li key={idx} className={`${text.muted} flex items-start gap-1`}>
+                            <span className="text-amber-600 flex-shrink-0">!</span>
                             <span>{t.con}</span>
                           </li>
                         ))}
@@ -1585,14 +1571,14 @@ export default function DecisionFlowchart({
 
                 {/* Alternatives */}
                 {treeRecommendation.alternatives && (
-                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-700">
-                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <div className={`mt-4 pt-4 border-t ${border.hair}`}>
+                    <p className={`text-sm font-semibold ${text.muted} mb-2`}>
                       Alternative options:
                     </p>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                    <ul className={`space-y-1 text-sm ${text.muted}`}>
                       {treeRecommendation.alternatives.map((alt, idx) => (
                         <li key={idx} className="flex items-start gap-2">
-                          <ArrowRight size={14} className="text-blue-600 mt-0.5 flex-shrink-0" />
+                          <ArrowRight size={14} className="text-accent mt-0.5 flex-shrink-0" />
                           <span>{alt}</span>
                         </li>
                       ))}
@@ -1605,19 +1591,22 @@ export default function DecisionFlowchart({
               {showPreview && (() => {
                 const preview = generatePreview();
                 return preview ? (
-                  <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setShowPreview(false)}>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
-                      <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                        <Eye size={20} className="text-purple-600" />
-                        Preview Changes to Your Stack
-                      </h4>
+                  <div className={modal.overlay} onClick={() => setShowPreview(false)}>
+                    <div className={`${modal.panel} ${modal.panelMedium}`} onClick={(e) => e.stopPropagation()}>
+                      <div className={modal.header}>
+                        <h4 className={`text-xl font-bold ${text.ink} flex items-center gap-2`}>
+                          <Eye size={20} className="text-accent" />
+                          Preview Changes to Your Stack
+                        </h4>
+                      </div>
+                      <div className={modal.body}>
 
                       {preview.changes.length > 0 && (
                         <div className="mb-4">
-                          <p className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Will apply:</p>
+                          <p className={`font-semibold ${text.muted} mb-2`}>Will apply:</p>
                           <div className="space-y-2">
                             {preview.changes.map((change, idx) => (
-                              <div key={idx} className="p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-700">
+                              <div key={idx} className={`p-3 rounded-card border ${border.hair} ${surface.tint}`}>
                                 {change.type === 'add' && (
                                   <p className="text-sm">
                                     <span className="font-semibold text-green-700 dark:text-green-400">Add:</span>{' '}
@@ -1626,9 +1615,9 @@ export default function DecisionFlowchart({
                                 )}
                                 {change.type === 'update' && (
                                   <p className="text-sm">
-                                    <span className="font-semibold text-blue-700 dark:text-blue-400">Update:</span>{' '}
+                                    <span className="font-semibold text-accent">Update:</span>{' '}
                                     <span className="font-bold">{change.capName}</span> → {change.optName}{' '}
-                                    <span className="text-gray-500 dark:text-gray-400">(was: {change.prevOptName})</span>
+                                    <span className={text.faint}>(was: {change.prevOptName})</span>
                                   </p>
                                 )}
                               </div>
@@ -1639,10 +1628,10 @@ export default function DecisionFlowchart({
 
                       {preview.reconciliationChanges.length > 0 && (
                         <div className="mb-4">
-                          <p className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Also updates (compatibility):</p>
+                          <p className={`font-semibold ${text.muted} mb-2`}>Also updates (compatibility):</p>
                           <div className="space-y-2">
                             {preview.reconciliationChanges.map((change, idx) => (
-                              <div key={idx} className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-200 dark:border-amber-700">
+                              <div key={idx} className={`p-3 rounded-card border ${border.hair} ${surface.tint}`}>
                                 <p className="text-sm">
                                   <span className="font-bold">{change.capName}</span> → {change.optName}
                                 </p>
@@ -1653,23 +1642,24 @@ export default function DecisionFlowchart({
                       )}
 
                       {preview.changes.length === 0 && preview.reconciliationChanges.length === 0 && (
-                        <p className="text-gray-600 dark:text-gray-400 mb-4">No changes to your current stack.</p>
+                        <p className={`${text.muted} mb-4`}>No changes to your current stack.</p>
                       )}
 
                       <div className="flex gap-3 mt-6">
                         <button
                           onClick={addRecommendationToArchitecture}
-                          className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-bold hover:shadow-lg transition-all"
+                          className={`flex-1 flex items-center justify-center gap-2 ${button.primary} px-6 py-3`}
                         >
                           <Plus size={20} />
                           Confirm & Add to Stack
                         </button>
                         <button
                           onClick={() => setShowPreview(false)}
-                          className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
+                          className={button.secondary}
                         >
                           Cancel
                         </button>
+                      </div>
                       </div>
                     </div>
                   </div>
@@ -1692,7 +1682,7 @@ export default function DecisionFlowchart({
                     setApplyNotice(null);
                     setShowPreview(true);
                   }}
-                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all"
+                  className={`flex items-center gap-2 ${button.primary} px-6 py-3`}
                 >
                   <Eye size={20} />
                   Preview & Add to Stack
@@ -1703,7 +1693,7 @@ export default function DecisionFlowchart({
                     setShowPreview(false);
                     setTreeRecommendation(null);
                   }}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                  className={button.secondary}
                 >
                   Start Over
                 </button>
@@ -1714,13 +1704,13 @@ export default function DecisionFlowchart({
                     setSelectedDecision('');
                     setTreeRecommendation(null);
                   }}
-                  className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
+                  className={button.secondary}
                 >
                   Try Different Guide
                 </button>
               </div>
               {applyNotice && (
-                <p className="text-sm text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2">
+                <p className={`text-sm text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-card px-3 py-2`}>
                   {applyNotice}
                 </p>
               )}
