@@ -60,3 +60,17 @@ This repo — including every string in `src/` — is on public GitHub AND rende
 - `docs/ROADMAP.md` — phase plan. `docs/V1_MANUAL_TEST_MATRIX.md` — manual smoke paths.
 - `knowledge-registry.md` — source-of-truth URLs that content claims must trace to.
 - `README.md` — user-facing docs + the "Application state" contract.
+
+## Product Comparison feature — conventions (added 2026-07-16)
+
+**Data fence.** All comparison facts live ONLY in `src/data/productComparisons.js` — components render data, never hardcode facts in JSX. Every row carries `tier` ('clear'|'inferred'|'unresolved') + `sourceUrl` + `sourceLabel`. Solid rendering requires a working source link (no link → dashed/pending). `illustrative`/`draft` flags are HUMAN-ONLY flips (Alexa) — never change them in code or agent runs.
+
+**Provenance.** Primary sources are downloaded + pinned in `~/work-log/projects/architect-data/knowledge-sources/product-comparison-bom/` (SOURCES.md manifest); the cell-by-cell ledger is `src/data/CURATION-TODO.md`. Where two Red Hat sources disagree (docs vs container catalog), surface the conflict — never silently resolve it. Facts are extracted from sources, never written from memory.
+
+**Gate.** Run `python3 scripts/gate.py` after every commit. Contract: prints exactly `PASS` on success (nothing else); on failure prints only the failing section's relevant logs. Never commit on a red gate. (Wraps: npm run check, validate:links renders-not-resolves, leak scan, data integrity, style law.)
+
+**Publish warning.** Merging `main` auto-deploys to the PUBLIC GitHub Pages site. Never push, never merge — Alexa gates publishing. Customer names and the string "RHAII" are banned in tracked files (use full product names: Red Hat AI Inference Server, Red Hat OpenShift AI).
+
+**Style law.** PatternFly design tokens vendored at `src/styles/patternfly-tokens.css` (pinned; Red Hat's open-source design system). Anti-box law: one surface per section; zero nested bordered boxes; identical cell dimensions within a component; ≤2 border-radius values; grid-aligned; whitespace/typography over containers; single-page-friendly at 1440px; both themes. Enforced by gate.py measured checks.
+
+**Hygiene.** Leave the tree clean after every step: no dead code, no orphaned files, no stale comments referencing removed things. Cleanup is part of the step, not a later chore. Project working docs live in `planning/` (gitignored); durable scrubbed docs in `docs/`.
