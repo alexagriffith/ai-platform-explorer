@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Lightbulb, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { getCatalogDisplayName, getCatalogEntry } from '../data/catalogResolve';
+import { typeScale, density, badge } from '../lib/styleTokens';
 import MCPEcosystemFull from './MCPEcosystemFull';
 import FineTuningDecisionMatrix from './FineTuningDecisionMatrix';
 import RAGArchitecture from './RAGArchitecture';
@@ -197,55 +198,49 @@ export default function UseCaseView() {
   };
 
   return (
-    <div data-tab="use-cases" className="space-y-6">
-      {/* Header — no border on outer, buttons have no border so no nesting violation */}
-      <div className="rounded-card bg-surface px-6 py-5">
-        <h2 className="text-2xl font-bold text-ink mb-1">
-          Use Cases
-        </h2>
-        <p className="text-muted mb-4">
-          Explore common AI use cases and recommended Red Hat solutions for each scenario.
-        </p>
+    <div data-tab="use-cases" className="space-y-3">
+      {/* Header */}
+      <div className="rounded-card bg-surface px-4 py-3">
+        <div className="flex items-center gap-3 mb-2">
+          <h2 className={`${typeScale.componentName} text-ink`}>Use Cases</h2>
+          <p className={`${typeScale.secondary} text-muted`}>
+            Explore common AI use cases and recommended Red Hat solutions for each scenario.
+          </p>
+        </div>
 
         {/* Quick Jump */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-sm font-semibold text-ink">
-              Quick Jump:
-            </span>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className={`${typeScale.groupLabel} text-ink`}>Jump:</span>
+          <button
+            onClick={selectAllUseCases}
+            className="px-2.5 py-0.5 rounded-card bg-accent text-on-accent text-xs font-medium hover:bg-accent-strong transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+          >
+            Select All
+          </button>
+          <button
+            onClick={clearUseCases}
+            className="px-2.5 py-0.5 rounded-card bg-tint text-muted text-xs font-medium hover:text-ink transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+          >
+            Clear
+          </button>
+          {useCases.map(useCase => (
             <button
-              onClick={selectAllUseCases}
-              className="px-3 py-1 rounded-card bg-accent text-on-accent text-sm font-medium hover:bg-accent-strong transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+              key={useCase.id}
+              onClick={() => toggleUseCase(useCase.id)}
+              className={`px-2.5 py-0.5 rounded-card text-xs font-medium transition-all duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page ${
+                selectedUseCases.includes(useCase.id)
+                  ? 'bg-accent text-on-accent'
+                  : 'bg-tint text-muted hover:text-ink'
+              }`}
             >
-              Select All
+              {useCase.title}
             </button>
-            <button
-              onClick={clearUseCases}
-              className="px-3 py-1 rounded-card bg-tint text-muted text-sm font-medium hover:text-ink transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
-            >
-              Clear All
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {useCases.map(useCase => (
-              <button
-                key={useCase.id}
-                onClick={() => toggleUseCase(useCase.id)}
-                className={`px-3 py-1.5 rounded-card text-sm font-medium transition-all duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page ${
-                  selectedUseCases.includes(useCase.id)
-                    ? 'bg-accent text-on-accent'
-                    : 'bg-tint text-muted hover:text-ink'
-                }`}
-              >
-                {useCase.title}
-              </button>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
 
       {/* Use Cases */}
-      <div className="space-y-6">
+      <div className={density.stackGap}>
         {useCases
           .filter(useCase => selectedUseCases.length === 0 || selectedUseCases.includes(useCase.id))
           .map(useCase => (
@@ -254,74 +249,53 @@ export default function UseCaseView() {
             ref={(el) => (useCaseRefs.current[useCase.id] = el)}
             className="rounded-card bg-surface overflow-hidden scroll-mt-4"
           >
-            <div className="border-b border-hair px-5 py-4 flex items-start gap-3">
-              <Lightbulb className="text-accent mt-1 flex-shrink-0" size={20} />
-              <div>
-                <h3 className="text-lg font-bold text-ink mb-0.5">
-                  {useCase.title}
-                </h3>
-                <p className="text-muted text-sm">
-                  {useCase.description}
-                </p>
-              </div>
+            <div className="border-b border-hair px-4 py-2 flex items-center gap-2">
+              <Lightbulb className="text-accent flex-shrink-0" size={14} />
+              <h3 className={`${typeScale.componentName} text-ink`}>{useCase.title}</h3>
+              <span className={`${typeScale.secondary} text-muted`}>{useCase.description}</span>
             </div>
 
-            <div className="px-5 py-4 space-y-4">
-              {/* Recommended Products */}
-              <div>
-                <h4 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2 flex items-center gap-1.5">
-                  <CheckCircle2 size={13} className="text-green-600" />
-                  Recommended Products
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {useCase.recommendedProducts.map(productId => {
-                    const entry = getCatalogEntry(productId);
-                    const name = entry ? entry.name : getCatalogDisplayName(productId);
-                    const statusSuffix =
-                      entry && entry.status && entry.status !== 'GA' ? ` — ${entry.status}` : '';
-                    return (
-                      <span
-                        key={productId}
-                        className="px-2.5 py-0.5 rounded-full bg-tint text-ink text-xs font-medium"
-                      >
-                        {name}{statusSuffix}
-                      </span>
-                    );
-                  })}
+            <div className="px-4 py-2 space-y-2">
+              {/* Products + Who rows side-by-side */}
+              <div className="grid md:grid-cols-2 gap-x-4 gap-y-1">
+                <div>
+                  <h4 className={`${typeScale.groupLabel} text-muted mb-1 flex items-center gap-1`}>
+                    <CheckCircle2 size={11} className="text-green-600" />
+                    Recommended Products
+                  </h4>
+                  <div className="flex flex-wrap gap-1">
+                    {useCase.recommendedProducts.map(productId => {
+                      const entry = getCatalogEntry(productId);
+                      const name = entry ? entry.name : getCatalogDisplayName(productId);
+                      const statusSuffix =
+                        entry && entry.status && entry.status !== 'GA' ? ` — ${entry.status}` : '';
+                      return (
+                        <span key={productId} className={badge.neutral}>
+                          {name}{statusSuffix}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div>
+                  <h4 className={`${typeScale.groupLabel} text-muted mb-1`}>Who is this for?</h4>
+                  <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                    {useCase.customerProfiles.map((profile, i) => (
+                      <span key={i} className={`${typeScale.secondary} text-muted`}>{profile}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Customer Profiles */}
-              <div>
-                <h4 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">
-                  Who is this for?
-                </h4>
-                <div className="flex flex-wrap gap-x-4 gap-y-1">
-                  {useCase.customerProfiles.map((profile, i) => (
-                    <span
-                      key={i}
-                      className="text-sm text-muted"
-                    >
-                      {profile}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="border-t border-hair pt-3 grid md:grid-cols-2 gap-4">
+              <div className="border-t border-hair pt-2 grid md:grid-cols-2 gap-4">
                 {/* Deployment Patterns */}
                 <div>
-                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">
-                    Deployment patterns
-                  </h4>
-                  <ul className="space-y-1">
+                  <h4 className={`${typeScale.groupLabel} text-muted mb-1`}>Deployment patterns</h4>
+                  <ul className="space-y-0.5">
                     {useCase.deploymentPatterns.map((pattern, i) => (
-                      <li
-                        key={i}
-                        className="flex items-start gap-2 text-sm text-ink"
-                      >
-                        <ArrowRight size={13} className="text-accent mt-0.5 flex-shrink-0" />
-                        <span>{pattern}</span>
+                      <li key={i} className="flex items-start gap-1.5">
+                        <ArrowRight size={11} className="text-accent mt-0.5 flex-shrink-0" />
+                        <span className={`${typeScale.secondary} text-ink`}>{pattern}</span>
                       </li>
                     ))}
                   </ul>
@@ -329,17 +303,12 @@ export default function UseCaseView() {
 
                 {/* Key Considerations */}
                 <div>
-                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">
-                    Key considerations
-                  </h4>
-                  <ul className="space-y-1">
+                  <h4 className={`${typeScale.groupLabel} text-muted mb-1`}>Key considerations</h4>
+                  <ul className="space-y-0.5">
                     {useCase.considerations.map((consideration, i) => (
-                      <li
-                        key={i}
-                        className="text-sm text-ink flex items-start gap-2"
-                      >
-                        <span className="text-accent mt-1 flex-shrink-0 text-xs">•</span>
-                        <span>{consideration}</span>
+                      <li key={i} className="flex items-start gap-1.5">
+                        <span className="text-accent flex-shrink-0 text-xs mt-0.5">•</span>
+                        <span className={`${typeScale.secondary} text-ink`}>{consideration}</span>
                       </li>
                     ))}
                   </ul>
@@ -366,32 +335,30 @@ export default function UseCaseView() {
       <SecurityOverview />
 
       {/* Quick Decision Guide */}
-      <div className="rounded-card bg-surface px-6 py-5">
-        <h3 className="text-lg font-bold text-ink mb-3">
-          Quick Decision Guide
-        </h3>
-        <div className="space-y-3 text-sm">
-          <div className="flex items-start gap-3">
-            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={15} />
-            <p className="text-ink">
+      <div className="rounded-card bg-surface px-4 py-3">
+        <h3 className={`${typeScale.componentName} text-ink mb-2`}>Quick Decision Guide</h3>
+        <div className="grid md:grid-cols-2 gap-x-6 gap-y-1">
+          <div className="flex items-start gap-1.5">
+            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={12} />
+            <p className={`${typeScale.secondary} text-ink`}>
               <strong>RHEL AI</strong> for individual servers, fine-tuning, and getting started quickly
             </p>
           </div>
-          <div className="flex items-start gap-3">
-            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={15} />
-            <p className="text-ink">
+          <div className="flex items-start gap-1.5">
+            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={12} />
+            <p className={`${typeScale.secondary} text-ink`}>
               <strong>OpenShift AI</strong> for distributed workloads, large teams, and production ML
             </p>
           </div>
-          <div className="flex items-start gap-3">
-            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={15} />
-            <p className="text-ink">
+          <div className="flex items-start gap-1.5">
+            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={12} />
+            <p className={`${typeScale.secondary} text-ink`}>
               <strong>Red Hat AI Enterprise</strong> for the combined OpenShift + OpenShift AI platform path — confirm current packaging with your Red Hat account team
             </p>
           </div>
-          <div className="flex items-start gap-3">
-            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={15} />
-            <p className="text-ink">
+          <div className="flex items-start gap-1.5">
+            <ArrowRight className="text-accent mt-0.5 flex-shrink-0" size={12} />
+            <p className={`${typeScale.secondary} text-ink`}>
               <strong>AI Inference Server</strong> for high-performance LLM serving with GPU optimization
             </p>
           </div>
