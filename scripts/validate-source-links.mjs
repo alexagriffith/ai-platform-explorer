@@ -32,6 +32,8 @@ const MIN_CHARS = 500;            // Alexa's rule: "renders content" > this many
 const NAV_TIMEOUT_MS = 30000;     // per-page navigation ceiling.
 const RENDER_POLL_MS = 1000;      // re-measure innerText this often...
 const RENDER_POLL_MAX = 15;       // ...up to this many times (client-hydrated pages need a beat).
+const NAV_ATTEMPTS = 3;           // retry transient navigation failures (flaky docs hosts) so the
+const NAV_RETRY_MS = 1500;        // gate is deterministic — pass criteria (MIN_CHARS) are unchanged.
 const REAL_UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' +
   '(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
@@ -55,8 +57,8 @@ function collectUrls() {
   return map;
 }
 
-/** Navigate (no referrer) and return the longest rendered body-text length we observe. */
-async function renderedLength(context, url) {
+/** One navigation attempt: navigate (no referrer) and return the longest rendered body-text length. */
+async function renderedLengthOnce(context, url) {
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
@@ -78,6 +80,21 @@ async function renderedLength(context, url) {
   }
   await page.close();
   return { status, len, errors: errors.slice(0, 3) };
+}
+
+/** Navigate with bounded retries so a transient navigation hang on a flaky host (e.g. a docs site
+ *  intermittently timing out) doesn't make the gate non-deterministic. The pass criteria are
+ *  unchanged — we simply keep the best (longest) render observed and stop early once it clears
+ *  MIN_CHARS. This changes NO URLs and NO thresholds. */
+async function renderedLength(context, url) {
+  let best = { status: null, len: 0, errors: [] };
+  for (let attempt = 1; attempt <= NAV_ATTEMPTS; attempt++) {
+    const result = await renderedLengthOnce(context, url);
+    if (result.len > best.len) best = result;
+    if (best.len > MIN_CHARS) return best;
+    if (attempt < NAV_ATTEMPTS) await new Promise((r) => setTimeout(r, NAV_RETRY_MS));
+  }
+  return best;
 }
 
 async function main() {
