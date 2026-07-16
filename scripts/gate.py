@@ -3,12 +3,15 @@
 
 ONE command:  python3 scripts/gate.py
 
-Runs four sections in order:
+Runs five sections in order:
   (a) npm run check            — eslint + vitest + vite build
   (b) npm run validate:links   — every pinned source link renders
   (c) leak scan                — customer names, the banned product acronym, secrets
-  (d) style checks (Playwright)— the anti-box law, cell geometry, radii, no h-scroll,
+  (d) design-law static scan   — banned class patterns vs migrated ledger + ratchet
+                                 (scripts/style-ledger.json; see docs/DESIGN-LAW.md)
+  (e) style checks (Playwright)— the anti-box law, cell geometry, radii, no h-scroll,
                                  draft-banner visible in both themes (scripts/style-audit.mjs)
+                                 for every tab listed in the migrated ledger
 
 OUTPUT CONTRACT (strict):
   * On success prints exactly `PASS` and nothing else, exit 0.
@@ -25,6 +28,7 @@ Notes on the leak scan (see inline comments):
     (no customer names are hard-coded in this repo).
 """
 
+import json
 import os
 import re
 import subprocess
@@ -33,6 +37,7 @@ import time
 import urllib.request
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LEDGER_PATH = os.path.join(REPO, "scripts", "style-ledger.json")
 
 
 def _run(cmd, cwd=REPO, env=None):
@@ -156,7 +161,84 @@ def section_leaks():
         fail("leak scan (customer names / banned acronym / secrets)", "\n".join(hits))
 
 
-# ── (d) style checks (Playwright against a preview server) ───────────────────
+# ── (d) design-law static scan (docs/DESIGN-LAW.md) ───────────────────────────
+# Variant-prefix-aware hue classes: matches dark:/hover:/group-hover:/dark:hover: etc.
+# before text|bg|border|from|via|to|ring + banned hue + shade digit.
+DESIGN_BANNED = [
+    ("bg-gradient-", re.compile(r"bg-gradient-")),
+    ("banned-hue", re.compile(
+        r"(?:(?:[\w-]+:)*)?(?:text|bg|border|from|via|to|ring)"
+        r"-(?:purple|pink|indigo|violet|fuchsia)-\d"
+    )),
+    ("legacy-surface (bg-white + dark:bg-gray-800)", re.compile(
+        r"bg-white\b.*\bdark:bg-gray-800\b|\bdark:bg-gray-800\b.*\bbg-white\b"
+    )),
+    ("decorative-shadow", re.compile(r"shadow-(?:sm|md|lg|xl|2xl)\b")),
+]
+
+
+def _load_ledger():
+    try:
+        with open(LEDGER_PATH, "r", encoding="utf-8") as fh:
+            return json.load(fh)
+    except (OSError, ValueError) as exc:
+        fail("design-law static scan (ledger)", "cannot read scripts/style-ledger.json: %s" % exc)
+
+
+def _scan_src_files():
+    """Walk src/** for text extensions (same TEXT_EXT as the leak scan)."""
+    files = []
+    root = os.path.join(REPO, "src")
+    for dp, _, fns in os.walk(root):
+        for fn in fns:
+            if os.path.splitext(fn)[1].lower() in TEXT_EXT:
+                files.append(os.path.join(dp, fn))
+    return files
+
+
+def section_design_static():
+    ledger = _load_ledger()
+    migrated = set(ledger.get("migrated") or [])
+    max_legacy = ledger.get("legacyViolatingFilesMax")
+    if not isinstance(max_legacy, int):
+        fail("design-law static scan (ledger)",
+             "legacyViolatingFilesMax must be an integer in scripts/style-ledger.json")
+
+    migrated_hits = []
+    legacy_violators = set()
+
+    for path in _scan_src_files():
+        rel = os.path.relpath(path, REPO)
+        try:
+            with open(path, "r", encoding="utf-8", errors="ignore") as fh:
+                lines = fh.readlines()
+        except OSError:
+            continue
+        file_has_hit = False
+        for i, line in enumerate(lines, 1):
+            for label, rx in DESIGN_BANNED:
+                m = rx.search(line)
+                if not m:
+                    continue
+                file_has_hit = True
+                if rel in migrated:
+                    migrated_hits.append("%s:%d %s: %s" % (rel, i, label, m.group(0)))
+        if file_has_hit and rel not in migrated:
+            legacy_violators.add(rel)
+
+    if migrated_hits:
+        fail("design-law static scan (migrated file regression)", "\n".join(migrated_hits))
+
+    if len(legacy_violators) > max_legacy:
+        newly = sorted(legacy_violators)
+        fail(
+            "design-law static scan (legacy ratchet exceeded)",
+            "legacy violating files: %d (max %d)\n%s"
+            % (len(legacy_violators), max_legacy, "\n".join(newly)),
+        )
+
+
+# ── (e) style checks (Playwright against a preview server) ───────────────────
 PORT = int(os.environ.get("GATE_PORT", "4390"))
 BASE_URL = "http://localhost:%d/ai-platform-explorer/" % PORT
 
@@ -206,8 +288,10 @@ def main():
     section_check()
     section_links()
     section_leaks()
+    section_design_static()
     section_style()
     sys.stdout.write("PASS")
+
 
 
 if __name__ == "__main__":

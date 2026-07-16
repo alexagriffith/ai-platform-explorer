@@ -1,0 +1,13 @@
+{
+  "migrated": [
+    "src/components/ProductComparisonView.jsx",
+    "src/components/SharedSpineLedger.jsx"
+  ],
+  "migratedTabs": [
+    {
+      "id": "product-comparison",
+      "navLabel": "Product Comparison"
+    }
+  ],
+  "legacyViolatingFilesMax": 23
+}
