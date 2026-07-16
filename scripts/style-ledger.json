@@ -11,7 +11,8 @@
     "src/components/ProductComparisonView.jsx",
     "src/components/SharedSpineLedger.jsx",
     "src/components/DecisionFlowchart.jsx",
-    "src/components/DecisionTree.jsx"
+    "src/components/DecisionTree.jsx",
+    "src/components/ProductExplorer.jsx"
   ],
   "migratedTabs": [
     {
@@ -25,6 +26,10 @@
     {
       "id": "decisions",
       "navLabel": "Decision Guides"
+    },
+    {
+      "id": "products",
+      "navLabel": "Products"
     }
   ],
   "legacyViolatingFilesMax": 16

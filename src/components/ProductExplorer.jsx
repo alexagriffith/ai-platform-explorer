@@ -1,6 +1,21 @@
 import { useState } from 'react';
 import { Search, Filter, ExternalLink } from 'lucide-react';
 import { products } from '../data/products';
+import { text, surface, border, interactive, field } from '../lib/styleTokens';
+
+// Status badge: color-only, no borders — avoids nested-bordered-box violation.
+// Token gap: styleTokens.js lacks a productStatus map; inline here until
+// the integration step adds it.
+const STATUS_TEXT = {
+  'GA':                 'text-green-700 dark:text-green-400',
+  'Tech Preview':       'text-amber-700 dark:text-amber-400',
+  'Dev Preview':        'text-muted',
+  'Check with Red Hat': 'text-faint',
+};
+
+function statusTextClass(status) {
+  return STATUS_TEXT[status] ?? 'text-faint';
+}
 
 export default function ProductExplorer() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,40 +31,31 @@ export default function ProductExplorer() {
     return matchesSearch && matchesStatus && matchesLayer;
   });
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'GA': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'Tech Preview': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'Dev Preview': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
   return (
-    <div className="space-y-6">
-      {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+    <div data-tab="products" className="space-y-6">
+      {/* Filters — flat section, no box container (inputs are boxed themselves) */}
+      <div>
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Red Hat AI Product Catalog</h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Browse Red Hat AI portfolio components, maturity status, and documentation</p>
+          <h2 className={`text-xl font-bold ${text.ink}`}>Red Hat AI Product Catalog</h2>
+          <p className={`text-sm ${text.muted} mt-1`}>Browse Red Hat AI portfolio components, maturity status, and documentation</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+            <Search className={`absolute left-3 top-2.5 ${text.faint}`} size={18} />
             <input
               type="text"
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              className={`${field.input} pl-9`}
             />
           </div>
 
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            className={field.input}
           >
             <option value="all">All Status</option>
             <option value="GA">GA</option>
@@ -60,7 +66,7 @@ export default function ProductExplorer() {
           <select
             value={filterLayer}
             onChange={(e) => setFilterLayer(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            className={field.input}
           >
             <option value="all">All Layers</option>
             <option value="application">Application</option>
@@ -77,34 +83,35 @@ export default function ProductExplorer() {
           return (
             <div
               key={product.id}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
+              className={`rounded-card border ${border.hair} ${surface.raised} hover:-translate-y-0.5 ${interactive.transitionAll}`}
             >
               <div className="p-6">
-                <div className="mb-3">
-                  <h3 className="font-bold text-lg text-gray-900 dark:text-white">
+                <div className="mb-2">
+                  <h3 className={`font-bold text-lg ${text.ink}`}>
                     {product.name}
                   </h3>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 mb-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(product.status)}`}>
+                {/* Status and category — text-only, no bordered badges inside card */}
+                <div className="flex flex-wrap items-center gap-3 mb-3">
+                  <span className={`text-xs font-semibold uppercase tracking-wide ${statusTextClass(product.status)}`}>
                     {product.status}
                   </span>
-                  <span className="px-3 py-1 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                  <span className={`text-xs ${text.faint}`}>
                     {product.category}
                   </span>
                 </div>
 
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                <p className={`text-sm ${text.muted} mb-4`}>
                   {product.description}
                 </p>
 
                 {product.useCases && (
                   <div className="mb-4">
-                    <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      USE CASES
+                    <h4 className={`text-xs font-semibold ${text.faint} uppercase tracking-wide mb-2`}>
+                      Use Cases
                     </h4>
-                    <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                    <ul className={`text-xs ${text.muted} space-y-1`}>
                       {product.useCases.slice(0, 2).map((useCase, i) => (
                         <li key={i}>• {useCase}</li>
                       ))}
@@ -114,16 +121,12 @@ export default function ProductExplorer() {
 
                 {product.customerProfile && (
                   <div className="mb-4">
-                    <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      TYPICAL USERS
+                    <h4 className={`text-xs font-semibold ${text.faint} uppercase tracking-wide mb-2`}>
+                      Typical Users
                     </h4>
-                    <div className="flex flex-wrap gap-1">
-                      {product.customerProfile.slice(0, 2).map((profile, i) => (
-                        <span key={i} className="text-xs bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2 py-1 rounded">
-                          {profile}
-                        </span>
-                      ))}
-                    </div>
+                    <p className={`text-xs ${text.muted}`}>
+                      {product.customerProfile.slice(0, 2).join(' · ')}
+                    </p>
                   </div>
                 )}
 
@@ -132,7 +135,7 @@ export default function ProductExplorer() {
                     href={product.resources.docs}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline mt-2"
+                    className={`inline-flex items-center gap-1 text-sm text-link hover:underline ${interactive.transition} mt-2`}
                   >
                     <ExternalLink size={14} />
                     Documentation
@@ -146,8 +149,8 @@ export default function ProductExplorer() {
 
       {filteredProducts.length === 0 && (
         <div className="text-center py-12">
-          <Filter size={48} className="mx-auto text-gray-400 mb-3" />
-          <p className="text-gray-600 dark:text-gray-400">No products match your filters</p>
+          <Filter size={48} className={`mx-auto ${text.faint} mb-3`} />
+          <p className={text.muted}>No products match your filters</p>
         </div>
       )}
     </div>
