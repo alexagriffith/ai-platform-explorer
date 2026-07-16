@@ -71,6 +71,6 @@ This repo — including every string in `src/` — is on public GitHub AND rende
 
 **Publish warning.** Merging `main` auto-deploys to the PUBLIC GitHub Pages site. Never push, never merge — Alexa gates publishing. Customer names and the string "RHAII" are banned in tracked files (use full product names: Red Hat AI Inference Server, Red Hat OpenShift AI).
 
-**Style law.** PatternFly design tokens vendored at `src/styles/patternfly-tokens.css` (pinned; Red Hat's open-source design system). Anti-box law: one surface per section; zero nested bordered boxes; identical cell dimensions within a component; ≤2 border-radius values; grid-aligned; whitespace/typography over containers; single-page-friendly at 1440px; both themes. Enforced by gate.py measured checks.
+**Style law.** Now app-wide, not comparison-only: the full visual contract lives in `docs/DESIGN-LAW.md` (PatternFly v6.6.0 tokens at `src/styles/patternfly-tokens.css`, single red accent, lightness, motion law, anti-box law, migrated-tab ledger). Views restyle atomically — full compliance + ledger entry in one commit, or legacy until their turn. Enforced by gate.py static scan + measured checks.
 
 **Hygiene.** Leave the tree clean after every step: no dead code, no orphaned files, no stale comments referencing removed things. Cleanup is part of the step, not a later chore. Project working docs live in `planning/` (gitignored); durable scrubbed docs in `docs/`.
