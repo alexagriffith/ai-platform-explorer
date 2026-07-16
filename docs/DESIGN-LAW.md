@@ -80,6 +80,23 @@ The reference standard is the AI Architect solution-map style: compact, aligned,
 6. **Clean, clear, consistent, concise** — when two treatments both satisfy the law, pick the
    one with less chrome and fewer pixels.
 
+## Takeaways law (added 2026-07-16 — "people want takeaways; they will not read a blob")
+
+Every piece of UI content is scanned before it is read. Choose the highest form the
+information allows — best first:
+
+1. **Visual** — marks, table, diagram. If the information has structure, show the structure.
+2. **Short bullets with bold lead terms** — each bullet opens with a **bold takeaway term**
+   (a few words), then one short clause. One idea per bullet. A bullet that wraps twice is
+   a paragraph wearing a disguise.
+3. **One short sentence.**
+4. **Banned: the undifferentiated prose blob** — multi-clause paragraphs with no bolding and
+   no structure. If a paragraph is unavoidable, its first words are the takeaway.
+
+- A summary or subtitle never repeats verbatim as body text — say it once.
+- Copy passes apply the Strunk rules (active voice, positive form, concrete language, omit
+  needless words) UNDER the content law: extraction from verified sources, never authorship.
+
 ## Anti-box law (unchanged, now app-wide)
 
 - One surface per section; zero nested bordered boxes.
