@@ -8,7 +8,7 @@ import {
   collectBridgeStructuralEdges,
   getFocusNeighborSet
 } from '../lib/flowVisualizationData';
-import { interactive, text, button, categoricalMark, legendChip, typeScale } from '../lib/styleTokens';
+import { interactive, modal, text, button, categoricalMark, legendChip, typeScale } from '../lib/styleTokens';
 
 function nameById(flow, id) {
   for (const layer of flow) {
@@ -228,7 +228,7 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
       const dataUrl = await toPng(captureEl, {
         pixelRatio: 2,
         cacheBust: true,
-        backgroundColor: isDarkMode ? '#111827' : '#f8fafc'
+        backgroundColor: isDarkMode ? '#151515' : '#f2f2f2'
       });
       const a = document.createElement('a');
       a.href = dataUrl;
@@ -247,7 +247,7 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-slate-950/60 flex items-center justify-center p-4 z-50"
+      className={modal.overlay}
       onClick={onClose}
     >
       <div

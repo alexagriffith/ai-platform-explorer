@@ -285,7 +285,7 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/20 dark:bg-black/40 z-40"
+        className={`${modal.overlayScrim} z-40`}
         onClick={onClose}
       />
 

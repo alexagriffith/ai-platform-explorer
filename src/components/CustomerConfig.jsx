@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle2, AlertCircle, Sparkles, Copy, X } from 'lucide-react';
 import { products, thirdPartyOptions } from '../data/products';
-import { border, button, interactive, text } from '../lib/styleTokens';
+import { border, button, interactive, modal, text } from '../lib/styleTokens';
 
 function getSuggestedProductIds(customerEnv) {
   const recommended = products.filter((p) => p.required).map((p) => p.id);
@@ -473,7 +473,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
 
       {showSuggestionModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60"
+          className={modal.overlay}
           role="dialog"
           aria-modal="true"
           aria-labelledby="suggestion-modal-title"
