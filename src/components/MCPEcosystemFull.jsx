@@ -1,5 +1,16 @@
 import { useState } from 'react';
 import { Shield, Database, Package, Workflow, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { typeScale, density, categoricalMark, legendChip } from '../lib/styleTokens';
+
+/**
+ * Category → categoricalMark key mapping.
+ * Data keys: 'red-hat' → redHat, 'isv-partners' → partner, 'community' → openSource.
+ */
+const CATEGORY_MARK = {
+  'red-hat': 'redHat',
+  'isv-partners': 'partner',
+  'community': 'openSource',
+};
 
 export default function MCPEcosystemFull() {
   const [expandedCategory, setExpandedCategory] = useState('red-hat');
@@ -61,162 +72,140 @@ export default function MCPEcosystemFull() {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Header — no border on outer */}
-      <div className="rounded-card bg-surface px-6 py-5">
-        <h2 className="text-2xl font-bold text-ink mb-1">
-          The Model Context Protocol (MCP) Ecosystem on OpenShift AI
-        </h2>
-        <p className="text-muted text-sm mb-3">
-          A platform approach for discovering, deploying, securing, and governing MCP servers
-        </p>
-        <p className="text-xs font-medium text-muted mb-3">
+    <div className={density.stackGap}>
+      {/* Header */}
+      <div className="rounded-card bg-surface px-4 py-3">
+        <div className="flex items-start justify-between flex-wrap gap-2 mb-1">
+          <div>
+            <h2 className={`${typeScale.componentName} text-ink mb-0.5`}>
+              The Model Context Protocol (MCP) Ecosystem on OpenShift AI
+            </h2>
+            <p className={`${typeScale.secondary} text-muted`}>
+              A platform approach for discovering, deploying, securing, and governing MCP servers
+            </p>
+          </div>
+          <a
+            href="https://modelcontextprotocol.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs text-link hover:text-accent transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page flex-shrink-0"
+          >
+            <ExternalLink size={11} />
+            <span>MCP specification (modelcontextprotocol.io)</span>
+          </a>
+        </div>
+        <p className={`${typeScale.meta} text-muted`}>
           Technology Preview — verify availability with your Red Hat account team
         </p>
-        <a
-          href="https://modelcontextprotocol.io"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-sm text-link hover:text-accent transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
-        >
-          <ExternalLink size={13} />
-          <span>MCP specification (modelcontextprotocol.io)</span>
-        </a>
       </div>
 
-      {/* Ingestion Pipeline — no border on outer, pipeline steps use tint */}
-      <div className="rounded-card bg-surface px-6 py-5">
-        <h3 className="text-lg font-bold text-ink mb-4">
-          Ingestion Pipeline
-        </h3>
-        <div className="flex items-center justify-center gap-2 flex-wrap">
-          {['Validate', 'Scan', 'Sign', 'Certify', 'Publish'].map((stage, index) => (
-            <div key={stage} className="flex items-center gap-2">
-              <div className="px-4 py-2 rounded-card bg-tint text-ink font-medium text-sm">
-                {stage}
+      {/* Ingestion Pipeline + Core Components combined */}
+      <div className="rounded-card bg-surface px-4 py-3">
+        <div className="grid md:grid-cols-2 gap-4">
+          {/* Ingestion Pipeline */}
+          <div>
+            <h3 className={`${typeScale.componentName} text-ink mb-2`}>Ingestion Pipeline</h3>
+            <div className="flex items-center gap-1.5 flex-wrap mb-2">
+              {['Validate', 'Scan', 'Sign', 'Certify', 'Publish'].map((stage, index) => (
+                <div key={stage} className="flex items-center gap-1.5">
+                  <div className="px-2 py-0.5 rounded-card bg-tint text-ink font-medium text-xs">
+                    {stage}
+                  </div>
+                  {index < 4 && <span className="text-muted text-xs">→</span>}
+                </div>
+              ))}
+            </div>
+            <p className={`${typeScale.meta} text-muted`}>
+              The planned ingestion workflow validates, scans, and signs MCP servers before publication — confirm certification status in product documentation.
+            </p>
+          </div>
+
+          {/* Core Components */}
+          <div>
+            <h3 className={`${typeScale.componentName} text-ink mb-2`}>Core Platform Components</h3>
+            {/* Registry */}
+            <div className="rounded-card bg-tint px-3 py-1.5 flex items-center gap-2 mb-2">
+              <Database className="text-green-600 flex-shrink-0" size={14} />
+              <div className="flex-1 min-w-0">
+                <h4 className={`${typeScale.secondary} font-bold text-ink`}>MCP Registry</h4>
+                <p className={`${typeScale.meta} text-muted`}>System of Record • Governance Backbone — central repository for all MCP server metadata, certification status, and governance</p>
               </div>
-              {index < 4 && <div className="text-muted text-sm">→</div>}
+            </div>
+            <div className={`grid grid-cols-3 ${density.rowGap}`}>
+              {components.map((component) => {
+                const Icon = component.icon;
+                return (
+                  <div key={component.id} className="rounded-card bg-tint px-2 py-1.5">
+                    <div className="flex items-center gap-1 mb-0.5">
+                      <Icon size={12} className="text-muted flex-shrink-0" />
+                      <h4 className={`${typeScale.meta} font-bold text-ink`}>{component.name}</h4>
+                    </div>
+                    <p className={`${typeScale.meta} font-semibold text-muted mb-0.5`}>{component.role}</p>
+                    <p className={`${typeScale.meta} text-muted`}>{component.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+            <p className={`${typeScale.meta} text-ink mt-1.5`}>
+              <strong>Registry role:</strong> The registry supplies metadata to the catalog, lifecycle operator, and gateway so components share one source of truth.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* AI assets + Curated MCP Servers */}
+      <div className="rounded-card bg-surface px-4 py-3">
+        <div className="flex items-center gap-2 mb-2">
+          <h3 className={`${typeScale.componentName} text-ink`}>Curated MCP servers</h3>
+          <p className={`${typeScale.meta} text-muted`}>
+            AI assets, evaluation, and agents — enterprise users consume governed MCP tools through OpenShift AI. Partner catalog expands over time; certification status belongs in product documentation.
+          </p>
+        </div>
+
+        {/* Legend */}
+        <div className="flex items-center gap-4 mb-2">
+          <span className={`${typeScale.groupLabel} text-faint`}>Category:</span>
+          {[
+            { key: 'redHat', label: 'Red Hat' },
+            { key: 'partner', label: 'Technology Partners' },
+            { key: 'openSource', label: 'Community' },
+          ].map(({ key, label }) => (
+            <div key={key} className="flex items-center gap-1.5">
+              <span className={legendChip[key]}></span>
+              <span className={`${typeScale.meta} text-ink`}>{label}</span>
             </div>
           ))}
         </div>
-        <p className="text-sm text-muted text-center mt-3">
-          The planned ingestion workflow validates, scans, and signs MCP servers before publication — confirm certification status in product documentation.
-        </p>
-      </div>
 
-      {/* Core Components — no border on outer, registry + components use tint */}
-      <div className="rounded-card bg-surface px-6 py-5">
-        <h3 className="text-lg font-bold text-ink mb-4">
-          Core Platform Components
-        </h3>
-
-        {/* Registry at center — tint background, no border */}
-        <div className="rounded-card bg-tint p-4 text-center mb-4">
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <Database className="text-green-600" size={20} />
-            <h4 className="text-base font-bold text-ink">
-              MCP Registry
-            </h4>
-          </div>
-          <p className="text-xs font-semibold text-muted mb-1">
-            System of Record • Governance Backbone
-          </p>
-          <p className="text-xs text-muted">
-            Central repository for all MCP server metadata, certification status, and governance
-          </p>
-          <div className="mt-2 inline-block rounded-full bg-page px-2.5 py-0.5 text-xs font-medium text-muted">
-            System of record
-          </div>
-        </div>
-
-        {/* Other components — tint, no border */}
-        <div className="grid md:grid-cols-3 gap-4">
-          {components.map((component) => {
-            const Icon = component.icon;
-
-            return (
-              <div
-                key={component.id}
-                className="rounded-card bg-tint p-4"
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <Icon size={16} className="text-muted flex-shrink-0" />
-                  <h4 className="font-bold text-ink text-sm">
-                    {component.name}
-                  </h4>
-                </div>
-                <p className="text-xs font-semibold text-muted mb-1">
-                  {component.role}
-                </p>
-                <p className="text-xs text-muted">
-                  {component.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-4 border-t border-hair pt-3">
-          <p className="text-sm text-ink">
-            <strong>Registry role:</strong> The registry supplies metadata to the catalog, lifecycle operator, and gateway so components share one source of truth.
-          </p>
-        </div>
-      </div>
-
-      {/* AI assets section */}
-      <div className="rounded-card bg-surface px-6 py-5">
-        <h3 className="text-lg font-bold text-ink mb-1">
-          AI assets, evaluation, and agents
-        </h3>
-        <p className="text-muted text-sm">
-          Enterprise users consume governed MCP tools through OpenShift AI
-        </p>
-      </div>
-
-      {/* Curated MCP Servers — disclosure, no border on cards */}
-      <div className="rounded-card bg-surface px-6 py-5">
-        <h3 className="text-lg font-bold text-ink mb-1">
-          Curated MCP servers
-        </h3>
-        <p className="text-sm text-muted mb-4">
-          Partner catalog expands over time; certification status belongs in product documentation.
-        </p>
-
-        <div className="space-y-2">
+        <div className={density.stackGap}>
           {Object.entries(mcpServers).map(([key, category]) => {
             const isExpanded = expandedCategory === key;
+            const markKey = CATEGORY_MARK[key];
 
             return (
               <div key={key}>
                 <button
                   onClick={() => setExpandedCategory(isExpanded ? null : key)}
-                  className="w-full rounded-card bg-tint px-4 py-2.5 flex items-center justify-between hover:bg-page transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+                  className={`w-full rounded-card bg-tint px-3 py-2 flex items-center justify-between hover:bg-page transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page ${categoricalMark[markKey]}`}
                 >
-                  <h4 className="font-semibold text-ink text-sm">
+                  <h4 className={`${typeScale.secondary} font-semibold text-ink`}>
                     {category.title} ({category.servers.length})
                   </h4>
                   {isExpanded ? (
-                    <ChevronUp className="text-muted" size={16} />
+                    <ChevronUp className="text-muted" size={14} />
                   ) : (
-                    <ChevronDown className="text-muted" size={16} />
+                    <ChevronDown className="text-muted" size={14} />
                   )}
                 </button>
 
                 {isExpanded && (
-                  <div className="mt-1 pl-4 divide-y divide-hair">
+                  <div className="mt-1 pl-3 divide-y divide-hair">
                     {category.servers.map((server, index) => (
-                      <div
-                        key={index}
-                        className="py-2 flex items-start gap-3"
-                      >
-                        <div className="w-1 h-1 rounded-full bg-accent mt-2 flex-shrink-0"></div>
+                      <div key={index} className="py-1.5 flex items-start gap-2">
+                        <div className="w-1 h-1 rounded-full bg-accent mt-1.5 flex-shrink-0"></div>
                         <div className="flex-1">
-                          <h5 className="font-semibold text-sm text-ink">
-                            {server.name}
-                          </h5>
-                          <p className="text-xs text-muted">
-                            {server.description}
-                          </p>
+                          <h5 className={`${typeScale.secondary} font-semibold text-ink`}>{server.name}</h5>
+                          <p className={`${typeScale.meta} text-muted`}>{server.description}</p>
                         </div>
                       </div>
                     ))}
