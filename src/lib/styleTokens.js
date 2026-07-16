@@ -4,12 +4,6 @@
  * Extend in later restyle steps; do not re-implement maps inside components.
  */
 
-export const surface = {
-  page: 'bg-page',
-  raised: 'bg-surface',
-  tint: 'bg-tint',
-};
-
 export const border = {
   hair: 'border-hair',
   edge: 'border-edge',

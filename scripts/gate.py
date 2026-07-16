@@ -174,6 +174,19 @@ DESIGN_BANNED = [
         r"bg-white\b.*\bdark:bg-gray-800\b|\bdark:bg-gray-800\b.*\bbg-white\b"
     )),
     ("decorative-shadow", re.compile(r"shadow-(?:sm|md|lg|xl|2xl)\b")),
+    # Inline gradient in a JSX style prop (CSS gradient function inside style={{ … }})
+    ("inline-gradient (style prop)", re.compile(
+        r"style=\{\{[^}]*(?:linear|radial)-gradient\("
+    )),
+    # Inline literal hex color in a JSX style prop — matches style={{ … #rrggbb … }}
+    # Data-driven color variables (layer.color) do NOT contain the literal '#' token.
+    ("inline-hex-color (style prop)", re.compile(
+        r"style=\{\{[^}]*#[0-9a-fA-F]{3,8}"
+    )),
+    # Inline rgb()/rgba()/hsl() in a JSX style prop
+    ("inline-rgb-color (style prop)", re.compile(
+        r"style=\{\{[^}]*(?:rgba?|hsla?)\s*\("
+    )),
 ]
 
 
