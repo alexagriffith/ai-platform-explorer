@@ -76,7 +76,7 @@ export const resourceDefinitions = {
       { name: 'spec.tls', description: 'TLS termination configuration' },
       { name: 'spec.port', description: 'Target port on the Service' }
     ],
-    docsUrl: 'https://docs.openshift.com/container-platform/latest/networking/routes/route-configuration.html',
+    docsUrl: 'https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/ingress_and_load_balancing/routes',
     usedBy: 'user'
   },
 
@@ -108,7 +108,7 @@ export const resourceDefinitions = {
       { name: 'spec.explainer', description: 'Optional model explanation component' },
       { name: 'metadata.annotations', description: 'Deployment mode, autoscaling config, etc.' }
     ],
-    docsUrl: 'https://kserve.github.io/website/latest/reference/api/#serving.kserve.io/v1beta1.InferenceService',
+    docsUrl: 'https://kserve.github.io/website/docs/reference/crd-api#serving.kserve.io/v1beta1.InferenceService',
     usedBy: 'user'
   },
 
@@ -123,7 +123,7 @@ export const resourceDefinitions = {
       { name: 'spec.protocolVersions', description: 'Supported inference protocols (v1, v2)' },
       { name: 'spec.grpcEndpoint', description: 'gRPC endpoint if supported' }
     ],
-    docsUrl: 'https://kserve.github.io/website/latest/modelserving/servingruntimes/',
+    docsUrl: 'https://kserve.github.io/website/docs/concepts/resources/servingruntime',
     usedBy: 'platform'
   },
 
@@ -151,7 +151,7 @@ export const resourceDefinitions = {
       { name: 'spec.hostnames', description: 'Hostnames to match' },
       { name: 'spec.rules', description: 'Routing rules (match, backend refs, filters)' }
     ],
-    docsUrl: 'https://gateway-api.sigs.k8s.io/api-types/httproute/',
+    docsUrl: 'https://gateway-api.sigs.k8s.io/reference/api-types/httproute/',
     usedBy: 'controller'
   },
 
@@ -210,7 +210,7 @@ export const resourceDefinitions = {
       { name: 'spec.components.workbenches', description: 'Jupyter workbench (notebook) configuration' },
       { name: 'spec.components.dashboard', description: 'OpenShift AI dashboard configuration' }
     ],
-    docsUrl: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/',
+    docsUrl: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5',
     usedBy: 'platform'
   },
 
@@ -224,7 +224,7 @@ export const resourceDefinitions = {
       { name: 'metadata.annotations', description: 'Idle-culling, image selection, and stop/start state' },
       { name: 'spec.template.spec.containers', description: 'Workbench container with notebook image and GPU requests' }
     ],
-    docsUrl: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/',
+    docsUrl: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5',
     usedBy: 'user'
   },
 

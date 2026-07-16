@@ -37,7 +37,7 @@ export const solutionDetails = {
       'Simplify migration from external APIs to self-hosted models',
       'Multi-tenant SaaS platforms offering AI capabilities'
     ],
-    documentation: 'https://docs.redhat.com',
+    documentation: 'https://docs.redhat.com/en',
     contacts: ['Ask your Red Hat account team.']
   },
   'openshift': {
@@ -73,7 +73,7 @@ export const solutionDetails = {
       'Hybrid cloud deployments',
       'Edge AI deployments'
     ],
-    documentation: 'https://docs.openshift.com',
+    documentation: 'https://docs.redhat.com/en/documentation/openshift_container_platform',
     contacts: ['Ask your Red Hat account team.']
   },
   'rhoai': {
@@ -119,7 +119,7 @@ export const solutionDetails = {
       'Fine-tuning with InstructLab',
       'MLOps automation and governance'
     ],
-    documentation: 'https://docs.redhat.com/rhoai',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5',
     contacts: ['Ask your Red Hat account team.']
   },
   'rhai': {
@@ -213,7 +213,7 @@ export const solutionDetails = {
       'Subject matter expert-driven model improvement',
       'Alignment for specific use cases or industries'
     ],
-    documentation: 'https://docs.redhat.com/instructlab',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/customize_models_for_gen_ai_and_agentic_ai_applications',
     contacts: ['Ask your Red Hat account team.']
   },
   'data-science-pipelines': {
@@ -247,7 +247,7 @@ export const solutionDetails = {
       'MLOps automation and governance',
       'End-to-end ML lifecycle management'
     ],
-    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/working_with_data_science_pipelines',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_ai_pipelines',
     contacts: ['Ask your Red Hat account team.']
   },
   'ai-inference': {
@@ -356,7 +356,7 @@ export const solutionDetails = {
       'Alert on model drift or errors',
       'Capacity planning for inference workloads'
     ],
-    documentation: 'https://docs.redhat.com/openshift/monitoring',
+    documentation: 'https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html-single/monitoring/index',
     contacts: ['Ask your Red Hat account team.']
   },
   'trustyai': {
@@ -389,7 +389,7 @@ export const solutionDetails = {
       'Model risk management',
       'Explainable AI requirements'
     ],
-    documentation: 'https://docs.redhat.com/trustyai',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/monitoring_your_ai_systems',
     contacts: ['Ask your Red Hat account team.']
   },
   'rh-mcp-full': {
@@ -424,7 +424,7 @@ export const solutionDetails = {
       'Multi-agent orchestration',
       'Secure tool integration with certified partners'
     ],
-    documentation: 'https://docs.redhat.com/mcp',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_ogx',
     contacts: ['Ask your Red Hat account team.']
   },
   'rh-mcp-catalog': {
@@ -515,7 +515,7 @@ export const solutionDetails = {
       'Persistent volumes for notebooks',
       'Multi-cloud data management'
     ],
-    documentation: 'https://docs.redhat.com/odf',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/',
     contacts: ['Ask your Red Hat account team.']
   },
   'kserve': {
@@ -561,7 +561,7 @@ export const solutionDetails = {
       'Production serving with authentication and authorization',
       'Autoscaling inference workloads (HPA/KEDA based on metrics, Knative for serverless)'
     ],
-    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/serving_models',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/deploying_models',
     contacts: ['Ask your Red Hat account team.']
   },
   'rh-evaluation': {
@@ -607,7 +607,7 @@ export const solutionDetails = {
       'Multi-tenant evaluation workflows with experiment tracking',
       'Continuous model evaluation in MLOps pipelines'
     ],
-    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/evaluating_models',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/evaluating_ai_systems',
     contacts: ['Ask your Red Hat account team.']
   },
   'instructlab-eval': {
@@ -778,7 +778,7 @@ export const solutionDetails = {
       'Air-gapped environments on RHEL',
       'Development and testing before scaling to RHOAI'
     ],
-    documentation: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai/1.5',
     contacts: ['Ask your Red Hat account team.']
   },
   'batch-gateway': {
@@ -897,7 +897,7 @@ export const solutionDetails = {
       'Multi-provider inference (cloud + on-prem)',
       'Developers familiar with Meta\'s Llama Stack ecosystem'
     ],
-    documentation: 'https://github.com/red-hat-data-services/llama-stack-distribution',
+    documentation: 'https://github.com/red-hat-data-services/ogx-distribution',
     contacts: ['Ask your Red Hat account team.']
   }
 };

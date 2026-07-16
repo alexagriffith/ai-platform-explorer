@@ -59,7 +59,7 @@ const SRC = {
   rhoaiInstalling:
     'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html-single/installing_and_uninstalling_openshift_ai_self-managed/index',
   rhoaiSupportedConfigs: 'https://access.redhat.com/articles/rhoai-supported-configs-3.x',
-  rhoaiCatalog: 'https://catalog.redhat.com/software/container-stacks/detail/63b85b573112fe5a95ee9a3a',
+  rhoaiCatalog: 'https://catalog.redhat.com/en/software/container-stacks/detail/63b85b573112fe5a95ee9a3a',
   // Two delivery Helm charts, both under the Red Hat AI ("rhai") namespace — one product family, two
   // platform wirings (Alexa's framing, 2026-07-10). Catalog API (requires_terms:true, Tech Preview,
   // content_stream_tags v3.4) confirms the split; chart bodies stay auth-gated (pull commands in
@@ -452,7 +452,7 @@ export const aiInferenceVsRhoai = {
         tier: 'clear',
         sourceUrl: SRC.rhoaiModelRegistryCatalog,
         sourceLabel:
-          'Red Hat OpenShift AI container catalog — odh-model-registry-operator (release_categories: Tech Preview). Resolves the round-1 "AI Hub vs Model Registry" conflict: the model-registry service/operator ships as Tech Preview, while its catalog front-end (odh-mod-arch-model-registry, the supported-configs "AI Hub GA" line) is Generally Available — different layers, not a contradiction. Live-verified 2026-07-13.'
+          'Red Hat OpenShift AI container catalog — odh-model-registry-operator (release_categories: Tech Preview).'
       },
       overlap: true,
       illustrative: true,
@@ -533,7 +533,7 @@ export const aiInferenceVsRhoai = {
   docsLinks: [
     {
       label: 'Red Hat OpenShift AI documentation (docs.redhat.com)',
-      url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/'
+      url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5'
     }
   ],
 

@@ -424,8 +424,8 @@ spec:
 
   docsLinks: [
     { label: 'KServe Documentation', url: 'https://kserve.github.io/website/' },
-    { label: 'KServe v1beta1 API Reference', url: 'https://kserve.github.io/website/latest/reference/api/' },
-    { label: 'RHOAI Model Serving Guide', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/' },
+    { label: 'KServe v1beta1 API Reference', url: 'https://kserve.github.io/website/docs/reference/crd-api' },
+    { label: 'RHOAI Model Serving Guide', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5' },
     { label: 'vLLM Runtime Configuration', url: 'https://docs.vllm.ai/en/latest/' },
     { label: 'ServingRuntime Examples', url: 'https://github.com/kserve/kserve/tree/master/config/runtimes' }
   ],
@@ -1005,11 +1005,11 @@ spec:
   ],
 
   docsLinks: [
-    { label: 'RHOAI Documentation', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/' },
-    { label: 'Installing RHOAI', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.x/html/installing_and_uninstalling_openshift_ai_self-managed/' },
-    { label: 'Data Science Pipelines', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.x/html/working_with_data_science_pipelines/' },
-    { label: 'Model Registry', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.x/html/managing_models/' },
-    { label: 'Distributed Workloads (Ray)', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.x/html/working_with_distributed_workloads/' }
+    { label: 'RHOAI Documentation', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5' },
+    { label: 'Installing RHOAI', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/installing_and_uninstalling_openshift_ai_self-managed' },
+    { label: 'Data Science Pipelines', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_ai_pipelines' },
+    { label: 'Model Registry', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_model_registries' },
+    { label: 'Distributed Workloads (Ray)', url: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_distributed_workloads' }
   ],
 
   relatedComparisons: [
