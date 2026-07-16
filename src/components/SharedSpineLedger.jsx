@@ -94,20 +94,20 @@ function LedgerRow({ row, last }) {
   return (
     <div className={`${COLS} ${band} ${rounded}`} data-ledger-row>
       <div
-        className="flex h-12 items-center justify-center border-b border-hair"
+        className="flex h-10 items-center justify-center border-b border-hair"
         data-ledger-cell="a"
         title={sideTitle(LEDGER_PRODUCTS.a.label, row.a)}
       >
         <PresenceMark side={row.a} />
       </div>
       <div
-        className="flex h-12 items-center justify-center border-b border-hair px-2 text-center"
+        className="flex h-10 items-center justify-center border-b border-hair px-2 text-center"
         data-ledger-cell="name"
       >
         <NameLink row={row} />
       </div>
       <div
-        className="flex h-12 items-center justify-center border-b border-hair"
+        className="flex h-10 items-center justify-center border-b border-hair"
         data-ledger-cell="b"
         title={sideTitle(LEDGER_PRODUCTS.b.label, row.b)}
       >
@@ -151,14 +151,14 @@ function Legend() {
 function StickyHeader() {
   return (
     <div className={`${COLS} sticky top-0 z-10 border-b border-edge bg-surface`}>
-      <div className="flex flex-col items-center justify-center px-2 py-3 text-center">
+      <div className="flex flex-col items-center justify-center px-2 py-2 text-center">
         <span className="text-xs font-bold leading-tight text-ink sm:text-sm">{LEDGER_PRODUCTS.a.label}</span>
         <span className="mt-0.5 text-[10px] text-faint sm:text-xs">{LEDGER_PRODUCTS.a.descriptor}</span>
       </div>
-      <div className="flex items-center justify-center px-2 py-3">
+      <div className="flex items-center justify-center px-2 py-2">
         <span className="text-[10px] font-semibold uppercase tracking-wider text-faint sm:text-xs">Component</span>
       </div>
-      <div className="flex flex-col items-center justify-center px-2 py-3 text-center">
+      <div className="flex flex-col items-center justify-center px-2 py-2 text-center">
         <span className="text-xs font-bold leading-tight text-ink sm:text-sm">{LEDGER_PRODUCTS.b.label}</span>
         <span className="mt-0.5 text-[10px] text-faint sm:text-xs">{LEDGER_PRODUCTS.b.descriptor}</span>
       </div>
@@ -181,9 +181,9 @@ export default function SharedSpineLedger({ comparison }) {
       data-ledger
       className="rounded-card border border-edge bg-surface"
     >
-      <div className="border-b border-hair p-4 sm:p-5">
+      <div className="border-b border-hair p-3 sm:p-4">
         <h3 className="mb-1 font-display text-base font-bold text-ink">What ships in each product</h3>
-        <p className="mb-3 text-xs leading-relaxed text-muted">
+        <p className="mb-2 text-xs leading-relaxed text-muted">
           One component per row, both products side by side. The shaded band is the core they share;
           below it, only the platform keeps going.
         </p>
