@@ -297,7 +297,7 @@ export default function ProductComparisonView() {
     try {
       // Lazy-load the export library so it stays out of the main bundle.
       const { toPng } = await import('html-to-image');
-      const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = document.documentElement.classList.contains('dark');
       const dataUrl = await toPng(el, {
         pixelRatio: 2,
         cacheBust: true,

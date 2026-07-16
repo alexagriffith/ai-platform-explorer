@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Layers, Target, Package, GitBranch, AlertCircle, GitCompare, Scale } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Layers, Target, Package, GitBranch, AlertCircle, GitCompare, Scale, Sun, Moon } from 'lucide-react';
 import ArchitectureHub from './components/ArchitectureHub';
 import ProductExplorer from './components/ProductExplorer';
 import UseCaseView from './components/UseCaseView';
@@ -7,9 +7,51 @@ import DecisionFlowchart from './components/DecisionFlowchart';
 import DeploymentImpactView from './components/DeploymentImpactView';
 import ProductComparisonView from './components/ProductComparisonView';
 import AcronymGlossary from './components/AcronymGlossary';
+import { interactive } from './lib/styleTokens';
+
+/**
+ * Returns whether .dark is currently on <html>.
+ * A null stored value means "follow system" — the pre-paint script already
+ * set the class; we just read it here to seed React state.
+ */
+function readCurrentDark() {
+  return document.documentElement.classList.contains('dark');
+}
+
+/**
+ * Minimal hook for the dark/light toggle. Persists explicit choices to
+ * localStorage; when no explicit choice exists, listens to the system media
+ * query and follows live OS changes.
+ */
+function useTheme() {
+  const [isDark, setIsDark] = useState(readCurrentDark);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('theme');
+    if (stored) return; // explicit choice — don't listen to system
+
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e) => {
+      document.documentElement.classList.toggle('dark', e.matches);
+      setIsDark(e.matches);
+    };
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  function toggleTheme() {
+    const next = !isDark;
+    document.documentElement.classList.toggle('dark', next);
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    setIsDark(next);
+  }
+
+  return { isDark, toggleTheme };
+}
 
 function App() {
   const [currentView, setCurrentView] = useState('architecture');
+  const { isDark, toggleTheme } = useTheme();
   const [customerEnv, setCustomerEnv] = useState({
     hasKubernetes: false,
     hasOpenShift: false,
@@ -75,18 +117,28 @@ function App() {
       {/* Header */}
       <header className="bg-surface border-b border-edge">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-accent rounded-card flex items-center justify-center flex-shrink-0">
-              <span className="text-on-accent font-display font-extrabold text-base sm:text-lg tracking-tight">RH</span>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-accent rounded-card flex items-center justify-center flex-shrink-0">
+                <span className="text-on-accent font-display font-extrabold text-base sm:text-lg tracking-tight">RH</span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <h1 className="font-display text-lg sm:text-2xl font-extrabold tracking-tight text-ink truncate">
+                  Red Hat AI Platform Explorer
+                </h1>
+                <p className="text-xs sm:text-sm text-muted hidden sm:block">
+                  Interactive visualization of Red Hat's AI offerings
+                </p>
+              </div>
             </div>
-            <div className="min-w-0 flex-1">
-              <h1 className="font-display text-lg sm:text-2xl font-extrabold tracking-tight text-ink truncate">
-                Red Hat AI Platform Explorer
-              </h1>
-              <p className="text-xs sm:text-sm text-muted hidden sm:block">
-                Interactive visualization of Red Hat's AI offerings
-              </p>
-            </div>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+              className={`flex-shrink-0 p-2 rounded-card text-muted ${interactive.hoverTint} ${interactive.focusRing} ${interactive.transition}`}
+            >
+              {isDark ? <Sun size={20} aria-hidden="true" /> : <Moon size={20} aria-hidden="true" />}
+            </button>
           </div>
         </div>
       </header>

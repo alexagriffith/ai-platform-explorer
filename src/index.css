@@ -7,9 +7,9 @@
  * (src/styles/patternfly-tokens.css). Values are RGB channel triplets so Tailwind
  * can apply opacity via rgb(var(--x) / <alpha-value>). Each role is annotated with
  * the PatternFly palette token it equals. The light values are the defaults; the
- * dark values swap the SAME roles down the gray ramp under prefers-color-scheme,
- * which is the app's dark-mode signal (Tailwind darkMode = media). Because the
- * roles switch here, components need almost no per-color dark: variants.
+ * dark values swap the SAME roles down the gray ramp under the .dark class on
+ * <html> (class-based Tailwind darkMode, set by the toggle / pre-paint script).
+ * Because the roles switch here, components need almost no per-color dark: variants.
  * -------------------------------------------------------------------------- */
 @layer base {
   :root {
@@ -32,22 +32,24 @@
     --accent-rgb: 238, 0, 0;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --app-page: 21 21 21;         /* gray-95  #151515 */
-      --app-surface: 31 31 31;      /* gray-90  #1f1f1f */
-      --app-tint: 41 41 41;         /* gray-80  #292929 */
-      --app-ink: 242 242 242;       /* gray-10  #f2f2f2 */
-      --app-muted: 163 163 163;     /* gray-40  #a3a3a3 */
-      --app-faint: 140 140 140;     /* gray-45  #8c8c8c */
-      --app-hair: 56 56 56;         /* gray-70  #383838 */
-      --app-border: 56 56 56;       /* gray-70  #383838 */
-      --app-accent: 238 0 0;        /* red-50   #ee0000 — brand red still reads on dark */
-      --app-accent-strong: 245 110 110; /* red-40 #f56e6e */
-      --app-link: 245 110 110;      /* red-40   #f56e6e — AA on dark surface */
-      --app-draft-bg: 63 0 0;       /* red-80   #3f0000 */
-      --app-draft-fg: 242 242 242;  /* gray-10          — light text on deep-red draft */
-    }
+  /* Dark theme tokens driven by the .dark class on <html> (class-based Tailwind
+   * darkMode). The pre-paint script in index.html applies .dark before first paint
+   * based on localStorage or matchMedia, so there is no flash. An @media block
+   * is NOT used here — the toggle must always win over OS preference. */
+  html.dark {
+    --app-page: 21 21 21;         /* gray-95  #151515 */
+    --app-surface: 31 31 31;      /* gray-90  #1f1f1f */
+    --app-tint: 41 41 41;         /* gray-80  #292929 */
+    --app-ink: 242 242 242;       /* gray-10  #f2f2f2 */
+    --app-muted: 163 163 163;     /* gray-40  #a3a3a3 */
+    --app-faint: 140 140 140;     /* gray-45  #8c8c8c */
+    --app-hair: 56 56 56;         /* gray-70  #383838 */
+    --app-border: 56 56 56;       /* gray-70  #383838 */
+    --app-accent: 238 0 0;        /* red-50   #ee0000 — brand red still reads on dark */
+    --app-accent-strong: 245 110 110; /* red-40 #f56e6e */
+    --app-link: 245 110 110;      /* red-40   #f56e6e — AA on dark surface */
+    --app-draft-bg: 63 0 0;       /* red-80   #3f0000 */
+    --app-draft-fg: 242 242 242;  /* gray-10          — light text on deep-red draft */
   }
 
   body {
