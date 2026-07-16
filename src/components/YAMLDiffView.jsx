@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { Copy, Check, ChevronDown, ChevronRight } from 'lucide-react';
+import { interactive, button } from '../lib/styleTokens';
 
 /**
  * YAMLDiffView
  *
  * Shows side-by-side YAML comparison for deployment resources.
  * Displays what the user submits before (e.g., Deployment) vs after (e.g., InferenceService).
+ *
+ * Column accent dots: neutral/muted — status diff (add/remove) uses green/amber tokens only.
  */
 export default function YAMLDiffView({ comparison }) {
   if (!comparison) {
     return (
-      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+      <div className="text-center py-8 text-muted">
         Select a comparison to view YAML diff
       </div>
     );
@@ -19,22 +22,22 @@ export default function YAMLDiffView({ comparison }) {
   const { before, after } = comparison;
   const isAlternative = comparison.comparisonType === 'alternative';
 
-  // Configure labels and colors based on comparison type
+  // Dot colors: muted-neutral for alternative (no status meaning); amber=before, green=after for upgrade diff
   const leftConfig = isAlternative
-    ? { label: before.label, color: 'bg-blue-500', prefix: '', state: 'option-a' }
-    : { label: before.label, color: 'bg-orange-500', prefix: 'Before: ', state: 'before' };
+    ? { label: before.label, dotClass: 'bg-muted', prefix: '', state: 'option-a' }
+    : { label: before.label, dotClass: 'bg-amber-500', prefix: 'Before: ', state: 'before' };
 
   const rightConfig = isAlternative
-    ? { label: after.label, color: 'bg-purple-500', prefix: '', state: 'option-b' }
-    : { label: after.label, color: 'bg-green-500', prefix: 'After: ', state: 'after' };
+    ? { label: after.label, dotClass: 'bg-accent', prefix: '', state: 'option-b' }
+    : { label: after.label, dotClass: 'bg-green-600', prefix: 'After: ', state: 'after' };
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+        <h3 className="text-xl font-bold text-ink mb-2">
           {isAlternative ? 'What You Submit: Side-by-Side' : 'What You Submit: Before vs After'}
         </h3>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-muted">
           {isAlternative
             ? 'Compare the YAML specifications for each platform approach.'
             : 'See how the YAML you write changes when adopting this platform component.'}
@@ -44,9 +47,9 @@ export default function YAMLDiffView({ comparison }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
         {/* Left State */}
         <div className="space-y-4">
-          <div className="sticky top-0 bg-white dark:bg-gray-900 py-2 border-b border-gray-200 dark:border-gray-700">
-            <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-              <span className={`inline-block w-3 h-3 ${leftConfig.color} rounded-full mr-2`}></span>
+          <div className="sticky top-0 bg-surface py-2 border-b border-hair">
+            <h4 className="text-lg font-semibold text-ink flex items-center">
+              <span className={`inline-block w-3 h-3 ${leftConfig.dotClass} rounded-full mr-2`}></span>
               {leftConfig.prefix}{leftConfig.label}
             </h4>
           </div>
@@ -58,9 +61,9 @@ export default function YAMLDiffView({ comparison }) {
 
         {/* Right State */}
         <div className="space-y-4">
-          <div className="sticky top-0 bg-white dark:bg-gray-900 py-2 border-b border-gray-200 dark:border-gray-700">
-            <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-              <span className={`inline-block w-3 h-3 ${rightConfig.color} rounded-full mr-2`}></span>
+          <div className="sticky top-0 bg-surface py-2 border-b border-hair">
+            <h4 className="text-lg font-semibold text-ink flex items-center">
+              <span className={`inline-block w-3 h-3 ${rightConfig.dotClass} rounded-full mr-2`}></span>
               {rightConfig.prefix}{rightConfig.label}
             </h4>
           </div>
@@ -77,6 +80,11 @@ export default function YAMLDiffView({ comparison }) {
 
 /**
  * YAMLResource - Individual YAML snippet with copy button
+ *
+ * Border accent carries diff-status meaning only:
+ *   before  → amber (attention/warning token)
+ *   after   → green (success token)
+ *   option-a/b → neutral edge
  */
 function YAMLResource({ resource, state }) {
   const [copied, setCopied] = useState(false);
@@ -95,16 +103,17 @@ function YAMLResource({ resource, state }) {
     }
   };
 
+  // Status-semantic border colors: amber = before/warning, green = after/success, neutral = option
   const stateColorMap = {
-    'before': 'border-orange-300 dark:border-orange-700',
-    'after': 'border-green-300 dark:border-green-700',
-    'option-a': 'border-blue-300 dark:border-blue-700',
-    'option-b': 'border-purple-300 dark:border-purple-700'
+    'before': 'border-amber-400 dark:border-amber-600',
+    'after': 'border-green-500 dark:border-green-600',
+    'option-a': 'border-edge',
+    'option-b': 'border-accent'
   };
   const stateColor = stateColorMap[state] || stateColorMap['before'];
 
   return (
-    <div className={`border-2 ${stateColor} rounded-lg overflow-hidden bg-white dark:bg-gray-800`}>
+    <div className={`border-2 ${stateColor} rounded-card overflow-hidden bg-surface`}>
       {/* Header - clickable to expand/collapse */}
       <div
         role="button"
@@ -117,25 +126,25 @@ function YAMLResource({ resource, state }) {
           }
         }}
         aria-expanded={isExpanded}
-        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left cursor-pointer"
+        className={`w-full px-4 py-3 bg-tint border-b border-hair hover:bg-tint ${interactive.transition} text-left cursor-pointer`}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 flex-1">
             {isExpanded ? (
-              <ChevronDown size={16} className="text-gray-400 flex-shrink-0" />
+              <ChevronDown size={16} className="text-faint flex-shrink-0" />
             ) : (
-              <ChevronRight size={16} className="text-gray-400 flex-shrink-0" />
+              <ChevronRight size={16} className="text-faint flex-shrink-0" />
             )}
             <div className="flex-1">
               <div className="flex items-baseline gap-2">
-                <span className="font-mono text-sm font-semibold text-gray-900 dark:text-white">
+                <span className="font-mono text-sm font-semibold text-ink">
                   {resource.kind}
                 </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="text-xs text-muted">
                   {resource.apiVersion}
                 </span>
               </div>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-xs text-muted mt-1">
                 {resource.description}
               </p>
             </div>
@@ -146,7 +155,7 @@ function YAMLResource({ resource, state }) {
               e.stopPropagation();
               handleCopy();
             }}
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex-shrink-0"
+            className={`${button.secondary} flex-shrink-0`}
             title="Copy YAML"
           >
             {copied ? (
@@ -156,7 +165,7 @@ function YAMLResource({ resource, state }) {
               </>
             ) : copyFailed ? (
               <>
-                <Copy size={14} className="text-red-600" />
+                <Copy size={14} className="text-accent" />
                 <span>Copy failed</span>
               </>
             ) : (
@@ -171,8 +180,8 @@ function YAMLResource({ resource, state }) {
 
       {/* YAML Content - collapsible */}
       {isExpanded && (
-        <div className="overflow-x-auto border-t border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto">
-          <pre className="p-4 text-xs font-mono leading-relaxed text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-950">
+        <div className="overflow-x-auto border-t border-hair max-h-96 overflow-y-auto">
+          <pre className="p-4 text-xs font-mono leading-relaxed text-ink bg-page">
             <code>{resource.yamlSnippet}</code>
           </pre>
         </div>

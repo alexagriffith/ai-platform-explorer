@@ -1,5 +1,6 @@
 import { ArrowRight, Users, GitCompare } from 'lucide-react';
 import { getComparisonList } from '../data/deploymentComparisons';
+import { interactive, border } from '../lib/styleTokens';
 
 /**
  * DeploymentComparisonSelector
@@ -13,8 +14,8 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
   if (comparisons.length === 0) {
     return (
       <div className="text-center py-12">
-        <GitCompare className="mx-auto text-gray-400 dark:text-gray-600 mb-4" size={48} />
-        <p className="text-gray-600 dark:text-gray-400">No deployment comparisons available yet.</p>
+        <GitCompare className="mx-auto text-faint mb-4" size={48} />
+        <p className="text-muted">No deployment comparisons available yet.</p>
       </div>
     );
   }
@@ -22,10 +23,10 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+        <h2 className="text-2xl font-bold text-ink mb-2">
           Deployment Impact Explorer
         </h2>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-muted">
           Understand the concrete implementation changes when adopting Red Hat AI platform components.
           Compare before and after states for YAML, resource trees, and capabilities.
         </p>
@@ -40,38 +41,39 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
               key={comparison.id}
               onClick={() => onSelectComparison(comparison.id)}
               className={`
-                text-left p-6 rounded-lg border-2 transition-all
+                text-left p-6 rounded-card border-2 ${interactive.transitionAll}
+                ${interactive.focusRing}
                 ${isSelected
-                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-lg'
-                  : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-md'
+                  ? 'border-accent bg-tint'
+                  : `${border.edge} bg-surface hover:border-accent hover:bg-tint`
                 }
               `}
             >
               <div className="flex items-start justify-between mb-3">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white pr-4">
+                <h3 className="text-lg font-semibold text-ink pr-4">
                   {comparison.title}
                 </h3>
                 {isSelected && (
-                  <div className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="flex-shrink-0 w-6 h-6 bg-accent rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-on-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                 )}
               </div>
 
-              <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
+              <p className="text-muted mb-4 leading-relaxed">
                 {comparison.description}
               </p>
 
-              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex items-center text-sm text-muted">
                 <Users size={16} className="mr-2" />
                 <span className="italic">For: {comparison.audience || 'Technical teams'}</span>
               </div>
 
               {isSelected && (
-                <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
-                  <div className="flex items-center text-blue-600 dark:text-blue-400 font-medium">
+                <div className="mt-4 pt-4 border-t border-hair">
+                  <div className="flex items-center text-link font-medium">
                     <span>View Comparison</span>
                     <ArrowRight size={16} className="ml-2" />
                   </div>

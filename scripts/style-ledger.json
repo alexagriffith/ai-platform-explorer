@@ -9,7 +9,13 @@
     "src/components/AcronymGlossary.jsx",
     "src/lib/styleTokens.js",
     "src/components/ProductComparisonView.jsx",
-    "src/components/SharedSpineLedger.jsx"
+    "src/components/SharedSpineLedger.jsx",
+    "src/components/DeploymentImpactView.jsx",
+    "src/components/DeploymentComparisonSelector.jsx",
+    "src/components/YAMLDiffView.jsx",
+    "src/components/ResourceTreeView.jsx",
+    "src/components/CapabilityDeltaTable.jsx",
+    "src/components/QuickComparisonTable.jsx"
   ],
   "migratedTabs": [
     {
@@ -19,7 +25,11 @@
     {
       "id": "product-comparison",
       "navLabel": "Product Comparison"
+    },
+    {
+      "id": "deployment-impact",
+      "navLabel": "Deployment Impact"
     }
   ],
-  "legacyViolatingFilesMax": 16
+  "legacyViolatingFilesMax": 10
 }

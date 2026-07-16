@@ -5,6 +5,10 @@ import { Shield, Cpu, Layers, Route, Database, TrendingUp, Settings, Box, FileTe
  *
  * Side-by-side comparison table for alternative technology choices (not upgrades).
  * Shows key differences in an easy-to-scan format.
+ *
+ * Column identifiers use ink/muted — no hue-coded columns.
+ * Similarity highlights use green (status=match), differences use neutral surfaces.
+ * The "bottom line" callout uses tint + accent border (single accent rule).
  */
 export default function QuickComparisonTable({ comparison }) {
   if (!comparison || comparison.comparisonType !== 'alternative') {
@@ -13,7 +17,6 @@ export default function QuickComparisonTable({ comparison }) {
 
   const { before, after } = comparison;
 
-  // Icon mapping for decision factors
   const iconMap = {
     shield: Shield,
     cpu: Cpu,
@@ -28,7 +31,6 @@ export default function QuickComparisonTable({ comparison }) {
     users: Shield
   };
 
-  // Combine decision factors from both sides
   const beforeFactors = before.decisionFactors || [];
   const afterFactors = after.decisionFactors || [];
   const categories = beforeFactors.map((beforeFactor, idx) => {
@@ -45,19 +47,19 @@ export default function QuickComparisonTable({ comparison }) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+        <h3 className="text-xl font-bold text-ink mb-2">
           Quick Comparison: At-a-Glance
         </h3>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-muted">
           Users choose between these platforms based on governance, hardware strategy, and Kubernetes approach.
           Both leverage similar underlying technologies but with different operational models.
         </p>
       </div>
 
-      {/* Similarities First */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-        <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      {/* Similarities First — green is status-semantic: "these things match" */}
+      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-card p-6">
+        <h4 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
+          <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           What They Share
@@ -65,40 +67,40 @@ export default function QuickComparisonTable({ comparison }) {
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <div className="flex items-start gap-2">
-              <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <span className="text-green-600 dark:text-green-400 mt-1">•</span>
+              <span className="text-sm text-ink">
                 <strong>Same vLLM backend</strong> - Both orchestrate vLLM inference engines
               </span>
             </div>
             <div className="flex items-start gap-2">
-              <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <span className="text-green-600 dark:text-green-400 mt-1">•</span>
+              <span className="text-sm text-ink">
                 <strong>NIXL (NVIDIA's inference transfer library) for key-value (KV) cache transfer</strong> - GPU-to-GPU cache movement over InfiniBand or RDMA over Converged Ethernet (RoCE)
               </span>
             </div>
             <div className="flex items-start gap-2">
-              <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <span className="text-green-600 dark:text-green-400 mt-1">•</span>
+              <span className="text-sm text-ink">
                 <strong>Disaggregated serving</strong> - Separate prefill/decode phases for optimization
               </span>
             </div>
           </div>
           <div className="space-y-2">
             <div className="flex items-start gap-2">
-              <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <span className="text-green-600 dark:text-green-400 mt-1">•</span>
+              <span className="text-sm text-ink">
                 <strong>Prefix-aware caching</strong> - Cross-node KV cache with tiered offload
               </span>
             </div>
             <div className="flex items-start gap-2">
-              <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <span className="text-green-600 dark:text-green-400 mt-1">•</span>
+              <span className="text-sm text-ink">
                 <strong>Apache 2.0 open source</strong> - Both freely available and modifiable
               </span>
             </div>
             <div className="flex items-start gap-2">
-              <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <span className="text-green-600 dark:text-green-400 mt-1">•</span>
+              <span className="text-sm text-ink">
                 <strong>Can work together</strong> - Shared components (such as NIXL) let the projects interoperate rather than compete outright
               </span>
             </div>
@@ -106,32 +108,32 @@ export default function QuickComparisonTable({ comparison }) {
         </div>
       </div>
 
-      {/* Now the Differences */}
+      {/* Differences header */}
       <div>
-        <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <h4 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
+          <svg className="w-5 h-5 text-link" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
           </svg>
           Key Differences (Where You Choose)
         </h4>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        <p className="text-sm text-muted mb-4">
           Published head-to-head benchmarks are limited, so evaluate performance on your own workload.
           In practice, the choice usually comes down to governance model, hardware diversity, and Kubernetes integration approach.
         </p>
       </div>
 
-      {/* Comparison Table */}
-      <div className="overflow-x-auto">
+      {/* Comparison Table — neutral dark header, no hue columns */}
+      <div className="overflow-x-auto rounded-card border border-edge">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-gray-900 dark:bg-gray-950">
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-400 border-r border-gray-700 w-1/4">
+            <tr className="bg-tint border-b border-edge">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-muted border-r border-hair w-1/4">
                 Category
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-orange-400 border-r border-gray-700 w-[37.5%]">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-ink border-r border-hair w-[37.5%]">
                 {before.label}
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-blue-400 w-[37.5%]">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-ink w-[37.5%]">
                 {after.label}
               </th>
             </tr>
@@ -144,33 +146,23 @@ export default function QuickComparisonTable({ comparison }) {
               return (
                 <tr
                   key={idx}
-                  className={`border-b border-gray-200 dark:border-gray-700 ${
-                    idx % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-800/50'
-                  }`}
+                  className="border-b border-hair bg-surface hover:bg-tint transition-colors duration-150 ease-out motion-reduce:transition-none"
                 >
-                  <td className="px-4 py-4 border-r border-gray-200 dark:border-gray-700">
+                  <td className="px-4 py-4 border-r border-hair">
                     <div className="flex items-center gap-2">
                       <Icon
                         size={18}
-                        className={`flex-shrink-0 ${
-                          isHighWeight
-                            ? 'text-purple-600 dark:text-purple-400'
-                            : 'text-gray-400 dark:text-gray-500'
-                        }`}
+                        className={`flex-shrink-0 ${isHighWeight ? 'text-link' : 'text-faint'}`}
                       />
-                      <span className={`font-medium ${
-                        isHighWeight
-                          ? 'text-gray-900 dark:text-white'
-                          : 'text-gray-700 dark:text-gray-300'
-                      }`}>
+                      <span className={`font-medium ${isHighWeight ? 'text-ink' : 'text-muted'}`}>
                         {cat.category}
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-4 text-sm text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700">
+                  <td className="px-4 py-4 text-sm text-ink border-r border-hair">
                     {cat.beforeValue}
                   </td>
-                  <td className="px-4 py-4 text-sm text-gray-700 dark:text-gray-300">
+                  <td className="px-4 py-4 text-sm text-ink">
                     {cat.afterValue}
                   </td>
                 </tr>
@@ -180,41 +172,13 @@ export default function QuickComparisonTable({ comparison }) {
         </table>
       </div>
 
-      {/* Legend */}
-      <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mt-6">
-        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Color Guide</h4>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-orange-100 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded"></div>
-            <span className="text-gray-700 dark:text-gray-300">
-              <strong className="text-orange-600 dark:text-orange-400">{before.label}</strong> features
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-blue-100 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded"></div>
-            <span className="text-gray-700 dark:text-gray-300">
-              <strong className="text-blue-600 dark:text-blue-400">{after.label}</strong> features
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-green-100 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded"></div>
-            <span className="text-gray-700 dark:text-gray-300">
-              <svg className="w-3 h-3 text-green-600 dark:text-green-400 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              Similar capabilities
-            </span>
-          </div>
-        </div>
-      </div>
-
       {/* Detailed Comparison Sections */}
       <div className="space-y-6 mt-8">
 
         {/* Technical Architecture */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h4 className="text-lg font-bold text-gray-900 dark:text-white">
+        <div className="rounded-card border border-edge bg-surface">
+          <div className="px-6 py-4 border-b border-hair">
+            <h4 className="text-lg font-bold text-ink">
               Technical Architecture Comparison
             </h4>
           </div>
@@ -259,10 +223,10 @@ export default function QuickComparisonTable({ comparison }) {
         </div>
 
         {/* Operational & Business */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h4 className="text-lg font-bold text-gray-900 dark:text-white">
-              Operational & Business Comparison
+        <div className="rounded-card border border-edge bg-surface">
+          <div className="px-6 py-4 border-b border-hair">
+            <h4 className="text-lg font-bold text-ink">
+              Operational &amp; Business Comparison
             </h4>
           </div>
           <div className="p-6">
@@ -306,30 +270,30 @@ export default function QuickComparisonTable({ comparison }) {
         </div>
       </div>
 
-      {/* Bottom Line */}
-      <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-6">
-        <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-3">
+      {/* Bottom Line — accent border for the primary decision callout */}
+      <div className="bg-tint border-l-4 border-accent rounded-card p-6">
+        <h4 className="text-lg font-bold text-ink mb-3">
           The Bottom Line: When to Choose Which
         </h4>
         <div className="space-y-3">
-          <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+          <p className="text-sm text-ink leading-relaxed">
             <strong>Published head-to-head benchmarks are limited; evaluate on your own workload.</strong>{' '}
             They share core technologies (vLLM, NIXL, disaggregated serving) and can even work together,
             but users still choose one as their primary platform.
           </p>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
-              <h5 className="font-semibold text-gray-900 dark:text-white mb-2">Choose Dynamo if:</h5>
-              <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+            <div className="bg-surface rounded-card p-4 border border-edge">
+              <h5 className="font-semibold text-ink mb-2">Choose Dynamo if:</h5>
+              <ul className="text-sm text-muted space-y-1">
                 <li>• Committed to NVIDIA GPU ecosystem</li>
                 <li>• Value multi-engine support (TensorRT-LLM, SGLang)</li>
                 <li>• Want NVIDIA-led tooling and optimization</li>
                 <li>• Need Grove gang scheduling features</li>
               </ul>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
-              <h5 className="font-semibold text-gray-900 dark:text-white mb-2">Choose llm-d if:</h5>
-              <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+            <div className="bg-surface rounded-card p-4 border border-edge">
+              <h5 className="font-semibold text-ink mb-2">Choose llm-d if:</h5>
+              <ul className="text-sm text-muted space-y-1">
                 <li>• Need multi-vendor hardware (AMD, Intel, Google tensor processing units)</li>
                 <li>• Prefer open, multi-vendor community governance</li>
                 <li>• Want the Gateway API standard (not vendor-specific custom resources)</li>
@@ -351,13 +315,13 @@ function ComparisonSection({ beforeLabel, afterLabel, rows }) {
     <div className="space-y-4">
       {/* Column Headers */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="font-medium text-gray-500 dark:text-gray-400 text-sm">
+        <div className="font-medium text-muted text-sm">
           Feature
         </div>
-        <div className="font-semibold text-orange-600 dark:text-orange-400 text-sm text-center">
+        <div className="font-semibold text-ink text-sm text-center">
           {beforeLabel}
         </div>
-        <div className="font-semibold text-blue-600 dark:text-blue-400 text-sm text-center">
+        <div className="font-semibold text-ink text-sm text-center">
           {afterLabel}
         </div>
       </div>
@@ -373,19 +337,20 @@ function ComparisonSection({ beforeLabel, afterLabel, rows }) {
 }
 
 /**
- * ComparisonRow - Individual feature comparison
+ * ComparisonRow - Individual feature comparison.
+ * Similar rows use green (status=match); different rows use neutral surfaces.
  */
 function ComparisonRow({ row }) {
   const { label, before, after, similar } = row;
 
   return (
-    <div className={`grid grid-cols-3 gap-4 p-3 rounded-lg border ${
+    <div className={`grid grid-cols-3 gap-4 p-3 rounded-card border ${
       similar
         ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/10'
-        : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50'
+        : 'border-hair bg-tint'
     }`}>
       {/* Feature Label */}
-      <div className="font-medium text-gray-900 dark:text-white text-sm flex items-center gap-2">
+      <div className="font-medium text-ink text-sm flex items-center gap-2">
         {similar && (
           <svg className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -395,12 +360,12 @@ function ComparisonRow({ row }) {
       </div>
 
       {/* Before Technology */}
-      <div className="text-sm text-gray-700 dark:text-gray-300 p-2 bg-orange-50 dark:bg-orange-900/20 rounded border border-orange-200 dark:border-orange-800">
+      <div className="text-sm text-ink p-2 bg-surface rounded-card border border-hair">
         {before}
       </div>
 
       {/* After Technology */}
-      <div className="text-sm text-gray-700 dark:text-gray-300 p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+      <div className="text-sm text-ink p-2 bg-surface rounded-card border border-hair">
         {after}
       </div>
     </div>
