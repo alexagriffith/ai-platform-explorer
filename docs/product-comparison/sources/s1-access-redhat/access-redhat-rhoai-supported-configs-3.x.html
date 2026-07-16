@@ -1,0 +1,2310 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7]><html class="iem7"  lang="en" dir="ltr"><![endif]-->
+<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7"  lang="en" dir="ltr"><![endif]-->
+<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8"  lang="en" dir="ltr"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9"  lang="en" dir="ltr"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html  lang="en" dir="ltr" prefix="og: http://ogp.me/ns# content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#"><!--<![endif]-->
+
+<head>
+  <link rel="stylesheet" type="text/css" media="all" href="https://access.redhat.com/webassets/avalon/s/bootstrap3.min.css" />
+  <!--[if IE]><![endif]-->
+<meta charset="utf-8" />
+<meta content="This article lists the Red Hat OpenShift AI (RHOAI) 3.x offering, the RHOAI components, their curren" id="md3" itemprop="description" />
+<meta content="" itemprop="product" />
+<meta content="" itemprop="articleSection" />
+<link rel="canonical" href="https://access.redhat.com/articles/rhoai-supported-configs-3.x" />
+<link rel="shortlink" href="https://access.redhat.com/node/7133798" />
+<meta property="og:site_name" content="Red Hat Customer Portal" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://access.redhat.com/articles/rhoai-supported-configs-3.x" />
+<meta property="og:description" content="This article lists the Red Hat OpenShift AI (RHOAI) 3.x offering, the RHOAI components, their current support phase, and their compatibility with the underlying platforms." />
+<meta property="og:title" content="Red Hat OpenShift AI: Supported Configurations for 3.x - Red Hat Customer Portal" />
+<meta property="og:image" content="https://access.redhat.com/webassets/avalon/g/shadowman-200.png" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:description" content="This article lists the Red Hat OpenShift AI (RHOAI) 3.x offering, the RHOAI components, their current support phase, and their compatibility with the underlying platforms." />
+<meta name="twitter:url" content="https://access.redhat.com/articles/rhoai-supported-configs-3.x" />
+<meta name="twitter:title" content="Red Hat OpenShift AI: Supported Configurations for 3.x - Red Hat" />
+<meta name="id" content="7133798" />
+<meta name="doc_summary" content="This article lists the Red Hat OpenShift AI (RHOAI) 3.x offering, the RHOAI components, their current support phase, and their compatibility with the underlying platforms." />
+<meta name="product" content="Red Hat OpenShift AI" />
+<meta name="category" content="Supportability" />
+<meta name="article_type" content="General" />
+<meta name="tags" content="3scale_active_docs, ai, rhoai-self-managed" />
+<meta name="language" content="en" />
+<meta name="publication_date" content="24 Jun 2026, 1:57 PM GMT" />
+<meta name="publication_state" content="published" />
+<meta name="access_state" content="Active" />
+<meta name="update_date" content="24 Jun 2026, 1:57 PM GMT" />
+<meta name="rating" content="0" />
+<meta name="comment_count" content="0" />
+<meta name="requires_subscription" content="false" />
+<meta name="collection_name" content="Knowledge Article" />
+  <title>Red Hat OpenShift AI: Supported Configurations for 3.x - Red Hat Customer Portal</title>
+  <!-- CP_PRIMER_HEAD -->  <!-- TrustArc & DTM -->
+  <script src="//static.redhat.com/libs/redhat/marketing/latest/trustarc/trustarc.js"></script>
+  <script src="//www.redhat.com/dtm.js"></script><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!--[if IEMobile]><meta http-equiv="cleartype" content="on"><![endif]-->
+
+<!-- metaInclude -->
+<meta name="avalon-host-info" content="dxp-kbase-prod-250-5946477b85-vq9ts" />
+<meta name="avalon-version" content="cdccdbc38" />
+<meta name="cp-chrome-build-date" content="2026-07-09T14:14:27.115Z" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<!-- Chrome, Firefox OS and Opera -->
+<meta name="theme-color" content="#000000">
+<!-- Windows Phone -->
+<meta name="msapplication-navbutton-color" content="#000000">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-status-bar-style" content="#000000">
+<link rel="manifest" href="https://access.redhat.com/webassets/avalon/j/manifest.json">
+<!-- Open Search - Tap to search -->
+<link rel="search" type="application/opensearchdescription+xml" title="Red Hat Customer Portal" href="https://access.redhat.com/webassets/avalon/j/opensearch.xml" />
+
+<title>Red Hat Customer Portal - Access to 24x7 support and knowledge</title>
+
+<script type="text/javascript">
+    window.portal = {
+        analytics : {},
+        host      : "https://access.redhat.com",
+        idp_url   : "https://sso.redhat.com",
+        lang      : "en", 
+        version   : "cdccdbc38",
+        builddate : "2026-07-09T14:14:27.115Z",        fetchdate : "2026-07-10T10:30:05-0400",        nrid      : "NOLONGERSUPPORTED",
+        nrlk      : "NOLONGERSUPPORTED"
+    };
+</script>
+<script type="text/javascript">
+    if (!/\/logout.*/.test(location.pathname) && portal.host === location.origin && document.cookie.indexOf('rh_sso_session') >= 0 && !(document.cookie.indexOf('rh_jwt') >= 0)) window.location = '/login?redirectTo=' + encodeURIComponent(window.location.href);
+</script>
+<!-- cssInclude -->
+
+<link rel="shortcut icon" href="https://access.redhat.com/webassets/avalon/g/favicon.ico" /><link media="all" rel="stylesheet" type="text/css" href="https://access.redhat.com/chrome_themes/nimbus/css/bootstrap.css?v=cdccdbc38" />
+<link media="all" rel="stylesheet" type="text/css" href="https://access.redhat.com/chrome_themes/nimbus/css/bootstrap-grid.css?v=cdccdbc38" />
+<link media="all" rel="stylesheet" type="text/css" href="https://access.redhat.com/chrome_themes/nimbus/css/main.css?v=cdccdbc38" />
+<link media="all" rel="stylesheet" type="text/css" href="https://access.redhat.com/chrome_themes/nimbus/css/components.css?v=cdccdbc38" />
+<link media="all" rel="stylesheet" type="text/css" href="https://access.redhat.com/chrome_themes/nimbus/css/pages.css?v=cdccdbc38" />
+
+<link href="https://access.redhat.com/webassets/avalon/s/chosen.css?v=cdccdbc38" rel="stylesheet" type="text/css" />
+
+<!--[if lte IE 9]>
+<link media="all" rel="stylesheet" type="text/css" href="https://access.redhat.com/chrome_themes/nimbus/css/ie.css" />
+<![endif]--><noscript>
+    <style type="text/css" media="screen"> .primary-nav { display: block; } </style>
+</noscript>
+<link media="all" rel="stylesheet" type="text/css" href="https://access.redhat.com/webassets/avalon/j/public_modules/node_modules/@cpelements/pfe-navigation/dist/pfe-navigation--lightdom.min.css" />
+
+<!-- rh-footer -->
+<link rel="stylesheet" href="https://www.redhatstatic.com/dssf-001/v1-alpha/@rhds/elements@1.4.1/elements/rh-footer/rh-footer-lightdom.css" />
+<!-- /cssInclude -->
+
+<style>
+  #ask-red-hat {
+    display: flex;
+    flex-direction: column;
+    place-content: center;
+    padding: 24px;
+
+    @media (min-width: 768px) {
+      padding: 0;
+    }
+  }
+</style>
+<script src="https://access.redhat.com/webassets/avalon/j/public_modules/node_modules/@cpelements/pfe-navigation/dist/ie-polyfills.js?v=cdccdbc38"></script>
+
+<script async>
+  if (!HTMLScriptElement.supports || !HTMLScriptElement.supports('importmap')) {
+    import("https://www.redhatstatic.com/dssf-001/v1-alpha/es-module-shims@1.7.3.js");
+  }
+</script>
+<script type="importmap">
+{
+  "imports": {
+    "@patternfly/elements/" : "https://www.redhatstatic.com/dssf-001/v1-alpha/@patternfly/elements@2.2.2/",
+    "@rhds/elements/":"https://www.redhatstatic.com/dssf-001/v1-alpha/@rhds/elements@1.4.1/elements/",
+    "@rhds/elements/lib/":"https://www.redhatstatic.com/dssf-001/v1-alpha/@rhds/elements@1.4.1/lib/",
+    "@cpelements/elements/":"https://www.redhatstatic.com/dssf-001/v2/@cpelements/elements@2.0.0-alpha.73/elements/",
+    "@lit/context": "https://www.redhatstatic.com/dssf-001/v2/@lit/context@1.1.4/development/index.js",
+    "@lit/reactive-element": "https://www.redhatstatic.com/dssf-001/v2/@lit/reactive-element@2.0.4/reactive-element.js",
+    "@lit/reactive-element/decorators/": "https://www.redhatstatic.com/dssf-001/v2/@lit/reactive-element@2.0.4/decorators/",
+    "lit": "https://www.redhatstatic.com/dssf-001/v2/lit@3.2.1/index.js",
+    "lit/": "https://www.redhatstatic.com/dssf-001/v2/lit@3.2.1/",
+    "lit-element/lit-element.js": "https://www.redhatstatic.com/dssf-001/v2/lit-element@4.1.1/lit-element.js",
+    "lit-html": "https://www.redhatstatic.com/dssf-001/v2/lit-html@3.2.1/lit-html.js",
+    "lit-html/": "https://www.redhatstatic.com/dssf-001/v2/lit-html@3.2.1/",
+    "tslib": "https://www.redhatstatic.com/dssf-001/v2/tslib@2.8.1/tslib.es6.mjs",
+    "dompurify": "https://access.redhat.com/webassets/avalon/j/public_modules/node_modules/dompurify/dist/purify.es.mjs?v=cdccdbc38"
+  }
+}
+</script><script type="text/javascript" src="https://access.redhat.com/webassets/avalon/j/lib/require.js?v=cdccdbc38" data-main="/webassets/avalon/j/"></script><!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<script src="https://access.redhat.com/chrome_themes/nimbus/js/ie8.js"></script>
+<![endif]--><script type="module">
+  // Components.
+  import '@rhds/elements/rh-footer/rh-footer.js';
+  import '@cpelements/elements/cp-ask-red-hat/cp-ask-red-hat.js';
+</script><script type="module">
+  import '@rhds/elements/rh-alert/rh-alert.js';
+  import { CpHubAlerts } from '/webassets/avalon/j/includes/cphub-alerts.js';
+  chrometwo_require(['pfe'], (pfe) => {
+    pfe.include("pfe-icon");
+  });
+  const cphubAlerts = new CpHubAlerts();
+  cphubAlerts.init();
+</script>
+
+<script type="text/javascript" src="https://access.redhat.com/chrome_themes/nimbus/js/new-nav.js?v=cdccdbc38" ></script>
+<!-- /CP_PRIMER_HEAD -->
+    <meta http-equiv="cleartype" content="on">
+
+  <link type="text/css" rel="stylesheet" href="/webassets/avalon/j/public_modules/node_modules/%40cpelements/rh-table/dist/rh-table--lightdom.min.css?thin6d" media="all" />
+<link type="text/css" rel="stylesheet" href="/sites/default/files/advagg_css/css__5Vf2y_bGVEMKJ9MtlLWhUUoi2zaUISOnYgsvg5zyx7E__1x1SAPAjUM1RxRhlpo2PF-p75PiHrf-_30h3i_hUkA4__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.css" media="all" />
+<link type="text/css" rel="stylesheet" href="/sites/default/files/advagg_css/css__7iKiq5v94rXAsp5K3_FyKzUQagd5RlfvnbxlCSJIACY__9zHojgm8yKy821B2B_PXVQFK-tzvOQXZJnJJHXRitYw__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.css" media="all" />
+<link type="text/css" rel="stylesheet" href="/sites/default/files/advagg_css/css__Ps58r18M17062v346R9tgXCOB3BBmGnjAeJOBzj1Sec__2E-BT2legPscmGvxEpx4l53m1V6uDEZonFd7FXrKyN0__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.css" media="all" />
+  <script src="/sites/default/files/advagg_js/js__ZyeOaiFuDejQQbhUV7yg7atYZnj4WLfH77o0scv4068__jeShjS1-sEwOx4dbB-NSBsCnxWfNslS1Nkgx4CZngGA__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.js"></script>
+<script src="/sites/default/files/advagg_js/js__osUFBdIeLI3E6qVn0VQy9dskopj3Ul01WpVOx1HfPeI__NcbPgl6yce1cPkJcub1SVldKst10pVo0nN36XtkHZn8__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.js"></script>
+<script src="/sites/default/files/advagg_js/js__8rQR3nGYPNe6-lRK-DQSRk9SajWmgxuLEpmiUQ_90lk__sTl6NutbRw09j_GH6V3MY200j6FEthg8ZvWiXQ01j8M__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.js"></script>
+<script>breadcrumbs = [ ["Products &amp; Services", "/products"], ["Knowledgebase", "/kb"], ["Red Hat OpenShift AI: Supported Configurations for 3.x", "/articles/7133798"] ];</script>
+<script src="/sites/default/files/advagg_js/js__8DZcBofNRKQncABXIjxzId79pmI58kd8Awy_ZlD7RGY__1GBUIZ9tOoiWuf6L3xoCKfetRbQzInGAb7WukBgPvok__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.js"></script>
+<script src="/sites/default/files/advagg_js/js__ywLhvExG7ZuDUUnRppDF1cffn6oUPKY2faM1hMy45n8__Xg9O1jD1OmJmPCR8lAGQu9o3DplPiYzt3ER65ZDXcJQ__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.js"></script>
+<script>chrometwo_require(["analytics/attributes"], function(attributes) {attributes.set('ResourceID', 'kp-7133798');  
+attributes.set('ResourceTitle', 'Red Hat OpenShift AI: Supported Configurations for 3.x');  
+attributes.set('Category', 'Supportability');  
+attributes.set('Products', ["Red Hat OpenShift AI"]);  
+attributes.set('Language', 'en');  
+attributes.set('Tags', ["3scale_active_docs","ai","rhoai-self-managed"]);  
+attributes.set('PublicationState', ["active","published"]);  
+attributes.set('ContentSubType', 'General');  
+});</script>
+<script src="/sites/default/files/advagg_js/js__PhyX98WEznd5uQsl4xzvpkXVHgEuI6MRRQK5v1U6FLo__JEBzAs0ayy6fAGI8nP91TwukM8yHczKpcPSQN_tT6Fk__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.js"></script>
+<script src="/sites/default/files/advagg_js/js__aKqk_wjgMO3TpayHaKimB-hpJoO6tSnMx-x3sLJXLmE__giYv3aEc3apr0wfEJ8LNLsgIRnI4n0Fp1nHk5g6YtQs__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.js"></script>
+<script>jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","setHasJsCookie":0,"ajaxPageState":{"theme":"cirrus","theme_token":"a7_dnl7ISwj7tSuPUUihh4gAvfQdCm-FowOLxrXtW4Y","css":{"\/\/access.redhat.com\/webassets\/avalon\/j\/public_modules\/node_modules\/@cpelements\/rh-table\/dist\/rh-table--lightdom.min.css":1,"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"modules\/book\/book.css":1,"modules\/comment\/comment.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,"sites\/all\/modules\/custom\/redhat_kcs\/css\/redhat_kcs.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/contrib\/user_prune\/css\/user_prune.css":1,"modules\/views\/css\/views.css":1,"sites\/all\/libraries\/chosen\/chosen\/chosen.css":1,"modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/contrib\/panels\/css\/panels.css":1,"sites\/all\/modules\/custom\/rate\/rate.css":1,"sites\/all\/themes\/cirrus\/css\/components\/page-actions.css":1,"sites\/all\/modules\/custom\/redhat_translations\/templates\/machine_translation_feedback.css":1,"sites\/all\/themes\/zen\/system.base.css":1,"sites\/all\/themes\/cirrus\/system.menus.css":1,"sites\/all\/themes\/cirrus\/system.messages.css":1,"sites\/all\/themes\/cirrus\/system.theme.css":1,"sites\/all\/themes\/zen\/comment.css":1,"sites\/all\/themes\/zen\/node.css":1,"sites\/all\/themes\/cirrus\/css\/cirrus.css":1},"js":{"sites\/all\/modules\/custom\/redhat_kcs\/js\/enable-chosen.js":1,"sites\/all\/modules\/custom\/redhat_eddl\/dist\/redhat_eddl_user.js":1,"sites\/all\/modules\/custom\/redhat_eddl\/dist\/redhat_eddl_bottom.js":1,"misc\/jquery-extend-3.4.0.js":1,"misc\/jquery-html-prefilter-3.5.0-backport.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"modules\/jquery_update\/replace\/ui\/external\/jquery.cookie.js":1,"sites\/all\/libraries\/chosen\/chosen\/chosen.jquery.min.js":1,"modules\/chosen\/chosen.js":1,"sites\/all\/modules\/custom\/redhat_eddl\/dist\/redhat_eddl_top.js":1,"sites\/all\/modules\/custom\/red_hat_comments\/js\/injected_comments.js":1,"sites\/all\/themes\/cirrus\/js\/subscriber_capture_url.js":1,"sites\/all\/themes\/cirrus\/js\/add-rh-table.js":1,"sites\/all\/themes\/cirrus\/js\/case_links.js":1,"sites\/all\/themes\/cirrus\/js\/follow.behaviors.js":1,"sites\/all\/themes\/cirrus\/js\/action.behaviors.js":1,"sites\/all\/themes\/cirrus\/js\/code_raw_btn.js":1,"sites\/all\/modules\/custom\/rate\/rate.js":1,"sites\/all\/themes\/cirrus\/js\/append_modals.js":1,"sites\/all\/modules\/custom\/redhat_translations\/templates\/translations.js":1,"sites\/all\/themes\/cirrus\/js\/solutionengine.js":1,"sites\/all\/themes\/cirrus\/js\/admin_drawers.js":1,"sites\/all\/themes\/cirrus\/js\/moment.js":1}},"chosen":{"selector":"#edit-field-kcs-component-select-und, #edit-field-kcs-sbr-select-und, #edit-field-kcs-product-select-und, #edit-field-kcs-type-select-und, #edit-language, #edit-field-kcs-a-category-select-und, #edit-field-kcs-state-select-und, #edit-field-kcs-tags-select-und, #edit-field-kcs-state-select-value, #edit-field-vid-reference-product-und, #edit-state, #edit-product, #edit-category, #edit-field-kcs-product-select-tid, #edit-field-kcs-type-select-tid, #edit-field-kcs-a-category-select-tid, #edit-sort-bef-combine, #edit-kcs-state, #edit-field-category-tid, #edit-field-product-tid, #edit-field-tags-tid, #edit-field-category-und, #edit-field-product-und, #edit-field-tags-und, #views-exposed-form-questions-list-questions-filter-block #edit-field-category, #edit-field-tags-und, #views-exposed-form-questions-list-questions-filter-block #edit-field-product, #views-exposed-form-questions-list-questions-filter-block #edit-field-tags, #edit-field-mega-menu-tab-und, #edit-field-internal-tags-tid, #edit-tags, #edit-field-kcs-tags-select-tid, #edit-subscriptions-and-choose-field-select, #edit-subscriptions-and-type, #edit-vid-13, #edit-vid-4, #edit-vid-5, #edit-vid-53, #edit-vid-1, #edit-vid-3, #edit-group-blog, #edit-group-group, #edit-subscriptions-and-choose-field-select-two, #edit-subscriptions-and-type-two, #edit-vid-13-two, #edit-vid-4-two, #edit-vid-5-two, #edit-vid-53-two, #edit-vid-1-two, #edit-vid-3-two, #edit-group-blog-two, #edit-group-group-two, #edit-subscriptions-and-edit-choose-field-select, #edit-subscriptions-and-type-edit, #edit-subscriptions-and-edit-type-two, #edit-vid-13-edit-two, #edit-vid-4-edit-two, #edit-vid-5-edit-two, #edit-vid-53-edit-two, #edit-vid-1-edit-two, #edit-vid-3-edit-two, #edit-group-group-edit-two, #edit-subscriptions-and-edit-choose-field-select-two, #edit-vid-13-edit, #edit-vid-4-edit, #edit-vid-5-edit, #edit-vid-53-edit, #edit-vid-1-edit, #edit-vid-3-edit, #edit-group-group-edit, #edit-group-blog-edit, #edit-field-supported-languages-tid, #edit-field-geography-und, #edit-field-supported-products-und, #edit-field-supported-languages-und, #edit-field-vendor-und, #edit-field-errata-type-text-und, #edit-field-errata-severity-text-und, #edit-field-software-partner-level-und, #edit-field-scert-product-category-und, #edit-field-certifications-und-0-field-product-und, #edit-kcs-article-type, #edit-field-eco-industry-tag-select-tid, #edit-field-eco-software-catego-select-tid, #edit-field-ecosystem-tag-select-und, #edit-field-eco-industry-tag-select-und, #edit-field-eco-software-catego-select-und, #edit-field-vendor-tsanet-member-ref-und, #edit-field-og-vendor-ref-und-0-default, #edit-field-eco-products-enabled-col-und-0-field-eco-subscription-model-ref-und, #edit-field-eco-products-enabled-col-und-0-field-eco-support-level-ref-und, #edit-field-eco-products-enabled-col-und-0-field-eco-product-select-und, #edit-field-eco-certifications-select-und-0-field-eco-product-select-und, #edit-field-eco-certifications-select-und-0-field-eco-product-archite-select-und, #edit-field-eco-certifications-select-und-0-field-eco-certificati-lvl-select-und, #edit-field-eco-certifications-select-und-0-field-eco-hypervisor-str-und, #edit-field-eco-supported-language-ref-und, #edit-field-eco-region-ref-und, #edit-field-cs-product-category-str-und, #edit-field-eco-certifications-select-und-0-field-eco-format-ref-und, #edit-field-eco-group-access-ref-und, #edit-field-hw-category-tag-ref-und, #edit-field-profile-industry-und, #edit-field-profile-tech-interests-und, #edit-field-product-page-features-ref-und, #edit-field-eco-product-select-und, #edit-field-base-product-ref-und, #edit-field-eco-product-archite-select-und, #edit-field-eco-format-ref-und, #edit-field-certification-status-ref-und, #edit-field-certification-result-ref-und, #edit-field-og-certified-product-ref-und-0-default, #edit-field-eco-subscription-model-ref-und, #edit-field-eco-support-level-ref-und, #edit-field-eco-certificati-lvl-select-und, #edit-field-eco-hypervisor-str-und, #edit-field-ccp-thirdparty-cert-select-und, .use_, #edit-field-eco-cert-product-tag-und, #edit-field-documentation-location-ref-und, #edit-field-documentation-title-und","minimum":"0"},"rate":{"basePath":"\/rate\/vote\/js","destination":"node\/7133798"},"cirrus":{"nodeType":"kcs_article","nodeId":"7133798","currentURL":"https:\/\/access.redhat.com\/articles\/rhoai-supported-configs-3.x"}});</script>
+  <link rel="stylesheet" type="text/css" media="all" href="https://access.redhat.com/webassets/avalon/s/bootstrap3.overrides.css" />
+    <!--dxp-kbase-prod-250-5946477b85-8bzr6-->
+
+<script type="text/javascript">
+Drupal.portal = {"version":{"redhat_portal":"package drupal7-redhat_portal is not installed"}};
+  Drupal.portal.currentUser = {};
+  </script>
+
+</head>
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-7133798 node-type-kcs-article i18n-en section-articles" >
+      <!-- CP_PRIMER_HEADER -->
+<div id="page-wrap" class="page-wrap">
+  <div class="cphub-alerts-wrapper">
+    <div id="cphub-alerts-container" class="cphub-alerts cphub-alerts--banner"></div>
+  </div>
+  <div id="cphub-alerts-container--toast" class="cphub-alerts cphub-alerts--toast"></div>
+  <div id="pers-top-page-wrap" class="top-page-wrap pers-loader-bg">
+
+    <div id="hero-bg-top-left" class="summit-bg-shapes"></div>
+    <div id="hero-bg-top-right" class="summit-bg-shapes"></div>
+
+    <!--googleoff: all-->
+    <header class="masthead" id="masthead">
+      <a href="#pfe-navigation" id="global-skip-to-nav" class="skip-link visually-hidden">Skip to navigation</a>
+      <a href="#cp-main" class="skip-link visually-hidden">Skip to main content</a>      <nav id="portal-utility-nav" class="utility-navigation utility-navigation--bar hidden-at-mobile" data-analytics-region="universal-navigation" aria-labelledby="nav__utility-nav--desktop">
+        <h3 id="nav__utility-nav--desktop" class="element-invisible">Utilities
+        </h3>
+        <ul aria-labelledby="nav__utility-nav--desktop">
+          <li id="nav-subscription" data-portal-tour-1="1">
+            <a class="top-nav-subscriptions" data-analytics-level="2" data-analytics-category="Utilities" data-analytics-text="Subscription" href="https://access.redhat.com/management/">Subscriptions
+            </a>
+          </li>
+          <li id="nav-downloads" data-portal-tour-1="2">
+            <a class="top-nav-downloads" data-analytics-level="2" data-analytics-category="Utilities" data-analytics-text="Downloads" href="https://access.redhat.com/downloads/">Downloads
+            </a>
+          </li>
+          <li id="nav-rh-console">
+            <a class="top-nav-rh-console" data-analytics-level="2" data-analytics-category="Utilities" data-analytics-text="Red Hat Console" href="//console.redhat.com/">Red Hat Console
+            </a>
+          </li>
+          <li id="nav-support" data-portal-tour-1="3">
+            <a class="top-nav-get-support" data-analytics-level="2" data-analytics-category="Utilities" data-analytics-text="Get Support" href="https://access.redhat.com/support/">Get Support
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <pfe-navigation id="pfe-navigation" data-analytics-region="mega menu">
+        <div class="pfe-navigation__logo-wrapper" id="pfe-navigation__logo-wrapper">
+          <a href="https://access.redhat.com/" class="pfe-navigation__logo-link" data-analytics-text="logo" data-analytics-category="MM|logo">
+            <img class="pfe-navigation__logo-image" alt="Red Hat Customer Portal" src="https://access.redhat.com/chrome_themes/nimbus/img/red-hat-customer-portal.svg" />
+          </a>
+        </div>
+        <nav class="pfe-navigation" aria-label="Main Navigation" data-analytics-region="main nav">
+          <ul class="pfe-navigation__menu" id="pfe-navigation__menu">            <li class="pfe-navigation__menu-item hidden-at-tablet hidden-at-desktop" id="nav-subscription--mobile" data-portal-tour-1="1">
+              <a class="pfe-navigation__menu-link" data-analytics-level="1" data-analytics-text="Subscriptions" href="https://access.redhat.com/management/">Subscriptions
+              </a>
+            </li>
+            <li class="pfe-navigation__menu-item hidden-at-tablet hidden-at-desktop" id="nav-downloads--mobile" data-portal-tour-1="2">
+              <a class="pfe-navigation__menu-link" data-analytics-level="1" data-analytics-text="Downloads" href="https://access.redhat.com/downloads/">Downloads
+              </a>
+            </li>
+            <li class="pfe-navigation__menu-item hidden-at-tablet hidden-at-desktop" id="nav-containers--mobile">
+              <a class="pfe-navigation__menu-link" data-analytics-level="1" data-analytics-text="Red Hat Console" href="//console.redhat.com/">Red Hat Console
+              </a>
+            </li>
+            <li class="pfe-navigation__menu-item hidden-at-tablet hidden-at-desktop" id="nav-support--mobile" data-portal-tour-1="3">
+              <a class="pfe-navigation__menu-link" data-analytics-level="1" data-analytics-text="Get Support" href="https://access.redhat.com/support/">Get Support
+              </a>
+            </li>            <li class="pfe-navigation__menu-item">
+              <a href="https://access.redhat.com/" class="pfe-navigation__menu-link" data-analytics-level="1" data-analytics-text="Products">Products
+              </a>
+              <div class="pfe-navigation__dropdown  pfe-navigation__dropdown--3-column pfe-navigation__dropdown--3-column--centered">                <div>
+                  <h3 id="nav__products__top_products" data-analytics-level="2" data-analytics-text="Top Products" data-analytics-category="Top Products">Top Products
+                  </h3>
+                  <ul aria-labelledby="nav__products__top_products">
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Products|Top Products" data-analytics-text="Red Hat Enterprise Linux" href="https://access.redhat.com/products/red-hat-enterprise-linux/">Red Hat Enterprise Linux
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Products|Top Products" data-analytics-text="Red Hat OpenShift" href="https://access.redhat.com/products/red-hat-openshift-container-platform">Red Hat OpenShift
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Products|Top Products" data-analytics-text="Red Hat Ansible Automation Platform" href="https://access.redhat.com/products/red-hat-ansible-automation-platform/">Red Hat Ansible Automation Platform
+                      </a>
+                    </li>
+                  </ul>
+                  <pfe-cta>
+                    <a data-analytics-level="3" data-analytics-category="Products and Services|Products" data-analytics-text="All Products" data-analytics-linkType="cta" href="https://access.redhat.com/products/">All Products
+                    </a>
+                  </pfe-cta>
+                </div>                <div>
+                  <h3 id="nav__products__downloads_containers" data-analytics-level="2" data-analytics-category="Products and Services" data-analytics-text="Downloads and Containers">Downloads and Containers
+                  </h3>
+                  <ul aria-labelledby="nav__products__downloads_containers">
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Products|Downloads and Containers" data-analytics-text="Downloads" href="https://access.redhat.com/downloads/">Downloads
+                      </a>
+                    </li>
+
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Products|Downloads and Containers" data-analytics-text="Packages" href="https://access.redhat.com/downloads/content/package-browser">Packages
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Products|Downloads and Containers" data-analytics-text="Containers" href="https://catalog.redhat.com/software/containers/explore/">Containers
+                      </a>
+                    </li>
+                  </ul>
+                </div>                <div>
+                  <h3 id="nav__products__top_resources" data-analytics-level="2" data-analytics-category="Top Resources" data-analytics-text="Top Resources">Top Resources
+                  </h3>
+                  <ul aria-labelledby="nav__products__top_resources">
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Products|Top Reasources" data-analytics-text="Documentation" href="https://access.redhat.com/documentation">Product Documentation
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Products|Top Resources" data-analytics-text="Product Life Cycles" href="https://access.redhat.com/product-life-cycles/">Product Life Cycles
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Products|Top Resources" data-analytics-text="Product Compliance" href="https://access.redhat.com/compliance/">Product Compliance
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Products|Top Resources" data-analytics-text="Errata" href="https://access.redhat.com/errata/">Errata
+                      </a>
+                    </li>
+
+                  </ul>
+                </div>
+              </div>
+            </li>            <li class="pfe-navigation__menu-item">
+              <a class="pfe-navigation__menu-link" data-analytics-level="1" data-analytics-text="Knowledge" href="https://access.redhat.com/labs/">Knowledge
+              </a>
+              <div class="pfe-navigation__dropdown pfe-navigation__dropdown--3-column pfe-navigation__dropdown--3-column--centered">                <div>
+                  <h3 id="nav__knowledge__knowledge_center" data-analytics-level="2" data-analytics-text="Red Hat Knowledge Center" data-analytics-category="Tools">Red Hat Knowledge Center
+                  </h3>
+                  <ul aria-labelledby="nav__knowledge__knowledge_center">
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Knowledge|Red Hat Knowledge Center" data-analytics-text="Knowledgebase Solutions" href="https://access.redhat.com/kb/search?document_kinds=Solution&start=0">Knowledgebase Solutions
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Knowledge|Red Hat Knowledge Center" data-analytics-text="Knowledgebase Articles" href="https://access.redhat.com/kb/search?document_kinds=Article&start=0">Knowledgebase Articles
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Knowledge|Red Hat Knowledge Center" data-analytics-text="Customer Portal Labs" href="https://access.redhat.com/labs/">Customer Portal Labs
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Knowledge|Red Hat Knowledge Center" data-analytics-text="Errata" href="https://access.redhat.com/errata/">Errata
+                      </a>
+                    </li>
+                  </ul>
+                </div>                <div>
+                  <h3 id="nav__knowledge__product_docs">Top Product Docs
+                  </h3>
+                  <ul aria-labelledby="nav__knowledge__product_docs">
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Knowledge|Top Product Docs" data-analytics-text="Red Hat Enterprise Linux" href="//docs.redhat.com/en/documentation/red_hat_enterprise_linux">Red Hat Enterprise Linux
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Knowledge|Top Product Docs" data-analytics-text="Red Hat OpenShift" href="//docs.redhat.com/en/documentation/openshift_container_platform">Red Hat OpenShift
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Knowledge|Top Product Docs" data-analytics-text="Red Hat Ansible Automation Platform" href="//docs.redhat.com/en/documentation/red_hat_ansible_automation_platform">Red Hat Ansible Automation Platform
+                      </a>
+                    </li>
+                  </ul>
+                  <pfe-cta>
+                    <a data-analytics-level="3" data-analytics-category="Knowledge|Top Product Docs" data-analytics-text="All Product Docs" data-analytics-linkType="cta" href="//docs.redhat.com/en/products/">All Product Docs
+                    </a>
+                  </pfe-cta>
+                </div>                <div>
+                  <h3 id="nav__knowledge__training_certification">
+                    <a data-analytics-level="2" data-analytics-category="Tools" data-analytics-text="Training and Certification" href="//www.redhat.com/en/services/training-and-certification">Training and Certification
+                    </a>
+                  </h3>
+                  <ul aria-labelledby="nav__knowledge__training_certification">
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Knowledge|Training and Certification" data-analytics-text="About" href="//www.redhat.com/en/services/training-and-certification">About
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Knowledge|Training and Certification" data-analytics-text="Course Index" href="//www.redhat.com/en/services/training/all-courses-exams">Course Index
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Knowledge|Training and Certification" data-analytics-text="Certification Index" href="//www.redhat.com/en/services/certifications">Certification Index
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Knowledge|Training and Certification" data-analytics-text="Skill Assessment" href="//skills.ole.redhat.com/">Skill Assessment
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>            <li class="pfe-navigation__menu-item">
+              <a class="pfe-navigation__menu-link" data-analytics-level="1" data-analytics-text="Security" href="https://access.redhat.com/security/">Security
+              </a>
+              <div class="pfe-navigation__dropdown pfe-navigation__dropdown--3-column pfe-navigation__dropdown--3-column--centered">                <div>
+                  <h3 id="security__security_center">
+                    <a data-analytics-level="2" data-analytics-category="Security" data-analytics-text="Red Hat Product Security Center" href="https://access.redhat.com/security">Red Hat Product Security Center
+                    </a>
+                  </h3>
+                  <ul aria-labelledby="security__security_center">
+
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Security|Red Hat Product Security Center" data-analytics-text="Security Updates" href="https://access.redhat.com/security/security-updates">Security Updates
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Security|Red Hat Product Security Center" data-analytics-text="Security Advisories" href="https://access.redhat.com/security/security-updates/#/security-advisories">Security Advisories
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Security|Red Hat Product Security Center" data-analytics-text="Red Hat CVE Database" href="https://access.redhat.com/security/security-updates/#/cve">Red Hat CVE Database
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Security|Red Hat Product Security Center" data-analytics-text="Errata" href="https://access.redhat.com/errata-search/">Errata
+                      </a>
+                    </li>
+                  </ul>
+                </div>                <div>
+                  <h3 id="nav__security__references" data-analytics-level="2" data-analytics-text="References" data-analytics-category="Security">References
+                  </h3>
+                  <ul aria-labelledby="nav__security__references">
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Security|References" data-analytics-text="Security Bulletins" href="https://access.redhat.com/security/vulnerabilities">Security Bulletins
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Security|Red Hat Product Security Center" data-analytics-text="Severity Ratings" href="https://access.redhat.com/security/updates/classification/">Severity Ratings
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Security|References" data-analytics-text="Security Data" href="https://access.redhat.com/security/data">Security Data
+                      </a>
+                    </li>
+                  </ul>
+                </div>                <div>
+                  <h3 id="nav__security__top_resources">Top Resources
+                  </h3>
+                  <ul aria-labelledby="nav__security__top_resources">
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Security|Top Resources" data-analytics-text="Security Labs" href="https://access.redhat.com/security/security-updates/#/security-labs">Security Labs
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Security|Top Resources" data-analytics-text="Backporting Policies" href="https://access.redhat.com/security/updates/backporting/">Backporting Policies
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Security|Top Resources" data-analytics-text="Security Blog" href="//redhat.com/en/blog/channel/security">Security Blog
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+            </li>            <li class="pfe-navigation__menu-item">
+              <a href="https://access.redhat.com/support/" class="pfe-navigation__menu-link" data-analytics-level="1" data-analytics-text="Support">Support
+              </a>
+              <div class="pfe-navigation__dropdown pfe-navigation__dropdown--3-column pfe-navigation__dropdown--3-column--centered">                <div>
+                  <h3 id="nav__support__rh_support">
+                    <a href="https://access.redhat.com/support/" data-analytics-level="2" data-analytics-text="Red Hat Support" data-analytics-category="Support">Red Hat Support
+                    </a>
+                  </h3>
+                  <ul aria-labelledby="nav__support__rh_support">
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Support|Red Hat Support" data-analytics-text="Support Cases" href="https://access.redhat.com/support/cases/">Support Cases
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Support|Red Hat Support" data-analytics-text="Troubleshoot" href="https://access.redhat.com/support/cases/#/troubleshoot">Troubleshoot
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Support|Red Hat Support" data-analytics-text="Get Support" href="https://access.redhat.com/support/">Get Support
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Support|Red Hat Support" data-analytics-text="Contact Red Hat Support" href="https://access.redhat.com/support/contact/">Contact Red Hat Support
+                      </a>
+                    </li>
+
+                  </ul>
+                </div>                <div>
+                  <h3 id="nav__support__community_support">
+                    <a href="https://access.redhat.com/community" data-analytics-level="2" data-analytics-text="Red Hat Community Support" data-analytics-category="Support">Red Hat Community Support
+                    </a>
+                  </h3>
+                  <ul aria-labelledby="nav__support__community_support">
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Support|Red Hat Community Support" data-analytics-text="Customer Portal Community" href="https://access.redhat.com/community/">Customer Portal Community
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Support|Red Hat Community Support" data-analytics-text="Community Discussions" href="https://access.redhat.com/discussions/">Community Discussions
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Support|Red Hat Community Support" data-analytics-text="Red Hat Accelerator Program" href="https://access.redhat.com/accelerators/">Red Hat Accelerator Program
+                      </a>
+                    </li>
+                    <!-- commented out because the accelerator program link will likely be replaced by "Contribute" in the future. Translation strings are already in place so uncommenting this link is all that will be needed
+                                         <li>
+                                        <a data-analytics-level="3" data-analytics-category="Support|Red Hat Community Support" data-analytics-text="Contribute" href="https://access.redhat.com/">Contribute
+                                        </a>
+                                      </li> -->
+
+                  </ul>
+                </div>                <div>
+                  <h3 id="nav__support__top_resources" data-analytics-level="2" data-analytics-text="Top Resources" data-analytics-category="Support">Top Resources
+                  </h3>
+                  <ul aria-labelledby="nav__support__top_resources">
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Support|Top Resources" data-analytics-text="Product Life Cycles" href="https://access.redhat.com/product-life-cycles/">Product Life Cycles
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Support|Top Resources" data-analytics-text="Customer Portal Labs" href="https://access.redhat.com/labs/">Customer Portal Labs
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Support|Top Resources" data-analytics-text="Red Hat JBoss Supported Configurations" href="https://access.redhat.com/support/configurations/jboss">Red Hat JBoss Supported Configurations
+                      </a>
+                    </li>
+                    <li>
+                      <a data-analytics-level="3" data-analytics-category="Support|Top Resources" data-analytics-text="Red Hat Lightspeed" href="https://cloud.redhat.com/insights">Red Hat Lightspeed
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>        </nav>        <div id="site-search" slot="search" class="utility-link site-search">
+          <div class="content">
+            <form class="ng-pristine ng-valid topSearchForm" id="topSearchForm" name="topSearchForm" action="/search/browse/search/" method="get" enctype="application/x-www-form-urlencoded">
+              <cp-search-autocomplete class="push-bottom" path="/webassets/avalon/j/data.json"></cp-search-autocomplete>              <div>Or <a href="/support/cases/#/troubleshoot">troubleshoot an issue</a>.
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div id="ask-red-hat" slot="event">
+          <cp-ask-red-hat></cp-ask-red-hat>
+        </div>
+
+        <div slot="secondary-links" id="localesMenu">
+          <button class="pfe-navigation__secondary-link">
+            <pfe-icon icon="web-icon-globe" size="sm" aria-hidden="true"></pfe-icon>English
+          </button>
+
+          <pfe-navigation-dropdown dropdown-width="single">
+            <h2 class="utility-header">Select Your Language
+            </h2>
+            <ul class="reset">
+              <li><a href="#" data-lang="en" id="en" data-analytics-text="English">English</a></li>
+              <li><a href="#" data-lang="fr" id="fr" data-analytics-text="French">Français</a></li>
+              <li><a href="#" data-lang="ko" id="ko" data-analytics-text="Korean">한국어</a></li>
+              <li><a href="#" data-lang="ja" id="ja" data-analytics-text="Japanese">日本語</a></li>
+              <li><a href="#" data-lang="zh_CN" id="zh_CN" data-analytics-text="Chinese">中文 (中国)</a></li>
+            </ul>
+
+          </pfe-navigation-dropdown>
+        </div>        <rh-account-dropdown slot="account"></rh-account-dropdown>
+
+      </pfe-navigation>
+
+      <div id="scroll-anchor"></div>
+
+      <!--[if IE 8]>
+                <div class="portal-messages">
+                <div class="alert alert-warning alert-portal alert-w-icon">
+                <span class="icon-warning alert-icon" aria-hidden="true"></span>
+                You are using an unsupported web browser. Update to a supported browser for the best experience. <a href="/announcements/2120951">Read the announcement</a>.
+                </div>
+                </div>
+            <![endif]-->
+      <!--[if IE 9]>
+                <div class="portal-messages">
+                <div class="alert alert-warning alert-portal alert-w-icon">
+                <span class="icon-warning alert-icon" aria-hidden="true"></span>As of March 1, 2016, the Red Hat Customer Portal will no longer support Internet Explorer 9. See our new <a href="/help/browsers">browser support policy</a> for more information.
+                </div>
+                </div>
+            <![endif]-->
+      <div id="site-section"></div>
+    </header>
+    <!--googleon: all-->
+
+    <main id="cp-main" class="portal-content-area">
+      <div id="cp-content" class="main-content">              <!-- /CP_PRIMER_HEADER -->
+  <script type="text/javascript">
+    chrometwo_require(['jquery-ui']);
+  </script>
+  
+
+  <article class="kcs_article cirrus-content" id="main-content">
+          
+                  
+
+
+
+<div class='band band-first'>
+  <div class='container'>
+    <div class="row">
+      
+            <div class='col-sm-11 article-content content-wrapper' ng-non-bindable lang="en">
+        <header class='header'>
+                              <h1 class="title">
+                        Red Hat OpenShift AI: Supported Configurations for 3.x          </h1>
+
+                                <div class="status-container">
+              Updated <time class='moment_date' datetime='2026-06-24T13:57:02+00:00'>2026-06-24T13:57:02+00:00</time>               - 
+<div class="dropdown inline">
+  <a id="dLabel" href="" data-toggle="dropdown" role="button" aria-haspopup="true" lang="en" aria-expanded="false">
+    English    <span class="caret"></span>
+  </a>
+
+      <ul class="dropdown-menu" aria-labelledby="dLabel">
+      <li class='en'>
+                    <a href='https://access.redhat.com/articles/rhoai-supported-configs-3.x'>English</a>
+                  </li><li class='ja'>
+                    <a href='https://access.redhat.com/ja/articles/7134372'>Japanese</a>
+                  </li><li class='zh-hans'>
+                    <a href='https://access.redhat.com/zh-hans/articles/7137904'>Chinese</a>
+                  </li>    </ul>
+  </div>
+
+                           </div>
+
+                  </header>
+
+        
+        <!--Display Content -->
+        <meta  itemprop="name" content="Red Hat OpenShift AI: Supported Configurations for 3.x" id="md28" />
+  <div class="field field-name-field-kcs-article-body field-type-text-long field-label-hidden">
+    <div id="toc" class="table-of-contents" style="margin-bottom:40px;">
+<h2 class="section-title">Table of Contents</h2>
+<div class="row">
+<div class="col-md-6">
+<ul class="list-toc">
+<li><a href="#architecture-version-and-components-1">Architecture, Version and Components</a></li>
+<li><a href="#rhoai-and-vllm-version-compatibility-2">RHOAI and vLLM version compatibility</a></li>
+<li><a href="#red-hat-openshift-ai-operator-dependencies-3">Red Hat OpenShift AI Operator Dependencies</a></li>
+<li><a href="#support-requirements-and-limitations-4">Support requirements and limitations</a></li>
+<li><a href="#supported-workbench-images-5">Supported workbench images</a></li>
+</ul>
+</div>
+<div class="col-md-6">
+<ul class="list-toc">
+<li><a href="#supported-model-serving-runtimes-6">Supported model-serving runtimes</a></li>
+<li><a href="#training-images-7">Training images</a></li>
+<li><a href="#ray-based-training-images-8">Ray-based training images</a></li>
+<li><a href="#kubeflow-trainer-v2-clustertrainingruntimes-9">Kubeflow Trainer v2 ClusterTrainingRuntimes</a></li>
+</ul>
+</div>
+</div>
+</div>
+<p>This article lists the Red Hat OpenShift AI (RHOAI) 3.x offering, the RHOAI components, their current support phase, and their compatibility with the underlying platforms.</p>
+<div class="messages messages--warning" style="background-color: #fff3cd; border: 3px solid #ffc107; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<p style="margin: 0; font-size: 1.3em; font-weight: bold; color: #856404;">⚠️ ATTENTION: For Red Hat OpenShift AI 2.x go to the supported pages <a href="https://access.redhat.com/articles/rhoai-supported-configs" style="color: #0066cc; text-decoration: underline; font-weight: bold;">HERE</a>.</p>
+</div>
+<!--break--><h3>Red Hat OpenShift AI Self-Managed</h3>
+<p>You install <strong>OpenShift AI Self-Managed</strong> by installing the Red Hat OpenShift AI Operator and then configuring the Operator to manage standalone components of the product.<br />
+RHOAI Self-Managed is supported on OpenShift Container Platform running on x86_64, ppc64le, s390x and aarch64 architectures. This includes the following providers:</p>
+<ul>
+<li>Bare Metal</li>
+<li>Single Node OpenShift (SNO)</li>
+<li>Hosted control planes on Bare Metal</li>
+<li>IBM Cloud</li>
+<li>Red Hat OpenStack</li>
+<li>Amazon Web Services</li>
+<li>Google Cloud Platform</li>
+<li>Microsoft Azure</li>
+<li>VMware vSphere</li>
+<li>Nutanix</li>
+<li>Oracle Cloud</li>
+<li>IBM Power</li>
+<li>IBM Z</li>
+</ul>
+<p>This also includes support for RHOAI Self-Managed on managed OpenShift offerings such as OpenShift Dedicated, Red Hat OpenShift Service on AWS (ROSA with HCP), Red Hat OpenShift Service on AWS (classic architecture), Microsoft Azure Red Hat OpenShift, and OpenShift Kubernetes Engine. Currently, RHOAI Self-Managed is not supported on OpenShift running on platforms such as MicroShift.<br />
+For a full overview of the RHOAI Self-Managed life cycle and the currently supported releases, visit this <a href="https://access.redhat.com/support/policy/updates/rhoai-sm/lifecycle">page</a>.</p>
+<h2 id="architecture-version-and-components-1">Architecture, Version and Components</h2>
+<p><strong>x86_64 architecture</strong></p>
+<!-- AUTO-GEN-START:component-table:x86_64 --><rh-table><table>
+<thead>
+<tr>
+<th>RHOAI Operator Version</th>
+<th></th>
+<th>3.3</th>
+<th></th>
+<th>3.4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenShift Supported Versions</td>
+<td></td>
+<td>4.19.9+, 4.20, 4.21</td>
+<td></td>
+<td>4.19.9+, 4.20, 4.21, 4.22</td>
+</tr>
+<tr>
+<td>Chipset Architecture</td>
+<td></td>
+<td>x86_64</td>
+<td></td>
+<td>x86_64</td>
+</tr>
+<tr>
+<td><strong>Components</strong></td>
+<td><strong>Status</strong></td>
+<td><strong>Version</strong></td>
+<td><strong>Status</strong></td>
+<td><strong>Version</strong></td>
+</tr>
+<tr>
+<td>Dashboard</td>
+<td>GA</td>
+<td>2.0.0</td>
+<td>GA</td>
+<td>2.0.0</td>
+</tr>
+<tr>
+<td>Data science pipelines</td>
+<td>GA</td>
+<td>2.5.0</td>
+<td>GA</td>
+<td>2.16.0</td>
+</tr>
+<tr>
+<td>Argo Workflows</td>
+<td>GA</td>
+<td>v3.6.7</td>
+<td>GA</td>
+<td>v3.7.3</td>
+</tr>
+<tr>
+<td><a href="https://access.redhat.com/node/7136620">Distributed Inference with llm-d</a> - <a href="#arch-notes-01">(1)</a></td>
+<td>GA</td>
+<td>-</td>
+<td>GA</td>
+<td>0.7.1</td>
+</tr>
+<tr>
+<td>Feature Store</td>
+<td>GA</td>
+<td>0.59.0</td>
+<td>GA</td>
+<td>0.62.0</td>
+</tr>
+<tr>
+<td>KServe</td>
+<td>GA</td>
+<td>0.15</td>
+<td>GA</td>
+<td>0.17.0</td>
+</tr>
+<tr>
+<td><a href="https://docs.redhat.com/en/documentation/red_hat_ai_inference">Red Hat AI Inference</a> <a href="#arch-notes-01">(2)</a></td>
+<td>-</td>
+<td>-</td>
+<td>GA</td>
+<td>3.4.0</td>
+</tr>
+<tr>
+<td>Kubeflow v1 Training Operator</td>
+<td>Deprecated</td>
+<td>1.9.0</td>
+<td>Deprecated</td>
+<td>1.9.0</td>
+</tr>
+<tr>
+<td>Kubeflow Trainer v2</td>
+<td>GA</td>
+<td>2.1.0</td>
+<td>GA</td>
+<td>2.1.0</td>
+</tr>
+<tr>
+<td>Kuberay</td>
+<td>GA</td>
+<td>1.4.2</td>
+<td>GA</td>
+<td>1.4.2</td>
+</tr>
+<tr>
+<td>Llama Stack Operator</td>
+<td>TP</td>
+<td>0.6.0</td>
+<td>TP</td>
+<td>0.9.0</td>
+</tr>
+<tr>
+<td>LMEval</td>
+<td>GA</td>
+<td>0.4.8</td>
+<td>GA</td>
+<td>0.4.8</td>
+</tr>
+<tr>
+<td>MaaS</td>
+<td>TP</td>
+<td>0.0.2</td>
+<td>GA</td>
+<td>0.1.1</td>
+</tr>
+<tr>
+<td>MLflow</td>
+<td>TP</td>
+<td>3.6.0</td>
+<td>GA</td>
+<td>3.10.1</td>
+</tr>
+<tr>
+<td>AI Hub</td>
+<td>GA</td>
+<td>0.3.5</td>
+<td>GA</td>
+<td>0.3.9</td>
+</tr>
+<tr>
+<td>TrustyAI</td>
+<td>GA</td>
+<td>1.37.0</td>
+<td>GA</td>
+<td>1.37.0</td>
+</tr>
+<tr>
+<td>Workbenches</td>
+<td>GA</td>
+<td>1.10.0</td>
+<td>GA</td>
+<td>1.10.0</td>
+</tr>
+</tbody>
+</table></rh-table>
+<!-- AUTO-GEN-END:component-table:x86_64 --><p><br /></p>
+<p><strong>ARM architecture</strong></p>
+<!-- AUTO-GEN-START:component-table:aarch64 --><rh-table><table>
+<thead>
+<tr>
+<th>RHOAI Operator Version</th>
+<th></th>
+<th>3.3</th>
+<th></th>
+<th>3.4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenShift Supported Versions</td>
+<td></td>
+<td>4.19.9+, 4.20, 4.21</td>
+<td></td>
+<td>4.19.9+, 4.20, 4.21, 4.22</td>
+</tr>
+<tr>
+<td>Chipset Architecture</td>
+<td></td>
+<td>aarch64</td>
+<td></td>
+<td>aarch64</td>
+</tr>
+<tr>
+<td><strong>Components</strong></td>
+<td><strong>Status</strong></td>
+<td><strong>Version</strong></td>
+<td><strong>Status</strong></td>
+<td><strong>Version</strong></td>
+</tr>
+<tr>
+<td>Dashboard</td>
+<td>GA</td>
+<td>2.0.0</td>
+<td>GA</td>
+<td>2.0.0</td>
+</tr>
+<tr>
+<td>Data science pipelines</td>
+<td>GA</td>
+<td>2.5.0</td>
+<td>GA</td>
+<td>2.16.0</td>
+</tr>
+<tr>
+<td>Argo Workflows</td>
+<td>GA</td>
+<td>v3.6.7</td>
+<td>GA</td>
+<td>v3.7.3</td>
+</tr>
+<tr>
+<td><a href="https://access.redhat.com/node/7136620">Distributed Inference with llm-d</a> - <a href="#arch-notes-01">(1)</a></td>
+<td>GA</td>
+<td>-</td>
+<td>GA</td>
+<td>0.7.1</td>
+</tr>
+<tr>
+<td>Feature Store</td>
+<td>GA</td>
+<td>0.59.0</td>
+<td>GA</td>
+<td>0.62.0</td>
+</tr>
+<tr>
+<td>KServe</td>
+<td>GA</td>
+<td>0.15</td>
+<td>GA</td>
+<td>0.17.0</td>
+</tr>
+<tr>
+<td><a href="https://docs.redhat.com/en/documentation/red_hat_ai_inference">Red Hat AI Inference</a> <a href="#arch-notes-01">(2)</a></td>
+<td>-</td>
+<td>-</td>
+<td>GA</td>
+<td>3.4.0</td>
+</tr>
+<tr>
+<td>Kubeflow v1 Training Operator</td>
+<td>Deprecated</td>
+<td>1.9.0</td>
+<td>Deprecated</td>
+<td>1.9.0</td>
+</tr>
+<tr>
+<td>Kubeflow Trainer v2</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Kuberay</td>
+<td>GA</td>
+<td>1.4.2</td>
+<td>GA</td>
+<td>1.4.2</td>
+</tr>
+<tr>
+<td>Llama Stack Operator</td>
+<td>TP</td>
+<td>0.6.0</td>
+<td>TP</td>
+<td>0.9.0</td>
+</tr>
+<tr>
+<td>LMEval</td>
+<td>GA</td>
+<td>0.4.8</td>
+<td>GA</td>
+<td>0.4.8</td>
+</tr>
+<tr>
+<td>MaaS</td>
+<td>TP</td>
+<td>0.0.2</td>
+<td>GA</td>
+<td>0.1.1</td>
+</tr>
+<tr>
+<td>MLflow</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>AI Hub</td>
+<td>GA</td>
+<td>0.3.5</td>
+<td>GA</td>
+<td>0.3.9</td>
+</tr>
+<tr>
+<td>TrustyAI</td>
+<td>GA</td>
+<td>1.37.0</td>
+<td>GA</td>
+<td>1.37.0</td>
+</tr>
+<tr>
+<td>Workbenches</td>
+<td>GA</td>
+<td>1.10.0</td>
+<td>GA</td>
+<td>1.10.0</td>
+</tr>
+</tbody>
+</table></rh-table>
+<!-- AUTO-GEN-END:component-table:aarch64 --><p><br /></p>
+<p><strong>IBM Power (ppc64le) architecture</strong></p>
+<!-- AUTO-GEN-START:component-table:ppc64le --><rh-table><table>
+<thead>
+<tr>
+<th>RHOAI Operator Version</th>
+<th></th>
+<th>3.3</th>
+<th></th>
+<th>3.4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenShift Supported Versions</td>
+<td></td>
+<td>4.19.9+, 4.20, 4.21</td>
+<td></td>
+<td>4.19.9+, 4.20, 4.21, 4.22</td>
+</tr>
+<tr>
+<td>Chipset Architecture</td>
+<td></td>
+<td>ppc64le</td>
+<td></td>
+<td>ppc64le</td>
+</tr>
+<tr>
+<td><strong>Components</strong></td>
+<td><strong>Status</strong></td>
+<td><strong>Version</strong></td>
+<td><strong>Status</strong></td>
+<td><strong>Version</strong></td>
+</tr>
+<tr>
+<td>Dashboard</td>
+<td>GA</td>
+<td>2.0.0</td>
+<td>GA</td>
+<td>2.0.0</td>
+</tr>
+<tr>
+<td>Data science pipelines</td>
+<td>GA</td>
+<td>2.5.0</td>
+<td>GA</td>
+<td>2.16.0</td>
+</tr>
+<tr>
+<td>Argo Workflows</td>
+<td>GA</td>
+<td>v3.6.7</td>
+<td>GA</td>
+<td>v3.7.3</td>
+</tr>
+<tr>
+<td><a href="https://access.redhat.com/node/7136620">Distributed Inference with llm-d</a></td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Feature Store</td>
+<td>TP</td>
+<td>0.59.0</td>
+<td>TP</td>
+<td>0.62.0</td>
+</tr>
+<tr>
+<td>KServe</td>
+<td>GA</td>
+<td>0.15</td>
+<td>GA</td>
+<td>0.17.0</td>
+</tr>
+<tr>
+<td><a href="https://docs.redhat.com/en/documentation/red_hat_ai_inference">Red Hat AI Inference</a> <a href="#arch-notes-01">(2)</a></td>
+<td>-</td>
+<td>-</td>
+<td>GA</td>
+<td>3.4.0</td>
+</tr>
+<tr>
+<td>Kubeflow v1 Training Operator</td>
+<td>Deprecated</td>
+<td>1.9.0</td>
+<td>Deprecated</td>
+<td>1.9.0</td>
+</tr>
+<tr>
+<td>Kubeflow Trainer v2</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Kuberay</td>
+<td>-</td>
+<td>-</td>
+<td>TP</td>
+<td>1.4.2</td>
+</tr>
+<tr>
+<td>Llama Stack Operator</td>
+<td>-</td>
+<td>-</td>
+<td>TP</td>
+<td>0.9.0</td>
+</tr>
+<tr>
+<td>LMEval</td>
+<td>GA</td>
+<td>0.4.8</td>
+<td>GA</td>
+<td>0.4.8</td>
+</tr>
+<tr>
+<td>MaaS</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>MLflow</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>AI Hub</td>
+<td>GA</td>
+<td>0.3.5</td>
+<td>GA</td>
+<td>0.3.9</td>
+</tr>
+<tr>
+<td>TrustyAI</td>
+<td>GA</td>
+<td>1.37.0</td>
+<td>GA</td>
+<td>1.37.0</td>
+</tr>
+<tr>
+<td>Workbenches</td>
+<td>GA</td>
+<td>1.10.0</td>
+<td>GA</td>
+<td>1.10.0</td>
+</tr>
+</tbody>
+</table></rh-table>
+<!-- AUTO-GEN-END:component-table:ppc64le --><p><br /></p>
+<p><strong>IBM Z (s390x) architecture</strong></p>
+<!-- AUTO-GEN-START:component-table:s390x --><rh-table><table>
+<thead>
+<tr>
+<th>RHOAI Operator Version</th>
+<th></th>
+<th>3.3</th>
+<th></th>
+<th>3.4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenShift Supported Versions</td>
+<td></td>
+<td>4.19.9+, 4.20, 4.21</td>
+<td></td>
+<td>4.19.9+, 4.20, 4.21, 4.22</td>
+</tr>
+<tr>
+<td>Chipset Architecture</td>
+<td></td>
+<td>s390x</td>
+<td></td>
+<td>s390x</td>
+</tr>
+<tr>
+<td><strong>Components</strong></td>
+<td><strong>Status</strong></td>
+<td><strong>Version</strong></td>
+<td><strong>Status</strong></td>
+<td><strong>Version</strong></td>
+</tr>
+<tr>
+<td>Dashboard</td>
+<td>GA</td>
+<td>2.0.0</td>
+<td>GA</td>
+<td>2.0.0</td>
+</tr>
+<tr>
+<td>Data science pipelines</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Argo Workflows</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td><a href="https://access.redhat.com/node/7136620">Distributed Inference with llm-d</a></td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Feature Store</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>KServe</td>
+<td>GA</td>
+<td>0.15</td>
+<td>GA</td>
+<td>0.17.0</td>
+</tr>
+<tr>
+<td><a href="https://docs.redhat.com/en/documentation/red_hat_ai_inference">Red Hat AI Inference</a> <a href="#arch-notes-01">(2)</a></td>
+<td>-</td>
+<td>-</td>
+<td>GA</td>
+<td>3.4.0</td>
+</tr>
+<tr>
+<td>Kubeflow v1 Training Operator</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Kubeflow Trainer v2</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Kuberay</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Llama Stack Operator</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>LMEval</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>MaaS</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>MLflow</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>IBM Spyre Operator</td>
+<td>GA</td>
+<td>1.1.1</td>
+<td>GA</td>
+<td>1.2.1</td>
+</tr>
+<tr>
+<td>AI Hub</td>
+<td>GA</td>
+<td>0.3.5</td>
+<td>GA</td>
+<td>0.3.9</td>
+</tr>
+<tr>
+<td>TrustyAI</td>
+<td>GA</td>
+<td>1.37.0</td>
+<td>GA</td>
+<td>1.37.0</td>
+</tr>
+<tr>
+<td>Workbenches</td>
+<td>GA</td>
+<td>1.10.0</td>
+<td>GA</td>
+<td>1.10.0</td>
+</tr>
+</tbody>
+</table></rh-table>
+<!-- AUTO-GEN-END:component-table:s390x --><p><br /></p>
+<h3 id="arch-notes-01">Notes</h3>
+<p>(1) <a href="https://access.redhat.com/node/7136620">Distributed Inference with llm-d</a> requires OpenShift 4.20 or later</p>
+<p>(2) For supported AI accelerators for Red Hat AI Inference Server, see <a href="https://docs.redhat.com/en/documentation/red_hat_ai/3/html/supported_product_and_hardware_configurations/rhaiis-supported-ai-accelerators_supported-configurations">Supported AI accelerators for Red Hat AI Inference Server</a></p>
+<p><br /></p>
+<p>TP: <a href="https://access.redhat.com/support/offerings/techpreview/">Technology Preview</a><br />
+DP: <a href="https://access.redhat.com/support/offerings/devpreview/">Developer Preview</a><br />
+Developer and Technology Previews: <a href="https://access.redhat.com/articles/6966848">How they compare</a><br />
+LA: Limited Availability. During this phase you can install and receive support for the feature only with specific approval from Red Hat. Without such approval, the feature is unsupported.<br />
+GA: General Availability.<br />
+EUS: Extended Update Support. During the EUS phase, Red Hat will maintain component specific support.<br />
+EOL: End of Life. During this phase, the component will no longer be supported.</p>
+<h2 id="rhoai-and-vllm-version-compatibility-2">RHOAI and vLLM version compatibility</h2>
+<p>The following table shows the version of the vLLM model-serving runtime that is included with each version of Red Hat OpenShift AI.</p>
+<rh-table><table>
+<thead>
+<tr>
+<th>RHOAI Version</th>
+<th>3.3</th>
+<th>3.4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vLLM CUDA</td>
+<td>v0.13.0</td>
+<td>v0.18.0</td>
+</tr>
+<tr>
+<td>vLLM ROCm</td>
+<td>v0.13.0</td>
+<td>v0.18.0</td>
+</tr>
+<tr>
+<td>vLLM Power/Z</td>
+<td>v0.10.1.1.6</td>
+<td>v0.18.0</td>
+</tr>
+<tr>
+<td>vLLM Spyre ppc64le</td>
+<td>v0.11.0</td>
+<td>v0.18.0</td>
+</tr>
+<tr>
+<td>vLLM Gaudi</td>
+<td>v0.13.0</td>
+<td>v0.17.1</td>
+</tr>
+<tr>
+<td>vLLM Spyre x86</td>
+<td>v0.12.0</td>
+<td>v0.18.0</td>
+</tr>
+<tr>
+<td>vLLM Spyre s390x</td>
+<td>v0.12.0</td>
+<td>v0.18.0</td>
+</tr>
+<tr>
+<td>OVMS</td>
+<td>v2025.4</td>
+<td>v2026.1.0</td>
+</tr>
+</tbody>
+</table></rh-table>
+<p><br /></p>
+<h2 id="red-hat-openshift-ai-operator-dependencies-3">Red Hat OpenShift AI Operator Dependencies</h2>
+<p>For information on the compatibility and supported versions of Red Hat OpenShift AI Operator dependencies, see the following documentation:</p>
+<ul>
+<li>Red Hat OpenShift Serverless: <a href="https://docs.redhat.com/en/documentation/red_hat_openshift_serverless/latest/html/about_openshift_serverless/serverless-release-notes">release notes</a></li>
+<li>Red Hat OpenShift Service Mesh: <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html/service_mesh/service-mesh-3-x">release notes</a></li>
+<li>Red Hat Build of Kueue: <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html/ai_workloads/red-hat-build-of-kueue">release notes</a></li>
+<li>Node Feature Discovery Operator: <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator">documentation</a></li>
+<li>Red Hat - Authorino Operator: <a href="https://docs.redhat.com/en/documentation/red_hat_connectivity_link/latest">documentation</a></li>
+<li>NVIDIA GPU Operator: <a href="https://access.redhat.com/bounce/?externalURL=hhttps%3A%2F%2Fdocs.nvidia.com%2Fdatacenter%2Fcloud-native%2Fopenshift%2Flatest%2Findex.html">documentation</a></li>
+<li>Intel Gaudi Base Operator: <a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fdocs.habana.ai%2Fen%2Flatest%2FSupport_Matrix%2FSupport_Matrix.html">documentation</a></li>
+<li>AMD GPU Operator: <a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Finstinct.docs.amd.com%2Fprojects%2Fgpu-operator%2Fen%2Flatest%2F">documentation</a></li>
+<li>NVIDIA Network Operator: <a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fdocs.nvidia.com%2Fnetworking%2Fdisplay%2Fkubernetes2470%2Fgetting-started-openshift.html">documentation</a></li>
+<li>Red Hat Connectivity Link: <a href="https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2">release notes</a></li>
+<li>IBM Spyre Operator : <a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fwww.ibm.com%2Fdocs%2Fen%2Frhocp-ibm-z%3Ftopic%3Dspyre-operator-z-linuxone-users-guide">documentation</a></li>
+</ul>
+<p>Starting with RHOAI 3.4, Red Hat Connectivity Link (RHCL) is included in Red Hat AI SKUs for Models as a Service (MaaS) use cases only. For all other RHOAI components, RHCL is not included. When MaaS is enabled, RHCL is deployed via the Kuadrant Operator, which provides authentication, authorization, and rate limiting. For the RHCL version compatibility matrix, see <a href="https://access.redhat.com/articles/7092611">Red Hat Connectivity Link Supported Configurations</a>.</p>
+<p>Red Hat OpenShift AI does not directly support any specific accelerators. To use accelerator functionality in OpenShift AI, the relevant accelerator Operators are required. OpenShift AI supports integration with the relevant Operators, and provides many images across the product that include the libraries to work with NVIDIA GPUs, AMD GPUs, Intel Gaudi AI accelerators and IBM Spyre. For more information about which devices are supported by an Operator, see the documentation for that Operator.</p>
+<h2 id="support-requirements-and-limitations-4">Support requirements and limitations</h2>
+<p>Review this section to understand the requirements for Red Hat support and any limitations to Red Hat support of Red Hat OpenShift AI.</p>
+<p><strong>Supported browsers</strong></p>
+<ul>
+<li>Google Chrome</li>
+<li>Mozilla Firefox</li>
+<li>Safari</li>
+</ul>
+<p><strong>Supported services</strong></p>
+<p>Red Hat OpenShift AI supports the following services:</p>
+<rh-table><table>
+<thead>
+<tr>
+<th>Service Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EDB Postgres AI - solution including Pgvector</td>
+<td>Use powerful hybrid search for AI RAG and multimodal AI recommender applications with EDB's vector database solution including Pgvector. Combine AI, transactional, and analytical workloads with native vector index search, enterprise-grade security, and scalability in a unified Postgres environment.</td>
+</tr>
+<tr>
+<td>Elasticsearch</td>
+<td>Build transformative RAG applications, proactively resolve observability issues, and address complex security threats — all with the power of Search AI.</td>
+</tr>
+<tr>
+<td>IBM Watson Studio</td>
+<td>IBM® watsonx.ai is part of the IBM watsonx AI and data platform, bringing together new generative AI capabilities powered by foundation models and traditional machine learning (ML) into a powerful studio spanning the AI lifecycle.</td>
+</tr>
+<tr>
+<td>Intel® oneAPI AI Analytics Toolkit Container</td>
+<td>The AI Kit is a set of AI software tools to accelerate end-to-end data science and analytics pipelines on Intel® architectures.</td>
+</tr>
+<tr>
+<td>NVIDIA NIM</td>
+<td>NVIDIA NIM, part of NVIDIA AI Enterprise, is a set of easy-to-use microservices designed for secure, reliable deployment of high-performance AI model inferencing across the cloud, data center and workstations. Supporting a wide range of AI models, including open-source community and NVIDIA AI Foundation models, it ensures seamless, scalable AI inferencing, on-premises or in the cloud, leveraging industry standard APIs.</td>
+</tr>
+<tr>
+<td>OpenVINO</td>
+<td>OpenVINO is an open source toolkit to help optimize deep learning performance and deploy using an inference engine onto Intel® hardware.</td>
+</tr>
+<tr>
+<td>Pachyderm</td>
+<td>Pachyderm is the data foundation for machine learning. It provides industry-leading pipelines, data versioning, and lineage for data science teams to automate the machine learning lifecycle.</td>
+</tr>
+<tr>
+<td>Starburst Enterprise</td>
+<td>Starburst Enterprise platform (SEP) is the commericial distribution of Trino, which is an open-source, Massively Parallel Processing (MPP) ANSI SQL query engine.  Starburst simplifies data access for your Red Hat OpenShift AI workloads by providing fast access to all of your data, no matter where it lives.  Starburst does this by connecting directly to each data source and pulling the data back into memory for processing, alleviating the need to copy or move the data into a single location first.</td>
+</tr>
+<tr>
+<td>Jupyter</td>
+<td>Jupyter is a multi-user version of the notebook designed for companies, classrooms, and research labs.</td>
+</tr>
+</tbody>
+</table></rh-table>
+<h2 id="supported-workbench-images-5">Supported workbench images</h2>
+<p>The latest supported workbench images in Red Hat OpenShift AI are installed with Python by default.<br />
+You can install packages that are compatible with the supported version of Python on any workbench server that has the binaries required by that package. If the required binaries are not included on the workbench image you want to use, contact Red Hat Support to request that the binary be considered for inclusion.</p>
+<p>To provide a consistent, stable platform for your model development, select workbench images that contain the same version of Python. Workbench images available on OpenShift AI are pre-built and ready for you to use immediately after OpenShift AI is installed or upgraded.<br />
+Workbench images are supported for a minimum of one year. Major updates to pre-configured workbench images occur about every six months. Therefore, two supported workbench image versions are typically available at any given time. You can use this support period to update your code to use components from the latest available workbench image. Legacy workbench image versions, that is, not the two most recent versions, might still be available for selection. Legacy image versions include a label that indicates the image is out-of-date. To use the latest package versions, Red Hat recommends that you use the most recently added workbench image. If necessary, you can still access older workbench images from the registry, even if they are no longer supported. You can then add the older workbench images as custom workbench images to cater for your project’s specific requirements.</p>
+<p>Workbench images denoted with <i>Technology Preview</i> in the following table are not supported with Red Hat production service level agreements (SLAs) and might not be functionally complete. Red Hat does not recommend using <a href="https://access.redhat.com/support/offerings/techpreview/">Technology Preview</a> features in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.</p>
+<h4> Notebooks Supported on x86_64</h4>
+<!-- AUTO-GEN-START:workbench-images-x86 --><rh-table><table>
+<thead>
+<tr>
+<th>Image name</th>
+<th>Image version</th>
+<th>Preinstalled packages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code Server | Data Science | CPU | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>code-server: 4.104, Python 3.12, Boto3: 1.40, Kafka-Python-ng: 2.2, Matplotlib: 3.10, NumPy: 2.3, Pandas: 2.3, scikit-learn: 1.7, Scipy: 1.16, Sklearn-onnx: 1.19, ipykernel: 6.30, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td></td>
+<td>2025.1</td>
+<td>code-server: 4.98, Python 3.11, Boto3: 1.37, Kafka-Python-ng: 2.2, Matplotlib: 3.10, NumPy: 2.2, Pandas: 2.2, scikit-learn: 1.6, Scipy: 1.15, Sklearn-onnx: 1.18, ipykernel: 6.29, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td>Jupyter | Data Science | CPU | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>Python 3.12, JupyterLab: 4.4, Boto3: 1.40, Kafka-Python-ng: 2.2, Kubeflow SDK: 2.14, Matplotlib: 3.10, NumPy: 2.3, Pandas: 2.3, scikit-learn: 1.7, Scipy: 1.16, Odh-Elyra: 4.3, PyMongo: 4.15, Pyodbc: 5.2, Codeflare-SDK: 0.34, Feast: 0.59, Sklearn-onnx: 1.19, Psycopg: 3.2, MySQL Connector/Python: 9.4, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td></td>
+<td>2025.1</td>
+<td>Python 3.11, JupyterLab: 4.4, Boto3: 1.37, Kafka-Python-ng: 2.2, Kubeflow SDK: 2.12, Matplotlib: 3.10, NumPy: 2.2, Pandas: 2.2, scikit-learn: 1.6, Scipy: 1.15, Odh-Elyra: 4.2, PyMongo: 4.11, Pyodbc: 5.2, Codeflare-SDK: 0.30, Sklearn-onnx: 1.18, Psycopg: 3.2, MySQL Connector/Python: 9.3, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td>Jupyter | Minimal | CPU | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>Python 3.12, JupyterLab: 4.4</td>
+</tr>
+<tr>
+<td></td>
+<td>2025.1</td>
+<td>Python 3.11, JupyterLab: 4.4</td>
+</tr>
+<tr>
+<td>Jupyter | Minimal | CUDA | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>CUDA 12.9, Python 3.12, JupyterLab: 4.4</td>
+</tr>
+<tr>
+<td></td>
+<td>2025.1</td>
+<td>CUDA 12.6, Python 3.11, JupyterLab: 4.4</td>
+</tr>
+<tr>
+<td>Jupyter | Minimal | ROCm | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>ROCm 6.4, Python 3.12, JupyterLab: 4.4</td>
+</tr>
+<tr>
+<td></td>
+<td>2025.1</td>
+<td>ROCm 6.2, Python 3.11, JupyterLab: 4.4</td>
+</tr>
+<tr>
+<td>Jupyter | PyTorch LLM Compressor | CUDA | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>CUDA 12.9, Python 3.12, PyTorch: 2.7, LLM-Compressor: 0.9, JupyterLab: 4.4, Tensorboard: 2.20, Boto3: 1.40, Kafka-Python-ng: 2.2, Kubeflow SDK: 2.14, Matplotlib: 3.10, NumPy: 2.3, Pandas: 2.3, scikit-learn: 1.7, Scipy: 1.16, Odh-Elyra: 4.3, PyMongo: 4.15, Pyodbc: 5.2, Feast: 0.59, Sklearn-onnx: 1.19, Psycopg: 3.2, MySQL Connector/Python: 9.4, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td>Jupyter | PyTorch | CUDA | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>CUDA 12.9, Python 3.12, PyTorch: 2.7, JupyterLab: 4.4, Tensorboard: 2.20, Boto3: 1.40, Kafka-Python-ng: 2.2, Kubeflow SDK: 2.14, Matplotlib: 3.10, NumPy: 2.3, Pandas: 2.3, scikit-learn: 1.7, Scipy: 1.16, Odh-Elyra: 4.3, PyMongo: 4.15, Pyodbc: 5.2, Codeflare-SDK: 0.34, Feast: 0.59, Sklearn-onnx: 1.19, Psycopg: 3.2, MySQL Connector/Python: 9.4, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td></td>
+<td>2025.1</td>
+<td>CUDA 12.6, Python 3.11, PyTorch: 2.6, JupyterLab: 4.4, Tensorboard: 2.19, Boto3: 1.37, Kafka-Python-ng: 2.2, Kubeflow SDK: 2.12, Matplotlib: 3.10, NumPy: 2.2, Pandas: 2.2, scikit-learn: 1.6, Scipy: 1.15, Odh-Elyra: 4.2, PyMongo: 4.11, Pyodbc: 5.2, Codeflare-SDK: 0.30, Sklearn-onnx: 1.18, Psycopg: 3.2, MySQL Connector/Python: 9.3, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td>Jupyter | PyTorch | ROCm | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>ROCm 6.4, Python 3.12, ROCm-PyTorch: 2.7, JupyterLab: 4.4, Tensorboard: 2.20, Kafka-Python-ng: 2.2, Matplotlib: 3.10, NumPy: 2.3, Pandas: 2.3, scikit-learn: 1.7, Scipy: 1.16, Odh-Elyra: 4.3, PyMongo: 4.15, Pyodbc: 5.2, Codeflare-SDK: 0.34, Feast: 0.59, Sklearn-onnx: 1.19, Psycopg: 3.2, MySQL Connector/Python: 9.4, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td></td>
+<td>2025.1</td>
+<td>ROCm 6.2, Python 3.11, ROCm-PyTorch: 2.6, JupyterLab: 4.4, Tensorboard: 2.18, Kafka-Python-ng: 2.2, Matplotlib: 3.10, NumPy: 2.2, Pandas: 2.2, scikit-learn: 1.6, Scipy: 1.15, Odh-Elyra: 4.2, PyMongo: 4.11, Pyodbc: 5.2, Codeflare-SDK: 0.30, Sklearn-onnx: 1.18, Psycopg: 3.2, MySQL Connector/Python: 9.3, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td>Jupyter | TensorFlow | CUDA | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>CUDA 12.9, Python 3.12, TensorFlow: 2.20, JupyterLab: 4.4, Tensorboard: 2.20, Nvidia-CUDA-CU12-Bundle: 12.9, Boto3: 1.40, Kafka-Python-ng: 2.2, Kubeflow SDK: 2.14, Matplotlib: 3.10, NumPy: 2.1, Pandas: 2.3, scikit-learn: 1.7, Scipy: 1.16, Odh-Elyra: 4.3, PyMongo: 4.15, Pyodbc: 5.2, Codeflare-SDK: 0.34, Feast: 0.59, Sklearn-onnx: 1.19, Psycopg: 3.2, MySQL Connector/Python: 9.4</td>
+</tr>
+<tr>
+<td></td>
+<td>2025.1</td>
+<td>CUDA 12.6, Python 3.11, TensorFlow: 2.18, JupyterLab: 4.4, Tensorboard: 2.18, Nvidia-CUDA-CU12-Bundle: 12.5, Boto3: 1.37, Kafka-Python-ng: 2.2, Kubeflow SDK: 2.12, Matplotlib: 3.10, NumPy: 1.26, Pandas: 2.2, scikit-learn: 1.6, Scipy: 1.15, Odh-Elyra: 4.2, PyMongo: 4.11, Pyodbc: 5.2, Codeflare-SDK: 0.30, Sklearn-onnx: 1.18, Psycopg: 3.2, MySQL Connector/Python: 9.3</td>
+</tr>
+<tr>
+<td>Jupyter | TensorFlow | ROCm | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>ROCm 6.4, Python 3.12, TensorFlow-ROCm: 2.18, JupyterLab: 4.4, Tensorboard: 2.18, Kafka-Python-ng: 2.2, Matplotlib: 3.10, NumPy: 1.26, Pandas: 2.3, scikit-learn: 1.7, Scipy: 1.16, Odh-Elyra: 4.3, PyMongo: 4.15, Pyodbc: 5.2, Codeflare-SDK: 0.34, Sklearn-onnx: 1.19, Psycopg: 3.2, MySQL Connector/Python: 9.4</td>
+</tr>
+<tr>
+<td></td>
+<td>2025.1</td>
+<td>ROCm 6.2, Python 3.11, TensorFlow-ROCm: 2.14, JupyterLab: 4.4, Tensorboard: 2.14, Kafka-Python-ng: 2.2, Matplotlib: 3.10, NumPy: 1.26, Pandas: 2.2, scikit-learn: 1.6, Scipy: 1.15, Odh-Elyra: 4.2, PyMongo: 4.11, Pyodbc: 5.2, Codeflare-SDK: 0.30, Sklearn-onnx: 1.17, Psycopg: 3.2, MySQL Connector/Python: 9.3</td>
+</tr>
+<tr>
+<td>Jupyter | TrustyAI | CPU | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>Python 3.12, JupyterLab: 4.4, TrustyAI: 0.6, Transformers: 4.56, Datasets: 4.0, Accelerate: 1.10, Torch: 2.7, Boto3: 1.40, Kafka-Python-ng: 2.2, Kubeflow SDK: 2.14, Matplotlib: 3.10, NumPy: 1.26, Pandas: 1.5, scikit-learn: 1.7, Scipy: 1.16, Odh-Elyra: 4.3, PyMongo: 4.15, Pyodbc: 5.2, Codeflare-SDK: 0.34, Sklearn-onnx: 1.19, Psycopg: 3.2, MySQL Connector/Python: 9.4, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td></td>
+<td>2025.1</td>
+<td>Python 3.11, JupyterLab: 4.4, TrustyAI: 0.6, Transformers: 4.53, Datasets: 3.4, Accelerate: 1.5, Torch: 2.6, Boto3: 1.37, Kafka-Python-ng: 2.2, Kubeflow SDK: 2.12, Matplotlib: 3.6, NumPy: 1.24, Pandas: 1.5, scikit-learn: 1.5, Scipy: 1.15, Odh-Elyra: 4.2, PyMongo: 4.11, Pyodbc: 5.2, Codeflare-SDK: 0.30, Sklearn-onnx: 1.18, Psycopg: 3.2, MySQL Connector/Python: 9.3, Kubeflow-Training: 1.9 
+<!-- AUTO-GEN-END:workbench-images-x86 --></td>
+</tr>
+</tbody>
+</table></rh-table>
+<h4>Notebooks supported on IBM Power</h4>
+<rh-table><table>
+<thead>
+<tr>
+<th>Image name</th>
+<th>Image version</th>
+<th>Preinstalled packages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code Server | Data Science | CPU | Python 3.12</td>
+<td>2025.2</td>
+<td>code-server 1.104, Python 3.12, Boto3: 1.40, Kafka-Python-ng: 2.2, Matplotlib: 3.10, Numpy: 2.3, Pandas: 2.3, Scikit-learn: 1.7, Scipy: 1.16, Sklearn-onnx: 1.19, ipykernel: 6.30, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td>Jupyter | Data Science | CPU | Python 3.12</td>
+<td>2025.2</td>
+<td>Python 3.12, JupyterLab: 4.4, Boto3: 1.40, Kafka-Python-ng: 2.2, Kfp: 2.14, Matplotlib: 3.10, Numpy: 2.3, Pandas: 2.3, Scikit-learn: 1.7, Scipy: 1.16, Odh-Elyra: 4.2, PyMongo: 4.14, Pyodbc: 5.2, Sklearn-onnx: 1.19, Psycopg: 3.2, MySQL Connector/Python: 9.3, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td>Jupyter | Minimal | CPU | Python 3.12</td>
+<td>2025.2</td>
+<td>Python 3.12, JupyterLab: 4.4</td>
+</tr>
+<tr>
+<td></td>
+<td>2025.1</td>
+<td>Python 3.11, JupyterLab: 4.4</td>
+</tr>
+<tr>
+<td>Jupyter | TrustyAI | CPU | Python 3.12</td>
+<td>2025.2</td>
+<td>Python 3.12, JupyterLab: 4.4, TrustyAI: 0.6, Transformers: 4.56, Datasets: 4.0, Accelerate: 1.10, Torch: 2.7, Boto3: 1.40, Kafka-Python-ng: 2.2, Kfp: 2.14, Matplotlib: 3.10, Numpy: 1.26, Pandas: 1.5, Scikit-learn: 1.7, Scipy: 1.16, Odh-Elyra: 4.2, PyMongo: 4.14, Pyodbc: 5.2, Sklearn-onnx: 1.19, Psycopg: 3.2, Kubeflow-Training: 1.9</td>
+</tr>
+<tr>
+<td>Jupyter | TrustyAI | Minimal | CPU | Python 3.12</td>
+<td>2025.2</td>
+<td>IPython: 9.8.0, ipykernel: 7.1.0, ipywidgets: 8.1.2, jupyter_client: 8.7.0, jupyter_core: 5.9.1, jupyter_server: 2.17.0, jupyterlab: 4.4.9, nbclient: 0.10.2, nbconvert: 7.16.6, nbformat: 5.10.4, notebook: not installed, qtconsole: not installed, traitlets: 5.14.3</td>
+</tr>
+</tbody>
+</table></rh-table>
+<h4>Notebooks Supported on IBM Z</h4>
+<rh-table><table>
+<thead>
+<tr>
+<th>Image name</th>
+<th>Image version</th>
+<th>Preinstalled packages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code Server | Data Science | CPU | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>code-server 1.104, Python 3.12, Boto3: 1.40, Kafka-Python-ng: 2.2, Numpy: 2.3, Pandas: 2.3, Scikit-learn: 1.7, Scipy: 1.16, ipykernel: 6.30</td>
+</tr>
+<tr>
+<td>Jupyter | Data Science | CPU | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>Python 3.12, JupyterLab: 4.4, Boto3: 1.40, Kafka-Python-ng: 2.2, Kfp: 2.14, Matplotlib: 3.10, Numpy: 2.3, Pandas: 2.3, Scikit-learn: 1.7, Scipy: 1.16, PyMongo: 4.14, Pyodbc: 5.2, Sklearn-onnx: 1.19, Psycopg: 3.2, MySQL Connector/Python: 9.3</td>
+</tr>
+<tr>
+<td>Jupyter | Minimal | CPU | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>Python 3.12, JupyterLab: 4.4</td>
+</tr>
+<tr>
+<td></td>
+<td>2024.2</td>
+<td>Python 3.11, JupyterLab: 4.4</td>
+</tr>
+<tr>
+<td>Jupyter | TrustyAI | CPU | Python 3.12</td>
+<td>2025.2 (Recommended)</td>
+<td>Python 3.12, JupyterLab: 4.4, TrustyAI: 0.6, Transformers: 4.56, Datasets: 4.0, Accelerate: 1.10, PyArrow 20.0, Torch: 2.7, Boto3: 1.40, Kafka-Python-ng: 2.2, Kfp: 2.14, Matplotlib: 3.10, Numpy: 1.26, Pandas: 1.5, Scikit-learn: 1.7, Scipy: 1.16, PyMongo: 4.14, Pyodbc: 5.2, Psycopg: 3.2</td>
+</tr>
+</tbody>
+</table></rh-table>
+<h2 id="supported-model-serving-runtimes-6">Supported model-serving runtimes</h2>
+<rh-table><table>
+<thead>
+<tr>
+<th>Runtime name</th>
+<th>Description</th>
+<th>Exported model format</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vLLM Spyre AI Accelerator ServingRuntime for KServe</td>
+<td>A high-throughput and memory-efficient inference and serving runtime that supports IBM Spyre AI accelerators on x86</td>
+<td><a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fgithub.com%2Fvllm-project%2Fvllm-spyre%2Fblob%2Fmain%2Fdocs%2Fuser_guide%2Fsupported_models.md">Supported models</a></td>
+</tr>
+<tr>
+<td>Caikit Text Generation Inference Server (Caikit-TGIS) ServingRuntime for KServe (1)</td>
+<td>A composite runtime for serving models in the Caikit format</td>
+<td>Caikit Text Generation</td>
+</tr>
+<tr>
+<td>Caikit Standalone ServingRuntime for KServe (2)</td>
+<td>A runtime for serving models in the Caikit embeddings format for embeddings tasks</td>
+<td>Caikit Embeddings</td>
+</tr>
+<tr>
+<td>OpenVINO Model Server</td>
+<td>A scalable, high-performance runtime for serving models that are optimized for Intel architectures</td>
+<td>PyTorch, TensorFlow, OpenVINO IR, PaddlePaddle, MXNet, Caffe, Kaldi</td>
+</tr>
+<tr>
+<td>[Deprecated] Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe (3)</td>
+<td>A runtime for serving TGI-enabled models</td>
+<td>PyTorch Model Formats</td>
+</tr>
+<tr>
+<td>vLLM NVIDIA GPU ServingRuntime for KServe</td>
+<td>A high-throughput and memory-efficient inference and serving runtime for large language models that supports NVIDIA GPU accelerators</td>
+<td><a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fdocs.vllm.ai%2Fen%2Flatest%2Fmodels%2Fsupported_models.html">Supported models</a></td>
+</tr>
+<tr>
+<td>vLLM Intel Gaudi Accelerator ServingRuntime for KServe</td>
+<td>A high-throughput and memory-efficient inference and serving runtime that supports Intel Gaudi accelerators</td>
+<td><a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fdocs.vllm.ai%2Fen%2Flatest%2Fmodels%2Fsupported_models.html">Supported models</a></td>
+</tr>
+<tr>
+<td>vLLM AMD GPU ServingRuntime for KServe</td>
+<td>A high-throughput and memory-efficient inference and serving runtime that supports AMD GPU accelerators</td>
+<td><a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fdocs.vllm.ai%2Fen%2Flatest%2Fmodels%2Fsupported_models.html">Supported models</a></td>
+</tr>
+<tr>
+<td>vLLM CPU ServingRuntime for KServe</td>
+<td>A high-throughput and memory-efficient inference and serving runtime that supports IBM Power (ppc64le) and IBM Z (s390x)</td>
+<td><a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fdocs.vllm.ai%2Fen%2Flatest%2Fmodels%2Fsupported_models.html">Supported models</a></td>
+</tr>
+<tr>
+<td>vLLM Spyre s390x ServingRuntime for KServe</td>
+<td>A high-throughput and memory-efficient inference and serving runtime that supports IBM Spyre accelerators on s390x (IBM Z)</td>
+<td><a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fvllm-spyre.readthedocs.io%2Fen%2Flatest%2Fuser_guide%2Fsupported_models.html">Supported models</a></td>
+</tr>
+<tr>
+<td>vLLM Spyre ppc64le ServingRuntime for KServe</td>
+<td>A high-throughput and memory-efficient inference and serving runtime that supports IBM Spyre accelerators on ppc64le (IBM Power)</td>
+<td><a href="https://docs.redhat.com/en/documentation/red_hat_ai/3/html/validated_models/ibm-spyre-power-validated-models_validated-models">Supported models</a></td>
+</tr>
+<tr>
+<td>MLServer ServingRuntime for KServe</td>
+<td>A runtime designed to simplify the deployment of machine learning models</td>
+<td>Scikit-Learn (sklearn), XGBoost, LightGBM, ONNX</td>
+</tr>
+</tbody>
+</table></rh-table>
+<p>(1) The composite Caikit-TGIS runtime is based on <a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fgithub.com%2Fopendatahub-io%2Fcaikit">Caikit</a> and <a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fgithub.com%2FIBM%2Ftext-generation-inference">Text Generation Inference Server (TGIS)</a>. To use this runtime, you must convert your models to Caikit format. For an example, see <a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fgithub.com%2Fopendatahub-io%2Fcaikit-tgis-serving%2Fblob%2Fmain%2Fdemo%2Fkserve%2Fbuilt-tip.md%23bootstrap-process">Converting Hugging Face Hub models to Caikit format</a> in the <a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fgithub.com%2Fopendatahub-io%2Fcaikit-tgis-serving%2Ftree%2Fmain">caikit-tgis-serving</a> repository.</p>
+<p>(2) The Caikit Standalone runtime is based on <a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fgithub.com%2Fcaikit%2Fcaikit-nlp%2Ftree%2Fmain">Caikit NLP</a>. To use this runtime, you must convert your models to the Caikit embeddings format. For an example, see <a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fgithub.com%2Fcaikit%2Fcaikit-nlp%2Fblob%2Fmain%2Ftests%2Fmodules%2Ftext_embedding%2Ftest_embedding.py">Tests for text embedding module</a>.</p>
+<p>(3) The <em>Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe</em> is deprecated. For more information, see <a href="https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/latest/html/release_notes/">Red Hat OpenShift AI release notes</a>.</p>
+<p><strong>Deployment requirements for supported model-serving runtimes</strong></p>
+<rh-table><table>
+<thead>
+<tr>
+<th>Runtime name</th>
+<th>Default protocol</th>
+<th>Additonal protocol</th>
+<th>Single node OpenShift support</th>
+<th>Deployment mode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vLLM Spyre AI Accelerator ServingRuntime for KServe</td>
+<td>REST</td>
+<td>No</td>
+<td>Yes</td>
+<td>Raw</td>
+</tr>
+<tr>
+<td>Caikit Text Generation Inference Server (Caikit-TGIS) ServingRuntime for KServe</td>
+<td>REST</td>
+<td>gRPC</td>
+<td>Yes</td>
+<td>Raw</td>
+</tr>
+<tr>
+<td>Caikit Standalone ServingRuntime for KServe</td>
+<td>REST</td>
+<td>gRPC</td>
+<td>Yes</td>
+<td>Raw</td>
+</tr>
+<tr>
+<td>OpenVINO Model Server</td>
+<td>REST</td>
+<td>None</td>
+<td>Yes</td>
+<td>Raw</td>
+</tr>
+<tr>
+<td>[Deprecated] Text Generation Inference Server (TGIS) Standalone ServingRuntime for KServe</td>
+<td>gRPC</td>
+<td>None</td>
+<td>Yes</td>
+<td>Raw</td>
+</tr>
+<tr>
+<td>vLLM NVIDIA GPU ServingRuntime for KServe</td>
+<td>REST</td>
+<td>None</td>
+<td>Yes</td>
+<td>Raw</td>
+</tr>
+<tr>
+<td>vLLM Intel Gaudi Accelerator ServingRuntime for KServe</td>
+<td>REST</td>
+<td>None</td>
+<td>Yes</td>
+<td>Raw</td>
+</tr>
+<tr>
+<td>vLLM AMD GPU ServingRuntime for KServe</td>
+<td>REST</td>
+<td>None</td>
+<td>Yes</td>
+<td>Raw</td>
+</tr>
+<tr>
+<td>vLLM CPU ServingRuntime for KServe (1)</td>
+<td>REST</td>
+<td>None</td>
+<td>Yes</td>
+<td>Raw</td>
+</tr>
+<tr>
+<td>MLServer ServingRuntime for KServe</td>
+<td>REST</td>
+<td>No</td>
+<td>Yes</td>
+<td>Raw</td>
+</tr>
+</tbody>
+</table></rh-table>
+<p>(1) For vLLM CPU ServingRuntime for KServe, if you are using IBM Z and IBM Power architecture, you can only deploy models in standard deployment mode.</p>
+<p><strong>Tested and verified model-serving runtimes</strong></p>
+<rh-table><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Exported model format</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NVIDIA Triton Inference Server</td>
+<td>An open-source inference-serving software for fast and scalable AI in applications.</td>
+<td>TensorRT, TensorFlow, PyTorch, ONNX, OpenVINO, Python, RAPIDS FIL, and more.</td>
+</tr>
+<tr>
+<td>IBM Power accelerated Triton Inference Server</td>
+<td>An open-source inference-serving software for fast and scalable AI in applications.</td>
+<td>PyTorch, ONNX, Python and ML</td>
+</tr>
+<tr>
+<td>IBM Z Accelerated for NVIDIA Triton Inference Server</td>
+<td>An open-source AI inference server that standardizes model deployment and execution, delivering streamlined, high‑performance inference at scale.</td>
+<td>ONNX-MLIR, Snap ML (C++), PyTorch.</td>
+</tr>
+</tbody>
+</table></rh-table>
+<p><strong>Deployment requirements for tested and verified model-serving runtimes</strong></p>
+<rh-table><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Default protocol</th>
+<th>Additional protocol</th>
+<th>Single node OpenShift support</th>
+<th>Deployment mode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NVIDIA Triton Inference Server</td>
+<td>gRPC</td>
+<td>REST</td>
+<td>Yes</td>
+<td>Standard (Raw)</td>
+</tr>
+<tr>
+<td>IBM Power accelerated Triton Inference Server</td>
+<td>REST</td>
+<td>None</td>
+<td>Yes</td>
+<td>Standard (Raw)</td>
+</tr>
+<tr>
+<td>IBM Z Accelerated for NVIDIA Triton Inference Server</td>
+<td>gRPC</td>
+<td>REST</td>
+<td>Yes</td>
+<td>Standard (Raw)</td>
+</tr>
+</tbody>
+</table></rh-table>
+<h2 id="training-images-7">Training images</h2>
+<p>To run distributed training jobs in OpenShift AI, you can use one of the following types of training image:</p>
+<ul>
+<li><strong>Ray-based training images</strong> — purpose-built images tested and verified for distributed training with Ray. See the table below.</li>
+<li><strong>Workbench images with the Kubeflow Training Operator (KFTO)</strong> — the same x86_64 workbench images listed in the <a href="#supported-workbench-images">Supported workbench images</a> section can also be used as base images for distributed training jobs with the Kubeflow Training Operator. You can install additional packages to create custom training images, as described in the product documentation.</li>
+</ul>
+<h3 id="ray-based-training-images-8">Ray-based training images</h3>
+<p>The following table provides information about the latest available Ray-based training images in Red Hat OpenShift AI. These images are AMD64 images, which might not work on other architectures.</p>
+<p>You can use the provided images as base images, and install additional packages to create custom images, as described in the product documentation. If the required packages are not included in the training image you want to use, contact Red Hat Support to request that the package be considered for inclusion, the images are Tested &amp; Verified but not yet officially supported.</p>
+<p>The images are updated periodically with new versions of the installed packages. These images have been tested and verified for the use cases and configurations that are documented in the corresponding product documentation. Bug fixes and CVE fixes are delivered after they are available in upstream packages, in newer versions of these images only; fixes are not backported to earlier image versions.</p>
+<!-- AUTO-GEN-START:ray-images --><rh-table><table>
+<thead>
+<tr>
+<th>Image type</th>
+<th>RHOAI version</th>
+<th>Image version</th>
+<th>URL</th>
+<th>Preinstalled packages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CUDA</td>
+<td>3.3</td>
+<td>2.52.1-py312-cu128</td>
+<td><a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fquay.io%2Frepository%2Fmodh%2Fray%3Ftab%3Dtags%26tag%3D2.52.1-py312-cu128">quay.io/modh/ray:2.52.1-py312-cu128</a></td>
+<td>Ray 2.52.1, CUDA 12.8, Python 3.12</td>
+</tr>
+<tr>
+<td></td>
+<td>3.4</td>
+<td>2.53.0-py312-cu128</td>
+<td><a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fquay.io%2Frepository%2Fmodh%2Fray%3Ftab%3Dtags%26tag%3D2.53.0-py312-cu128">quay.io/modh/ray:2.53.0-py312-cu128</a></td>
+<td>Ray 2.53.0, CUDA 12.8, Python 3.12</td>
+</tr>
+<tr>
+<td>Ray ROCm</td>
+<td>3.3</td>
+<td>2.52.1-py312-rocm62</td>
+<td><a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fquay.io%2Frepository%2Fmodh%2Fray%3Ftab%3Dtags%26tag%3D2.52.1-py312-rocm62">quay.io/modh/ray:2.52.1-py312-rocm62</a></td>
+<td>Ray 2.52.1, ROCm 6.2, Python 3.12</td>
+</tr>
+<tr>
+<td></td>
+<td>3.4</td>
+<td>2.53.0-py312-rocm64</td>
+<td><a href="https://access.redhat.com/bounce/?externalURL=https%3A%2F%2Fquay.io%2Frepository%2Fmodh%2Fray%3Ftab%3Dtags%26tag%3D2.53.0-py312-rocm64">quay.io/modh/ray:2.53.0-py312-rocm64</a></td>
+<td>Ray 2.53.0, ROCm 6.4, Python 3.12</td>
+</tr>
+</tbody>
+</table></rh-table>
+<!-- AUTO-GEN-END:ray-images --><h3 id="kubeflow-trainer-v2-clustertrainingruntimes-9">Kubeflow Trainer v2 ClusterTrainingRuntimes</h3>
+<p>The following table lists the pre-installed ClusterTrainingRuntimes available in RHOAI 3.4 for use with the Kubeflow Trainer v2 (<code>TrainJob</code> API). These runtimes provide ready-to-use templates for distributed PyTorch training jobs.</p>
+<rh-table><table>
+<thead>
+<tr>
+<th>Runtime name</th>
+<th>Framework</th>
+<th>Default image</th>
+<th>Accelerator</th>
+<th>Preinstalled packages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>training-hub</td>
+<td>training-hub</td>
+<td>quay.io/opendatahub/odh-th06-cuda130-torch210-py312:odh-3.4</td>
+<td>CUDA</td>
+<td>Python 3.12, PyTorch: 2.10.0, Transformers: 4.57.6, Datasets: 4.3.0, Accelerate: 1.12.0, PEFT: 0.18.1, TRL: 0.24.0, DeepSpeed: 0.18.9, Unsloth: 2026.3.3, Flash Attention: 2.8.3, MLflow: 3.10.1, Kubeflow SDK: 0.3.0, NumPy: 2.4.4, Pandas: 2.3.3, scikit-learn: 1.8.0</td>
+</tr>
+<tr>
+<td>training-hub-cpu</td>
+<td>training-hub</td>
+<td>quay.io/opendatahub/odh-th06-cpu-torch210-py312:odh-3.4</td>
+<td>CPU</td>
+<td>Python 3.12, PyTorch: 2.10.0, Transformers: 4.57.6, Datasets: 4.3.0, Accelerate: 1.12.0, PEFT: 0.18.1, TRL: 0.24.0, MLflow: 3.10.1, Kubeflow SDK: 0.3.0, NumPy: 2.4.4, Pandas: 2.3.3, scikit-learn: 1.8.0</td>
+</tr>
+<tr>
+<td>training-hub-rocm</td>
+<td>training-hub</td>
+<td>quay.io/opendatahub/odh-th06-rocm64-torch291-py312:odh-3.4</td>
+<td>ROCm</td>
+<td>Python 3.12, PyTorch: 2.9.1, Transformers: 4.57.6, Datasets: 4.3.0, Accelerate: 1.12.0, PEFT: 0.18.1, TRL: 0.24.0, DeepSpeed: 0.18.9, Unsloth: 2026.3.3, Flash Attention: 2.8.3, MLflow: 3.10.1, Kubeflow SDK: 0.3.0, NumPy: 2.4.4, Pandas: 2.3.3, scikit-learn: 1.8.0</td>
+</tr>
+<tr>
+<td>torch-distributed</td>
+<td>torch</td>
+<td>quay.io/opendatahub/odh-th06-cuda130-torch210-py312:odh-3.4</td>
+<td>CUDA</td>
+<td>Python 3.12, PyTorch: 2.10.0, Transformers: 4.57.6, Datasets: 4.3.0, Accelerate: 1.12.0, PEFT: 0.18.1, TRL: 0.24.0, DeepSpeed: 0.18.9, Unsloth: 2026.3.3, Flash Attention: 2.8.3, MLflow: 3.10.1, Kubeflow SDK: 0.3.0, NumPy: 2.4.4, Pandas: 2.3.3, scikit-learn: 1.8.0</td>
+</tr>
+<tr>
+<td>torch-distributed-cpu</td>
+<td>torch</td>
+<td>quay.io/opendatahub/odh-th06-cpu-torch210-py312:odh-3.4</td>
+<td>CPU</td>
+<td>Python 3.12, PyTorch: 2.10.0, Transformers: 4.57.6, Datasets: 4.3.0, Accelerate: 1.12.0, PEFT: 0.18.1, TRL: 0.24.0, MLflow: 3.10.1, Kubeflow SDK: 0.3.0, NumPy: 2.4.4, Pandas: 2.3.3, scikit-learn: 1.8.0</td>
+</tr>
+<tr>
+<td>torch-distributed-rocm</td>
+<td>torch</td>
+<td>quay.io/opendatahub/odh-th06-rocm64-torch291-py312:odh-3.4</td>
+<td>ROCm</td>
+<td>Python 3.12, PyTorch: 2.9.1, Transformers: 4.57.6, Datasets: 4.3.0, Accelerate: 1.12.0, PEFT: 0.18.1, TRL: 0.24.0, DeepSpeed: 0.18.9, Unsloth: 2026.3.3, Flash Attention: 2.8.3, MLflow: 3.10.1, Kubeflow SDK: 0.3.0, NumPy: 2.4.4, Pandas: 2.3.3, scikit-learn: 1.8.0</td>
+</tr>
+</tbody>
+</table></rh-table>  </div>
+          <div class='clearfix'>
+            
+<ul class="tag-list list-inline pull-left">
+      <li>
+      <small>
+        <strong>
+                    Product(s)        </strong>
+      </small>
+    </li>
+        <li class="badge"><a href="https://access.redhat.com/search?q=Red+Hat+OpenShift+AI&amp;documentKind=Article%26Solution" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Red Hat OpenShift AI</a></li>
+  </ul>
+
+<ul class="tag-list list-inline pull-left">
+      <li>
+      <small>
+        <strong>
+                    Category        </strong>
+      </small>
+    </li>
+        <li class="badge"><a href="https://access.redhat.com/search?q=Supportability&amp;documentKind=Article%26Solution" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Supportability</a></li>
+  </ul>
+
+<ul class="tag-list list-inline pull-left">
+      <li>
+      <small>
+        <strong>
+                    Tags        </strong>
+      </small>
+    </li>
+        <li class="badge"><a href="https://access.redhat.com/search?q=3scale_active_docs&amp;documentKind=Article%26Solution" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">3scale_active_docs</a></li>
+      <li class="badge"><a href="https://access.redhat.com/search?q=ai&amp;documentKind=Article%26Solution" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">ai</a></li>
+      <li class="badge"><a href="https://access.redhat.com/search?q=rhoai-self-managed&amp;documentKind=Article%26Solution" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">rhoai-self-managed</a></li>
+  </ul>
+
+<ul class="tag-list list-inline pull-left">
+      <li>
+      <small>
+        <strong>
+                    Article Type        </strong>
+      </small>
+    </li>
+        <li class="badge"><a href="https://access.redhat.com/search?q=General&amp;documentKind=Article%26Solution" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">General</a></li>
+  </ul>
+          </div>
+            </div>
+    </div>
+  </div>
+</div>
+          
+      
+          
+<div class="band band-border-top">
+  <div class="container">
+    <div id='comments' class='comments-list'>
+      
+<section class="field_red_hat_comments">
+      <div class="comments-list-header">
+
+      <h2 class="headline headline-md heading-thin">
+                Comments      </h2>
+    </div>
+  
+      <script type="module" src="//access.redhat.com/webassets/avalon/j/public_modules/node_modules/@cpelements/cp-comments/dist/cp-comments.min.js" async="1"></script>
+<script>
+  pfElementsConfig = {
+    cpComments: {
+      auth: {
+        type: 'cookie',
+        name: 'rh_jwt'
+      },
+      sourceId: 'ZGM6MjEwZGY4ZjEtNDhhZC00MzQzLWFjZGYtMjA1YTU0M2EyY2Jm',
+      canonicalUrl: 'https://access.redhat.com',
+      apiPath: '/api/comments',
+      allowBestResponse: '',
+      allowPrivateResponse: '1',
+      rest: {
+    "index": "https:\/\/access.redhat.com\/api\/comments\/ZGM6MjEwZGY4ZjEtNDhhZC00MzQzLWFjZGYtMjA1YTU0M2EyY2Jm",
+    "create": "https:\/\/access.redhat.com\/api\/comments\/ZGM6MjEwZGY4ZjEtNDhhZC00MzQzLWFjZGYtMjA1YTU0M2EyY2Jm",
+    "read": "https:\/\/access.redhat.com\/api\/comments\/ZGM6MjEwZGY4ZjEtNDhhZC00MzQzLWFjZGYtMjA1YTU0M2EyY2Jm\/{CID}",
+    "update": "https:\/\/access.redhat.com\/api\/comments\/ZGM6MjEwZGY4ZjEtNDhhZC00MzQzLWFjZGYtMjA1YTU0M2EyY2Jm\/{CID}",
+    "delete": "https:\/\/access.redhat.com\/api\/comments\/ZGM6MjEwZGY4ZjEtNDhhZC00MzQzLWFjZGYtMjA1YTU0M2EyY2Jm\/{CID}"
+},
+      pager: {
+        enabled: 1,
+        size: 20      }
+    }
+  };
+
+  /* Kick off comment initialization */
+  document.addEventListener('pfeconfig-query', function (e) {
+    e.target.config = pfElementsConfig;
+  });
+</script>
+
+<cp-comments></cp-comments>
+  </section>
+    </div>     
+  </div>
+</div>
+    <meta  itemscope="" id="md2" itemref="md1" /><meta  itemscope="" itemprop="product about" id="md5" itemref="md4" /><meta  itemscope="" id="md7" itemref="md6" /><meta  itemscope="" id="md9" itemref="md8" /><meta  itemscope="" id="md11" itemref="md10" /><meta  itemscope="" itemprop="articleSection" id="md15" itemref="md14" /><meta  itemscope="" id="md18" itemref="md17" /><meta  itemscope="" id="md20" itemref="md19" /><meta  itemscope="" id="md22" itemref="md21" /><meta  itemscope="" id="md24" itemref="md23" /><meta  itemscope="" id="md26" itemref="md25" /><meta  itemscope="" itemtype="http://schema.org/Article" itemid="https://access.redhat.com/articles/rhoai-supported-configs-3.x" itemref="md2 md3 md5 md7 md9 md11 md12 md13 md15 md16 md18 md20 md22 md24 md26 md27 md28 md29 md30 md31" />
+  </article>
+  <!-- CP_PRIMER_FOOTER -->            </div>
+        </main>
+    </div>
+    <!--googleoff: all-->
+    <div id="to-top"><a class="btn_slideto" href="#masthead" aria-label="Back to Top"><span class="web-icon-upload"></span></a></div>
+
+    <rh-footer>
+
+        <a slot="logo" href="https://redhat.com/en">
+          <img alt="Red Hat" src="https://static.redhat.com/libs/redhat/brand-assets/2/corp/logo--on-dark.svg" loading="lazy" />
+        </a>
+
+        <rh-footer-social-link slot="social-links" icon="linkedin">
+
+            <a href="https://www.linkedin.com/company/red-hat" data-analytics-region="social-links-exit" data-analytics-category="Footer|social-links" data-analytics-text="LinkedIn">
+              <span class="sr-only">LinkedIn</span>
+              <svg class="social-icons" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><path d="M9.27 24.35h-4.3V10.52h4.3v13.83zM7.12 8.63a2.49 2.49 0 1 1 2.49-2.49 2.48 2.48 0 0 1-2.49 2.49Zm18.25 15.72h-4.29v-6.72C21.08 16 21 14 18.84 14s-2.58 1.75-2.58 3.55v6.84H12V10.52h4.12v1.89h.06a4.53 4.53 0 0 1 4.07-2.23c4.35 0 5.15 2.86 5.15 6.59v7.58Z"></path></svg>
+            </a>
+
+          </rh-footer-social-link>
+
+          <rh-footer-social-link slot="social-links" icon="youtube">
+
+            <a href="https://www.youtube.com/user/RedHatVideos" data-analytics-region="social-links-exit" data-analytics-category="Footer|social-links" data-analytics-text="YouTube">
+              <span class="sr-only">YouTube</span>
+              <svg class="social-icons" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><path d="M12.68 17.92V11.6l6.07 3.17-6.07 3.15ZM26 10.5a4.82 4.82 0 0 0-.9-2.23 3.21 3.21 0 0 0-2.25-.95C19.73 7.09 15 7.09 15 7.09s-4.72 0-7.87.23a3.21 3.21 0 0 0-2.25.95A4.82 4.82 0 0 0 4 10.5a34.76 34.76 0 0 0-.22 3.64v1.71A34.76 34.76 0 0 0 4 19.49a4.82 4.82 0 0 0 .9 2.23 3.74 3.74 0 0 0 2.47 1c1.8.17 7.65.23 7.65.23s4.73 0 7.87-.24a3.17 3.17 0 0 0 2.25-1 4.82 4.82 0 0 0 .9-2.23 34.76 34.76 0 0 0 .22-3.64v-1.7A34.76 34.76 0 0 0 26 10.5Z"></path></svg>
+            </a>
+
+          </rh-footer-social-link>
+
+          <rh-footer-social-link slot="social-links" icon="facebook">
+
+            <a href="https://www.facebook.com/RedHat" data-analytics-region="social-links-exit" data-analytics-category="Footer|social-links" data-analytics-text="Facebook">
+              <span class="sr-only">Facebook</span>
+              <svg class="social-icons" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><path d="M25.93 15.07a10.93 10.93 0 1 0-12.64 10.8v-7.64h-2.77v-3.16h2.77v-2.41c0-2.74 1.63-4.26 4.13-4.26a16.32 16.32 0 0 1 2.45.22v2.69h-1.38A1.58 1.58 0 0 0 16.71 13v2.05h3l-.48 3.16h-2.52v7.64a10.94 10.94 0 0 0 9.22-10.8Z"></path></svg>
+            </a>
+
+          </rh-footer-social-link>
+
+          <rh-footer-social-link slot="social-links" icon="x">
+
+            <a href="https://twitter.com/RedHat" data-analytics-region="social-links-exit" data-analytics-category="Footer|social-links" data-analytics-text="Twitter">
+              <span class="sr-only">X, formerly Twitter</span>
+              <svg class="social-icons" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><path d="m16.78 13.54 6.96-8.09h-1.65l-6.04 7.02-4.82-7.02H5.67l7.3 10.62-7.3 8.48h1.65l6.38-7.42 5.1 7.42h5.56l-7.57-11.01Zm-2.26 2.62-.74-1.06L7.9 6.69h2.53l4.75 6.79.74 1.06 6.17 8.83h-2.53l-5.03-7.2Z"></path></svg>
+            </a>
+        </rh-footer-social-link>
+
+        <h3 slot="links">Quick Links</h3>
+
+        <ul slot="links">
+            <li><a class="download-software" href="https://access.redhat.com/downloads/">Downloads</a></li>
+            <li><a class="manage-subscriptions" href="https://access.redhat.com/management">Subscriptions</a></li>
+            <li><a class="support-cases" href="https://access.redhat.com/support">Support Cases</a></li>
+            <li><a class="customer-service" href="https://access.redhat.com/support/customer-service">Customer Service</a></li>
+            <li><a class="quick-docs" href="//docs.redhat.com">Product Documentation</a></li>
+        </ul>
+
+        <h3 slot="links">Help</h3>
+
+        <ul slot="links">
+            <li><a class="contact-us" href="https://access.redhat.com/support/contact/">Contact Customer Portal</a></li>
+            <li><a class="cp-faqs" href="https://access.redhat.com/articles/33844">Customer Portal FAQ</a></li>
+            <li><a class="login-problems" href="https://access.redhat.com/help/login_assistance">Log-in Assistance</a></li>
+        </ul>
+
+        <h3 slot="links">Site Info</h3>
+
+        <ul slot="links">
+            <li><a class="trust-red-hat" href="https://www.redhat.com/en/trust">Trust Red Hat</a></li>
+            <li><a class="browser-support-policy" href="https://www.redhat.com/en/about/browser-support">Browser Support Policy</a></li>
+            <li><a class="accessibility" href="https://www.redhat.com/en/about/digital-accessibility">Accessibility</a></li>
+            <li><a class="recognition" href="https://access.redhat.com/recognition/">Awards and Recognition</a></li>
+            <li><a class="colophon" href="https://access.redhat.com/help/colophon/">Colophon</a></li>
+        </ul>
+
+        <h3 slot="links">Related Sites</h3>
+
+        <ul slot="links">
+            <li><a href="https://www.redhat.com/" class="red-hat-com">redhat.com</a></li>
+            <li><a href="http://developers.redhat.com/" class="red-hat-developers">developers.redhat.com</a></li>
+            <li><a href="https://connect.redhat.com/" class="partner-connect">connect.redhat.com</a></li>
+            <li><a href="https://cloud.redhat.com/" class="cloud-com">cloud.redhat.com</a></li>
+        </ul>
+
+
+        <h3 class="sr-only" id="status-widget__heading">Systems Status</h3>
+
+        <ul slot="links" id="status-widget__desktop" aria-labelledby="status-widget__heading">
+            <li>
+                <div class="status-legal">
+                    <a hidden href="https://status.redhat.com" class="status-page-widget" data-js="status-page-widget">
+                        <span class="status-icon" data-js="status-icon"></span>
+                        <span class="status-description" data-js="status-description"></span>
+                    </a>
+                </div>
+            </li>
+        </ul>
+
+        <rh-footer-block slot="main-secondary" id="rh-footer-about__block">
+
+          <h3 slot="header">About</h3>
+
+            <ul>
+                <li><a href="https://access.redhat.com/subscription-value" class="subscription-value">Red Hat Subscription Value</a></li>
+                <li><a href="https://www.redhat.com/about/" class="about-red-hat">About Red Hat</a></li>
+                <li><a href="http://jobs.redhat.com" class="about-jobs">Red Hat Jobs</a></li>
+                
+            </ul>
+
+        </rh-footer-block>
+
+        <rh-footer-block slot="main-secondary" id="status-widget__mobile">
+            <div class="status-legal">
+                <a hidden href="https://status.redhat.com" class="status-page-widget" data-js="status-page-widget">
+                    <span class="status-icon" data-js="status-icon"></span>
+                    <span class="status-description" data-js="status-description"></span>
+                </a>
+            </div>
+        </rh-footer-block>
+    
+        <!-- Universal Footer -->
+        <rh-footer-universal slot="universal">
+            <h3 slot="links-primary" data-analytics-text="Red Hat legal and privacy links" hidden>Red Hat legal and privacy links</h3>
+
+            <ul slot="links-primary" data-analytics-region="page-footer-bottom-primary">
+
+              <li><a href="https://redhat.com/en/about/company" data-analytics-category="Footer|Corporate" data-analytics-text="About Red Hat">About Red Hat</a></li>
+
+              <li><a href="https://redhat.com/en/jobs" data-analytics-category="Footer|Corporate" data-analytics-text="Jobs">Jobs</a></li>
+
+              <li><a href="https://redhat.com/en/events" data-analytics-category="Footer|Corporate" data-analytics-text="Events">Events</a></li>
+
+              <li><a href="https://redhat.com/en/about/office-locations" data-analytics-category="Footer|Corporate" data-analytics-text="Locations">Locations</a></li>
+
+              <li><a href="https://redhat.com/en/contact" data-analytics-category="Footer|Corporate" data-analytics-text="Contact Red Hat">Contact Red Hat</a></li>
+
+              <li><a href="https://redhat.com/en/blog" data-analytics-category="Footer|Corporate" data-analytics-text="Red Hat Blog">Red Hat Blog</a></li>
+
+              <li><a href="https://www.redhat.com/en/about/our-culture/inclusion" data-analytics-category="Footer|Corporate" data-analytics-text="Inclusion at Red Hat">Inclusion at Red Hat</a></li>
+
+              <li><a href="https://coolstuff.redhat.com/" data-analytics-category="Footer|Corporate" data-analytics-text="Cool Stuff Store">Cool Stuff Store</a></li>
+
+              <li><a href="https://www.redhat.com/en/summit" data-analytics-category="Footer|Corporate" data-analytics-text="Red Hat Summit">Red Hat Summit</a></li>
+
+            </ul>
+
+            <rh-footer-copyright slot="links-secondary">Copyright © 2026 Red Hat</rh-footer-copyright>
+
+            <h3 slot="links-secondary" data-analytics-text="Red Hat legal and privacy links" hidden>Red Hat legal and privacy links</h3>
+
+            <ul slot="links-secondary" data-analytics-region="page-footer-bottom-secondary">
+
+              <li><a href="https://redhat.com/en/about/privacy-policy" data-analytics-category="Footer|Red Hat legal and privacy links" data-analytics-text="Privacy statement">Privacy statement</a></li>
+              <li><a href="https://redhat.com/en/about/terms-use" data-analytics-category="Footer|Red Hat legal and privacy links" data-analytics-text="Terms of use">Terms of use</a></li>
+              <li><a href="https://redhat.com/en/about/all-policies-guidelines" data-analytics-category="Footer|Red Hat legal and privacy links" data-analytics-text="All policies and guidelines">All policies and guidelines</a></li>
+              <li><a href="https://redhat.com/en/about/digital-accessibility" data-analytics-category="Footer|Red Hat legal and privacy links" data-analytics-text="Digital accessibility" class="active">Digital accessibility</a></li>
+              <!-- If your website supports trustarc include this item to add Cookie Preferences to your site. -->
+              <!-- TrustArc -->
+              <li><span id="teconsent"></span></li>
+
+            </ul>
+          </rh-footer-universal>
+      </rh-footer>
+    <!-- TrustArc -->
+    <div id="consent_blackbar"></div> 
+    <!--googleon: all-->
+</div>
+<!-- /CP_PRIMER_FOOTER -->
+  <script src="/sites/default/files/advagg_js/js__AzZyZOgrwHu5met3ufn1X7m7ez-GlfkdZJV-8ju9Y7Y__vQ32omNeQJrUdIuXHgLbK3mTYiurTMlzo4kloVom7pM__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.js"></script>
+<script src="/sites/default/files/advagg_js/js__7hxE4HdT5S1RXK59sn1r3RQrF_17YHFggL-Bh-2fRtE__ZYfdypuy9FlFO-n2PYuepQkXhNoFQQM0-xrDHoFUpn4__-M6D-RZGWJTtI9x7SPUms4cMfja0dbGxRkCQ0_DK5RI.js"></script>
+  <div id="formatHelp" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="formatTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="formatTitle">Formatting Tips</h3>
+        </div>
+        <div class="modal-body">
+          <p>Here are the common uses of Markdown.</p><dl class="formatting-help">
+        <dt class="codeblock">Code blocks</dt><dd class="codeblock"><pre><code>~~~
+Code surrounded in tildes is easier to read
+~~~</code></pre></dd>
+        <dt class="urls">Links/URLs</dt><dd class="urls"><code>[Red Hat Customer Portal](https://access.redhat.com)</code></dd>
+       </dl>
+        </div>
+        <div class="modal-footer">
+          <a target="_blank" href="/help/markdown" class="btn btn-primary">Learn more</a>
+          <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- Manual Translation Modal btn-->
+<div class="modal fade" id="example-modal" tabindex="-1" role="dialog" aria-labelledby="example-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="example-modal-label">Request a English Translation</h4>
+      </div>
+      <div class="modal-body">
+                    Are you sure you want to update a translation?                </br></br>
+                                    It seems an existing <a href="@url">English Translation</a> exists already.</br></br>
+                            We appreciate your interest in having Red Hat content localized to your language. Please note that excessive use of this feature could cause delays in getting specific content you are interested in translated.      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <div class="rate-widget-2 rate-widget clear-block inline rate-average rate-widget-custom rate-da357dee45094a695df72f8a84f8b4af rate-node-7133798-2-1--2" id="rate-node-7133798-2-1--2">      <a class="rate-button rate-btn" id="rate-button-6" rel="nofollow" href="/articles/rhoai-supported-configs-3.x?rate=fUl1mi-MUK2r0DSaoX8-TzrpLpMkG53xHBPgQX7Jf7U" title="Request Japanese Translation">Request Japanese Translation</a>      <a class="rate-button rate-btn" id="rate-button-7" rel="nofollow" href="/articles/rhoai-supported-configs-3.x?rate=uqq2cqg_DmaggvU7XYoO0hQH6gI8v04q4GnGgw_WOzI" title="Request Chinese Translation">Request Chinese Translation</a>      <a class="rate-button rate-btn" id="rate-button-8" rel="nofollow" href="/articles/rhoai-supported-configs-3.x?rate=oHS_CMlIgrUu14qF926a8bOpFzGy38muaa2XTVNLqTY" title="Request Korean Translation">Request Korean Translation</a>  
+</div>              </div>
+    </div>
+  </div>
+</div>
+            <div class="modal fade" id="translation-modal" tabindex="-1" role="dialog" aria-labelledby="translation-modal-label">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="translation-modal-title-label">Generating Machine Translation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="spinner spinner-lg spinner-inline col-md-3"><span class="sr-only">Loading…</span></div>
+                                <div class="col-md-5">
+                                  We are generating a machine translation for this content. Depending on the length of the content, this process could take a while.                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,202 @@
+ 
+ Release notes | Red Hat AI Inference Server | 3.3 | Red Hat Documentation 
+ Skip to navigation Skip to content Featured links Support Console Developers Start a trial All Red Hat For customers Customer support Subscription management Support Cases Red Hat Ecosystem Catalog Find a partner For partners Partner portal Partner support Become a partner Try, buy, & sell Red Hat Store Contact Sales Start a trial Learning resources Training and certification Hybrid cloud learning hub Interactive labs Learning community Red Hat TV Architecture Center Open source communities Global advocacy How we contribute AI Learn Documentation Resources Red Hat Summit Support Console Developers Start a trial Contact Select your language English Français 한국어 日本語 中文 (中国) Deutsch Italiano Português Español Home Products Red Hat AI Inference Server 3.3 Release notes Open Table of contents Open page settings Red Hat AI Inference Server Format Multi-page Single-page View full doc as PDF Red Hat AI Inference Server Release notes 1. Red Hat AI Inference Server release notes 2. Version 3.3.3 release notes Version 3.3.3 release notes 2.1. Security updates in Red Hat AI Inference Server 3.3.3 (May 2026) 2.2. Enhancements 3. Version 3.3.1 release notes Version 3.3.1 release notes 3.1. Security fixes 3.2. Bug fixes 3.3. Enhancements 4. Version 3.3.0 release notes Version 3.3.0 release notes 4.1. Early access AI Inference Server images 4.2. New Red Hat AI Inference Server developer features 4.3. New Red Hat AI Model Optimization Toolkit developer features 4.4. Upgrading from Red Hat AI Inference Server 3.2.2 or earlier 4.5. Known issues 5. Asynchronous errata updates Legal Notice Format Multi-page Single-page View full doc as PDF Release notes Red Hat AI Inference Server 3.3 Highlights of what is new and what has changed with this Red Hat AI Inference Server release Red Hat AI Documentation Team Legal Notice Abstract 
+ The release notes for Red Hat AI Inference Server summarize all new features and enhancements, notable technical changes, major corrections from the previous version, and any known bugs upon general availability.
+ Chapter 1. Red Hat AI Inference Server release notes Copy link Link copied to clipboard! 
+ Red Hat AI Inference Server provides developers and IT organizations with a scalable inference platform for deploying and customizing AI models on secure, scalable resources with minimal configuration and resource usage.
+ These release notes document new features, enhancements, bug fixes, known issues, and deprecated functionality for each Red Hat AI Inference Server release. Security advisories and asynchronous errata updates are published separately as container images become available.
+ Chapter 2. Version 3.3.3 release notes Copy link Link copied to clipboard! 
+ Red Hat AI Inference Server 3.3.3 is a maintenance release containing security fixes and enhancements.
+ Note 
+ Version 3.3.2 was skipped to align version numbering across Red Hat AI Inference Server components.
+ The following container images are available from registry.redhat.io :
+ registry.redhat.io/rhaiis/vllm-cuda-rhel9:3.3.3 
+ registry.redhat.io/rhaiis/model-opt-cuda-rhel9:3.3.3 
+ registry.redhat.io/rhaiis/vllm-rocm-rhel9:3.3.3 
+ registry.redhat.io/rhaiis/vllm-spyre-rhel9:3.3.3 
+ Red Hat AI Inference Server 3.3.3 packages vLLM v0.13.0 for CUDA, ROCm, and CPU container images, and vLLM v0.11.0 for Spyre container images (Power, Z, x86). These are the same vLLM versions as Red Hat AI Inference Server 3.3.1.
+ Red Hat AI Model Optimization Toolkit 3.3.3 packages LLM Compressor v0.9.0.3 in the model-opt container image. The Spyre container image packages LLM Compressor v0.7.1.2.
+ 2.1. Security updates in Red Hat AI Inference Server 3.3.3 (May 2026) Copy link Link copied to clipboard! 
+ This release provides security updates. For a complete list of updates, see the following errata advisories:
+ RHSA-2026:16030 (CUDA)
+ RHSA-2026:16008 (model-opt)
+ RHSA-2026:16009 (ROCm)
+ RHSA-2026:16174 (Spyre)
+ 2.2. Enhancements Copy link Link copied to clipboard! TranslateGemma model support for CUDA AI accelerators 
+ The google/translategemma-12b-it multimodal translation model is supported for inference serving on CUDA AI accelerators. TranslateGemma supports text and image translation across 100+ languages.
+ Note 
+ The model requires the --chat-template-content-format openai flag when starting the server.
+ Chapter 3. Version 3.3.1 release notes Copy link Link copied to clipboard! 
+ Red Hat AI Inference Server 3.3.1 is a maintenance release containing security fixes, bug fixes, and minor enhancements.
+ The following container images are available from registry.redhat.io :
+ registry.redhat.io/rhaiis/vllm-cuda-rhel9:3.3.1 
+ registry.redhat.io/rhaiis/model-opt-cuda-rhel9:3.3.1 
+ registry.redhat.io/rhaiis/vllm-rocm-rhel9:3.3.1 
+ 3.1. Security fixes Copy link Link copied to clipboard! 
+ Red Hat AI Inference Server 3.3.1 addresses the following CVEs:
+ CVE-2023-40403 
+ CVE-2023-52356 
+ CVE-2025-13836 
+ CVE-2025-14831 
+ CVE-2025-15367 
+ CVE-2026-0994 
+ CVE-2026-2447 
+ CVE-2026-4111 
+ CVE-2026-4519 
+ CVE-2026-22695 
+ CVE-2026-22801 
+ CVE-2026-25646 
+ CVE-2026-25749 
+ CVE-2026-27893 
+ CVE-2026-28417 
+ CVE-2026-28421 
+ CVE-2026-32597 
+ 3.2. Bug fixes Copy link Link copied to clipboard! Streaming tool calls with Mistral models returned invalid JSON 
+ Streaming tool calls using Mistral models through the Anthropic-compatible /v1/messages endpoint returned invalid JSON, preventing clients from parsing responses. The JSON serialization for streaming tool calls is corrected. Mistral models using OpenAI-compatible endpoints and non-Mistral models using the /v1/messages endpoint were not affected.
+ Quantized Llama-4 models produced incorrect results 
+ Quantization scales were not permuted correctly for attention layers in Llama-4 models, causing accuracy collapse in models such as Llama-Guard-4-12B when attention layers were quantized. Quantization scales are permuted correctly for Llama-4 attention layers.
+ Encoder models failed on AMD ROCm AI accelerators 
+ The Triton attention backend did not support encoder self-attention, causing encoder-only models, encoder-decoder models, and Whisper speech-to-text models to fail on AMD ROCm AI accelerators. The Triton attention backend supports encoder self-attention.
+ GPT-OSS models returned empty content in multi-turn conversations 
+ The reasoning parser incorrectly matched markers from previous messages in multi-turn conversations, causing GPT-OSS models to return content: null when using json_object response format. The reasoning parser correctly handles multi-turn conversations.
+ Malformed json_schema requests returned HTTP 500 instead of HTTP 400 
+ When response_format type was json_schema but the json_schema field was missing, an assertion error caused the server to return HTTP 500 Internal Server Error instead of HTTP 400 Bad Request. The server validates the json_schema field before processing and returns the correct HTTP 400 Bad Request error.
+ Large Mixture of Experts models crashed due to integer overflow 
+ An int32 overflow in fused MoE stride computation caused large Mixture of Experts models to crash or produce silent data corruption. The stride computation uses overflow-safe arithmetic.
+ Cascade attention caused numerical instability 
+ Cascade attention was enabled by default and caused numerical instability in some workloads, resulting in unreliable model outputs. Cascade attention is disabled by default to match the upstream vLLM configuration.
+ 3.3. Enhancements Copy link Link copied to clipboard! BART encoder-decoder model support for CUDA AI accelerators 
+ The BART plugin enables inference serving for BART-based summarization and translation models on CUDA AI accelerators.
+ Llama-Nemotron embedding model support 
+ The llama-nemotron-embed-1b-v2 embedding model is supported for inference serving.
+ Custom encoder support for classification models 
+ Classification models can use custom encoders for improved inference performance.
+ Chapter 4. Version 3.3.0 release notes Copy link Link copied to clipboard! 
+ Red Hat AI Inference Server 3.3.0 provides container images that optimize inferencing with large language models (LLMs) for NVIDIA CUDA, AMD ROCm, Google TPU, and IBM Spyre AI accelerators with multi-architecture support for s390x (IBM Z) and ppc64le (IBM Power).
+ The following container images are Generally Available (GA) from registry.redhat.io :
+ registry.redhat.io/rhaiis/vllm-cuda-rhel9:3.3.0 
+ registry.redhat.io/rhaiis/vllm-rocm-rhel9:3.3.0 
+ registry.redhat.io/rhaiis/vllm-spyre-rhel9:3.3.0 (s390x, ppc64le, x86_64)
+ registry.redhat.io/rhaiis/model-opt-cuda-rhel9:3.3.0 
+ The following container images are Technology Preview features:
+ registry.redhat.io/rhaiis/vllm-tpu-rhel9:3.3.0 
+ registry.redhat.io/rhaiis/vllm-neuron-rhel9:3.3.0 
+ registry.redhat.io/rhaiis/vllm-cpu-rhel9:3.3.0 
+ Important 
+ The registry.redhat.io/rhaiis/vllm-tpu-rhel9:3.3.0 , registry.redhat.io/rhaiis/vllm-neuron-rhel9:3.3.0 , and registry.redhat.io/rhaiis/vllm-cpu-rhel9:3.3.0 containers are Technology Preview features only. Technology Preview features are not supported with Red Hat production service level agreements (SLAs) and might not be functionally complete. Red Hat does not recommend using them in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+ For more information about the support scope of Red Hat Technology Preview features, see Technology Preview Features Support Scope .
+ The Red Hat AI Inference Server supported product and hardware configurations have been expanded. For more information, see Supported product and hardware configurations .
+ 4.1. Early access AI Inference Server images Copy link Link copied to clipboard! 
+ To facilitate customer testing of new models, early access fast release Red Hat AI Inference Server images are available in near-upstream preview builds. Fast release container images are not functionally complete or production-ready, have minimal productization, and are not supported by Red Hat in any way.
+ You can find available fast release images in the Red Hat ecosystem catalog .
+ 4.2. New Red Hat AI Inference Server developer features Copy link Link copied to clipboard! 
+ Red Hat AI Inference Server 3.3.0 packages the upstream vLLM v0.13.0 release. You can review the complete list of updates in the upstream vLLM v0.13.0 release notes .
+ Mistral 3 model support 
+ Added support for Mistral 3 models including Mixture of Experts (MoE) architecture variants. This includes validated model configurations, tool calling parser updates, quantization options, and multimodal configuration guidance.
+ Geospatial model support 
+ Added support for IBM Prithvi geospatial foundation models using Vision Transformer (ViT) architecture. This enables geospatial inference workflows with Terratorch integration for earth observation and climate analysis use cases.
+ NVIDIA B300 and GB300 AI accelerator support 
+ Added support for NVIDIA B300 and GB300 Blackwell AI accelerators with CUDA 13.0. NVIDIA B300 and GB300 accelerators deliver significantly higher throughput, improved memory bandwidth, and enhanced efficiency for large-scale AI training and inference workloads compared to previous generations.
+ AMD MI325X AI accelerator support 
+ Added support for the AMD Instinct MI325X AI accelerator. MI325X extends the AMD ROCm platform options for high-performance inference workloads.
+ Inference support for CPU-only x86_64 AVX2 (Technology Preview) 
+ Added support for running inference on CPU-only x86_64 systems without GPU acceleration. This deployment option enables inference on CPU-only systems and includes validated CPU models and a Podman deployment procedure for CPU-based inference. While inference is fully functional with AVX2 instruction set extension, performance is significantly limited and not suitable for production workloads.
+ AWS Trainium and Inferentia support (Technology Preview) 
+ Added Technology Preview support for AWS Neuron accelerators including AWS Trainium and AWS Inferentia. This includes a Podman deployment procedure and updates to supported accelerator documentation.
+ Various new model support features 
+ Added support for BAGEL (AR only), AudioFlamingo3, JAIS 2, and latent MoE architecture.
+ Added new tool parsers for DeepSeek-V3.2, Gigachat 3, and Holo2 reasoning.
+ Added Qwen3-VL enhancements including embeddings and efficient video sampling.
+ Enabled chunked prefill for all pooling tasks.
+ Added multi-vector retrieval API.
+ Performance improvements 
+ Whisper models now run approximately 3 times faster compared to vLLM v0.12.0.
+ DeepSeek-V3.1 models provide 5.3% throughput improvement and 4.4% TTFT improvement with DeepEP High-Throughput CUDA.
+ DeepGEMM fused layout provides 4.3% throughput improvement and 10.7% TTFT improvement.
+ AI accelerator and platform hardware updates 
+ NVIDIA : Added support for NVIDIA Blackwell Ultra (SM103/GB300) with CUDA 13 and W4A8 grouped GEMM on Hopper GPUs.
+ AMD : Added ROCm enhancements including MXFP4 w4a4 inference.
+ Intel : Added XPU wNa16 compressed tensors support.
+ CPU : Added CPU backend encoder-decoder model support and ARM NEON vectorized attention optimizations.
+ Inference engine updates 
+ Added conditional compilation via compile_ranges for selective kernel compilation.
+ Added xxHash high-performance option for prefix caching.
+ Added PrefixLM support for FlexAttention and TritonAttention.
+ Added online FP8 with streaming post-processing.
+ API and compatibility changes 
+ The VLLM_ATTENTION_BACKEND environment variable has been replaced with the --attention-backend CLI argument.
+ Removed deprecated -O.xx flag and deprecated plugin and compilation fields.
+ Removed deprecated task , seed , and multimodal settings.
+ 4.3. New Red Hat AI Model Optimization Toolkit developer features Copy link Link copied to clipboard! 
+ Red Hat AI Model Optimization Toolkit 3.3.0 packages the upstream LLM Compressor v0.9.0.1 release. You can review the complete list of updates in the upstream LLM Compressor v0.9.0 release notes .
+ Model-free post-training quantization 
+ A new pathway allows quantization directly on safetensors files without requiring a transformers model definition. Model-free post-training quantization (PTQ) currently supports data-free methods only, specifically FP8 quantization.
+ Extended quantization support 
+ Enhanced KV cache and attention quantization capabilities with support for new per-head strategies.
+ Added batched calibration support with configurable batch_size and data_collator arguments.
+ Added experimental MXFP4 quantization support.
+ AutoRound Modifier 
+ Added AutoRoundModifier which employs an advanced algorithm that optimizes rounding and clipping ranges through sign-gradient descent, combining post-training efficiency with parameter tuning adaptability.
+ Generalized AWQ Modifier 
+ The AWQ modifier now supports INT8, FP8, and mixed quantization schemes.
+ Breaking changes 
+ Training support APIs have been completely removed. Use the LLM Compressor Axolotl integration instead.
+ Python 3.9 support has been discontinued. LLM Compressor v0.9.0 requires Python 3.10 or later.
+ AutoRound is now an optional installation accessible through the llmcompressor[autoround] package specification.
+ 4.4. Upgrading from Red Hat AI Inference Server 3.2.2 or earlier Copy link Link copied to clipboard! 
+ Customers upgrading from Red Hat AI Inference Server 3.2.2 or earlier to 3.3.0 should be aware of the following changes. Customers already on Red Hat AI Inference Server 3.2.3 or later are not affected by these changes.
+ vLLM V0 engine deprecation is complete 
+ Starting from Red Hat AI Inference Server 3.2.3, the vLLM V0 engine has been completely removed. The V1 engine is now the only inference engine in vLLM.
+ Removed AsyncLLMEngine , LLMEngine , MQLLMEngine , attention backends, encoder-decoder, samplers, LoRA interface, and hybrid model support.
+ Removed legacy attention classes, multimodal registry, compilation fallbacks, and default args from the old system during clean-up.
+ Encoder-decoder model support removed 
+ With the removal of the V0 engine, encoder-decoder model support was removed. The following model classes are no longer supported:
+ BartForConditionalGeneration 
+ MBartForConditionalGeneration 
+ DonutForConditionalGeneration 
+ Florence2ForConditionalGeneration 
+ MllamaForConditionalGeneration 
+ BART support was temporarily removed in vLLM v0.11.0 as part of the finalization of the vLLM V0 engine deprecation. BART support is expected to return in a future release.
+ 4.5. Known issues Copy link Link copied to clipboard! 
+ The FlashInfer kernel sampler was disabled by default in Red Hat AI Inference Server 3.2.3 to address non-deterministic behavior and correctness errors in model output.
+ This change affects sampling behavior when using FlashInfer top-p and top-k sampling methods. If required, you can enable FlashInfer by setting the VLLM_USE_FLASHINFER_SAMPLER environment variable at runtime:
+ VLLM_USE_FLASHINFER_SAMPLER=1 
+ AMD ROCm AI accelerators do not support inference serving encoder-decoder models when using the vLLM v1 inference engine.
+ Encoder-decoder model architectures cause NotImplementedError failures with AMD ROCm accelerators. ROCm attention backends support decoder-only attention only.
+ Affected models include, but are not limited to, the following:
+ Speech-to-text Whisper models, for example openai/whisper-large-v3-turbo and mistralai/Voxtral-Mini-3B-2507
+ Vision-language models, for example microsoft/Phi-3.5-vision-instruct
+ Translation models, for example T5, BART, MarianMT
+ Any models using cross-attention or an encoder-decoder architecture
+ Inference fails for MP3 and M4A file formats. When querying audio models with these file formats, the system returns a "format not recognized" error.
+ {"error":{"message":"Error opening <_io.BytesIO object at 0x7fc052c821b0>: Format not recognised.","type":"Internal Server Error","param":null,"code":500}} 
+ This issue affects audio transcription models such as openai/whisper-large-v3 and mistralai/Voxtral-Small-24B-2507 . To work around this issue, convert audio files to WAV format before processing.
+ Jemalloc consumes more memory than glibc when deploying models on IBM Spyre AI accelerators.
+ When deploying models with jemalloc as the memory allocator, overall memory usage is significantly higher than when using glibc. In testing, jemalloc increased memory consumption by more than 50% compared to glibc. To work around this issue, disable jemalloc by unsetting the LD_PRELOAD environment variable so the system uses glibc as the memory allocator instead.
+ GPT-OSS model produces empty or gibberish responses when using multiple GPUs.
+ When deploying the GPT-OSS model with tensor parallelism greater than 1, the model produces empty or incorrect output. This issue is related to the Triton attention kernel. To work around this issue, use the --no-enable-prefix-caching CLI argument when running the model.
+ Google TPU inference supports only a limited set of model architectures.
+ Native TPU inference currently supports a subset of model architectures. For unsupported models, inference falls back to PyTorch, which may result in reduced performance. Additionally, native TPU inference support is not available for some Google models.
+ For the list of models with native TPU support, see vLLM TPU Installation .
+ Models quantized with Red Hat AI Model Optimization Toolkit may fail to load in Red Hat AI Inference Server 3.3.0.
+ Models generated using the registry.redhat.io/rhaiis/model-opt-cuda-rhel9:3.3.0 container image may encounter errors when loaded with the registry.redhat.io/rhaiis/vllm-cuda-rhel9:3.3.0 container image.
+ To work around this issue, remove the scale_dtype and zp_dtype configuration entries from the config.json file in the quantized model’s directory.
+ Streaming tool calls with Mistral models return invalid JSON through the /v1/messages endpoint.
+ When using Mistral models through the Anthropic-compatible /v1/messages endpoint with streaming tool calls, the generated arguments for tool calls contain invalid JSON. This causes most clients to fail when parsing tool call responses.
+ This issue affects only the /v1/messages Anthropic-compatible endpoint with Mistral models. Mistral models using the OpenAI-compatible endpoints and non-Mistral models using the /v1/messages endpoint are not affected.
+ Chapter 5. Asynchronous errata updates Copy link Link copied to clipboard! 
+ Security, bug fix, and enhancement updates for Red Hat AI Inference Server are released as asynchronous errata through the Red Hat Network. All Red Hat AI Inference Server errata are available on the Red Hat Customer Portal . See the Red Hat AI Inference Server Life Cycle for more information about asynchronous errata.
+ You can enable errata notifications in your Red Hat Customer Portal account settings.
+ Note 
+ You must register your hosts and configure them for consuming Red Hat Customer Portal AI Inference Server entitlements for the errata notification emails to be generated.
+ Legal Notice Copy link Link copied to clipboard! 
+ Copyright © Red Hat.
+ Except as otherwise noted below, the text of and illustrations in this documentation are licensed by Red Hat under the Creative Commons Attribution–Share Alike 3.0 Unported license . If you distribute this document or an adaptation of it, you must provide the URL for the original version.
+ Red Hat, as the licensor of this document, waives the right to enforce, and agrees not to assert, Section 4d of CC-BY-SA to the fullest extent permitted by applicable law.
+ Red Hat, the Red Hat logo, JBoss, Hibernate, and RHCE are trademarks or registered trademarks of Red Hat, LLC. or its subsidiaries in the United States and other countries.
+ Linux ® is the registered trademark of Linus Torvalds in the United States and other countries.
+ XFS is a trademark or registered trademark of Hewlett Packard Enterprise Development LP or its subsidiaries in the United States and other countries.
+ The OpenStack ® Word Mark and OpenStack logo are trademarks or registered trademarks of the Linux Foundation, used under license.
+ All other trademarks are the property of their respective owners.
+ Format Multi-page Single-page View full doc as PDF Github Youtube Twitter Learn Developer resources Cloud learning hub Interactive labs Training and certification Customer support See all documentation Try, buy, & sell Product trial center Red Hat Ecosystem Catalog Red Hat Store Buy online (Japan) Communities Customer Portal Community Events How we contribute About Red Hat We deliver hardened solutions that make it easier for enterprises to work across platforms and environments, from the core datacenter to the network edge. Making open source more inclusive Red Hat is committed to replacing problematic language in our code, documentation, and web properties. For more details, see the Red Hat Blog . About Red Hat Documentation We help Red Hat users innovate and achieve their goals with our products and services with content they can trust. Explore our recent updates . Legal Notice Theme Red Hat legal and privacy links About Red Hat Jobs Events Locations Contact Red Hat Red Hat Blog Inclusion at Red Hat Cool Stuff Store Red Hat Summit © 2026 Red Hat Red Hat legal and privacy links Privacy statement Terms of use All policies and guidelines Digital accessibility Back to top 
+ 

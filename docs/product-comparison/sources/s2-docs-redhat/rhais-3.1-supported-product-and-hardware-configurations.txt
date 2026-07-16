@@ -1,0 +1,53 @@
+SOURCE: https://docs.redhat.com/en/documentation/red_hat_ai_inference_server/3.1/html-single/supported_product_and_hardware_configurations/index
+RETRIEVED: 2026-07-10 (via an authenticated Red Hat customer-portal browser session; docs.redhat.com edge-blocks curl/WebFetch with HTTP 403)
+PRODUCT: Red Hat AI Inference Server (RHAIS) 3.1
+GUIDE: Supported product and hardware configurations
+COPYRIGHT: © 2025 Red Hat, Inc. (CC-BY-SA 3.0)
+EXTRACTION: get_page_text (article body, verbatim)
+================================================================================
+
+Preface
+"This document describes the supported hardware, software, and delivery platforms that you can use to run Red Hat AI Inference Server in production environments."
+ADDITIONAL RESOURCES: Red Hat AI Inference Server documentation; Red Hat AI on Hugging Face; LLM Compressor techniques
+
+Chapter 1. Product and version compatibility
+Table 1.1. Product and version compatibility
+| Product | Supported version |
+| Red Hat AI Inference Server | 3.1 |
+| vLLM core | 0.9.0.1 |
+| LLM Compressor | 0.5.1 Technology Preview |
+
+Chapter 2. Supported AI accelerators
+"Red Hat AI Inference Server 3.1 is not compatible with CUDA versions lower than 12.8."
+
+Table 2.1. Supported NVIDIA AI accelerators
+| Container image | vLLM release | AI accelerators | Requirements | vLLM arch support | LLM Compressor support |
+| rhaiis/vllm-cuda-rhel9 | vLLM 0.9.0.1 | Turing, Ampere, Ada, Hopper, Blackwell (compute capability 10.0) | CUDA Toolkit 12.8; NVIDIA Container Toolkit 1.14; NVIDIA GPU Operator 24.3; Python 3.12; PyTorch 2.7.0 | x86; Aarch64 Developer Preview | x86 Technology Preview |
+
+Table 2.2. Supported AMD AI accelerators
+| rhaiis/vllm-rocm-rhel9 | vLLM 0.8.4 | AMD Instinct MI210, AMD Instinct MI300X | ROCm 6.2; AMD GPU Operator 6.2; Python 3.12; PyTorch 2.7.0 | x86 | x86 Technology Preview |
+
+Table 2.3. Supported Google TPU AI accelerators
+| rhaiis/vllm-xla-rhel9 | vLLM 0.8.5 | Google TPU v6e | Python 3.12; PyTorch 2.7.0 | x86 Developer Preview | Not supported |
+
+Chapter 3. Supported deployment environments
+Table 3.1. Red Hat AI Inference Server supported deployment environments
+| Environment | Supported versions | Deployment notes |
+| OpenShift Container Platform (self-managed) | 4.14 - 4.18 | Deploy on bare-metal hosts or virtual machines. |
+| Red Hat OpenShift Service on AWS (ROSA) | 4.14 - 4.18 | Requires ROSA STS cluster with GPU-enabled P5 or G5 node types. |
+| Red Hat Enterprise Linux (RHEL) | 9.2 - 10.0 | Deploy on bare-metal hosts or virtual machines. |
+| Linux (not RHEL) | - | Supported under third-party policy deployed on bare-metal hosts or virtual machines. OpenShift Container Platform Operators are not required. |
+| Kubernetes (not OpenShift Container Platform) | - | Supported under third-party policy deployed on bare-metal hosts or virtual machines. |
+
+Note: "Red Hat AI Inference Server is available only as a container image. The host operating system and kernel must support the required accelerator drivers. For more information, see Supported AI accelerators."
+
+Chapter 4. OpenShift Container Platform software prerequisites for GPU deployments
+Table 4.1. Software prerequisites for GPU deployments
+| Component | Minimum version | Operator |
+| NVIDIA GPU Operator | 24.3 | NVIDIA GPU Operator OLM Operator |
+| AMD GPU Operator | 6.2 | AMD GPU Operator OLM Operator |
+| Node Feature Discovery [1] | 4.14 | Node Feature Discovery Operator |
+[1] Included by default with OpenShift Container Platform. Node Feature Discovery is required for scheduling NUMA-aware workloads.
+
+Chapter 5. Lifecycle and update policy
+"Security and critical bug fixes are delivered as container images available from the registry.access.redhat.com/rhaiis container registry and are announced through RHSA advisories. See RHAIIS container images on catalog.redhat.com for more details."

@@ -1,0 +1,54 @@
+SOURCE: https://docs.redhat.com/en/documentation/red_hat_ai_inference_server/3.1/html-single/getting_started/index
+RETRIEVED: 2026-07-10 (via an authenticated Red Hat customer-portal browser session; docs.redhat.com edge-blocks curl/WebFetch with HTTP 403)
+PRODUCT: Red Hat AI Inference Server (RHAIS) 3.1
+GUIDE: Getting started with Red Hat AI Inference Server
+COPYRIGHT: © 2025 Red Hat, Inc. (CC-BY-SA 3.0)
+EXTRACTION: get_page_text (article body, verbatim)
+================================================================================
+
+Title: Getting started | Red Hat AI Inference Server | 3.1 | Red Hat Documentation
+
+Preface
+
+Red Hat AI Inference Server is a container image that optimizes serving and inferencing with LLMs. Using AI Inference Server, you can serve and inference models in a way that boosts their performance while reducing their costs.
+
+Chapter 1. About AI Inference Server
+
+AI Inference Server provides enterprise-grade stability and security, building on upstream, open source software. AI Inference Server leverages the upstream vLLM project, which provides state-of-the-art inferencing features.
+
+For example, AI Inference Server uses continuous batching to process requests as they arrive instead of waiting for a full batch to be accumulated. It also uses tensor parallelism to distribute LLM workloads across multiple GPUs. These features provide reduced latency and higher throughput.
+
+To reduce the cost of inferencing models, AI Inference Server uses paged attention. LLMs use a mechanism called attention to understand conversations with users. Normally, attention uses a significant amount of memory, much of which is wasted. Paged attention addresses this memory wastage by provisioning memory for LLMs similar to the way that virtual memory works for operating systems. This approach consumes less memory, which lowers costs.
+
+To verify cost savings and performance gains with AI Inference Server, complete the following procedures:
+- Serving and inferencing with AI Inference Server
+- Validating Red Hat AI Inference Server benefits using key metrics
+
+Chapter 2. Product and version compatibility
+
+The following table lists the supported product versions for Red Hat AI Inference Server 3.1. [Table body collapsed behind "Show more" in the rendered page; see rhais-3.1-supported-product-and-hardware-configurations.txt for the supported-configuration matrix.]
+
+Chapter 3. Serving and inferencing with AI Inference Server
+
+Serve and inference a large language model with Red Hat AI Inference Server.
+
+Prerequisites
+- You have installed Podman or Docker
+- You have access to a Linux server with NVIDIA or AMD GPUs and are logged in as a user with root privileges
+- For NVIDIA GPUs: Install NVIDIA drivers; Install the NVIDIA Container Toolkit; If your system has multiple NVIDIA GPUs that use NVswitch, you must have root access to start Fabric Manager
+- For AMD GPUs: Install ROCm software; Verify that you can run ROCm containers
+- You have access to registry.redhat.io and have logged in
+- You have a Hugging Face account and have generated a Hugging Face token
+
+Procedure (abbreviated): identify the correct image for your infrastructure; log in to registry.redhat.io; pull the relevant image for your GPUs; configure SELinux; create/mount a volume; source HF_TOKEN; start the AI Inference Server container image (NVIDIA CUDA or AMD ROCm). Set --tensor-parallel-size to match the number of GPUs when running on multiple GPUs. In a separate terminal tab, make a request to your model with the API.
+
+Chapter 4. Validating Red Hat AI Inference Server benefits using key metrics
+
+Metrics: Time to first token (TTFT); Time per output token (TPOT); Latency; Throughput.
+Benchmark: clone the vLLM Git repository; run ./vllm/benchmarks/benchmark_serving.py.
+"Other options for --backend are: tgi, lmdeploy, deepspeed-mii, openai, and openai-chat"
+"Other options for --dataset-name are: sharegpt, burstgpt, sonnet, random, hf"
+
+Additional resources: vLLM documentation; LLM Inference Performance Engineering: Best Practices (Mosaic AI Research).
+
+Chapter 5. Troubleshooting (RHAIS 3.1) — covers model loading, memory optimization (quantization, tensor parallelism, reduced precision), generated response quality (vLLM >= 0.8.4 default sampling from generation_config.json), CUDA accelerator errors (--enforce-eager to disable CUDAGraph), NVIDIA Fabric Manager / NCCL / Gloo, MIG + tensor-parallel AssertionError, networking (VLLM_HOST_IP), Python multiprocessing, GPU driver / device pass-through (NVIDIA Container Toolkit). "Most common issues in vLLM relate to installation, model loading, memory management, and GPU communication."

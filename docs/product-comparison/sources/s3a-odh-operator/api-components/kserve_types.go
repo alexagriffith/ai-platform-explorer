@@ -1,0 +1,215 @@
+/*
+Copyright 2023.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package v1alpha1
+
+import (
+	operatorv1 "github.com/openshift/api/operator/v1"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/opendatahub-io/opendatahub-operator/v2/api/common"
+)
+
+const (
+	KserveComponentName = "kserve"
+	// value should match what's set in the XValidation below
+	KserveInstanceName = "default-" + KserveComponentName
+	KserveKind         = "Kserve"
+)
+
+// +kubebuilder:validation:Enum=Headless;Headed
+type RawServiceConfig string
+
+const (
+	KserveRawHeadless RawServiceConfig = "Headless"
+	KserveRawHeaded   RawServiceConfig = "Headed"
+)
+
+// Check that the component implements common.PlatformObject.
+var _ common.PlatformObject = (*Kserve)(nil)
+
+// OAuthProxyResourceRequirements describes the resource requirements
+// for the OAuth proxy sidecar container.
+type OAuthProxyResourceRequirements struct {
+	// Requests describes the minimum amount of resources required.
+	// +optional
+	Requests corev1.ResourceList `json:"requests,omitempty"`
+	// Limits describes the maximum amount of resources allowed.
+	// +optional
+	Limits corev1.ResourceList `json:"limits,omitempty"`
+}
+
+// OAuthProxyConfig configures the OAuth proxy sidecar container in the
+// 'inferenceservice-config' ConfigMap for KServe.
+type OAuthProxyConfig struct {
+	// Resources describes the compute resource requirements for the OAuth proxy sidecar container.
+	// +optional
+	Resources *OAuthProxyResourceRequirements `json:"resources,omitempty"`
+}
+
+// KserveCommonSpec spec defines the shared desired state of Kserve
+type KserveCommonSpec struct {
+	// Configures the type of service that is created for InferenceServices using RawDeployment.
+	// The values for RawDeploymentServiceConfig can be "Headless" (default value) or "Headed".
+	// Headless: to set "ServiceClusterIPNone = true" in the 'inferenceservice-config' configmap for Kserve.
+	// Headed: to set "ServiceClusterIPNone = false" in the 'inferenceservice-config' configmap for Kserve.
+	// +kubebuilder:default=Headless
+	RawDeploymentServiceConfig RawServiceConfig `json:"rawDeploymentServiceConfig,omitempty"`
+	// Configures the OAuth proxy sidecar container resources in the
+	// 'inferenceservice-config' ConfigMap for KServe. Only non-nil fields
+	// override the defaults shipped with the operator manifests.
+	// +optional
+	OAuthProxy *OAuthProxyConfig `json:"oauthProxy,omitempty"`
+	// Configures and enables NVIDIA NIM integration
+	// +kubebuilder:default={}
+	NIM NimSpec `json:"nim,omitempty"`
+	// Configures and enables Models as a Service integration
+	ModelsAsService DSCModelsAsServiceSpec `json:"modelsAsService,omitempty"`
+	// Configures and enables workload-variant-autoscaler (WVA) integration
+	WVA WVASpec `json:"wva,omitempty"`
+	// Configures and enables Model Cache integration
+	ModelCache *ModelCacheSpec `json:"modelCache,omitempty"`
+}
+
+// nimSpec enables NVIDIA NIM integration
+type NimSpec struct {
+	// +kubebuilder:validation:Enum=Managed;Removed
+	// +kubebuilder:default=Managed
+	ManagementState operatorv1.ManagementState `json:"managementState,omitempty"`
+	// When true, NIM integration assumes an air-gapped cluster. External API calls
+	// and the NIM model list ConfigMap creation are skipped, while status conditions
+	// are marked successful with an air-gapped message.
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:default=false
+	AirGapped bool `json:"airGapped,omitempty"`
+}
+
+// WVASpec enables workload-variant-autoscaler integration
+type WVASpec struct {
+	// +kubebuilder:validation:Enum=Managed;Removed
+	// +kubebuilder:default=Removed
+	ManagementState operatorv1.ManagementState `json:"managementState,omitempty"`
+}
+
+// ModelCacheSpec enables Model Cache integration
+// +kubebuilder:validation:XValidation:rule="self.managementState != 'Managed' || has(self.cacheSize)",message="cacheSize is required when managementState is Managed"
+// +kubebuilder:validation:XValidation:rule="self.managementState != 'Managed' || (has(self.nodeNames) && size(self.nodeNames) > 0) || (has(self.nodeSelector) && ((has(self.nodeSelector.matchLabels) && size(self.nodeSelector.matchLabels) > 0) || (has(self.nodeSelector.matchExpressions) && size(self.nodeSelector.matchExpressions) > 0)))",message="one non-empty nodeNames or nodeSelector is required when managementState is Managed"
+// +kubebuilder:validation:XValidation:rule="!(has(self.nodeNames) && has(self.nodeSelector))",message="nodeNames and nodeSelector are mutually exclusive"
+type ModelCacheSpec struct {
+	// +kubebuilder:validation:Enum=Managed;Removed
+	// +kubebuilder:default=Removed
+	ManagementState operatorv1.ManagementState `json:"managementState,omitempty"`
+	// CacheSize specifies the storage capacity for the model cache PersistentVolume
+	// and PersistentVolumeClaim (e.g., "100Gi", "500Gi", "1Ti").
+	CacheSize *resource.Quantity `json:"cacheSize,omitempty"`
+	// NodeNames is a list of specific node names to enable model caching on.
+	// The operator will label these nodes with kserve/localmodel=worker.
+	// Mutually exclusive with NodeSelector.
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:validation:MinItems=1
+	NodeNames []string `json:"nodeNames,omitempty"`
+	// NodeSelector is a label selector that identifies nodes for model caching
+	// using pre-existing node labels (e.g., nvidia.com/gpu).
+	// The operator will label matching nodes with kserve/localmodel=worker.
+	// Mutually exclusive with NodeNames.
+	// +kubebuilder:validation:Optional
+	NodeSelector *metav1.LabelSelector `json:"nodeSelector,omitempty"`
+}
+
+// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+
+// KserveSpec defines the desired state of Kserve
+type KserveSpec struct {
+	// kserve spec exposed to DSC api
+	KserveCommonSpec `json:",inline"`
+	// kserve spec exposed only to internal api
+}
+
+// KserveCommonStatus defines the shared observed state of Kserve
+type KserveCommonStatus struct {
+	common.ComponentReleaseStatus `json:",inline"`
+}
+
+// KserveStatus defines the observed state of Kserve
+type KserveStatus struct {
+	common.Status      `json:",inline"`
+	KserveCommonStatus `json:",inline"`
+}
+
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:scope=Cluster
+// +kubebuilder:validation:XValidation:rule="self.metadata.name == 'default-kserve'",message="Kserve name must be default-kserve"
+// +kubebuilder:printcolumn:name="Ready",type=string,JSONPath=`.status.conditions[?(@.type=="Ready")].status`,description="Ready"
+// +kubebuilder:printcolumn:name="Reason",type=string,JSONPath=`.status.conditions[?(@.type=="Ready")].reason`,description="Reason"
+
+// Kserve is the Schema for the kserves API
+type Kserve struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   KserveSpec   `json:"spec,omitempty"`
+	Status KserveStatus `json:"status,omitempty"`
+}
+
+func (c *Kserve) GetStatus() *common.Status {
+	return &c.Status.Status
+}
+
+func (c *Kserve) GetConditions() []common.Condition {
+	return c.Status.GetConditions()
+}
+
+func (c *Kserve) SetConditions(conditions []common.Condition) {
+	c.Status.SetConditions(conditions)
+}
+
+func (c *Kserve) GetReleaseStatus() *[]common.ComponentRelease {
+	return &c.Status.Releases
+}
+
+func (c *Kserve) SetReleaseStatus(releases []common.ComponentRelease) {
+	c.Status.Releases = releases
+}
+
+// +kubebuilder:object:root=true
+
+// KserveList contains a list of Kserve
+type KserveList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []Kserve `json:"items"`
+}
+
+func init() {
+	SchemeBuilder.Register(&Kserve{}, &KserveList{})
+}
+
+// DSCKserve contains all the configuration exposed in DSC instance for Kserve component
+type DSCKserve struct {
+	// configuration fields common across components
+	common.ManagementSpec `json:",inline"`
+	// Kserve specific fields
+	KserveCommonSpec `json:",inline"`
+}
+
+// DSCKserveStatus contains the observed state of the Kserve exposed in the DSC instance
+type DSCKserveStatus struct {
+	common.ManagementSpec `json:",inline"`
+	*KserveCommonStatus   `json:",inline"`
+}
