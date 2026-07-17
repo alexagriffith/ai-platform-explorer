@@ -23,6 +23,21 @@ import { products } from '../data/products';
 import { reconcileContainerAiPlatform } from '../lib/platformAiConstraints';
 import { button, text, interactive, modal, surface, border, density, typeScale, productStatus } from '../lib/styleTokens';
 
+/**
+ * Return a balanced grid-cols class (complete literals — Tailwind JIT rule).
+ * Mirrors the helper in CapabilityArchitectureView: no orphan trailing rows.
+ */
+function distributingGridCols(count) {
+  if (count <= 1) return 'grid-cols-1';
+  if (count === 2) return 'grid-cols-2';
+  if (count === 3) return 'grid-cols-3';
+  if (count === 4) return 'grid-cols-4';
+  if (count === 5) return 'grid-cols-3'; // 3+2
+  if (count === 6) return 'grid-cols-3'; // 3+3
+  if (count === 7) return 'grid-cols-4'; // 4+3
+  return 'grid-cols-4';
+}
+
 /** Look up status from products catalog by id. Returns null when no match. */
 const productStatusFromCatalog = (productId) => {
   if (!productId) return null;
@@ -1447,7 +1462,7 @@ export default function DecisionFlowchart({
                 </div>
 
                 {/* Group Guides */}
-                <div className={`grid md:grid-cols-2 lg:grid-cols-3 ${density.rowGap}`}>
+                <div className={`grid ${distributingGridCols(group.guides.length)} ${density.rowGap}`}>
                   {group.guides.map((guideKey) => {
                     const flowData = decisionFlows[guideKey];
                     const meta = guideMetadata[guideKey];

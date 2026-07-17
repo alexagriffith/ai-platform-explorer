@@ -39,13 +39,27 @@ import {
 } from '../lib/styleTokens';
 
 /**
- * Return a complete grid-cols class based on item count (max 4 columns).
+ * Return a complete grid-cols class that produces balanced rows (no orphan trailing card).
  * Complete class literals only — no template-built strings (Tailwind JIT rule).
+ *
+ * Balanced-row logic (columns chosen so trailing row is >= half-full):
+ *   n=1  → 1 col  (trivial)
+ *   n=2  → 2 cols (1 full row)
+ *   n=3  → 3 cols (1 full row)
+ *   n=4  → 4 cols (1 full row)
+ *   n=5  → 3 cols (3+2: trailing row 2/3 full)
+ *   n=6  → 3 cols (3+3: two full rows)
+ *   n=7  → 4 cols (4+3: trailing row 3/4 full)
+ *   n>=8 → 4 cols (best general cap; any remainder >= 2 with 4-col)
  */
 function distributingGridCols(count) {
   if (count <= 1) return 'grid-cols-1';
   if (count === 2) return 'grid-cols-2';
   if (count === 3) return 'grid-cols-3';
+  if (count === 4) return 'grid-cols-4';
+  if (count === 5) return 'grid-cols-3'; // 3+2
+  if (count === 6) return 'grid-cols-3'; // 3+3
+  if (count === 7) return 'grid-cols-4'; // 4+3
   return 'grid-cols-4';
 }
 

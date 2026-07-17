@@ -393,14 +393,26 @@ function rowFill(tabId) {
       else rows.push({ top: cr.top, items: [cr] });
     }
     for (const row of rows) {
-      if (row.items.length < 2) continue; // single-item rows are trivially fine
+      // A single-item row in a multi-row container is always an orphan: the column
+      // count is too wide for the item count. Flag it directly without a % threshold.
+      // A single-item row in a single-row container is trivially valid.
+      if (row.items.length === 1) {
+        if (rows.length > 1) {
+          const cls = (container.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+          out.push(`row-fill: <${container.tagName.toLowerCase()}.${cls}> single-item trailing row (orphan card — column count too wide for item count)`);
+        }
+        continue;
+      }
+      // For rows with 2+ items, check that children together span >= 60% of the
+      // container width (catches gross left-packing where far fewer items than columns
+      // leaves most of the row empty; allows balanced n-of-(n+1) trailing rows).
       const totalChildWidth = row.items.reduce((sum, r) => sum + r.width, 0);
       const gap = parseFloat(cs.gap || cs.columnGap || '0') || 0;
       const totalGap = gap * (row.items.length - 1);
       const occupied = (totalChildWidth + totalGap) / innerWidth;
-      if (occupied < 0.85) {
+      if (occupied < 0.60) {
         const cls = (container.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
-        out.push(`row-fill: <${container.tagName.toLowerCase()}.${cls}> row spans only ${r2(occupied * 100)}% of container (need >= 85%)`);
+        out.push(`row-fill: <${container.tagName.toLowerCase()}.${cls}> row spans only ${r2(occupied * 100)}% of container (need >= 60%)`);
         break; // one report per container
       }
     }

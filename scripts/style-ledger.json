@@ -59,8 +59,8 @@
     "_measured": "architecture:1.20 product-comparison:1.59 deployment-impact:0.17 decisions:0.56 products:1.67 use-cases:exempted",
     "architecture": 1.25,
     "product-comparison": 1.7,
-    "deployment-impact": 1.0,
-    "decisions": 1.0,
+    "deployment-impact": 0.3,
+    "decisions": 0.7,
     "products": 1.8
   },
   "exemptions": {
@@ -85,6 +85,6 @@
     "use-cases/control-scale": "UseCaseView has category filter buttons (larger) alongside compact section controls \u2014 two-scale by design until sub-tab refactor.",
     "products/card-text-budget": "ProductExplorer cards ARE the disclosure level \u2014 they combine name, status, category, and description in a single expanded card. No deeper drill-down exists; text budget does not apply here.",
     "deployment-impact/card-text-budget": "DeploymentComparisonSelector uses full-sentence comparison titles by design \u2014 these are the primary navigational labels, not secondary description text.",
-    "product-comparison/card-text-budget": "ProductComparisonView ledger cells may contain long capability labels by design."
+    "product-comparison/card-text-budget": "ProductComparisonView decision recommendation cards render a full recommendation sentence by design — the tripping element is the decision recommendation card, not a ledger cell."
   }
 }
