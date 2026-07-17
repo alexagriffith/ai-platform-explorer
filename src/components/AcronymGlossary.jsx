@@ -120,6 +120,12 @@ export default function AcronymGlossary() {
       fullName: 'Bill of Materials',
       explanation: 'The list of components that ship inside a product — for AI platforms: operators, container images, and their versions per release.',
       whenToUse: 'When clarifying what is actually included in a Red Hat AI product versus what is an add-on.'
+    },
+    {
+      acronym: 'llm-d',
+      fullName: 'llm-d (a project name, not an acronym — the "d" stands for distributed)',
+      explanation: 'A distributed-inference serving layer that adds key-value cache (KV-cache)-aware routing, prefill/decode disaggregation, and SLO-aware autoscaling on top of model servers such as vLLM.',
+      whenToUse: 'When the routing story or inference-server bill of materials mentions distributed inference, KV-cache-aware scheduling, or prefill/decode split.'
     }
   ];
 
