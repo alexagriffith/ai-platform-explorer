@@ -68,12 +68,7 @@
       "card-text-budget",
       "no-ghost-cells"
     ],
-    "architecture": [
-      "control-scale",
-      "unit-box-width",
-      "no-ghost-cells",
-      "card-text-budget"
-    ],
+    "architecture": [],
     "decisions": [
       "unit-box-width",
       "card-text-budget"
@@ -88,15 +83,10 @@
   "_exemptionNotes": {
     "products/card-text-budget": "ProductExplorer (Catalog sub-view) cards combine name, status, category, and description — they are the disclosure level. ProductComparisonView decision recommendation cards render a full recommendation sentence by design. Both are intentional; exemption covers both sub-views.",
     "deployment-impact/card-text-budget": "DeploymentComparisonSelector uses full-sentence comparison titles by design — these are the primary navigational labels, not secondary description text.",
-    "architecture/control-scale": "Architecture tab has two stacked toolbar surfaces (ArchitectureHub mode selector + CapabilityArchitectureView action bar) within the first 300px. Both are intentionally compact but at slightly different heights. The 2-scale limit applies within a single toolbar; multi-toolbar stacking is a distinct pattern.",
-    "architecture/no-ghost-cells": "Capability grids use distributingGridCols() which creates balanced-row layouts (e.g., 5 items → 3+2). The partial last row is balanced by design (≥ 2/3 fill). Full CSS centering of variable-count grids conflicts with equal-width stretch. DeepDiveModal architecture component grids also run on this tab.",
-    "architecture/unit-box-width": "Capability cards in single-column layers fill the full grid width at 1440px (up to ~600px for L5 with 1 item). This is intentional density-law behavior — the grid column count drives width, not a fixed box size. The 200-360px bound applies to multi-sibling grids, not single-item full-width rows.",
     "decisions/unit-box-width": "Decision guide option buttons span the grid width in 2-3 column layouts at 1440px. The 360px max is appropriate for the capability unit boxes; decision guide option buttons are wider by design (they contain a question text, not just a product name).",
     "decisions/card-text-budget": "Decision guide question cards accumulate the full question text, option labels, and path hints in their visible text; this is the disclosure level for the guide. Exempts the card-text-budget check for all decision-guide states.",
-    "deployment-impact/no-ghost-cells": "Documentation and legend grids in deployment-impact views use distributingGridCols() which intentionally creates balanced-row layouts (e.g., 5 items → 3+2). The partial last row is design-law compliant (≥ 2/3 fill). Full CSS centering of variable-count grids conflicts with equal-width stretch.",
-    "products/unit-box-width": "ProductExplorer catalog cards are intentionally wider than the 360px max (they render in a 2-3 column grid at 1440px, producing ~400px cards). The wider width gives room for product name, status badge, and description. The 360px bound targets capability unit boxes, not product catalog cards.",
-    "products/row-fill": "Search-filtered catalog results may produce a single orphan card when the query returns one match. This is correct behavior — search is dynamically filtered. Enforcing grid balance on search results would require artificial padding or 1-col fallback which reduces density. Same exemption as architecture's distributingGridCols balanced rows.",
-    "products/no-ghost-cells": "Catalog uses md:grid-cols-2.lg:grid-cols-3 layout. Search-filtered results may produce a single item in a 3-col grid. This is correct filtered-state behavior, not a design defect. The resting state has full rows.",
-    "architecture/card-text-budget": "Generate-from-Environment mode renders multi-field form sections (Requirements, Compliance, Operations) whose aggregate text exceeds 140 chars by design. Blueprints mode shows model-type comparison descriptions that are inherently verbose. Both are deliberate disclosure levels for their interaction mode."
+    "products/row-fill": "Search-filtered catalog results may produce a single orphan card when the query returns one match. This is correct filtered-state behavior; enforcing balance on dynamic search results would require artificial padding.",
+    "products/no-ghost-cells": "Search-filtered results may produce a single item in a 3-col grid. Correct filtered-state behavior; resting state has full rows.",
+    "architecture/card-text-budget": "Generate-from-Environment mode renders multi-field form sections whose aggregate text exceeds 140 chars by design. Blueprints mode shows comparison descriptions that are inherently verbose. Both are deliberate disclosure levels for their interaction mode."
   }
 }

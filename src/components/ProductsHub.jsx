@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Package, Scale, Network, ArrowRight } from 'lucide-react';
+import { Package, Scale, Network } from 'lucide-react';
 import ProductComparisonView from './ProductComparisonView';
 import ProductExplorer from './ProductExplorer';
 import MCPEcosystemFull from './MCPEcosystemFull';
@@ -128,23 +128,26 @@ export default function ProductsHub({ onNavigate }) {
         })}
       </nav>
 
-      {/* Browse by use case — compact index, always visible as a Products landing feature */}
+      {/* Browse by use case — compact text-link index, always visible as a Products landing feature */}
       <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <div className="flex items-baseline gap-2 mb-2">
           <h3 className={`text-sm font-semibold ${text.ink}`}>Browse by use case</h3>
           <span className={`text-xs ${text.muted}`}>Each use case links to its guide in this app</span>
         </div>
-        <div className="flex flex-wrap gap-1.5">
-          {USE_CASE_INDEX.map((uc) => (
-            <button
-              key={uc.title}
-              data-ui="control"
-              onClick={() => handleUseCaseLink(uc.action)}
-              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-card border border-edge text-xs font-medium text-muted hover:text-ink hover:border-accent ${interactive.transition} ${interactive.focusRing}`}
-            >
-              {uc.title}
-              <ArrowRight size={11} aria-hidden="true" />
-            </button>
+        <div className="flex flex-wrap items-center gap-y-1">
+          {USE_CASE_INDEX.map((uc, idx) => (
+            <span key={uc.title} className="inline-flex items-center">
+              {idx > 0 && (
+                <span className={`mx-2 select-none ${text.faint}`} aria-hidden="true">·</span>
+              )}
+              <button
+                data-ui="control"
+                onClick={() => handleUseCaseLink(uc.action)}
+                className={`text-xs ${text.muted} hover:text-link hover:underline underline-offset-2 ${interactive.transition} ${interactive.focusRing} rounded-sm`}
+              >
+                {uc.title}
+              </button>
+            </span>
           ))}
         </div>
       </div>

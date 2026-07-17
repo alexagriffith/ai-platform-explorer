@@ -155,6 +155,17 @@ function App() {
                 </p>
               </div>
             </div>
+            <span className="hidden sm:block text-[11px] leading-snug text-muted flex-shrink-0">
+              created by{' '}
+              <a
+                href="https://www.linkedin.com/in/alexa-griffith/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`text-link underline-offset-2 hover:underline rounded-sm ${interactive.focusRing} ${interactive.transition}`}
+              >
+                Alexa Griffith
+              </a>
+            </span>
             <button
               type="button"
               onClick={toggleTheme}
