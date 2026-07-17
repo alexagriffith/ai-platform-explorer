@@ -69,7 +69,7 @@ function CapabilityPresenceCell({ cell }) {
         <a
           href={cell.sourceUrl}
           target="_blank"
-          rel="noopener"
+          rel="noopener noreferrer"
           title={cell.sourceLabel || 'Open source'}
           className={`inline-flex items-start gap-1 text-xs font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
         >
@@ -102,7 +102,7 @@ function BomCell({ cell }) {
         <a
           href={cell.sourceUrl}
           target="_blank"
-          rel="noopener"
+          rel="noopener noreferrer"
           title={cell.sourceLabel || 'Open source'}
           className={`inline-flex items-start gap-1 text-xs font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
         >
@@ -325,6 +325,7 @@ function ComponentVersionsPanel({ productId, productLabel }) {
               <tr className="border-b border-edge">
                 <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider">Component</th>
                 <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider">Version</th>
+                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider">Source</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hair">
@@ -332,15 +333,27 @@ function ComponentVersionsPanel({ productId, productLabel }) {
                 <tr key={entry.component}>
                   <td className="px-2 py-1.5 text-xs text-ink align-middle">{entry.component}</td>
                   <td className="px-2 py-1.5 align-middle">
-                    <a
-                      href={entry.sourceUrl}
-                      target="_blank"
-                      rel="noopener"
-                      title={entry.sourceLabel}
-                      className={`font-mono text-xs text-ink hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
-                    >
+                    <span className="font-mono text-xs text-ink">
                       {entry.version}{entry.sha ? <span className="text-faint"> @{entry.sha}</span> : null}
-                    </a>
+                    </span>
+                  </td>
+                  <td className="px-2 py-1.5 align-middle">
+                    {entry.sourceUrl ? (
+                      <a
+                        href={entry.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={entry.sourceLabel}
+                        className={`inline-flex items-center gap-1 text-xs text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+                      >
+                        <ExternalLink size={11} className="flex-shrink-0" />
+                        <span>{entry.sourceLabel || 'Source'}</span>
+                      </a>
+                    ) : (
+                      <span className="text-xs text-faint border-b border-dashed border-faint">
+                        {entry.sourceLabel || 'Pending verification'}
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -348,15 +361,21 @@ function ComponentVersionsPanel({ productId, productLabel }) {
           </table>
         </div>
         <div className="flex items-center gap-1 text-xs text-faint pb-1">
-          <ExternalLink size={11} className="flex-shrink-0" />
-          <a
-            href={table.sourceUrl}
-            target="_blank"
-            rel="noopener"
-            className={`hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
-          >
-            {table.sourceLabel}
-          </a>
+          {table.sourceUrl ? (
+            <>
+              <ExternalLink size={11} className="flex-shrink-0" />
+              <a
+                href={table.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+              >
+                {table.sourceLabel}
+              </a>
+            </>
+          ) : (
+            <span className="border-b border-dashed border-faint">{table.sourceLabel || 'Pending verification'}</span>
+          )}
           <span className="ml-1">— extracted {table.extractionDate}</span>
         </div>
       </div>
@@ -484,7 +503,7 @@ export default function ProductComparisonView() {
                 <a
                   href={link.url}
                   target="_blank"
-                  rel="noopener"
+                  rel="noopener noreferrer"
                   className={`inline-flex items-center gap-2 text-sm font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
                 >
                   <ExternalLink size={14} className="flex-shrink-0" />

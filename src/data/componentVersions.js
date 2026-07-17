@@ -23,33 +23,31 @@ const ODH_COMMIT = '2e3c4206e9a35fb9cbe5eaacf257695560520e83';
 const ODH_BASE = `https://github.com/opendatahub-io/opendatahub-operator/blob/${ODH_COMMIT}`;
 const gam = (line) => `${ODH_BASE}/get_all_manifests.sh${line ? `#L${line}` : ''}`;
 
-// RHAI 3.4 source (Alexa's direct extraction from the EKS image)
-const RHAI_EXTRACTION_SOURCE =
-  'https://github.com/opendatahub-io/opendatahub-operator/blob/2e3c4206e9a35fb9cbe5eaacf257695560520e83/get_all_manifests.sh';
+const RHAI_PENDING_LABEL = 'Internal verification — public source pending';
 
 export const componentVersions = [
   {
     productId: 'ai-inference',
     release: '3.4',
     extractionDate: '2026-07-17',
-    sourceUrl: RHAI_EXTRACTION_SOURCE,
-    sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)',
+    sourceUrl: null,
+    sourceLabel: RHAI_PENDING_LABEL,
     components: [
-      { component: 'Red Hat AI Inference', version: '3.4.0', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'vLLM', version: '0.18.0+rhaiv.7', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'RHAI Operator', version: 'XKS 3.4.0', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'Cloud Manager Operator', version: '3.4.0', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'llm-d Inference Scheduler', version: 'v0.7.1', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'llm-d Workload Variant Autoscaler', version: 'v0.6.0', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'Gateway API', version: 'v1.4.0', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'Gateway API Inference Extension', version: 'v1.3.1', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'Istio', version: '1.27.8_ossm', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'Sail Operator', version: 'v3.2.3', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'cert-manager', version: 'v1.18.4', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'LWS (Leader Worker Set)', version: 'v0.7.0', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'KServe (LLMISvc Controller)', version: 'v0.17.0', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'EKS (Kubernetes)', version: 'v1.34.8-eks', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
-      { component: 'Helm Chart', version: '0.1.20887+863cde804', sourceUrl: RHAI_EXTRACTION_SOURCE, sourceLabel: 'Extracted from the Red Hat AI Inference 3.4 image (EKS)' },
+      { component: 'Red Hat AI Inference', version: '3.4.0', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'vLLM', version: '0.18.0+rhaiv.7', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'RHAI Operator', version: 'XKS 3.4.0', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'Cloud Manager Operator', version: '3.4.0', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'llm-d Inference Scheduler', version: 'v0.7.1', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'llm-d Workload Variant Autoscaler', version: 'v0.6.0', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'Gateway API', version: 'v1.4.0', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'Gateway API Inference Extension', version: 'v1.3.1', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'Istio', version: '1.27.8_ossm', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'Sail Operator', version: 'v3.2.3', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'cert-manager', version: 'v1.18.4', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'LWS (Leader Worker Set)', version: 'v0.7.0', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'KServe (LLMISvc Controller)', version: 'v0.17.0', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'EKS (Kubernetes)', version: 'v1.34.8-eks', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
+      { component: 'Helm Chart', version: '0.1.20887+863cde804', sourceUrl: null, sourceLabel: RHAI_PENDING_LABEL },
     ]
   },
   {

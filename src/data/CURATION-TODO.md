@@ -142,3 +142,74 @@ curation, not automatically.
 ## Sign-off
 
 Curated by: ____   Date: ____   Product-manager / source sign-off (if obtained): ____
+
+---
+
+## Component versions — provenance ledger (37 rows in `src/data/componentVersions.js`)
+
+Source: `src/data/componentVersions.js`. Two tables — RHOAI 3.5-ea.2 (22 rows) and RHAI 3.4 (15 rows).
+
+### RHOAI 3.5-ea.2 — 22 component rows
+
+Status: **sourced (manifest 2e3c420, verified by independent review)**
+
+All 22 rows trace to pinned commit `2e3c4206e9a35fb9cbe5eaacf257695560520e83` of
+`opendatahub-io/opendatahub-operator` `get_all_manifests.sh`. Each row carries a per-line
+`sourceUrl` pointing to the exact line in that file (e.g. `#L40`). Independent review confirmed
+line-by-line: every version string, SHA, and line reference matches the pinned document.
+No edits needed until the next release extraction.
+
+| Row | Component | Version | Line |
+|-----|-----------|---------|------|
+| 1 | Dashboard (odh-dashboard) | rhoai-3.5-ea.2 @b2fe40c | L40 |
+| 2 | Workbenches — kf-notebook-controller | rhoai-3.5-ea.2 @0dfef85 | L41 |
+| 3 | Workbenches — odh-notebook-controller | rhoai-3.5-ea.2 @0dfef85 | L42 |
+| 4 | Workbenches — Notebooks | rhoai-3.5-ea.2 @77780fe | L43 |
+| 5 | KServe | rhoai-3.5-ea.2 @f255870 | L44 |
+| 6 | Ray (KubeRay) | rhoai-3.5-ea.2 @d14f765 | L45 |
+| 7 | TrustyAI Service Operator | rhoai-3.5-ea.2 @ac6e72e | L46 |
+| 8 | Model Registry Operator | rhoai-3.5-ea.2 @33d02a8 | L47 |
+| 9 | Training Operator (Kubeflow) | rhoai-3.5-ea.2 @16a06f5 | L48 |
+| 10 | Data Science Pipelines Operator | rhoai-3.5-ea.2 @24f6be6 | L49 |
+| 11 | ODH Model Controller | rhoai-3.5-ea.2 @8af23e6 | L50 |
+| 12 | Feast Operator | rhoai-3.5-ea.2 @c87449c | L51 |
+| 13 | OGX Kubernetes Operator | rhoai-3.5-ea.2 @bff797d | L52 |
+| 14 | Trainer | rhoai-3.5-ea.2 @77010a2 | L53 |
+| 15 | Models as a Service (MaaS) Billing | rhoai-3.5-ea.2 @df0370f | L54 |
+| 16 | MLflow Operator | rhoai-3.5-ea.2 @79d5739 | L55 |
+| 17 | Spark Operator | rhoai-3.5-ea.2 @afe2757 | L56 |
+| 18 | Workload Variant Autoscaler | rhoai-3.5-ea.2 @a3a58e1 | L57 |
+| 19 | cert-manager Operator (chart) | rhoai-3.5-ea.2 @7060bda | L74 |
+| 20 | LWS Operator (chart) | rhoai-3.5-ea.2 @7060bda | L75 |
+| 21 | Sail Operator (chart) | rhoai-3.5-ea.2 @7060bda | L76 |
+| 22 | Gateway API (chart) | rhoai-3.5-ea.2 @7060bda | L77 |
+
+### RHAI 3.4 — 15 component rows
+
+Status: **pending public source — needs official 3.4 release-notes or catalog URL per row**
+
+Version values are known from internal verification. No public URL exists yet that confirms
+these exact version strings for Red Hat AI Inference Server 3.4. The UI renders these rows with
+dashed/pending styling and no source hyperlinks until a public source is available.
+
+Action required (human, not agent): when the RHAI 3.4 release notes or a public operator
+manifest appears on `docs.redhat.com` or `catalog.redhat.com`, update each row's `sourceUrl`
+and `sourceLabel` in `src/data/componentVersions.js` and update this ledger to 'sourced'.
+
+| Row | Component | Version | Needed source |
+|-----|-----------|---------|---------------|
+| 1 | Red Hat AI Inference | 3.4.0 | Official 3.4 release notes or catalog manifest URL |
+| 2 | vLLM | 0.18.0+rhaiv.7 | Official 3.4 release notes or catalog manifest URL |
+| 3 | RHAI Operator | XKS 3.4.0 | Official 3.4 release notes or catalog manifest URL |
+| 4 | Cloud Manager Operator | 3.4.0 | Official 3.4 release notes or catalog manifest URL |
+| 5 | llm-d Inference Scheduler | v0.7.1 | Official 3.4 release notes or catalog manifest URL |
+| 6 | llm-d Workload Variant Autoscaler | v0.6.0 | Official 3.4 release notes or catalog manifest URL |
+| 7 | Gateway API | v1.4.0 | Official 3.4 release notes or catalog manifest URL |
+| 8 | Gateway API Inference Extension | v1.3.1 | Official 3.4 release notes or catalog manifest URL |
+| 9 | Istio | 1.27.8_ossm | Official 3.4 release notes or catalog manifest URL |
+| 10 | Sail Operator | v3.2.3 | Official 3.4 release notes or catalog manifest URL |
+| 11 | cert-manager | v1.18.4 | Official 3.4 release notes or catalog manifest URL |
+| 12 | LWS (Leader Worker Set) | v0.7.0 | Official 3.4 release notes or catalog manifest URL |
+| 13 | KServe (LLMISvc Controller) | v0.17.0 | Official 3.4 release notes or catalog manifest URL |
+| 14 | EKS (Kubernetes) | v1.34.8-eks | Official 3.4 release notes or catalog manifest URL |
+| 15 | Helm Chart | 0.1.20887+863cde804 | Official 3.4 release notes or catalog manifest URL |
