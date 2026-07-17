@@ -313,34 +313,34 @@ function ComponentVersionsPanel({ productId, productLabel }) {
           <table className="min-w-full">
             <thead>
               <tr className="border-b border-edge">
-                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider">Component</th>
-                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider">Version</th>
-                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider">Source</th>
+                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider min-w-[10rem]">Component</th>
+                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider min-w-[8rem]">Version</th>
+                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider min-w-[8rem]">Source</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hair">
               {table.components.map((entry) => (
                 <tr key={entry.component}>
-                  <td className="px-2 py-1.5 text-xs text-ink align-middle">{entry.component}</td>
+                  <td className="px-2 py-1.5 text-xs text-ink align-middle break-words">{entry.component}</td>
                   <td className="px-2 py-1.5 align-middle">
-                    <span className="font-mono text-xs text-ink">
+                    <span className="font-mono text-xs text-ink break-all">
                       {entry.version}{entry.sha ? <span className="text-faint"> @{entry.sha}</span> : null}
                     </span>
                   </td>
-                  <td className="px-2 py-1.5 align-middle">
+                  <td className="px-2 py-1.5 align-middle max-w-[16rem]">
                     {entry.sourceUrl ? (
                       <a
                         href={entry.sourceUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         title={entry.sourceLabel}
-                        className={`inline-flex items-center gap-1 text-xs text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+                        className={`inline-flex items-start gap-1 text-xs text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
                       >
-                        <ExternalLink size={11} className="flex-shrink-0" />
-                        <span>{entry.sourceLabel || 'Source'}</span>
+                        <ExternalLink size={11} className="flex-shrink-0 mt-0.5" />
+                        <span className="break-words">{entry.sourceLabel || 'Source'}</span>
                       </a>
                     ) : (
-                      <span className="text-xs text-faint border-b border-dashed border-faint">
+                      <span className="text-xs text-faint border-b border-dashed border-faint break-words">
                         {entry.sourceLabel || 'Pending verification'}
                       </span>
                     )}

@@ -66,7 +66,7 @@ function PresenceMark({ side }) {
 function NameLink({ row }) {
   if (!row.link) {
     return (
-      <span className="text-sm font-medium leading-tight text-ink">{row.name}</span>
+      <span className="text-sm font-medium leading-snug text-ink break-words hyphens-auto">{row.name}</span>
     );
   }
   return (
@@ -76,9 +76,9 @@ function NameLink({ row }) {
       rel="noopener"
       title={row.link.label || 'Open source'}
       aria-label={row.link.label ? `${row.name} — source: ${row.link.label}` : `${row.name} — open source`}
-      className={`group inline-flex items-center justify-center gap-1 text-sm font-medium leading-tight text-ink hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+      className={`group flex items-center justify-center gap-1 min-w-0 max-w-full text-sm font-medium leading-snug text-ink hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
     >
-      <span>{row.name}</span>
+      <span className="break-words hyphens-auto min-w-0">{row.name}</span>
       <ExternalLink
         size={12}
         aria-hidden="true"
@@ -95,20 +95,20 @@ function LedgerRow({ row, last }) {
   return (
     <div data-ui-exempt="ledger-row inside data-ui=table" className={`${COLS} ${band} ${rounded}`} data-ledger-row>
       <div
-        className="flex h-10 items-center justify-center border-b border-hair"
+        className="flex min-h-10 items-center justify-center border-b border-hair py-2"
         data-ledger-cell="a"
         title={sideTitle(LEDGER_PRODUCTS.a.label, row.a)}
       >
         <PresenceMark side={row.a} />
       </div>
       <div
-        className="flex h-10 items-center justify-center border-b border-hair px-2 text-center"
+        className="flex min-h-10 items-center justify-center border-b border-hair px-2 py-2 text-center"
         data-ledger-cell="name"
       >
         <NameLink row={row} />
       </div>
       <div
-        className="flex h-10 items-center justify-center border-b border-hair"
+        className="flex min-h-10 items-center justify-center border-b border-hair py-2"
         data-ledger-cell="b"
         title={sideTitle(LEDGER_PRODUCTS.b.label, row.b)}
       >
@@ -153,15 +153,15 @@ function StickyHeader() {
   return (
     <div data-ui="section-header" className={`${COLS} sticky top-0 z-10 border-b border-edge bg-surface`}>
       <div className="flex flex-col items-center justify-center px-2 py-2 text-center">
-        <span className="text-xs font-bold leading-tight text-ink sm:text-sm">{LEDGER_PRODUCTS.a.label}</span>
-        <span className="mt-0.5 text-[10px] text-faint sm:text-xs">{LEDGER_PRODUCTS.a.descriptor}</span>
+        <span className="text-xs font-bold leading-snug text-ink break-words sm:text-sm">{LEDGER_PRODUCTS.a.label}</span>
+        <span className="mt-0.5 text-[10px] text-faint break-words sm:text-xs">{LEDGER_PRODUCTS.a.descriptor}</span>
       </div>
       <div className="flex items-center justify-center px-2 py-2">
         <span className="text-[10px] font-semibold uppercase tracking-wider text-faint sm:text-xs">Component</span>
       </div>
       <div className="flex flex-col items-center justify-center px-2 py-2 text-center">
-        <span className="text-xs font-bold leading-tight text-ink sm:text-sm">{LEDGER_PRODUCTS.b.label}</span>
-        <span className="mt-0.5 text-[10px] text-faint sm:text-xs">{LEDGER_PRODUCTS.b.descriptor}</span>
+        <span className="text-xs font-bold leading-snug text-ink break-words sm:text-sm">{LEDGER_PRODUCTS.b.label}</span>
+        <span className="mt-0.5 text-[10px] text-faint break-words sm:text-xs">{LEDGER_PRODUCTS.b.descriptor}</span>
       </div>
     </div>
   );
