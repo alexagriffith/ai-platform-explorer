@@ -48,3 +48,28 @@ export function distributingGridCols(count) {
   if (count === 13) return 'grid-cols-1 md:grid-cols-4'; // 4+4+4+1 (unavoidable: 13 is prime mod 2/3/4)
   return 'grid-cols-1 md:grid-cols-4'; // n>=14: 4-col cap; remainder in [0,3]
 }
+
+/**
+ * Return a responsive flex-basis class for items in a flex-wrap row that mirrors
+ * the same column logic as distributingGridCols. Use with `flex flex-wrap justify-center`
+ * on the container so partial rows center rather than ghost-fill to the left.
+ *
+ * Mobile: full width (basis-full). md+: fractional width matching the column count.
+ * Complete class literals only (Tailwind JIT rule).
+ */
+export function distributingFlexBasis(count) {
+  if (count <= 1) return 'basis-full md:basis-full';
+  if (count === 2) return 'basis-full md:basis-1/2';
+  if (count === 3) return 'basis-full md:basis-1/3';
+  if (count === 4) return 'basis-full md:basis-1/4';
+  if (count === 5) return 'basis-full md:basis-1/3'; // 3-col layout: 3+2
+  if (count === 6) return 'basis-full md:basis-1/3'; // 3-col: 3+3
+  if (count === 7) return 'basis-full md:basis-1/4'; // 4-col: 4+3
+  if (count === 8) return 'basis-full md:basis-1/4'; // 4-col: 4+4
+  if (count === 9) return 'basis-full md:basis-1/3'; // 3-col: 3+3+3
+  if (count === 10) return 'basis-full md:basis-1/4'; // 4-col: 4+4+2
+  if (count === 11) return 'basis-full md:basis-1/4'; // 4-col: 4+4+3
+  if (count === 12) return 'basis-full md:basis-1/4'; // 4-col: 4+4+4
+  if (count === 13) return 'basis-full md:basis-1/4'; // 4-col: unavoidable orphan
+  return 'basis-full md:basis-1/4'; // n>=14: 4-col cap
+}

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle, RotateCcw, ChevronLeft } from 'lucide-react';
 import { button, text, interactive, surface, border, density, typeScale } from '../lib/styleTokens';
-import { distributingGridCols } from '../lib/layout';
 
 export default function DecisionTree({ flow, onRecommendation }) {
   const [selectedPath, setSelectedPath] = useState({});
@@ -109,36 +108,36 @@ export default function DecisionTree({ flow, onRecommendation }) {
 
   return (
     <div className={density.stackGap}>
-      {/* Breadcrumb and controls */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          {canGoBack && (
-            <div className={`${typeScale.secondary} ${text.muted}`}>
-              <span className="font-semibold">Your path: </span>
-              <span className="italic">{getBreadcrumb()}</span>
-            </div>
-          )}
-        </div>
-        <div className="flex gap-2 flex-shrink-0">
-          <button
-            data-ui="control"
-            onClick={goBack}
-            disabled={!canGoBack}
-            className={`flex items-center gap-1.5 ${button.secondary} disabled:opacity-50 disabled:pointer-events-none`}
-            aria-label="Go back one step"
-          >
-            <ChevronLeft size={14} />
-            Back
-          </button>
-          <button
-            data-ui="control"
-            onClick={resetTree}
-            className={`flex items-center gap-1.5 ${button.secondary}`}
-            aria-label="Reset all choices"
-          >
-            <RotateCcw size={14} />
-            Reset
-          </button>
+      {/* Breadcrumb and controls — centered column matching question node width */}
+      <div className="flex flex-col items-center gap-2">
+        <div className="max-w-2xl w-full flex items-center justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            {canGoBack && (
+              <div className={`${typeScale.secondary} ${text.muted}`}>
+                <span className="font-semibold">Your path: </span>
+                <span className="italic">{getBreadcrumb()}</span>
+              </div>
+            )}
+          </div>
+          <div className="flex gap-2 flex-shrink-0">
+            <button
+              onClick={goBack}
+              disabled={!canGoBack}
+              className={`flex items-center gap-1.5 ${button.secondary} disabled:opacity-50 disabled:pointer-events-none`}
+              aria-label="Go back one step"
+            >
+              <ChevronLeft size={14} />
+              Back
+            </button>
+            <button
+              onClick={resetTree}
+              className={`flex items-center gap-1.5 ${button.secondary}`}
+              aria-label="Reset all choices"
+            >
+              <RotateCcw size={14} />
+              Reset
+            </button>
+          </div>
         </div>
       </div>
 
@@ -162,12 +161,12 @@ export default function DecisionTree({ flow, onRecommendation }) {
 
               {/* Question node */}
               <div className="flex flex-col items-center">
-                <div data-ui="card" className={`max-w-2xl w-full ${density.sectionPad} rounded-card border-l-4 ${interactive.transitionAll} ${
+                <div className={`max-w-2xl w-full ${density.sectionPad} rounded-card border ${interactive.transitionAll} ${
                   isActive
-                    ? 'border-l-accent bg-tint'
+                    ? `border-accent ${surface.tint}`
                     : isCompleted
-                    ? 'border-l-green-600 bg-surface'
-                    : 'border-l-edge bg-surface'
+                    ? `border-edge ${surface.raised}`
+                    : `${border.edge} ${surface.raised}`
                 }`}>
                   <div className="flex items-start gap-2">
                     <div className="flex-shrink-0 mt-0.5">
@@ -187,20 +186,20 @@ export default function DecisionTree({ flow, onRecommendation }) {
                         {step.question}
                       </h4>
 
-                      {/* Option nodes — balanced grid avoids orphan trailing row */}
-                      <div className={`grid ${distributingGridCols(step.options.length)} ${density.rowGap}`}>
+                      {/* Option nodes — content-hugging (flex-none), centered row; wraps only when
+                          content genuinely cannot fit. Basis from text, not fractional width. */}
+                      <div className={`flex flex-wrap justify-center ${density.rowGap}`}>
                         {step.options.map((option) => {
                           const selected = isOptionSelected(stepIndex, option.value);
                           const disabled = !isActive && !selected;
 
                           return (
                             <button
-                              data-ui="control"
                               key={option.value}
                               onClick={() => !disabled && handleNodeClick(stepIndex, option.value, option.next)}
                               disabled={disabled}
                               aria-current={selected ? 'true' : undefined}
-                              className={`${density.cardPad} rounded-card border-2 text-left ${interactive.transitionAll} ${
+                              className={`flex-none ${density.cardPad} rounded-card border-2 text-left ${interactive.transitionAll} ${
                                 selected
                                   ? `border-accent ${surface.tint}`
                                   : isActive
@@ -208,19 +207,14 @@ export default function DecisionTree({ flow, onRecommendation }) {
                                   : `${border.hair} ${surface.tint} opacity-50 cursor-not-allowed`
                               } ${!disabled ? interactive.focusRing : ''}`}
                             >
-                              <div className="flex items-center gap-1.5 mb-1">
+                              <div className="flex items-center gap-1.5">
                                 {selected && <CheckCircle size={14} className="text-accent flex-shrink-0" />}
                                 <span className={`${typeScale.secondary} font-semibold ${text.ink}`}>
                                   {option.label}
                                 </span>
                               </div>
-                              {option.next !== undefined && (
-                                <div className={`${typeScale.meta} ${text.faint}`}>
-                                  → Continue to next question
-                                </div>
-                              )}
                               {option.recommendation && (
-                                <div className={`${typeScale.meta} text-green-600 dark:text-green-400 font-semibold`}>
+                                <div className={`mt-0.5 ${typeScale.meta} text-green-600 dark:text-green-400 font-semibold`}>
                                   View recommendation
                                 </div>
                               )}
