@@ -111,6 +111,12 @@ information allows — best first:
 No bare acronyms in customer-visible strings (expand on first use per component); no emojis;
 no hedge-free absolutes.
 
+## Ordering & redundancy law (added 2026-07-17)
+- Red Hat options list first in any option enumeration; order is information.
+- Provider identity is conveyed by the categorical mark, never by repeating text a name
+  already contains. Say it once; the mark is the badge.
+- A subtitle must add information beyond its title or not exist.
+
 ## Enforcement
 
 `scripts/gate.py` enforces this law two ways:

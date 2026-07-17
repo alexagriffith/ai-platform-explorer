@@ -109,7 +109,6 @@ function CapabilityCard({
   // eslint-disable-next-line no-unused-vars
   compact: _compact,
   selectedCapabilities,
-  detailLevel,
   expandedComponents,
   onConfigure,
   onDeepDive,
@@ -140,13 +139,11 @@ function CapabilityCard({
               </span>
             )}
           </h4>
-          {detailLevel === 2 && (
-            <div className={`${typeScale.meta} ${text.faint}`}>
-              {availableCount === capability.options.length
-                ? `${capability.options.length} option${capability.options.length !== 1 ? 's' : ''}`
-                : `${availableCount} of ${capability.options.length} options match current pairing`}
-            </div>
-          )}
+          <div className={`${typeScale.meta} ${text.faint}`}>
+            {availableCount === capability.options.length
+              ? `${capability.options.length} option${capability.options.length !== 1 ? 's' : ''}`
+              : `${availableCount} of ${capability.options.length} options match current pairing`}
+          </div>
         </div>
       </button>
     );
@@ -182,7 +179,7 @@ function CapabilityCard({
             )}
           </div>
           <div className={`${typeScale.meta} ${text.muted}`}>
-            {detailLevel === 2 ? `${selectedOption?.provider}: ${selectedOption?.name}` : selectedOption?.name}
+            {selectedOption?.name}
           </div>
         </div>
         <div className="flex gap-0.5 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
@@ -226,7 +223,7 @@ function CapabilityCard({
           )}
         </div>
       </div>
-      {detailLevel === 2 && selectedOption?.status && (
+      {selectedOption?.status && (
         <div className={`px-2 py-0.5 ${typeScale.meta} ${text.faint}`}>
           {selectedOption.status}
         </div>
@@ -347,7 +344,6 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
   const [exportDone, setExportDone] = useState(false);
   const [configuringCapability, setConfiguringCapability] = useState(null);
   const [deepDiveOption, setDeepDiveOption] = useState(null);
-  const [detailLevel, setDetailLevel] = useState(2); // 1: basic, 2: technical
   const [viewOrder, setViewOrder] = useState('bottom-up'); // 'bottom-up' or 'top-down'
   const [expandedComponents, setExpandedComponents] = useState(new Set());
   const [showFlowViz, setShowFlowViz] = useState(false);
@@ -432,7 +428,6 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
   // Shared props for the module-scope CapabilityCard (state + handlers it used to close over).
   const cardProps = {
     selectedCapabilities,
-    detailLevel,
     expandedComponents,
     onConfigure: setConfiguringCapability,
     onDeepDive: setDeepDiveOption,
@@ -528,26 +523,6 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
           <p className={`text-xs ${text.muted}`}>{exportMessage}</p>
         )}
         <div className="pt-2 mt-1 border-t border-hair flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-1.5">
-            <span className={`text-xs font-medium ${text.muted}`}>Detail:</span>
-            <div className="flex gap-1">
-              {[
-                { level: 1, label: 'Basic' },
-                { level: 2, label: 'Technical' }
-              ].map(({ level, label }) => (
-                <button
-                  key={level}
-                  onClick={() => setDetailLevel(level)}
-                  className={`${toggle.base} ${interactive.transition} ${interactive.focusRing} ${
-                    detailLevel === level ? toggle.active : toggle.inactive
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <button
             type="button"
             onClick={() => setViewOrder(viewOrder === 'bottom-up' ? 'top-down' : 'bottom-up')}

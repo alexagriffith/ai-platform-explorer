@@ -83,7 +83,7 @@ export const capabilities = {
         {
           id: 'rhoai-distributed',
           provider: 'Red Hat',
-          name: 'RHOAI Distributed Workloads',
+          name: 'Red Hat OpenShift AI (RHOAI) Distributed Workloads',
           description: 'Multi-node distributed training with Ray and Training Operator',
           status: 'GA',
           recommended: true
@@ -286,7 +286,7 @@ export const capabilities = {
         {
           id: 'rh-evaluation',
           provider: 'Red Hat',
-          name: 'Integrated Evaluation (RHOAI)',
+          name: 'Integrated Evaluation (Red Hat OpenShift AI)',
           description: 'Model evaluation (EvalHub pattern) - Technology Preview; confirm scope with your Red Hat account team.',
           status: 'Tech Preview'
         },
@@ -294,7 +294,7 @@ export const capabilities = {
           id: 'instructlab-eval',
           provider: 'Red Hat',
           name: 'InstructLab Evaluation',
-          description: 'LAB-based model quality assessment',
+          description: 'Large-scale Alignment for chatBots (LAB) method model quality assessment',
           status: 'GA'
         },
         {
@@ -414,7 +414,7 @@ export const capabilities = {
           id: 'rhoai',
           provider: 'Red Hat',
           name: 'Red Hat OpenShift AI (RHOAI)',
-          description: 'AI/ML platform for OpenShift clusters (self-managed or managed ROSA/ARO). Use this if your container platform is OpenShift.',
+          description: 'AI/ML platform for OpenShift clusters (self-managed or managed Red Hat OpenShift Service on AWS (ROSA) / Azure Red Hat OpenShift (ARO)). Use this if your container platform is OpenShift.',
           status: 'GA'
         },
         {
@@ -488,7 +488,7 @@ export const capabilities = {
         {
           id: 'rhel-hosts',
           provider: 'Red Hat',
-          name: 'RHEL servers (bare metal / VMs)',
+          name: 'Red Hat Enterprise Linux (RHEL) servers (bare metal / VMs)',
           description: 'Red Hat Enterprise Linux hosts',
           status: 'GA',
           recommended: false

@@ -215,3 +215,15 @@ export const legendChip = {
   partner: 'w-3 h-3 rounded-card bg-teal-500',
   customer: 'w-3 h-3 rounded-card border-2 border-dashed border-edge bg-page',
 };
+
+/**
+ * Ordering & redundancy law (DESIGN-LAW.md): Red Hat options render first in any
+ * option enumeration. Stable otherwise (preserves relative order within each group).
+ *
+ * Usage: capability.options.slice().sort(redHatFirst)
+ */
+export function redHatFirst(a, b) {
+  const aIsRH = a.provider === 'Red Hat' ? 0 : 1;
+  const bIsRH = b.provider === 'Red Hat' ? 0 : 1;
+  return aIsRH - bIsRH;
+}

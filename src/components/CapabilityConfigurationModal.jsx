@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { X, Check, Microscope } from 'lucide-react';
 import { isCapabilityOptionDisabled, MCP_CAPABILITY_ID, LLAMA_STACK_CAPABILITY_ID } from '../lib/platformAiConstraints';
-import { badge, button, card, interactive, modal, text } from '../lib/styleTokens';
+import { badge, button, card, interactive, modal, redHatFirst, text } from '../lib/styleTokens';
 
 /**
  * Layer option picker for Build Your Stack. Backdrop = cancel; header ✕ = remove capability + close.
@@ -74,7 +74,7 @@ export default function CapabilityConfigurationModal({
 
         <div className={modal.body}>
           <div className="space-y-3">
-            {capability.options.map((option) => {
+            {capability.options.slice().sort(redHatFirst).map((option) => {
               const isSelected = getSelectedOption(capability.id) === option.id;
               const disabled = isCapabilityOptionDisabled(capability, option.id, selectedCapabilities);
 
@@ -121,9 +121,11 @@ export default function CapabilityConfigurationModal({
                             </span>
                           )}
                         </div>
-                        <div className={`mb-1 text-sm font-semibold ${text.muted}`}>
-                          {option.provider}
-                        </div>
+                        {option.provider && !option.name.includes(option.provider) && (
+                          <div className={`mb-1 text-sm font-semibold ${text.muted}`}>
+                            {option.provider}
+                          </div>
+                        )}
                         <p className={`text-sm ${text.muted}`}>{option.description}</p>
                       </div>
                     </div>
