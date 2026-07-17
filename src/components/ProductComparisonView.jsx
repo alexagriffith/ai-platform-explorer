@@ -3,6 +3,7 @@ import { AlertCircle, Download, Copy, Check, ExternalLink } from 'lucide-react';
 import { productComparisons, isComparisonDraft, decisionBeatFacts } from '../data/productComparisons';
 import { getComponentVersions } from '../data/componentVersions';
 import SharedSpineLedger from './SharedSpineLedger';
+import ProductComparisonHero from './ProductComparisonHero';
 import { buildLedgerModel } from '../lib/ledgerModel';
 import { interactive } from '../lib/styleTokens';
 
@@ -426,6 +427,7 @@ export default function ProductComparisonView() {
         {isComparisonDraft(comparison) && <DraftBanner />}
         <OrientBeat />
         <DecisionBeat />
+        <ProductComparisonHero comparison={comparison} />
         <SharedSpineLedger comparison={comparison} />
         <ComponentVersionsBeat comparison={comparison} />
       </div>

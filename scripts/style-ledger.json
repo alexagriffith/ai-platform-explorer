@@ -10,6 +10,7 @@
     "src/lib/styleTokens.js",
     "src/lib/layout.js",
     "src/components/ProductComparisonView.jsx",
+    "src/components/ProductComparisonHero.jsx",
     "src/components/SharedSpineLedger.jsx",
     "src/components/DeploymentImpactView.jsx",
     "src/components/DeploymentComparisonSelector.jsx",
