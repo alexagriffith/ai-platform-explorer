@@ -10,7 +10,7 @@
 // Display identity for the two products (matches BEAT 2's decision cards). This ledger is specifically
 // this one pair, so the labels + 3-word descriptors are stable constants.
 export const LEDGER_PRODUCTS = {
-  a: { label: 'Red Hat AI Inference Server', descriptor: 'Engine · runs anywhere' },
+  a: { label: 'Red Hat AI Inference Server', descriptor: 'Engine · Kubernetes or RHEL' },
   b: { label: 'Red Hat OpenShift AI', descriptor: 'Platform · needs OpenShift' }
 };
 
