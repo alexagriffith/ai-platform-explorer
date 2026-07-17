@@ -57,7 +57,7 @@ describe('buildLedgerModel (shared-spine ledger)', () => {
 
   it('the serve-models core is shared by both products', () => {
     const shared = new Set(group('serve').rows.filter((r) => r.shared).map((r) => r.name));
-    for (const name of ['Inference engine', 'OpenAI API', 'Model serving']) {
+    for (const name of ['Inference engine', 'OpenAI-compatible API', 'Model serving']) {
       expect(shared.has(name), `${name} should be present in BOTH products`).toBe(true);
     }
   });

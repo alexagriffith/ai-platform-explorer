@@ -121,7 +121,7 @@ export const aiInferenceVsRhoai = {
         detail: 'OpenAI-Compatible API — standard API interface',
         tier: 'clear',
         sourceUrl: vllm(49),
-        sourceLabel: 'vLLM README — "OpenAI-compatible API server" (the RHAIS engine)'
+        sourceLabel: 'vLLM README — "OpenAI-compatible API server" (the Red Hat AI Inference Server engine)'
       },
       b: {
         included: 'included',
@@ -443,7 +443,7 @@ export const aiInferenceVsRhoai = {
         status: 'Tech Preview',
         tier: 'inferred',
         sourceUrl: SRC.rhoaiCatalog,
-        sourceLabel: 'Red Hat OpenShift AI container catalog — model-registry images live only under rhoai/ (not part of the RHAIS BOM)'
+        sourceLabel: 'Red Hat OpenShift AI container catalog — model-registry images live only under rhoai/ (not part of the Red Hat AI Inference Server bill of materials)'
       },
       b: {
         support: 'yes',
@@ -502,7 +502,7 @@ export const aiInferenceVsRhoai = {
         'The inference core. Sold standalone and running on any Kubernetes, Red Hat Enterprise Linux (RHEL), or Linux host — no OpenShift required. Clear-tier cells are the vLLM serving engine, an OpenAI-compatible API, and large language model serving.',
       components: [
         { label: 'vLLM Engine', view: 'bom', key: 'Inference engine', side: 'a' },
-        { label: 'OpenAI API', view: 'bom', key: 'OpenAI-compatible API endpoint', side: 'a' },
+        { label: 'OpenAI-compatible API', view: 'bom', key: 'OpenAI-compatible API endpoint', side: 'a' },
         { label: 'Model Serving', view: 'capability', key: 'Model serving (large language model inference)', side: 'a' },
         { label: 'Model Loading', view: 'bom', key: 'Model loading and caching', side: 'a' }
       ]

@@ -31,13 +31,13 @@ export const LEDGER_GROUPS = [
 const SPINE = [
   // Serve models — the shared core (the Inference Server lives entirely here).
   { view: 'bom', key: 'Inference engine', group: 'serve', name: 'Inference engine' },
-  { view: 'bom', key: 'OpenAI-compatible API endpoint', group: 'serve', name: 'OpenAI API' },
+  { view: 'bom', key: 'OpenAI-compatible API endpoint', group: 'serve', name: 'OpenAI-compatible API' },
   { view: 'capability', key: 'Model serving (large language model inference)', group: 'serve', name: 'Model serving' },
   { view: 'bom', key: 'Distributed inference (llm-d)', group: 'serve', name: 'Distributed inference' },
   { view: 'bom', key: 'Model loading and caching', group: 'serve', name: 'Model loading' },
   // Build & train — the platform adds the model-building lifecycle.
   { view: 'bom', key: 'Notebooks / workbenches', group: 'build', name: 'Notebooks' },
-  { view: 'bom', key: 'Machine-learning pipelines', group: 'build', name: 'ML pipelines' },
+  { view: 'bom', key: 'Machine-learning pipelines', group: 'build', name: 'Machine-learning pipelines' },
   { view: 'bom', key: 'Distributed training', group: 'build', name: 'Distributed training' },
   { view: 'capability', key: 'Model fine-tuning and alignment', group: 'build', name: 'Fine-tuning' },
   { view: 'bom', key: 'Feature store (Feast)', group: 'build', name: 'Feature store' },
