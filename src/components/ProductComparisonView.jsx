@@ -3,6 +3,7 @@ import { AlertCircle, Download, Copy, Check, ExternalLink } from 'lucide-react';
 import { productComparisons, isComparisonDraft, decisionBeatFacts } from '../data/productComparisons';
 import { getComponentVersions } from '../data/componentVersions';
 import SharedSpineLedger from './SharedSpineLedger';
+import ProductComparisonHero from './ProductComparisonHero';
 import { buildLedgerModel } from '../lib/ledgerModel';
 import { interactive } from '../lib/styleTokens';
 
@@ -34,11 +35,15 @@ const INCLUSION_LABEL = {
   confirm: 'Confirm with Red Hat'
 };
 
-const SUPPORT_LABEL = {
-  yes: 'Yes',
-  partial: 'Partial',
-  no: 'No',
-  confirm: 'Confirm with Red Hat'
+/**
+ * Capability presence marks — check/X with aria-labels; never Yes/No words.
+ * Shared token map per the DESIGN-LAW closed-world rule.
+ */
+const SUPPORT_MARK = {
+  yes:     { symbol: '✓', ariaLabel: 'supported',         className: 'text-green-700 dark:text-green-400 font-bold' },
+  partial: { symbol: '~', ariaLabel: 'partially supported', className: 'text-amber-700 dark:text-amber-400 font-bold' },
+  no:      { symbol: '✕', ariaLabel: 'not supported',      className: 'text-faint font-bold' },
+  confirm: { symbol: '?', ariaLabel: 'confirm with Red Hat', className: 'text-faint' },
 };
 
 const DRAFT_BANNER_TEXT =
@@ -48,28 +53,23 @@ function inclusionLabel(value) {
   return INCLUSION_LABEL[value] || value || 'Unknown';
 }
 
-function supportLabel(value) {
-  return SUPPORT_LABEL[value] || value || 'Unknown';
-}
-
-/** One product cell in the DETAILED provenance tables: a single plain-text status label above the
- *  detail line, with per-cell maturity appended when present, and the source link. */
-function ProductCell({ cell, kind }) {
-  if (!cell) {
-    return <span className="text-xs text-faint">—</span>;
-  }
-  const label = kind === 'bom' ? inclusionLabel(cell.included) : supportLabel(cell.support);
-  const detail = cell.status ? `${cell.detail} — ${cell.status}` : cell.detail;
+/** Capability presence cell: check/X mark (✓/✕) + source link. Never Yes/No text. */
+function CapabilityPresenceCell({ cell }) {
+  if (!cell) return <span className="text-xs text-faint" aria-label="no data">—</span>;
+  const mark = SUPPORT_MARK[cell.support] || { symbol: '?', ariaLabel: cell.support || 'unknown', className: 'text-faint' };
   const pending = cell.tier && cell.tier !== 'clear';
+  const detail = cell.status ? `${cell.detail} — ${cell.status}` : cell.detail;
   return (
     <div className="space-y-1">
-      <div className="text-sm font-semibold text-ink">{label}</div>
+      <span className={`text-base ${mark.className}`} aria-label={mark.ariaLabel}>
+        {mark.symbol}
+      </span>
       <div className="text-xs sm:text-sm text-muted">{detail}</div>
       {cell.sourceUrl && (
         <a
           href={cell.sourceUrl}
           target="_blank"
-          rel="noopener"
+          rel="noopener noreferrer"
           title={cell.sourceLabel || 'Open source'}
           className={`inline-flex items-start gap-1 text-xs font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
         >
@@ -86,11 +86,37 @@ function ProductCell({ cell, kind }) {
   );
 }
 
-function OverlapCell({ overlap }) {
-  if (overlap === true) {
-    return <span className="text-sm font-medium text-ink">Shared</span>;
+/** One product cell in the BOM rows: inclusion label above detail + source link. */
+function BomCell({ cell }) {
+  if (!cell) {
+    return <span className="text-xs text-faint">—</span>;
   }
-  return <span className="text-sm text-faint">—</span>;
+  const label = inclusionLabel(cell.included);
+  const detail = cell.status ? `${cell.detail} — ${cell.status}` : cell.detail;
+  const pending = cell.tier && cell.tier !== 'clear';
+  return (
+    <div className="space-y-1">
+      <div className="text-sm font-semibold text-ink">{label}</div>
+      <div className="text-xs sm:text-sm text-muted">{detail}</div>
+      {cell.sourceUrl && (
+        <a
+          href={cell.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={cell.sourceLabel || 'Open source'}
+          className={`inline-flex items-start gap-1 text-xs font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+        >
+          <ExternalLink size={12} className="mt-0.5 flex-shrink-0" />
+          <span>{cell.sourceLabel || 'Source'}</span>
+        </a>
+      )}
+      {pending && (
+        <div className="text-[10px] font-semibold uppercase tracking-wide text-accent">
+          Pending verification
+        </div>
+      )}
+    </div>
+  );
 }
 
 /** Draft caution — one surface, no nested boxes: a pale-red fill (deep red in dark) with the red
@@ -185,44 +211,56 @@ function ComparisonTableShell({ columns, children }) {
   );
 }
 
-function BomTable({ comparison }) {
-  const { a, b } = comparison.products;
+/**
+ * ProvenanceTable — single grouped table replacing the former two-table toggle.
+ * Groups: "Bill of materials" (bomRows) then "Capabilities" (capabilityRows).
+ * Overlap column dropped. Capability presence = ✓/✕ marks, never Yes/No words.
+ * Tier + source-link rules unchanged: solid requires clear tier + working link.
+ */
+function GroupHeaderRow({ label, colSpan }) {
   return (
-    <ComparisonTableShell columns={['Component area', a.label, b.label]}>
+    <tr>
+      <td
+        colSpan={colSpan}
+        data-ui="section-header"
+        className="px-3 sm:px-4 py-1.5 bg-tint border-b border-edge"
+      >
+        <span className="text-xs font-semibold uppercase tracking-wider text-faint">{label}</span>
+      </td>
+    </tr>
+  );
+}
+
+function ProvenanceTable({ comparison }) {
+  const { a, b } = comparison.products;
+  const colSpan = 3;
+  return (
+    <ComparisonTableShell columns={['Component / capability', a.label, b.label]}>
+      <GroupHeaderRow label="Bill of materials" colSpan={colSpan} />
       {comparison.bomRows.map((row) => (
         <tr key={row.area}>
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
             <div className="font-medium text-sm text-ink">{row.area}</div>
           </td>
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
-            <ProductCell cell={row.a} kind="bom" />
+            <BomCell cell={row.a} />
           </td>
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
-            <ProductCell cell={row.b} kind="bom" />
+            <BomCell cell={row.b} />
           </td>
         </tr>
       ))}
-    </ComparisonTableShell>
-  );
-}
-
-function CapabilityTable({ comparison }) {
-  const { a, b } = comparison.products;
-  return (
-    <ComparisonTableShell columns={['Capability', a.label, b.label, 'Overlap']}>
+      <GroupHeaderRow label="Capabilities" colSpan={colSpan} />
       {comparison.capabilityRows.map((row) => (
         <tr key={row.capability}>
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
             <div className="font-medium text-sm text-ink">{row.capability}</div>
           </td>
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
-            <ProductCell cell={row.a} kind="capability" />
+            <CapabilityPresenceCell cell={row.a} />
           </td>
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
-            <ProductCell cell={row.b} kind="capability" />
-          </td>
-          <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
-            <OverlapCell overlap={row.overlap} />
+            <CapabilityPresenceCell cell={row.b} />
           </td>
         </tr>
       ))}
@@ -267,11 +305,6 @@ function buildProductComparisonCopyText(comparison) {
   return lines.join('\n');
 }
 
-const TOGGLES = [
-  { id: 'bom', label: 'Bill of materials (BOM)' },
-  { id: 'capabilities', label: 'Capabilities' }
-];
-
 /* ── Component versions disclosure ───────────────────────────────────────────────────────────── */
 /** One product's expandable component-versions table (collapsed by default). */
 function ComponentVersionsPanel({ productId, productLabel }) {
@@ -292,6 +325,7 @@ function ComponentVersionsPanel({ productId, productLabel }) {
               <tr className="border-b border-edge">
                 <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider">Component</th>
                 <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider">Version</th>
+                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider">Source</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hair">
@@ -299,15 +333,27 @@ function ComponentVersionsPanel({ productId, productLabel }) {
                 <tr key={entry.component}>
                   <td className="px-2 py-1.5 text-xs text-ink align-middle">{entry.component}</td>
                   <td className="px-2 py-1.5 align-middle">
-                    <a
-                      href={entry.sourceUrl}
-                      target="_blank"
-                      rel="noopener"
-                      title={entry.sourceLabel}
-                      className={`font-mono text-xs text-ink hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
-                    >
+                    <span className="font-mono text-xs text-ink">
                       {entry.version}{entry.sha ? <span className="text-faint"> @{entry.sha}</span> : null}
-                    </a>
+                    </span>
+                  </td>
+                  <td className="px-2 py-1.5 align-middle">
+                    {entry.sourceUrl ? (
+                      <a
+                        href={entry.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={entry.sourceLabel}
+                        className={`inline-flex items-center gap-1 text-xs text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+                      >
+                        <ExternalLink size={11} className="flex-shrink-0" />
+                        <span>{entry.sourceLabel || 'Source'}</span>
+                      </a>
+                    ) : (
+                      <span className="text-xs text-faint border-b border-dashed border-faint">
+                        {entry.sourceLabel || 'Pending verification'}
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -315,15 +361,21 @@ function ComponentVersionsPanel({ productId, productLabel }) {
           </table>
         </div>
         <div className="flex items-center gap-1 text-xs text-faint pb-1">
-          <ExternalLink size={11} className="flex-shrink-0" />
-          <a
-            href={table.sourceUrl}
-            target="_blank"
-            rel="noopener"
-            className={`hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
-          >
-            {table.sourceLabel}
-          </a>
+          {table.sourceUrl ? (
+            <>
+              <ExternalLink size={11} className="flex-shrink-0" />
+              <a
+                href={table.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+              >
+                {table.sourceLabel}
+              </a>
+            </>
+          ) : (
+            <span className="border-b border-dashed border-faint">{table.sourceLabel || 'Pending verification'}</span>
+          )}
           <span className="ml-1">— extracted {table.extractionDate}</span>
         </div>
       </div>
@@ -347,7 +399,6 @@ function ComponentVersionsBeat({ comparison }) {
 
 export default function ProductComparisonView() {
   const comparison = productComparisons[0] ?? null;
-  const [view, setView] = useState('bom');
   const [copyDone, setCopyDone] = useState(false);
   const [pngBusy, setPngBusy] = useState(false);
   const [pngError, setPngError] = useState('');
@@ -426,36 +477,19 @@ export default function ProductComparisonView() {
         {isComparisonDraft(comparison) && <DraftBanner />}
         <OrientBeat />
         <DecisionBeat />
+        <ProductComparisonHero comparison={comparison} />
         <SharedSpineLedger comparison={comparison} />
         <ComponentVersionsBeat comparison={comparison} />
       </div>
 
-      {/* Detailed provenance (collapsed) — box-free: separated by a top hairline, every cell links. */}
+      {/* Detailed provenance (collapsed) — single grouped table; no toggle. */}
       <details className="border-t border-hair pt-2">
         <summary className="cursor-pointer select-none px-1 py-3 flex flex-wrap items-center justify-between gap-2 text-sm font-semibold text-ink hover:text-link">
-          <span>Detailed provenance tables (bill of materials + capabilities)</span>
+          <span>Detailed provenance (bill of materials + capabilities)</span>
           <span className="text-xs font-normal text-faint">every cell links to its source</span>
         </summary>
-        <div className="pt-2">
-          <nav className="flex gap-1 border-b border-hair">
-            {TOGGLES.map((toggle) => (
-              <button
-                data-ui="control"
-                key={toggle.id}
-                onClick={() => setView(toggle.id)}
-                className={`flex items-center gap-2 px-4 py-2 font-medium text-sm border-b-2 ${interactive.transition} ${interactive.focusRing} ${
-                  view === toggle.id
-                    ? 'border-accent text-link'
-                    : 'border-transparent text-muted hover:text-ink'
-                }`}
-              >
-                {toggle.label}
-              </button>
-            ))}
-          </nav>
-          <div className="pt-4">
-            {view === 'bom' ? <BomTable comparison={comparison} /> : <CapabilityTable comparison={comparison} />}
-          </div>
+        <div className="pt-4">
+          <ProvenanceTable comparison={comparison} />
         </div>
       </details>
 
@@ -469,7 +503,7 @@ export default function ProductComparisonView() {
                 <a
                   href={link.url}
                   target="_blank"
-                  rel="noopener"
+                  rel="noopener noreferrer"
                   className={`inline-flex items-center gap-2 text-sm font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
                 >
                   <ExternalLink size={14} className="flex-shrink-0" />
