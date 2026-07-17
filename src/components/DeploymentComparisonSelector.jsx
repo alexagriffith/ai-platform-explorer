@@ -49,7 +49,7 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
                 }
               `}
             >
-              <div className="flex flex-col items-center gap-0.5 mb-1.5">
+              <div className="flex flex-col items-center gap-1 mb-2">
                 <h3 className="text-sm font-semibold text-ink">
                   {comparison.title}
                 </h3>

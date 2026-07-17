@@ -47,7 +47,7 @@ export default function YAMLDiffView({ comparison }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Left State */}
         <div className="space-y-2">
-          <div className="sticky top-0 bg-surface py-1.5 border-b border-hair">
+          <div className="sticky top-0 bg-surface py-2 border-b border-hair">
             <h4 className="text-sm font-semibold text-ink flex items-center">
               <span className={`inline-block w-2.5 h-2.5 ${leftConfig.dotClass} rounded-full mr-2`}></span>
               {leftConfig.prefix}{leftConfig.label}
@@ -61,7 +61,7 @@ export default function YAMLDiffView({ comparison }) {
 
         {/* Right State */}
         <div className="space-y-2">
-          <div className="sticky top-0 bg-surface py-1.5 border-b border-hair">
+          <div className="sticky top-0 bg-surface py-2 border-b border-hair">
             <h4 className="text-sm font-semibold text-ink flex items-center">
               <span className={`inline-block w-2.5 h-2.5 ${rightConfig.dotClass} rounded-full mr-2`}></span>
               {rightConfig.prefix}{rightConfig.label}

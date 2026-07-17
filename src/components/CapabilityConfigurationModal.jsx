@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { X, Check, Microscope } from 'lucide-react';
 import { isCapabilityOptionDisabled, MCP_CAPABILITY_ID, LLAMA_STACK_CAPABILITY_ID } from '../lib/platformAiConstraints';
 import { badge, button, card, interactive, modal, redHatFirst, text } from '../lib/styleTokens';
+import { solutionDetails } from '../data/solutionDetails';
 
 /**
  * Layer option picker for Build Your Stack. Backdrop = cancel; header ✕ = remove capability + close.
@@ -130,7 +131,7 @@ export default function CapabilityConfigurationModal({
                       </div>
                     </div>
                   </button>
-                  {option.provider === 'Red Hat' && (
+                  {option.provider === 'Red Hat' && solutionDetails[option.id] && (
                     <div className="mt-3">
                       <button
                         type="button"

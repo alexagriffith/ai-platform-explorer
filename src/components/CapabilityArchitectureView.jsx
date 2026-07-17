@@ -37,31 +37,7 @@ import {
   toggle,
   typeScale,
 } from '../lib/styleTokens';
-
-/**
- * Return a complete grid-cols class that produces balanced rows (no orphan trailing card).
- * Complete class literals only — no template-built strings (Tailwind JIT rule).
- *
- * Balanced-row logic (columns chosen so trailing row is >= half-full):
- *   n=1  → 1 col  (trivial)
- *   n=2  → 2 cols (1 full row)
- *   n=3  → 3 cols (1 full row)
- *   n=4  → 4 cols (1 full row)
- *   n=5  → 3 cols (3+2: trailing row 2/3 full)
- *   n=6  → 3 cols (3+3: two full rows)
- *   n=7  → 4 cols (4+3: trailing row 3/4 full)
- *   n>=8 → 4 cols (best general cap; any remainder >= 2 with 4-col)
- */
-function distributingGridCols(count) {
-  if (count <= 1) return 'grid-cols-1';
-  if (count === 2) return 'grid-cols-2';
-  if (count === 3) return 'grid-cols-3';
-  if (count === 4) return 'grid-cols-4';
-  if (count === 5) return 'grid-cols-3'; // 3+2
-  if (count === 6) return 'grid-cols-3'; // 3+3
-  if (count === 7) return 'grid-cols-4'; // 4+3
-  return 'grid-cols-4';
-}
+import { distributingGridCols } from '../lib/layout';
 
 /** Map option provider string to a categoricalMark key. */
 function providerMarkKey(option) {
@@ -90,7 +66,7 @@ function CollapsibleDividerHeader({ title, isOpen, onToggle }) {
       type="button"
       onClick={onToggle}
       aria-expanded={isOpen}
-      className={`flex w-full items-center gap-2 px-2 py-1.5 rounded-card text-left ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
+      className={`flex w-full items-center gap-2 px-2 py-2 rounded-card text-left ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
     >
       <span className={`${text.faint} shrink-0 flex items-center`} aria-hidden>
         {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
@@ -128,7 +104,7 @@ function CapabilityCard({
     return (
       <button
         onClick={() => onConfigure(capability)}
-        className={`${card.unselected} group px-2 py-1.5 w-full h-full`}
+        className={`${card.unselected} group px-2 py-2 w-full h-full`}
       >
         <div className="flex flex-col items-center text-center gap-0.5 min-h-0">
           <h4 className={`${typeScale.componentName} ${text.ink}`}>
@@ -169,7 +145,7 @@ function CapabilityCard({
       }}
       aria-label={`Selected: ${capability.name} — ${selectedOption?.name || ''}`}
     >
-      <div className="flex items-center gap-1.5 px-2 py-1 border-b border-hair">
+      <div className="flex items-center gap-2 px-2 py-1 border-b border-hair">
         <CheckCircle2 size={12} className="text-green-600 shrink-0" aria-hidden />
         <div className="min-w-0 flex-1 text-center">
           <div className={`${typeScale.componentName} ${text.ink}`}>
@@ -474,7 +450,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
           <div className="flex-1 min-w-0">
             <h2 className={`font-display text-base font-bold ${text.ink}`}>Build Your AI Stack</h2>
           </div>
-          <div className="flex flex-wrap gap-1.5 shrink-0">
+          <div className="flex flex-wrap gap-2 shrink-0">
             <button
               type="button"
               onClick={loadBasicInferenceStack}

@@ -300,7 +300,7 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
         <div className={`${modal.header} flex items-start justify-between`}>
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-2.5 py-1 text-xs font-semibold bg-tint border border-edge text-muted rounded-card">
+              <span className="px-3 py-1 text-xs font-semibold bg-tint border border-edge text-muted rounded-card">
                 {resource.category}
               </span>
             </div>

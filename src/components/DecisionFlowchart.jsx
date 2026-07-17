@@ -22,21 +22,7 @@ import { capabilities } from '../data/capabilities';
 import { products } from '../data/products';
 import { reconcileContainerAiPlatform } from '../lib/platformAiConstraints';
 import { button, text, interactive, modal, surface, border, density, typeScale, productStatus } from '../lib/styleTokens';
-
-/**
- * Return a balanced grid-cols class (complete literals — Tailwind JIT rule).
- * Mirrors the helper in CapabilityArchitectureView: no orphan trailing rows.
- */
-function distributingGridCols(count) {
-  if (count <= 1) return 'grid-cols-1';
-  if (count === 2) return 'grid-cols-2';
-  if (count === 3) return 'grid-cols-3';
-  if (count === 4) return 'grid-cols-4';
-  if (count === 5) return 'grid-cols-3'; // 3+2
-  if (count === 6) return 'grid-cols-3'; // 3+3
-  if (count === 7) return 'grid-cols-4'; // 4+3
-  return 'grid-cols-4';
-}
+import { distributingGridCols } from '../lib/layout';
 
 /** Look up status from products catalog by id. Returns null when no match. */
 const productStatusFromCatalog = (productId) => {
@@ -1660,7 +1646,7 @@ export default function DecisionFlowchart({
                       {preview.changes.length > 0 && (
                         <div className="mb-3">
                           <p className={`${typeScale.secondary} font-semibold ${text.muted} mb-1.5`}>Will apply:</p>
-                          <div className="space-y-1.5">
+                          <div className="space-y-2">
                             {preview.changes.map((change, idx) => (
                               <div key={idx} className={`${density.cardPad} rounded-card border ${border.hair} ${surface.tint}`}>
                                 {change.type === 'add' && (
@@ -1685,7 +1671,7 @@ export default function DecisionFlowchart({
                       {preview.reconciliationChanges.length > 0 && (
                         <div className="mb-3">
                           <p className={`${typeScale.secondary} font-semibold ${text.muted} mb-1.5`}>Also updates (compatibility):</p>
-                          <div className="space-y-1.5">
+                          <div className="space-y-2">
                             {preview.reconciliationChanges.map((change, idx) => (
                               <div key={idx} className={`${density.cardPad} rounded-card border ${border.hair} ${surface.tint}`}>
                                 <p className={typeScale.secondary}>

@@ -207,7 +207,7 @@ export default function UseCaseView() {
           {selectedUseCases.length > 0 && (
             <button
               onClick={() => setSelectedUseCases([])}
-              className="px-2.5 py-0.5 rounded-card bg-tint text-muted text-xs font-medium hover:text-ink transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+              className="px-3 py-1 rounded-card bg-tint text-muted text-xs font-medium hover:text-ink transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
             >
               Show all
             </button>
@@ -216,7 +216,7 @@ export default function UseCaseView() {
             <button
               key={useCase.id}
               onClick={() => toggleUseCase(useCase.id)}
-              className={`px-2.5 py-0.5 rounded-card text-xs font-medium transition-all duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page ${
+              className={`px-3 py-1 rounded-card text-xs font-medium transition-all duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page ${
                 selectedUseCases.includes(useCase.id)
                   ? 'border border-accent text-link bg-tint'
                   : 'bg-tint text-muted hover:text-ink'

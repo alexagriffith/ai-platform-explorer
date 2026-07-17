@@ -8,6 +8,7 @@
     "src/components/DeepDiveModal.jsx",
     "src/components/AcronymGlossary.jsx",
     "src/lib/styleTokens.js",
+    "src/lib/layout.js",
     "src/components/ProductComparisonView.jsx",
     "src/components/SharedSpineLedger.jsx",
     "src/components/DeploymentImpactView.jsx",

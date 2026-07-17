@@ -177,7 +177,7 @@ export default function QuickComparisonTable({ comparison }) {
 
         {/* Technical Architecture */}
         <div className="rounded-card border border-edge bg-surface">
-          <div className="px-4 py-2.5 border-b border-hair">
+          <div className="px-4 py-2 border-b border-hair">
             <h4 className="text-sm font-bold text-ink">
               Technical Architecture Comparison
             </h4>
@@ -224,7 +224,7 @@ export default function QuickComparisonTable({ comparison }) {
 
         {/* Operational & Business */}
         <div className="rounded-card border border-edge bg-surface">
-          <div className="px-4 py-2.5 border-b border-hair">
+          <div className="px-4 py-2 border-b border-hair">
             <h4 className="text-sm font-bold text-ink">
               Operational &amp; Business Comparison
             </h4>
@@ -282,7 +282,7 @@ export default function QuickComparisonTable({ comparison }) {
             but users still choose one as their primary platform.
           </p>
           <div className="grid md:grid-cols-2 gap-2">
-            <div className="bg-surface rounded-card px-3 py-2.5 border border-edge">
+            <div className="bg-surface rounded-card px-3 py-2 border border-edge">
               <h5 className="text-sm font-semibold text-ink mb-1.5">Choose Dynamo if:</h5>
               <ul className="text-xs text-muted space-y-1">
                 <li>• Committed to NVIDIA GPU ecosystem</li>
@@ -291,7 +291,7 @@ export default function QuickComparisonTable({ comparison }) {
                 <li>• Need Grove gang scheduling features</li>
               </ul>
             </div>
-            <div className="bg-surface rounded-card px-3 py-2.5 border border-edge">
+            <div className="bg-surface rounded-card px-3 py-2 border border-edge">
               <h5 className="text-sm font-semibold text-ink mb-1.5">Choose llm-d if:</h5>
               <ul className="text-xs text-muted space-y-1">
                 <li>• Need multi-vendor hardware (AMD, Intel, Google tensor processing units)</li>
@@ -327,7 +327,7 @@ function ComparisonSection({ beforeLabel, afterLabel, rows }) {
       </div>
 
       {/* Comparison Rows */}
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         {rows.map((row, idx) => (
           <ComparisonRow key={idx} row={row} />
         ))}

@@ -99,7 +99,7 @@ export default function DeploymentImpactView() {
               <button
                 onClick={() => setMigrationNotesExpanded(!migrationNotesExpanded)}
                 aria-expanded={migrationNotesExpanded}
-                className={`w-full px-4 py-2.5 flex items-center justify-between ${interactive.hoverTint} ${interactive.transition}`}
+                className={`w-full px-4 py-2 flex items-center justify-between ${interactive.hoverTint} ${interactive.transition}`}
               >
                 <h3 className="text-sm font-bold text-ink flex items-center gap-2">
                   {migrationNotesExpanded ? (
@@ -117,7 +117,7 @@ export default function DeploymentImpactView() {
                 <div className="px-4 pb-4">
                   <ul className="space-y-2">
                     {comparison.migrationNotes.map((note, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5">
+                      <li key={idx} className="flex items-start gap-2">
                         <span className="flex-shrink-0 w-5 h-5 bg-tint border border-edge text-muted rounded-full flex items-center justify-center text-xs font-semibold mt-0.5">
                           {idx + 1}
                         </span>

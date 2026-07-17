@@ -129,7 +129,7 @@ function DecisionColumn({ need, product, facts, className = '' }) {
     <div className={`flex h-full flex-col ${className}`}>
       <h3 className="text-lg font-semibold leading-snug text-ink">{need}</h3>
       <div className="mt-1.5 text-sm font-semibold text-link">→ {product}</div>
-      <ul className="mt-2 space-y-1.5">
+      <ul className="mt-2 space-y-2">
         {facts.map((fact) => (
           <li key={fact} className="flex items-start gap-2 text-sm text-muted">
             <span aria-hidden="true" className="mt-[7px] h-1 w-1 flex-shrink-0 rounded-full bg-accent" />
@@ -171,7 +171,7 @@ function ComparisonTableShell({ columns, children }) {
             {columns.map((col) => (
               <th
                 key={col}
-                className="px-3 sm:px-4 py-2.5 text-left text-xs font-semibold text-faint uppercase tracking-wider min-w-[140px]"
+                className="px-3 sm:px-4 py-2 text-left text-xs font-semibold text-faint uppercase tracking-wider min-w-[140px]"
               >
                 {col}
               </th>
@@ -365,7 +365,7 @@ export default function ProductComparisonView() {
               <button
                 key={toggle.id}
                 onClick={() => setView(toggle.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 font-medium text-sm border-b-2 ${interactive.transition} ${interactive.focusRing} ${
+                className={`flex items-center gap-2 px-4 py-2 font-medium text-sm border-b-2 ${interactive.transition} ${interactive.focusRing} ${
                   view === toggle.id
                     ? 'border-accent text-link'
                     : 'border-transparent text-muted hover:text-ink'
@@ -385,7 +385,7 @@ export default function ProductComparisonView() {
       {comparison.docsLinks && comparison.docsLinks.length > 0 && (
         <div className="border-t border-hair pt-4">
           <h3 className="text-sm font-semibold text-ink mb-2">Additional resources</h3>
-          <ul className="space-y-1.5">
+          <ul className="space-y-2">
             {comparison.docsLinks.map((link) => (
               <li key={link.url}>
                 <a

@@ -117,6 +117,19 @@ no hedge-free absolutes.
   already contains. Say it once; the mark is the badge.
 - A subtitle must add information beyond its title or not exist.
 
+## Spacing law (added 2026-07-17 — PatternFly spacers + proximity ratios)
+- Only five spacers exist: 4/8/12/16/24px. Every padding, gap, and margin is one of them.
+- Proximity ratios: within an element (title->subtitle) <=4px; inside a card 8px; between
+  sibling cards 8-12px; between groups 16px; between sections 24px. Space INSIDE is always
+  less than space BETWEEN — that is what makes content group.
+- Cards hug content: height = text + 8px vertical padding; no min-heights, no centering
+  into slack.
+- One level of surface padding: a band pads its cards OR cards pad themselves — never both.
+- Balanced rows (global): N equal siblings render in rows differing by at most one, never
+  an orphan row. Unit boxes have width bounds (~200-360px at 1440); column count follows
+  content width.
+- Row text alignment: titles, badges, and controls in one row share a vertical center.
+
 ## Enforcement
 
 `scripts/gate.py` enforces this law two ways:
