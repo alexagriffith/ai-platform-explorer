@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { AlertCircle, Download, Copy, Check, ExternalLink } from 'lucide-react';
-import { productComparisons, isComparisonDraft, decisionBeatFacts } from '../data/productComparisons';
+import { productComparisons, isComparisonDraft } from '../data/productComparisons';
 import SharedSpineLedger from './SharedSpineLedger';
 import ProductComparisonHero from './ProductComparisonHero';
 import { buildLedgerModel } from '../lib/ledgerModel';
@@ -138,38 +138,34 @@ function OrientBeat() {
 }
 
 /* ── BEAT 2 · DECIDE ─────────────────────────────────────────────────────────────────────────── */
-/** One box-free column: the need -> the product -> two facts. Two of these sit in an equal-width
- *  grid split by a single hairline (no cards, no fills) — the product name is the one red accent. */
-function DecisionColumn({ need, product, facts, className = '' }) {
+/** One card: a small uppercase tag above the product name, nothing else.
+ *  Two of these sit in an equal-width grid split by one hairline (anti-box, equal-cell law). */
+function DecisionCard({ tag, name, className = '' }) {
   return (
-    <div className={`flex h-full flex-col ${className}`}>
-      <h3 className="text-lg font-semibold leading-snug text-ink">{need}</h3>
-      <div className="mt-1.5 text-sm font-semibold text-link">→ {product}</div>
-      <ul className="mt-2 space-y-2">
-        {facts.map((fact) => (
-          <li key={fact} className="flex items-start gap-2 text-sm text-muted">
-            <span aria-hidden="true" className="mt-[7px] h-1 w-1 flex-shrink-0 rounded-full bg-accent" />
-            <span className="leading-relaxed">{fact}</span>
-          </li>
-        ))}
-      </ul>
+    <div
+      data-ui="card"
+      className={`flex h-full flex-col justify-center ${className}`}
+    >
+      <div className="text-[10px] font-semibold uppercase tracking-widest text-accent mb-1">
+        {tag}
+      </div>
+      <div className="text-lg font-semibold leading-snug text-ink">{name}</div>
     </div>
   );
 }
 
-function DecisionBeat() {
+function DecisionBeat({ comparison }) {
+  const { a, b } = comparison.products;
   return (
     <div className="grid grid-cols-1 divide-y divide-hair md:grid-cols-2 md:divide-y-0 md:divide-x">
-      <DecisionColumn
-        need="You just need to serve models, fast"
-        product="Red Hat AI Inference Server"
-        facts={decisionBeatFacts.a.map((f) => f.text)}
+      <DecisionCard
+        tag={a.decisionTag}
+        name={a.label}
         className="pb-4 md:pb-0 md:pr-6"
       />
-      <DecisionColumn
-        need="You need the whole machine-learning lifecycle"
-        product="Red Hat OpenShift AI"
-        facts={decisionBeatFacts.b.map((f) => f.text)}
+      <DecisionCard
+        tag={b.decisionTag}
+        name={b.label}
         className="pt-4 md:pt-0 md:pl-6"
       />
     </div>
@@ -374,7 +370,7 @@ export default function ProductComparisonView() {
       <div id={CAPTURE_ROOT_ID} className="space-y-6">
         {isComparisonDraft(comparison) && <DraftBanner />}
         <OrientBeat />
-        <DecisionBeat />
+        <DecisionBeat comparison={comparison} />
         <ProductComparisonHero comparison={comparison} />
         <SharedSpineLedger comparison={comparison} />
       </div>

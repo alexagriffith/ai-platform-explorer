@@ -13,9 +13,8 @@ CHECKS
                              support ∈ {yes, partial, no, confirm};
                              status (when present) ∈ the four canonical values.
   (3) Source-URL shape     — every sourceUrl is https://; label is non-empty.
-  (4) decisionBeatFacts    — every decisionBeatFact side has a sourceUrl + sourceLabel
-                             and that sourceUrl appears somewhere in a row's sourceUrl
-                             (cross-surface: cards cite facts the provenance tables back).
+  (4) decisionBeatFacts    — (retired: decision cards now render tag+name only; check
+                             is a no-op when decisionBeatFacts is absent from the data).
   (5) Ledger spine coverage— every SPINE entry key resolves to a row in bomRows or
                              capabilityRows (no broken spine-to-row reference).
   (6) Hero cell resolution — every hero.inner/outer component cell resolves to an

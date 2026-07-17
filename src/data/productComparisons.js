@@ -89,8 +89,8 @@ export const aiInferenceVsRhoai = {
   audience: 'Teams deciding between the inference-focused runtime and the full AI/ML platform',
   draft: true,
   products: {
-    a: { productId: 'ai-inference', label: 'Red Hat AI Inference Server' },
-    b: { productId: 'rhoai', label: 'Red Hat OpenShift AI (RHOAI)' }
+    a: { productId: 'ai-inference', label: 'Red Hat AI Inference Server', decisionTag: 'Serving' },
+    b: { productId: 'rhoai', label: 'Red Hat OpenShift AI', decisionTag: 'Full platform' }
   },
 
   bomRows: [
@@ -563,41 +563,6 @@ export function isComparisonDraft(comparison) {
   return rows.some((row) => row.illustrative === true);
 }
 
-/**
- * Facts rendered in the DecisionBeat quick-comparison cards.
- * Extracted from the provenance rows above — each fact cites its supporting row.
- * These are the ONLY claims allowed in those cards; the source row governs wording.
- */
-export const decisionBeatFacts = {
-  /** Red Hat AI Inference Server column */
-  a: [
-    {
-      text: 'One container · vLLM engine',
-      sourceUrl: SRC.rhaisGettingStarted,
-      sourceLabel: 'Red Hat AI Inference Server 3.1 docs — Getting started'
-    },
-    {
-      // Any-Kubernetes delivery chart is Tech Preview (catalog row, rhaiXksChart).
-      // Standalone RHEL: getting-started doc describes a container image that runs on RHEL.
-      text: 'Any Kubernetes (delivery chart Tech Preview) · standalone on Red Hat Enterprise Linux',
-      sourceUrl: SRC.rhaiXksChart,
-      sourceLabel: 'Red Hat AI any-Kubernetes Helm chart — catalog.redhat.com, Tech Preview v3.4; standalone RHEL via getting-started doc'
-    }
-  ],
-  /** Red Hat OpenShift AI column */
-  b: [
-    {
-      text: 'Notebooks, pipelines, and serving · includes the Inference Server',
-      sourceUrl: SRC.rhoaiInstalling,
-      sourceLabel: 'Red Hat OpenShift AI self-managed — installing and uninstalling guide'
-    },
-    {
-      text: 'Requires OpenShift',
-      sourceUrl: SRC.rhaiOpenshiftChart,
-      sourceLabel: 'Red Hat AI on-OpenShift Helm chart — requires OpenShift as the container platform'
-    }
-  ]
-};
 
 /**
  * Resolve a hero cell reference to its underlying row side. Returns the label plus the row-side's
