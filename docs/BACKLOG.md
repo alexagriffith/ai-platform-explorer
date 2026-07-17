@@ -252,7 +252,7 @@ Branch: `ws/style-unification`. Two commits.
 
 ### Review-fixes notes — deferred items (2026-07-17)
 
-- [ ] **Nested `<button>` inside `<button data-ui="card">` in InteractiveBuilder option cards** (`src/components/InteractiveBuilder.jsx`, `CapabilitySelector` component, "Learn more" guide toggle). Invalid HTML — browsers silently restructure the DOM, breaking event propagation; React logs a hydration warning in every vitest run. Fix: change the outer option card from `<button data-ui="card">` to `<div role="button" tabIndex={0} onKeyDown=...>` (or extract the inner help-circle toggle above the card boundary). A11y hazard: two focusable elements must not be nested.
+- [x] **Nested `<button>` inside `<button data-ui="card">` in InteractiveBuilder option cards** (`src/components/InteractiveBuilder.jsx`, `CapabilitySelector` component, "Learn more" guide toggle). Fixed (ws/nested-button 2026-07-17): outer option card changed from `<button data-ui="card">` to `<div role="button" tabIndex={0} aria-pressed aria-disabled onKeyDown Enter/Space>` with the guide toggle `<button>` extracted as an absolutely-positioned sibling. `validateDOMNesting` warning eliminated from vitest output; all 71 tests green.
 
 - [ ] **`DecisionTree` "View recommendation" link uses `text-green-600`** (`src/components/DecisionTree.jsx`) — raw color class, violates the style law rule "status colors are status-only" (green = GA/complete status only). Fix: replace `text-green-600` with `text-link` (or `text-accent`) so it uses the semantic action-link token, not the completion-status color.
 

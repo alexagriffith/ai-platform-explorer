@@ -1351,7 +1351,8 @@ const STATES_TABLE = [
       await page.locator('[data-tab="architecture"] button').filter({ hasText: /interactive builder/i }).first().click();
       await page.waitForTimeout(500);
       // Make a selection so it advances past step 1
-      const firstOption = page.locator('[data-tab="architecture"] button').filter({ hasText: /openshift|rhel|kubernetes/i }).first();
+      // Option cards are div[role="button"][data-ui="card"] (not <button>)
+      const firstOption = page.locator('[data-tab="architecture"] [data-ui="card"][role="button"]').filter({ hasText: /openshift|rhel|kubernetes/i }).first();
       if (await firstOption.count() > 0) {
         await firstOption.click();
         await page.waitForTimeout(200);
@@ -1378,16 +1379,16 @@ const STATES_TABLE = [
         const continueBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /continue to next layer|complete stack/i }).first();
         if (await continueBtn.count() === 0) break;
         // Select first available option in this step if needed
-        const optionBtn = page.locator('[data-tab="architecture"] [data-ui="card"]').first();
+        // Option cards are div[role="button"][data-ui="card"] (not <button>)
+        const optionBtn = page.locator('[data-tab="architecture"] [data-ui="card"][role="button"]').first();
         if (await optionBtn.count() > 0) {
-          const isEnabled = await optionBtn.isEnabled();
-          if (isEnabled) await optionBtn.click();
+          await optionBtn.click();
           await page.waitForTimeout(150);
         }
         const isEnabled = await continueBtn.isEnabled();
         if (!isEnabled) {
-          // Force-click first option card
-          const firstCard = page.locator('[data-tab="architecture"] button').filter({ hasText: /openshift|rhel|kubernetes|vllm/i }).first();
+          // Force-click first option card by text
+          const firstCard = page.locator('[data-tab="architecture"] [data-ui="card"][role="button"]').filter({ hasText: /openshift|rhel|kubernetes|vllm/i }).first();
           if (await firstCard.count() > 0) await firstCard.click();
           await page.waitForTimeout(150);
         }
