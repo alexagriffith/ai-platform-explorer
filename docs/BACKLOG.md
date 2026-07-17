@@ -213,6 +213,19 @@ Verify: `npm run check` green; every tab loads in the browser; `git log --follow
 
 ---
 
+### WS-IA-2 — IA restructure 6→4 tabs ✅ COMPLETE (2026-07-17)
+
+Tab bar reduced from 6 to 4 (Architecture · Decision Guides · Products · Deployment Impact).
+- Products absorbs Product Comparison + MCP Ecosystem (ProductsHub, opens on Compare)
+- Architecture gains Blueprints mode (RAGArchitecture + TrainingDeepDive, read-only)
+- Decision Guides gains Reference Guides group (FineTuningDecisionMatrix + SecurityOverview)
+- Browse-by-use-case index (9 use-case names, deep-link to new homes) in Products landing
+- style-ledger.json: use-cases/product-comparison tabs removed; ProductsHub.jsx added to migrated
+- style-audit.mjs: Products tab opens Compare sub-view for ledger geometry + draft banner checks
+- use-cases height-budget/card-text-budget/control-scale exemptions dissolved (sub-view architecture fixed the root cause)
+
+---
+
 ### U0 — Closed-world component audit ✅ COMPLETE (2026-07-17)
 
 Branch: `ws/style-unification`. Two commits.

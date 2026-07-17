@@ -46,7 +46,10 @@ async function openTab(page, navLabel, tabId) {
   await page.goto(URL, { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: new RegExp(navLabel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i') }).first().click();
   await page.locator(`[data-tab="${tabId}"]`).first().waitFor({ timeout: 15000 });
-  if (tabId === 'product-comparison') {
+  // Products tab: navigate to Compare sub-view so the ledger cells (formerly product-comparison)
+  // are in the DOM for geometry checks and draft-banner checks.
+  if (tabId === 'products') {
+    await page.getByRole('button', { name: /^Compare$/i }).first().click();
     await page.getByText('What ships in each product').first().waitFor({ timeout: 15000 });
   }
   await page.waitForTimeout(300);
@@ -68,8 +71,8 @@ function tabProbe(tabId) {
   };
   const r2 = (n) => Math.round(n * 100) / 100;
 
-  // Product Comparison: ledger cell geometry
-  if (tabId === 'product-comparison') {
+  // Products tab (Compare sub-view): ledger cell geometry
+  if (tabId === 'products') {
     const A = [...tab.querySelectorAll('[data-ledger-cell="a"]')].map(rect);
     const B = [...tab.querySelectorAll('[data-ledger-cell="b"]')].map(rect);
     const N = [...tab.querySelectorAll('[data-ledger-cell="name"]')].map(rect);
@@ -908,7 +911,7 @@ async function auditTab(browser, tab) {
     for (const p of await page.evaluate(tabProbe, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
     const overflow = await page.evaluate(noHorizontalScroll);
     if (overflow > 1) problems.push(`${prefix('1440')} horizontal scroll: scrollWidth exceeds clientWidth by ${overflow}px`);
-    if (tabId === 'product-comparison') {
+    if (tabId === 'products') {
       const banner = await page.evaluate(draftBannerState);
       if (!banner.ok) problems.push(`${prefix('1440 light')} draft banner not visibly distinct: ${JSON.stringify(banner)}`);
     }
@@ -989,7 +992,7 @@ async function auditTab(browser, tab) {
     const page = await ctx.newPage();
     await openTab(page, navLabel, tabId);
     for (const p of await page.evaluate(tabProbe, tabId)) problems.push(`${prefix('1440 dark')} ${p}`);
-    if (tabId === 'product-comparison') {
+    if (tabId === 'products') {
       const banner = await page.evaluate(draftBannerState);
       if (!banner.ok) problems.push(`${prefix('1440 dark')} draft banner not visibly distinct: ${JSON.stringify(banner)}`);
     }
