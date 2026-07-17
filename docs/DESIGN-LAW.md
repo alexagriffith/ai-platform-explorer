@@ -100,6 +100,9 @@ information allows — best first:
 ## Anti-box law (unchanged, now app-wide)
 
 - One surface per section; zero nested bordered boxes.
+- **One canvas per view:** every tab renders on a single uninterrupted background plane.
+  A tab's root element is `bg-page`; its content panels sit on `bg-surface`. There is no
+  second page-level background plane inside a tab — only surface-on-page layering.
 - Identical cell dimensions within any component (±1px at 1440px viewport).
 - Maximum 2 border-radius values page-wide.
 - Grid-aligned; even distribution; no horizontal scroll.
@@ -129,6 +132,12 @@ no hedge-free absolutes.
   an orphan row. Unit boxes have width bounds (~200-360px at 1440); column count follows
   content width.
 - Row text alignment: titles, badges, and controls in one row share a vertical center.
+
+**Exceptions clause (2px and 6px, F12):** 2px is allowed for micro-padding on badge/chip
+  rings (`py-0.5`, `px-0.5`) and focus rings. 6px is allowed for icon-button touch targets
+  (`p-1.5`), table cell rows (`py-1.5`), and icon-to-label gap alignment (`gap-1.5`). These
+  are the only values outside the five-spacer set. Any additional exception requires a
+  comment and a DESIGN-LAW update.
 
 ## Component contract (added 2026-07-17 — closed-world auditing)
 

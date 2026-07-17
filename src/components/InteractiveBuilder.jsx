@@ -138,8 +138,9 @@ function CapabilitySelector({
           </h4>
           <p className={`text-sm ${text.muted}`}>{capability.description}</p>
         </div>
-        {isSelected && !capability.required && (
+        {isSelected && (
           <button
+            type="button"
             onClick={() => onRemove(layerId, capability.id)}
             className={`text-sm ${text.link} hover:underline ${interactive.focusRing} rounded-card`}
           >

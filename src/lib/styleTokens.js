@@ -119,6 +119,8 @@ export const modal = {
   panel: 'w-full max-h-[90vh] overflow-y-auto rounded-panel border border-edge bg-surface',
   panelWide: 'max-w-4xl',
   panelMedium: 'max-w-2xl',
+  /** Narrow: hugs text at ~65ch (option-picker, configure modals). */
+  panelNarrow: 'max-w-[65ch]',
   header: 'sticky top-0 z-10 border-b border-hair bg-surface px-4 py-4',
   body: 'space-y-4 p-4',
   section: 'space-y-3 border-t border-hair pt-5 first:border-t-0 first:pt-0',

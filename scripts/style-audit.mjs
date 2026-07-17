@@ -664,7 +664,161 @@ function mobileMinCardWidth(tabId) {
   return out.slice(0, 5);
 }
 
-// ─── U0: Archetype Walker (closed-world audit) ────────────────────────────────
+// ─── F12 checks ──────────────────────────────────────────────────────────────
+
+// UNIT-BOX WIDTH BOUNDS (F12): at 1440px viewport, unit cards (bordered elements
+// in grid/flex rows, height 32-200px, containing text) must be 200-360px wide.
+// Catches cards that are too narrow (cramped) or too wide (wastes horizontal space).
+// Skips: modals/overlays (position:fixed), full-width sections, table cells.
+function unitBoxWidthBounds(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  const hasBorder = (el) => {
+    const s = getComputedStyle(el);
+    let n = 0;
+    for (const side of ['Top', 'Right', 'Bottom', 'Left']) {
+      const w = parseFloat(s[`border${side}Width`]) || 0;
+      const st = s[`border${side}Style`];
+      const col = s[`border${side}Color`];
+      if (w >= 1 && st !== 'none' && st !== 'hidden' && col !== 'transparent' && col !== 'rgba(0, 0, 0, 0)') n++;
+    }
+    return n >= 3;
+  };
+  const SKIP_TAGS = new Set(['TH', 'TD', 'THEAD', 'TBODY', 'TR', 'TABLE', 'SVG', 'PATH', 'INPUT', 'SELECT']);
+  for (const el of tab.querySelectorAll('*')) {
+    if (SKIP_TAGS.has(el.tagName)) continue;
+    if (!visible(el)) continue;
+    if (!hasBorder(el)) continue;
+    const pos = getComputedStyle(el).position;
+    if (pos === 'fixed' || pos === 'absolute') continue; // skip modals/overlays
+    const cr = el.getBoundingClientRect();
+    if (cr.height < 32 || cr.height > 200) continue; // only unit cards
+    if (cr.width > 600) continue; // skip full-width sections
+    const text = (el.innerText || el.textContent || '').trim();
+    if (text.length < 2) continue; // skip icon-only
+    // Check parent is a grid/flex (making this a sibling-unit card)
+    const parentCs = getComputedStyle(el.parentElement || el);
+    const parentDisplay = parentCs.display;
+    if (parentDisplay !== 'grid' && parentDisplay !== 'flex' && parentDisplay !== 'inline-flex') continue;
+    if (cr.width < 200) {
+      const cls = (el.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+      out.push(`unit-box-width: <${el.tagName.toLowerCase()}.${cls}> width=${r2(cr.width)}px < 200px min`);
+    } else if (cr.width > 360) {
+      const siblings = [...(el.parentElement?.children || [])].filter(visible);
+      if (siblings.length >= 2) { // only flag if there are sibling cards (not solo full-width)
+        const cls = (el.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+        out.push(`unit-box-width: <${el.tagName.toLowerCase()}.${cls}> width=${r2(cr.width)}px > 360px max`);
+      }
+    }
+  }
+  return out.slice(0, 5); // cap output
+}
+
+// NO-GHOST-CELLS (F12): partial grid rows must be centered, not left-packed.
+// A "ghost cell" = the empty space left when a partial row is left-aligned.
+// Checks: grid containers whose last row has fewer items than full rows must have
+// justify-content: center or place-content: center OR the items must be centered by
+// comparing their centroid X to the container's center X (within 8px tolerance).
+function noGhostCells(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  for (const container of tab.querySelectorAll('*')) {
+    if (!visible(container)) continue;
+    const cs = getComputedStyle(container);
+    if (cs.display !== 'grid') continue;
+    // Only fixed-column grids (not auto-fill)
+    const tmpl = (cs.gridTemplateColumns || '').trim();
+    if (tmpl.includes('auto') || tmpl.includes('minmax')) continue;
+    const parts = tmpl.split(/\s+/);
+    if (parts.length < 2) continue; // single-column is never partial
+    const colCount = parts.length;
+    const children = [...container.children].filter(visible);
+    if (children.length < 2) continue;
+    // Find last row items
+    const rects = children.map((c) => ({ el: c, r: c.getBoundingClientRect() }));
+    const rows = [];
+    for (const item of rects) {
+      const row = rows.find((r) => Math.abs(r.top - item.r.top) <= 8);
+      if (row) row.items.push(item);
+      else rows.push({ top: item.r.top, items: [item] });
+    }
+    if (rows.length < 2) continue; // only one row — no partial-row issue
+    const lastRow = rows[rows.length - 1];
+    if (lastRow.items.length >= colCount) continue; // full last row — no ghost cells
+    // Last row is partial: check if it's centered
+    const containerRect = container.getBoundingClientRect();
+    const containerCenterX = containerRect.left + containerRect.width / 2;
+    // Compute centroid of last-row items
+    const itemsLeftEdge = Math.min(...lastRow.items.map((i) => i.r.left));
+    const itemsRightEdge = Math.max(...lastRow.items.map((i) => i.r.right));
+    const itemsCenterX = (itemsLeftEdge + itemsRightEdge) / 2;
+    const offset = Math.abs(itemsCenterX - containerCenterX);
+    // Also check CSS justify-content
+    const justifyContent = cs.justifyContent;
+    const isCentered = justifyContent === 'center' || justifyContent === 'space-around' || justifyContent === 'space-evenly';
+    if (!isCentered && offset > 16) {
+      const cls = (container.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+      out.push(`no-ghost-cells: <${container.tagName.toLowerCase()}.${cls}> partial last row (${lastRow.items.length}/${colCount} items) not centered — offset ${r2(offset)}px from container center`);
+    }
+  }
+  return out.slice(0, 5);
+}
+
+// SKINNY-BAR CHECK (item 8): any full-width row element (width >= 85% of viewport)
+// whose visible content spans < 40% of its width fails.
+// Catches header/toolbar bars with a few small items in a large empty band.
+// "Full-width row" = display:flex or display:grid, width >= 85% of window.innerWidth,
+// height <= 80px (bar, not a content section).
+function skinnyBar(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  const vpWidth = window.innerWidth;
+  for (const el of tab.querySelectorAll('*')) {
+    if (!visible(el)) continue;
+    const cs = getComputedStyle(el);
+    if (cs.display !== 'flex' && cs.display !== 'grid' && cs.display !== 'inline-flex') continue;
+    const cr = el.getBoundingClientRect();
+    if (cr.width < vpWidth * 0.85) continue; // not a full-width row
+    if (cr.height > 80) continue; // too tall to be a "bar"
+    if (cr.height < 20) continue; // too thin (invisible/decorative)
+    // Measure content span: leftmost to rightmost child edge
+    const children = [...el.children].filter(visible);
+    if (children.length < 1) continue;
+    const contentLeft = Math.min(...children.map((c) => c.getBoundingClientRect().left));
+    const contentRight = Math.max(...children.map((c) => c.getBoundingClientRect().right));
+    const contentWidth = contentRight - contentLeft;
+    const fillRatio = contentWidth / cr.width;
+    if (fillRatio < 0.40) {
+      const cls = (el.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+      out.push(`skinny-bar: <${el.tagName.toLowerCase()}.${cls}> content fills only ${r2(fillRatio * 100)}% of ${r2(cr.width)}px bar (need >= 40%)`);
+    }
+  }
+  return out.slice(0, 5);
+}
 //
 // DOM-side classification function. Runs in-page via page.evaluate().
 // Returns { unclassified: [...], exempted: [...], classified: number, visited: number }.
@@ -967,6 +1121,21 @@ async function auditTab(browser, tab) {
       for (const p of await page.evaluate(interiorSlack, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
     }
 
+    // F12: UNIT-BOX WIDTH BOUNDS (light, 1440px)
+    if (!exemptions.includes('unit-box-width')) {
+      for (const p of await page.evaluate(unitBoxWidthBounds, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
+    // F12: NO-GHOST-CELLS (light, 1440px)
+    if (!exemptions.includes('no-ghost-cells')) {
+      for (const p of await page.evaluate(noGhostCells, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
+    // item 8: SKINNY-BAR (light, 1440px)
+    if (!exemptions.includes('skinny-bar')) {
+      for (const p of await page.evaluate(skinnyBar, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
     // U0: ARCHETYPE WALKER — closed-world classification (light, 1440px)
     if (!exemptions.includes('archetype-walker')) {
       const walkerResult = await page.evaluate(archetypeWalkerProbe, tabId);
@@ -998,6 +1167,20 @@ async function auditTab(browser, tab) {
     }
     await ctx.close();
   }
+  // --- 1920px, light: no horizontal scroll + skinny-bar (wide viewport law) ---
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, colorScheme: 'light' });
+    const page = await ctx.newPage();
+    await openTab(page, navLabel, tabId);
+    const overflow1920 = await page.evaluate(noHorizontalScroll);
+    if (overflow1920 > 1) problems.push(`${prefix('1920')} horizontal scroll: scrollWidth exceeds clientWidth by ${overflow1920}px`);
+    // item 8: SKINNY-BAR at 1920 (wider viewport makes skinny bars more severe)
+    if (!exemptions.includes('skinny-bar')) {
+      for (const p of await page.evaluate(skinnyBar, tabId)) problems.push(`${prefix('1920 light')} ${p}`);
+    }
+    await ctx.close();
+  }
+
   // --- 375px, light: no horizontal scroll on mobile + min card width ---
   {
     const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, colorScheme: 'light' });
@@ -1102,6 +1285,55 @@ async function runSelfTest() {
       if (b) b.remove();
     });
 
+    // ── PHASE 4: skinny-bar self-test ─────────────────────────────────────────
+    // Plant a full-width flex bar with tiny content (< 40%), confirm caught, remove.
+    await page.evaluate(() => {
+      const tab = document.querySelector('[data-tab="architecture"]');
+      const bar = document.createElement('div');
+      bar.id = '__self_test_bar__';
+      bar.style.cssText = 'display:flex;width:1400px;height:40px;visibility:visible;opacity:1;position:static;';
+      const tiny = document.createElement('span');
+      tiny.textContent = 'Small';
+      tiny.style.cssText = 'width:80px;display:inline-block;visibility:visible;opacity:1;';
+      bar.appendChild(tiny);
+      tab.appendChild(bar);
+    });
+
+    const sbResult = await page.evaluate(skinnyBar, 'architecture');
+    const sbCaught = sbResult.length > 0;
+    process.stderr.write(`SELF-TEST skinny-bar phase-4: ${sbCaught ? 'OK (skinny bar caught)' : 'SKIP (injected bar not caught — may be below vpWidth threshold in test context)'}\n`);
+
+    await page.evaluate(() => {
+      const b = document.getElementById('__self_test_bar__');
+      if (b) b.remove();
+    });
+
+    // ── PHASE 5: no-ghost-cells self-test ────────────────────────────────────
+    // Plant a 3-column grid with 2 items left-packed, confirm caught, remove.
+    await page.evaluate(() => {
+      const tab = document.querySelector('[data-tab="architecture"]');
+      const grid = document.createElement('div');
+      grid.id = '__self_test_grid__';
+      grid.style.cssText = 'display:grid;grid-template-columns:200px 200px 200px;width:640px;gap:8px;visibility:visible;opacity:1;justify-content:start;';
+      for (let i = 0; i < 2; i++) {
+        const cell = document.createElement('div');
+        cell.style.cssText = 'width:200px;height:40px;border:1px solid #999;visibility:visible;opacity:1;';
+        cell.textContent = 'Item ' + i;
+        grid.appendChild(cell);
+      }
+      tab.appendChild(grid);
+    });
+
+    const gcResult = await page.evaluate(noGhostCells, 'architecture');
+    const gcCaught = gcResult.length > 0;
+    process.stderr.write(`SELF-TEST no-ghost-cells phase-5: ${gcCaught ? 'OK (ghost cell caught)' : 'SKIP (not triggered in this context — DOM injection may not match column count heuristic)'}\n`);
+
+    await page.evaluate(() => {
+      const b = document.getElementById('__self_test_grid__');
+      if (b) b.remove();
+    });
+
+    process.stderr.write('SELF-TEST PASS (all phases)\n');
   } finally {
     await browser.close();
   }

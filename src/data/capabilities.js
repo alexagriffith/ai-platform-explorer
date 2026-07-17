@@ -488,8 +488,8 @@ export const capabilities = {
         {
           id: 'rhel-hosts',
           provider: 'Red Hat',
-          name: 'Red Hat Enterprise Linux (RHEL) servers (bare metal / VMs)',
-          description: 'Red Hat Enterprise Linux hosts',
+          name: 'Red Hat Enterprise Linux (RHEL) servers',
+          description: 'Bare metal / virtual machines (VMs)',
           status: 'GA',
           recommended: false
         }

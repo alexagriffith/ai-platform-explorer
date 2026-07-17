@@ -3,7 +3,6 @@ import {
   Building2,
   Sparkles,
   X,
-  Trash2,
   ArrowDown,
   ArrowUp,
   ChevronDown,
@@ -133,80 +132,73 @@ function CapabilityCard({
   return (
     <div
       data-ui="card"
-      className={`rounded-card bg-surface h-full ${interactive.transitionAll} ${markClass} ${
-        hasDeepDive ? `${card.selectedClickable} ${interactive.focusRing}` : ''
-      }`}
-      role={hasDeepDive ? 'button' : undefined}
-      tabIndex={hasDeepDive ? 0 : undefined}
-      onClick={() => hasDeepDive && onDeepDive(selectedOptionId)}
-      onKeyDown={(e) => {
-        if (!hasDeepDive || e.target !== e.currentTarget) return;
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onDeepDive(selectedOptionId);
-        }
-      }}
-      aria-label={`Selected: ${capability.name} — ${selectedOption?.name || ''}`}
+      className={`rounded-card bg-surface h-full ${interactive.transitionAll} ${markClass}`}
     >
-      <div className="flex items-center gap-2 px-2 py-1 border-b border-hair">
-        <CheckCircle2 size={12} className="text-green-600 shrink-0" aria-hidden />
-        <div className="min-w-0 flex-1 text-center">
-          <div className={`${typeScale.componentName} ${text.ink}`}>
-            {capability.name}
-            {selectedOption?.isCustomer && (
-              <Building2 size={10} className={`inline ml-1 mb-0.5 ${text.muted}`} title="Customer-provided" />
-            )}
-          </div>
-          <div className={`${typeScale.meta} ${text.muted}`}>
-            {selectedOption?.name}
-          </div>
-        </div>
-        <div className="flex gap-2 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-          {hasSubComponents && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleExpanded(selectedOptionId);
-              }}
-              className={`p-1.5 rounded-card ${interactive.hoverTint} flex-shrink-0 ${interactive.transition} ${interactive.focusRing}`}
-              title={isExpanded ? 'Collapse components' : 'Expand components'}
-              aria-expanded={isExpanded}
-            >
-              {isExpanded ? (
-                <ChevronDown size={12} className="flex-shrink-0" />
-              ) : (
-                <ChevronRight size={12} className="flex-shrink-0" />
+      {/* Card header — click = configure/change */}
+      <div className="flex items-center gap-1 border-b border-hair">
+        <button
+          type="button"
+          onClick={() => onConfigure(capability)}
+          className={`flex-1 flex items-center gap-2 px-2 py-1 rounded-tl-card text-left ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
+          title={`Change ${capability.name}`}
+          aria-label={`Change: ${capability.name} — currently ${selectedOption?.name || ''}`}
+        >
+          <CheckCircle2 size={12} className="text-green-600 shrink-0" aria-hidden />
+          <div className="min-w-0 flex-1 text-center">
+            <div className={`${typeScale.componentName} ${text.ink}`}>
+              {capability.name}
+              {selectedOption?.isCustomer && (
+                <Building2 size={10} className={`inline ml-1 mb-0.5 ${text.muted}`} title="Customer-provided" />
               )}
-            </button>
-          )}
+            </div>
+            <div className={`${typeScale.meta} ${text.muted}`}>
+              {selectedOption?.name}
+            </div>
+          </div>
+        </button>
+        {hasSubComponents && (
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); onConfigure(capability); }}
-            className={`p-1.5 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
-            title={capability.required ? 'Change (required)' : 'Change'}
-            aria-label="Change"
+            onClick={() => onToggleExpanded(selectedOptionId)}
+            className={`p-1.5 rounded-tr-card ${interactive.hoverTint} flex-shrink-0 ${interactive.transition} ${interactive.focusRing}`}
+            title={isExpanded ? 'Collapse components' : 'Expand components'}
+            aria-expanded={isExpanded}
           >
-            <X size={11} />
+            {isExpanded ? (
+              <ChevronDown size={12} className="flex-shrink-0" />
+            ) : (
+              <ChevronRight size={12} className="flex-shrink-0" />
+            )}
           </button>
-          {!capability.required && (
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onRemove(capability.id); }}
-              className={`p-1.5 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
-              title="Remove"
-              aria-label="Remove"
-            >
-              <Trash2 size={11} />
-            </button>
-          )}
-        </div>
+        )}
       </div>
       {selectedOption?.status && (
         <div className={`px-2 py-0.5 ${typeScale.meta} ${text.faint}`}>
           {selectedOption.status}
         </div>
       )}
+      {/* Remove — all cards including Required */}
+      <div className="px-2 pb-1.5 pt-0.5 flex gap-2">
+        {hasDeepDive && (
+          <button
+            type="button"
+            onClick={() => onDeepDive(selectedOptionId)}
+            className={`text-[10px] font-medium ${text.link} underline underline-offset-2 hover:no-underline ${interactive.transition} ${interactive.focusRing} rounded-sm`}
+          >
+            Details
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onRemove(capability.id); }}
+          className={`ml-auto flex items-center gap-1 text-[10px] font-medium text-faint hover:text-ink ${interactive.transition} ${interactive.focusRing} rounded-sm px-1`}
+          title="Remove from stack"
+          aria-label={`Remove ${capability.name} from stack`}
+        >
+          <X size={10} aria-hidden />
+          Remove
+        </button>
+      </div>
 
       {/* Sub-components (expanded) — hairline list */}
       {isExpanded && hasSubComponents && (
@@ -342,10 +334,6 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
 
   const toggleServicesSub = (key) => {
     setServicesSubOpen((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const isCapabilitySelected = (capabilityId) => {
-    return selectedCapabilities[capabilityId] !== undefined;
   };
 
   const getSelectedOption = (capabilityId) => {
@@ -527,7 +515,6 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
         <div className="space-y-1">
           {(viewOrder === 'bottom-up' ? [...capabilityLayers].reverse() : capabilityLayers).map((layer, index) => {
             const layerCapabilities = getCapabilitiesByLayer(layer.id);
-            const selectedCount = layerCapabilities.filter(cap => isCapabilitySelected(cap.id)).length;
             const isServicesLayer = layer.id === 'services';
 
             return (
@@ -550,10 +537,9 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                       <div className="w-0.5 h-5 rounded-card shrink-0 bg-accent" />
                       <div className="min-w-0">
                         <h3 className={`font-bold text-sm ${text.ink} leading-tight`}>{layer.name}</h3>
-                        <p className={`${typeScale.meta} ${text.muted}`}>
-                          {selectedCount} of {layerCapabilities.length} configured
-                          {isServicesLayer && ' · sub-layers'}
-                        </p>
+                        {isServicesLayer && (
+                          <p className={`${typeScale.meta} ${text.muted}`}>sub-layers</p>
+                        )}
                       </div>
                     </div>
                     <div data-ui="chip" className={`px-2 py-0.5 rounded-card ${typeScale.meta} font-bold shrink-0 bg-tint ${text.faint}`}>

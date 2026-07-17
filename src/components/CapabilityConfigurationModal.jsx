@@ -49,7 +49,7 @@ export default function CapabilityConfigurationModal({
         role="dialog"
         aria-modal="true"
         aria-label={`Configure: ${capability.name}`}
-        className={`${modal.panel} ${modal.panelMedium}`}
+        className={`${modal.panel} ${modal.panelNarrow}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className={modal.header}>
@@ -68,9 +68,10 @@ export default function CapabilityConfigurationModal({
               onClick={() => {
                 onRemoveFromStack(capability.id);
               }}
-              className={`rounded-card p-2 ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
+              className={`flex items-center gap-1 text-xs font-medium text-faint hover:text-ink rounded-card px-2 py-1 ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
             >
-              <X size={24} />
+              <X size={14} aria-hidden="true" />
+              Remove
             </button>
           </div>
         </div>
@@ -124,11 +125,6 @@ export default function CapabilityConfigurationModal({
                             </span>
                           )}
                         </div>
-                        {option.provider && !option.name.includes(option.provider) && (
-                          <div className={`mb-1 text-sm font-semibold ${text.muted}`}>
-                            {option.provider}
-                          </div>
-                        )}
                         <p className={`text-sm ${text.muted}`}>{option.description}</p>
                       </div>
                     </div>

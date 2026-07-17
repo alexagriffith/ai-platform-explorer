@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Layers, Hammer, Settings, HelpCircle, ArrowRight, BookOpen } from 'lucide-react';
+import { Layers, Hammer, Settings, HelpCircle, BookOpen } from 'lucide-react';
 import CapabilityArchitectureView from './CapabilityArchitectureView';
 import InteractiveBuilder from './InteractiveBuilder';
 import CustomerConfig from './CustomerConfig';
 import RAGArchitecture from './RAGArchitecture';
 import TrainingDeepDive from './TrainingDeepDive';
-import { button, interactive, text } from '../lib/styleTokens';
+import { interactive, text, toggle } from '../lib/styleTokens';
 
 export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities, initialMode = 'build', onModeChange }) {
   const [mode, setMode] = useState(initialMode); // 'build', 'interactive', 'generate', 'blueprints'
@@ -78,39 +78,49 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
             </h2>
           </div>
 
-          {/* Help — inline row */}
-          <div className="flex flex-wrap items-center gap-2 sm:flex-shrink-0">
-            <HelpCircle size={14} className={`${text.faint} flex-shrink-0`} />
+          {/* Help — quiet text link */}
+          <div className="flex flex-wrap items-center gap-1.5 sm:flex-shrink-0">
+            <HelpCircle size={13} className={`${text.faint} flex-shrink-0`} aria-hidden="true" />
             <span className={`text-xs ${text.muted}`}>Not sure what to choose?</span>
             <button
+              type="button"
               onClick={onSwitchToDecisions}
-              className={`${button.primaryCompact} group`}
+              className={`text-xs ${text.link} underline underline-offset-2 hover:no-underline ${interactive.transition} ${interactive.focusRing} rounded-sm`}
             >
-              <span>Decision Guides</span>
-              <ArrowRight size={11} className="group-hover:translate-x-0.5 transition-transform duration-150 ease-out motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
+              Decision Guides
             </button>
           </div>
         </div>
 
-        {/* Mode Selector */}
-        <div className="mt-2 pt-2 border-t border-hair flex flex-col gap-1 sm:flex-row sm:items-center">
-          <label htmlFor="architecture-mode" className={`text-xs font-semibold ${text.muted} whitespace-nowrap shrink-0`}>
-            Build mode:
-          </label>
-          <select
-            data-ui="control"
-            id="architecture-mode"
-            value={mode}
-            onChange={(e) => handleModeChange(e.target.value)}
-            className={`flex-1 px-2 py-0.5 bg-surface border border-edge rounded-card text-xs ${text.ink} font-medium hover:border-accent ${interactive.focusRing} ${interactive.transition}`}
-          >
-            {modes.map((modeOption) => (
-              <option key={modeOption.id} value={modeOption.id}>
-                {modeOption.name}
-              </option>
-            ))}
-          </select>
-          <p className={`text-xs ${text.faint} sm:ml-2`}>
+        {/* Mode segmented control — all modes visible at content width */}
+        <div
+          data-ui="chip-row"
+          className="mt-2 pt-2 border-t border-hair flex flex-col gap-1.5 sm:flex-row sm:items-center"
+        >
+          <span className={`text-xs font-semibold ${text.muted} whitespace-nowrap shrink-0`}>
+            Mode:
+          </span>
+          <div role="tablist" aria-label="Architecture mode" className="flex flex-wrap gap-1">
+            {modes.map((modeOption) => {
+              const Icon = modeOption.icon;
+              const active = mode === modeOption.id;
+              return (
+                <button
+                  data-ui="chip"
+                  key={modeOption.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => handleModeChange(modeOption.id)}
+                  className={`inline-flex items-center gap-1 ${toggle.base} ${active ? toggle.active : toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
+                >
+                  <Icon size={11} aria-hidden="true" />
+                  {modeOption.name}
+                </button>
+              );
+            })}
+          </div>
+          <p className={`text-xs ${text.faint} sm:ml-1`}>
             {currentMode.description}
           </p>
         </div>
