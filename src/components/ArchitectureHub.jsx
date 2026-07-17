@@ -82,7 +82,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
             id="architecture-mode"
             value={mode}
             onChange={(e) => setMode(e.target.value)}
-            className={`flex-1 px-2 py-1 bg-surface border border-edge rounded-card text-sm ${text.ink} font-medium hover:border-accent ${interactive.focusRing} ${interactive.transition}`}
+            className={`flex-1 px-2 py-0.5 bg-surface border border-edge rounded-card text-xs ${text.ink} font-medium hover:border-accent ${interactive.focusRing} ${interactive.transition}`}
           >
             {modes.map((modeOption) => (
               <option key={modeOption.id} value={modeOption.id}>

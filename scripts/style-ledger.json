@@ -54,12 +54,37 @@
     }
   ],
   "legacyViolatingFilesMax": 0,
+  "heightBudgets": {
+    "_note": "Per-tab scrollHeight/viewport budgets at 1440x900. Set just above post-fix measured values. Regressions fail immediately.",
+    "_measured": "architecture:1.20 product-comparison:1.59 deployment-impact:0.17 decisions:0.56 products:1.67 use-cases:exempted",
+    "architecture": 1.25,
+    "product-comparison": 1.7,
+    "deployment-impact": 1.0,
+    "decisions": 1.0,
+    "products": 1.8
+  },
   "exemptions": {
     "use-cases": [
-      "height-budget"
+      "height-budget",
+      "card-text-budget",
+      "control-scale"
+    ],
+    "products": [
+      "card-text-budget"
+    ],
+    "deployment-impact": [
+      "card-text-budget"
+    ],
+    "product-comparison": [
+      "card-text-budget"
     ]
   },
   "_exemptionNotes": {
-    "use-cases/height-budget": "UseCaseView renders all 5 sub-views stacked (FineTuningDecisionMatrix, TrainingDeepDive, RAGArchitecture, MCPEcosystemFull, SecurityOverview) — ratio ~7x at 900px. Fix requires sub-tab switching architecture (structural change, deferred). Track in docs/BACKLOG.md."
+    "use-cases/height-budget": "UseCaseView renders all 5 sub-views stacked (FineTuningDecisionMatrix, TrainingDeepDive, RAGArchitecture, MCPEcosystemFull, SecurityOverview) \u2014 ratio ~7x at 900px. Fix requires sub-tab switching architecture (structural change, deferred). Track in docs/BACKLOG.md.",
+    "use-cases/card-text-budget": "UseCaseView use-case description panels are intentionally verbose \u2014 they are the disclosure level for each use case (no further card-expand exists). Refactor to sub-tab architecture (deferred).",
+    "use-cases/control-scale": "UseCaseView has category filter buttons (larger) alongside compact section controls \u2014 two-scale by design until sub-tab refactor.",
+    "products/card-text-budget": "ProductExplorer cards ARE the disclosure level \u2014 they combine name, status, category, and description in a single expanded card. No deeper drill-down exists; text budget does not apply here.",
+    "deployment-impact/card-text-budget": "DeploymentComparisonSelector uses full-sentence comparison titles by design \u2014 these are the primary navigational labels, not secondary description text.",
+    "product-comparison/card-text-budget": "ProductComparisonView ledger cells may contain long capability labels by design."
   }
 }

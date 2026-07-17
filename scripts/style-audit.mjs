@@ -160,15 +160,17 @@ function draftBannerState() {
 
 // ─── New measured checks (D4b) ──────────────────────────────────────────────
 
-// HEIGHT BUDGET: tab's scrollHeight must not exceed 2.0× viewport height (1440×900).
+// HEIGHT BUDGET: tab's scrollHeight must not exceed the per-tab budget (1440×900).
+// budget is passed in from the ledger; falls back to 2.0 if absent.
 // Returns { ratio, ok } — ratio logged for future tightening.
-function heightBudget(tabId) {
+function heightBudget({ tabId, budget }) {
   const tab = document.querySelector(`[data-tab="${tabId}"]`);
   if (!tab) return { ratio: null, ok: false, reason: 'tab not found' };
   const vph = window.innerHeight; // 900
   const sh = tab.scrollHeight;
   const ratio = sh / vph;
-  return { ratio: Math.round(ratio * 100) / 100, ok: ratio <= 2.0 };
+  const limit = typeof budget === 'number' ? budget : 2.0;
+  return { ratio: Math.round(ratio * 100) / 100, ok: ratio <= limit, limit };
 }
 
 // GRID EQUALITY: for each row of visually-sibling cards (same explicit-grid or non-wrapping
@@ -301,9 +303,181 @@ function motionLaw(tabId) {
   return out;
 }
 
+// ─── F6 checks ──────────────────────────────────────────────────────────────
+
+// CARD TEXT BUDGET: inside any grid card (direct child of a grid/flex container
+// that itself has a border or surface token class), visible text content at rest
+// must be <= 140 characters.
+// "Grid card" = element whose parent display is grid or flex (non-wrapping),
+// and the element has a visible border on at least one side (card marker).
+function cardTextBudget(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  const hasBorder = (el) => {
+    const s = getComputedStyle(el);
+    const sides = ['Top', 'Right', 'Bottom', 'Left'];
+    return sides.some((side) => {
+      const w = parseFloat(s[`border${side}Width`]) || 0;
+      const st = s[`border${side}Style`];
+      const col = s[`border${side}Color`];
+      const transparent = col === 'transparent' || col === 'rgba(0, 0, 0, 0)';
+      return w >= 1 && st !== 'none' && st !== 'hidden' && !transparent;
+    });
+  };
+  for (const container of tab.querySelectorAll('*')) {
+    if (!visible(container)) continue;
+    const cs = getComputedStyle(container);
+    const display = cs.display;
+    if (display !== 'grid' && display !== 'flex') continue;
+    if (cs.flexWrap === 'wrap' || cs.flexWrap === 'wrap-reverse') continue;
+    for (const child of container.children) {
+      if (!visible(child)) continue;
+      if (!hasBorder(child)) continue;
+      const cr = child.getBoundingClientRect();
+      if (cr.height < 24) continue; // skip tiny badges/chips
+      const text = (child.innerText || child.textContent || '').trim().replace(/\s+/g, ' ');
+      if (text.length > 140) {
+        const cls = (child.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+        out.push(`card-text-budget: <${child.tagName.toLowerCase()}.${cls}> text ${text.length} chars > 140: "${text.slice(0, 80)}..."`);
+      }
+    }
+  }
+  return out;
+}
+
+// ROW-FILL: any grid row's children must together span >= 85% of the grid
+// container's inner width. Catches static-column left-packing where a row with
+// fewer items than columns leaves the right half empty.
+// Only checks grid containers (not flex). Skips containers whose column
+// template implies intentional partial fill (e.g. auto-fit/auto-fill).
+function rowFill(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  for (const container of tab.querySelectorAll('*')) {
+    if (!visible(container)) continue;
+    const cs = getComputedStyle(container);
+    if (cs.display !== 'grid') continue;
+    // Skip auto-fit/auto-fill templates (they already handle partial rows).
+    const tmpl = (cs.gridTemplateColumns || '').trim();
+    if (tmpl.includes('auto') || tmpl.includes('minmax')) continue;
+    const children = [...container.children].filter(visible);
+    if (children.length < 2) continue;
+    const containerRect = container.getBoundingClientRect();
+    const paddingLeft = parseFloat(cs.paddingLeft) || 0;
+    const paddingRight = parseFloat(cs.paddingRight) || 0;
+    const innerWidth = containerRect.width - paddingLeft - paddingRight;
+    if (innerWidth < 100) continue;
+    // Group children into rows by top coordinate (within 8px).
+    const rows = [];
+    for (const child of children) {
+      const cr = child.getBoundingClientRect();
+      if (cr.height < 20) continue;
+      const row = rows.find((r) => Math.abs(r.top - cr.top) <= 8);
+      if (row) { row.items.push(cr); }
+      else rows.push({ top: cr.top, items: [cr] });
+    }
+    for (const row of rows) {
+      if (row.items.length < 2) continue; // single-item rows are trivially fine
+      const totalChildWidth = row.items.reduce((sum, r) => sum + r.width, 0);
+      const gap = parseFloat(cs.gap || cs.columnGap || '0') || 0;
+      const totalGap = gap * (row.items.length - 1);
+      const occupied = (totalChildWidth + totalGap) / innerWidth;
+      if (occupied < 0.85) {
+        const cls = (container.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+        out.push(`row-fill: <${container.tagName.toLowerCase()}.${cls}> row spans only ${r2(occupied * 100)}% of container (need >= 85%)`);
+        break; // one report per container
+      }
+    }
+  }
+  return out;
+}
+
+// CONTROL-SCALE BUDGET: within the tab's first header/toolbar surface (the first
+// bg-surface panel at the top of the tab), visible interactive controls
+// (buttons/toggles/selects) must have at most 2 distinct rendered heights (±2px),
+// and no control exceeds 1.4× the modal height of the set.
+// Rationale: this catches two-scale stacking in the same toolbar — e.g. a large
+// primary button next to small toggle chips. Skips content-area controls
+// (layer headers, card expand toggles) which are intentionally different sizes.
+function controlScale(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 4 || r.height < 4) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  // Find header toolbar panels in the top band of the tab (first 300px offset).
+  // A toolbar panel: bg-surface, short height (< 110px), contains 2+ interactive controls.
+  // This distinguishes toolbar panels from single-expand-button layer headers.
+  const tabRect = tab.getBoundingClientRect();
+  const toolbars = [];
+  for (const el of tab.querySelectorAll('*')) {
+    const cn = (el.className || '').toString();
+    if (!cn.includes('bg-surface')) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 200) continue;
+    if (r.top - tabRect.top > 300) continue;
+    if (r.height > 110) continue; // layer headers are taller; toolbars are compact
+    // Must contain at least 2 interactive controls to qualify as a toolbar.
+    const ctls = el.querySelectorAll('button, select, [role="switch"]');
+    if (ctls.length < 2) continue;
+    toolbars.push(el);
+  }
+  if (!toolbars.length) return [];
+  const controls = toolbars.flatMap((t) =>
+    [...t.querySelectorAll('button, select, [role="switch"]')].filter((el) => visible(el))
+  );
+  if (controls.length < 2) return [];
+  const heights = controls.map((el) => Math.round(el.getBoundingClientRect().height));
+  // Bucket heights into groups within ±2px of each other.
+  const buckets = [];
+  for (const h of heights) {
+    const existing = buckets.find((b) => Math.abs(b - h) <= 2);
+    if (existing === undefined) buckets.push(h);
+  }
+  if (buckets.length > 2) {
+    out.push(`control-scale: ${buckets.length} distinct control heights in header toolbar [${[...new Set(heights)].sort((a, b) => a - b).join(', ')}px] > 2 allowed`);
+  }
+  // Modal height: the most common height bucket.
+  const freq = {};
+  for (const h of heights) {
+    const key = buckets.find((b) => Math.abs(b - h) <= 2) ?? h;
+    freq[key] = (freq[key] || 0) + 1;
+  }
+  const modalHeight = parseInt(Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0]);
+  const maxAllowed = modalHeight * 1.4;
+  const tallest = Math.max(...heights);
+  if (tallest > maxAllowed + 1) {
+    out.push(`control-scale: tallest control ${tallest}px exceeds 1.4x modal height ${modalHeight}px (max ${r2(maxAllowed)}px) in header toolbar`);
+  }
+  return out;
+}
+
 async function auditTab(browser, tab) {
   const { id: tabId, navLabel } = tab;
   const exemptions = (ledger.exemptions || {})[tabId] || [];
+  const heightBudgets = ledger.heightBudgets || {};
+  const tabHeightBudget = typeof heightBudgets[tabId] === 'number' ? heightBudgets[tabId] : 2.0;
   const prefix = (label) => `[${tabId} ${label}]`;
 
   // --- 1440px, light: geometry + boxes + radii + horizontal scroll (+ PC extras) ---
@@ -319,15 +493,14 @@ async function auditTab(browser, tab) {
       if (!banner.ok) problems.push(`${prefix('1440 light')} draft banner not visibly distinct: ${JSON.stringify(banner)}`);
     }
 
-    // D4b: HEIGHT BUDGET (light, 1440×900)
+    // D4b: HEIGHT BUDGET (light, 1440×900) — now per-tab budget from style-ledger.json
     if (!exemptions.includes('height-budget')) {
-      const hb = await page.evaluate(heightBudget, tabId);
-      // Log ratio in a comment-style (goes to stderr/devnull unless failing).
+      const hb = await page.evaluate(heightBudget, { tabId, budget: tabHeightBudget });
       if (hb.ratio !== null && !hb.ok) {
-        problems.push(`${prefix('1440 light')} height budget: scrollHeight ratio ${hb.ratio} > 2.0`);
+        problems.push(`${prefix('1440 light')} height budget: scrollHeight ratio ${hb.ratio} > ${hb.limit}`);
       }
       // Always capture ratio for report (write to process.stderr so stdout stays clean on PASS)
-      if (hb.ratio !== null) process.stderr.write(`height-ratio: [${tabId}] ${hb.ratio}\n`);
+      if (hb.ratio !== null) process.stderr.write(`height-ratio: [${tabId}] ${hb.ratio} (budget ${hb.limit})\n`);
     }
 
     // D4b: GRID EQUALITY (light, 1440px)
@@ -344,6 +517,21 @@ async function auditTab(browser, tab) {
     // D4b: MOTION LAW (light)
     if (!exemptions.includes('motion-law')) {
       for (const p of await page.evaluate(motionLaw, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
+    // F6: CARD TEXT BUDGET (light, 1440px)
+    if (!exemptions.includes('card-text-budget')) {
+      for (const p of await page.evaluate(cardTextBudget, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
+    // F6: ROW-FILL (light, 1440px)
+    if (!exemptions.includes('row-fill')) {
+      for (const p of await page.evaluate(rowFill, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
+    // F6: CONTROL-SCALE BUDGET (light, 1440px)
+    if (!exemptions.includes('control-scale')) {
+      for (const p of await page.evaluate(controlScale, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
     }
 
     await ctx.close();
