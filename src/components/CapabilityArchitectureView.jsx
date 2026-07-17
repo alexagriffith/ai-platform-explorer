@@ -105,12 +105,12 @@ function CapabilityCard({
     return (
       <button
         onClick={() => onConfigure(capability)}
-        className={`${card.unselected} group px-2 py-1.5 w-full`}
+        className={`${card.unselected} group px-2 py-1.5 w-full h-full`}
       >
         <div className="flex items-start gap-1.5">
           <Plus size={12} className={`mt-0.5 opacity-50 group-hover:opacity-100 flex-shrink-0 ${text.faint} group-hover:text-accent`} />
           <div className="flex-1 min-w-0">
-            <h4 className={`${typeScale.componentName} ${text.ink} truncate`}>
+            <h4 className={`${typeScale.componentName} ${text.ink}`}>
               {capability.name}
               {capability.required && (
                 <span className={`ml-1 px-1 py-0.5 text-[10px] ${status.requiredBadge} rounded-card`}>
@@ -119,7 +119,7 @@ function CapabilityCard({
               )}
             </h4>
             {detailLevel === 2 && capability.description && (
-              <p className={`${typeScale.secondary} ${text.muted} mt-0.5 line-clamp-2`}>
+              <p className={`${typeScale.secondary} ${text.muted} mt-0.5`}>
                 {capability.description}
               </p>
             )}
@@ -141,7 +141,7 @@ function CapabilityCard({
 
   return (
     <div
-      className={`rounded-card bg-surface ${interactive.transitionAll} ${markClass} ${
+      className={`rounded-card bg-surface h-full ${interactive.transitionAll} ${markClass} ${
         hasDeepDive ? `${card.selectedClickable} ${interactive.focusRing}` : ''
       }`}
       role={hasDeepDive ? 'button' : undefined}
@@ -159,13 +159,13 @@ function CapabilityCard({
       <div className="flex items-center gap-1.5 px-2 py-1 border-b border-hair">
         <CheckCircle2 size={12} className="text-green-600 shrink-0" aria-hidden />
         <div className="min-w-0 flex-1">
-          <div className={`${typeScale.componentName} ${text.ink} truncate`}>
+          <div className={`${typeScale.componentName} ${text.ink}`}>
             {capability.name}
             {selectedOption?.isCustomer && (
               <Building2 size={10} className={`inline ml-1 mb-0.5 ${text.muted}`} title="Customer-provided" />
             )}
           </div>
-          <div className={`${typeScale.meta} ${text.muted} truncate`}>
+          <div className={`${typeScale.meta} ${text.muted}`}>
             {detailLevel === 2 ? `${selectedOption?.provider}: ${selectedOption?.name}` : selectedOption?.name}
           </div>
         </div>
@@ -216,7 +216,7 @@ function CapabilityCard({
         </div>
       )}
       {detailLevel === 2 && selectedOption?.description && (
-        <div className={`px-2 pb-1 ${typeScale.secondary} ${text.muted} line-clamp-2`}>
+        <div className={`px-2 pb-1 ${typeScale.secondary} ${text.muted}`}>
           {selectedOption.description}
         </div>
       )}
@@ -271,7 +271,7 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('orchestration')}
           />
           {servicesSubOpen.orchestration && (
-            <div className={`grid grid-cols-2 md:grid-cols-3 ${density.rowGap}`}>
+            <div className={`grid grid-cols-2 md:grid-cols-3 items-stretch ${density.rowGap}`}>
               {orchestration.map((cap) => (
                 <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
@@ -293,7 +293,7 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('wrapper')}
           />
           {servicesSubOpen.wrapper && (
-            <div className={`grid grid-cols-2 md:grid-cols-3 ${density.rowGap}`}>
+            <div className={`grid grid-cols-2 md:grid-cols-3 items-stretch ${density.rowGap}`}>
               {wrapper.map((cap) => (
                 <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
@@ -315,7 +315,7 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('core')}
           />
           {servicesSubOpen.core && (
-            <div className={`grid grid-cols-2 md:grid-cols-3 ${density.rowGap}`}>
+            <div className={`grid grid-cols-2 md:grid-cols-3 items-stretch ${density.rowGap}`}>
               {coreBase.map((cap) => (
                 <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
@@ -527,7 +527,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                 <button
                   key={level}
                   onClick={() => setDetailLevel(level)}
-                  className={`px-2 py-0.5 rounded-card text-xs font-medium ${interactive.transition} ${interactive.focusRing} ${
+                  className={`${toggle.base} ${interactive.transition} ${interactive.focusRing} ${
                     detailLevel === level ? toggle.active : toggle.inactive
                   }`}
                 >
@@ -540,7 +540,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
           <button
             type="button"
             onClick={() => setViewOrder(viewOrder === 'bottom-up' ? 'top-down' : 'bottom-up')}
-            className={`flex items-center gap-1 px-2 py-0.5 rounded-card text-xs font-medium ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
+            className={`flex items-center gap-1 ${toggle.base} ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
           >
             {viewOrder === 'bottom-up' ? <ArrowUp size={11} /> : <ArrowDown size={11} />}
             {viewOrder === 'bottom-up' ? 'Infra at bottom' : 'Infra at top'}
@@ -600,7 +600,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                           cardProps={cardProps}
                         />
                       ) : (
-                        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ${density.rowGap}`}>
+                        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-stretch ${density.rowGap}`}>
                           {layerCapabilities.map(capability => (
                             <CapabilityCard
                               key={capability.id}

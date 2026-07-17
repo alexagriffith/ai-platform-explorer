@@ -50,6 +50,8 @@ export const field = {
 
 /** Segmented control / detail-level chips. */
 export const toggle = {
+  /** Shared sizing/shape — apply to every chip in the segmented control. */
+  base: 'px-2 py-0.5 rounded-card text-xs font-medium',
   active: 'bg-accent text-on-accent',
   inactive: 'bg-tint text-muted hover:text-ink',
 };
