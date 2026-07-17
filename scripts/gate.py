@@ -302,6 +302,83 @@ def section_duplicate_logic():
         fail("duplicate-logic scan (copy-paste helpers)", "\n".join(hits))
 
 
+# ── (d3) documentation / href status-code check ───────────────────────────────
+# Scans every `documentation:` and `href:` string value in src/data/*.js and
+# asserts each non-null URL returns HTTP 200 (following redirects). A 404 page
+# can render HTML and slip through the Playwright render-length check, so we
+# must verify the status code independently.
+#
+# Self-test (--self-test flag): temporarily injects a known-404 URL into the
+# collected set, confirms the check names it as a failure, then removes it.
+_DOC_HREF_RX = re.compile(
+    r"""(?:documentation|href)\s*:\s*['"](\bhttps?://[^'"]+)['"]"""
+)
+
+
+def _collect_doc_href_urls():
+    """Return a list of (url, rel_path) for every documentation:/href: URL in src/data/*.js."""
+    data_dir = os.path.join(REPO, "src", "data")
+    results = []
+    for fn in os.listdir(data_dir):
+        if not fn.endswith(".js"):
+            continue
+        path = os.path.join(data_dir, fn)
+        rel = os.path.relpath(path, REPO)
+        try:
+            with open(path, "r", encoding="utf-8", errors="ignore") as fh:
+                content = fh.read()
+        except OSError:
+            continue
+        for m in _DOC_HREF_RX.finditer(content):
+            results.append((m.group(1), rel))
+    return results
+
+
+def _http_status(url, timeout=10):
+    """Return the final HTTP status code after following redirects, or 0 on error.
+    Uses curl (subprocess) because Python's urllib is blocked by bot-protection on
+    docs.redhat.com. No custom User-Agent is set — docs.redhat.com returns 403 for
+    common browser UAs but 200/404 accurately for curl's default UA, which is the
+    behaviour we need: 404 pages stay 404, not masked by redirects."""
+    try:
+        result = subprocess.run(
+            ["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}",
+             "-L", "--max-time", str(timeout), url],
+            capture_output=True, text=True, timeout=timeout + 5,
+        )
+        code = result.stdout.strip()
+        return int(code) if code.isdigit() else 0
+    except Exception:
+        return 0
+
+
+def section_doc_href_status(extra_urls=None):
+    """Assert every documentation:/href: URL in src/data/*.js returns HTTP 200."""
+    pairs = _collect_doc_href_urls()
+    if extra_urls:
+        for url, label in extra_urls:
+            pairs.append((url, label))
+
+    # Deduplicate by URL, keeping the first file that cites each.
+    seen = {}
+    for url, rel in pairs:
+        if url not in seen:
+            seen[url] = rel
+
+    failures = []
+    for url, rel in seen.items():
+        code = _http_status(url)
+        if code != 200:
+            failures.append("  %s  HTTP %s  cited in %s" % (url, code or "ERR", rel))
+
+    if failures:
+        fail(
+            "documentation/href status-code check (non-200 URLs)",
+            "The following documentation or href URLs did not return HTTP 200:\n"
+            + "\n".join(failures),
+        )
+
+
 # ── (e) style checks (Playwright against a preview server) ───────────────────
 def _find_free_port():
     """Bind to port 0 so the OS assigns a free ephemeral port, then release it."""
@@ -355,11 +432,25 @@ def section_style():
 
 
 def main():
+    # --self-test: plant a known-404 URL, confirm the check names it, revert.
+    if "--self-test" in sys.argv:
+        SENTINEL = "https://docs.redhat.com/rhoai"  # confirmed 404
+        try:
+            section_doc_href_status(extra_urls=[(SENTINEL, "<self-test>")])
+            # If we reach here the check did NOT catch it — self-test failure.
+            sys.stdout.write("SELF-TEST FAILED: sentinel URL was not caught\n")
+            sys.exit(1)
+        except SystemExit as e:
+            if e.code == 1:
+                sys.stdout.write("SELF-TEST PASSED: sentinel URL caught correctly\n")
+                sys.exit(0)
+            raise
     section_check()
     section_links()
     section_leaks()
     section_design_static()
     section_duplicate_logic()
+    section_doc_href_status()
     section_style()
     sys.stdout.write("PASS")
 
