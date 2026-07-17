@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { AlertCircle, Download, Copy, Check, ExternalLink } from 'lucide-react';
 import { productComparisons, isComparisonDraft, decisionBeatFacts } from '../data/productComparisons';
+import { getComponentVersions } from '../data/componentVersions';
 import SharedSpineLedger from './SharedSpineLedger';
 import { buildLedgerModel } from '../lib/ledgerModel';
 import { interactive } from '../lib/styleTokens';
@@ -271,6 +272,79 @@ const TOGGLES = [
   { id: 'capabilities', label: 'Capabilities' }
 ];
 
+/* ── Component versions disclosure ───────────────────────────────────────────────────────────── */
+/** One product's expandable component-versions table (collapsed by default). */
+function ComponentVersionsPanel({ productId, productLabel }) {
+  const table = getComponentVersions(productId);
+  if (!table) return null;
+  return (
+    <details className="border-t border-hair pt-2" data-ui="table">
+      <summary
+        className={`cursor-pointer select-none list-none px-1 py-2 flex items-center justify-between gap-2 text-sm font-semibold text-ink hover:text-link ${interactive.transition} ${interactive.focusRing} rounded-sm`}
+      >
+        <span>Component versions — {productLabel}</span>
+        <span className="text-xs font-normal text-faint">{table.components.length} components · {table.release}</span>
+      </summary>
+      <div className="pt-2 space-y-2">
+        <div className="overflow-x-auto">
+          <table className="min-w-full">
+            <thead>
+              <tr className="border-b border-edge">
+                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider">Component</th>
+                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider">Version</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-hair">
+              {table.components.map((entry) => (
+                <tr key={entry.component}>
+                  <td className="px-2 py-1.5 text-xs text-ink align-middle">{entry.component}</td>
+                  <td className="px-2 py-1.5 align-middle">
+                    <a
+                      href={entry.sourceUrl}
+                      target="_blank"
+                      rel="noopener"
+                      title={entry.sourceLabel}
+                      className={`font-mono text-xs text-ink hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+                    >
+                      {entry.version}{entry.sha ? <span className="text-faint"> @{entry.sha}</span> : null}
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="flex items-center gap-1 text-xs text-faint pb-1">
+          <ExternalLink size={11} className="flex-shrink-0" />
+          <a
+            href={table.sourceUrl}
+            target="_blank"
+            rel="noopener"
+            className={`hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+          >
+            {table.sourceLabel}
+          </a>
+          <span className="ml-1">— extracted {table.extractionDate}</span>
+        </div>
+      </div>
+    </details>
+  );
+}
+
+/** Side-by-side component-versions disclosures, one column per product. */
+function ComponentVersionsBeat({ comparison }) {
+  const { a, b } = comparison.products;
+  const hasA = !!getComponentVersions(a.productId);
+  const hasB = !!getComponentVersions(b.productId);
+  if (!hasA && !hasB) return null;
+  return (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div>{hasA && <ComponentVersionsPanel productId={a.productId} productLabel={a.label} />}</div>
+      <div>{hasB && <ComponentVersionsPanel productId={b.productId} productLabel={b.label} />}</div>
+    </div>
+  );
+}
+
 export default function ProductComparisonView() {
   const comparison = productComparisons[0] ?? null;
   const [view, setView] = useState('bom');
@@ -353,6 +427,7 @@ export default function ProductComparisonView() {
         <OrientBeat />
         <DecisionBeat />
         <SharedSpineLedger comparison={comparison} />
+        <ComponentVersionsBeat comparison={comparison} />
       </div>
 
       {/* Detailed provenance (collapsed) — box-free: separated by a top hairline, every cell links. */}
