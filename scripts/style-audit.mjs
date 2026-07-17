@@ -857,10 +857,10 @@ function skinnyBar(tabId) {
 // gaps <= container inner width) but the DOM renders >1 row → FAIL.
 // Reports: minimum-rows: <selector> tab=<tabId> (cards fit on one row but rendered <N> rows)
 //
-// ORPHAN-ROW: if a group renders >1 row and any row has exactly 1 item while a
-// balanced redistribution (row sizes differ by <=1) is possible for the same
-// item count → FAIL.
-// Reports: orphan-row: <selector> tab=<tabId> (row of 1 while N items balance as K×M or …)
+// ORPHAN-ROW: if a group renders >1 row and any row has exactly 1 item → FAIL.
+// No "balanced redistribution" exception: 2+1 fails just as much as N+1.
+// Checked at 834px (mid-viewport), 1440px, and 1920px.
+// Reports: orphan-row: <selector> tab=<tabId> (row of 1 in N-item group — …)
 //
 function minimumRowsCheck(tabId) {
   const tab = document.querySelector(`[data-tab="${tabId}"]`);
@@ -969,32 +969,14 @@ function orphanRowCheck(tabId) {
 
     if (rows.length <= 1) continue; // only one row — no orphan possible
 
-    // Check if any row has exactly 1 item.
-    const hasOrphan = rows.some((r) => r.count === 1);
-    if (!hasOrphan) continue;
-
-    // Check if a balanced redistribution is possible:
-    // Try col counts from 2 to 4; a balanced layout has all rows differing by <=1 item.
+    // Strict rule: any row with exactly 1 item while the group has >=2 items and >1 row is an orphan.
+    // No "balanced redistribution" exception — 2+1 FAILS just as much as N+1.
     const n = cardWrappers.length;
-    let balancedDesc = null;
-    for (let cols = 2; cols <= 4; cols++) {
-      if (cols > n) continue;
-      const fullRows = Math.floor(n / cols);
-      const remainder = n % cols;
-      // Balanced: remainder === 0 (all rows equal) OR remainder rows have cols items and
-      // the last row has (n - fullRows*cols) items — but we need rows to differ by <=1.
-      // With integer division: remainder rows have (cols) items, rest have (cols) items too
-      // Actually: ceil rows = Math.ceil(n/cols); floor rows differ by at most 1 from ceil.
-      // Orphan-free means no row has exactly 1 item — any cols 2+ with remainder != 1 suffices.
-      if (remainder !== 1) {
-        balancedDesc = `${cols} cols (${fullRows > 0 && remainder > 0 ? fullRows + '×' + cols + '+' + remainder : fullRows + '×' + cols})`;
-        break;
-      }
-    }
-    if (!balancedDesc) continue; // no balanced alternative exists — don't flag
+    const orphanRow = rows.find((r) => r.count === 1);
+    if (!orphanRow) continue;
 
     const cls = (container.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
-    out.push(`orphan-row: <${container.tagName.toLowerCase()}.${cls}> tab=${tabId} (row of 1 while ${n} items balance as ${balancedDesc} — never one box alone on its own row)`);
+    out.push(`orphan-row: <${container.tagName.toLowerCase()}.${cls}> tab=${tabId} (row of 1 in ${n}-item group — a row of exactly 1 card is never allowed when the group has >=2 items)`);
   }
   return out;
 }
@@ -1966,6 +1948,24 @@ async function auditTab(browser, tab) {
 
     await ctx.close();
   }
+  // --- 834px, light: mid-viewport orphan-row + minimum-rows (catches 2+1 wrapping that 1440/1920 miss) ---
+  {
+    const ctx = await browser.newContext({ viewport: { width: 834, height: 1112 }, colorScheme: 'light' });
+    const page = await ctx.newPage();
+    await openTab(page, navLabel, tabId);
+
+    // T-2b: MINIMUM-ROWS at 834px
+    if (!exemptions.includes('minimum-rows')) {
+      for (const p of await page.evaluate(minimumRowsCheck, tabId)) problems.push(`${prefix('834 light')} ${p}`);
+    }
+
+    // T-2b: ORPHAN-ROW at 834px (mid-viewport — the band where fixed-width wrapping orphans appear)
+    if (!exemptions.includes('orphan-row')) {
+      for (const p of await page.evaluate(orphanRowCheck, tabId)) problems.push(`${prefix('834 light')} ${p}`);
+    }
+
+    await ctx.close();
+  }
   // --- 1440px, dark: boxes + radii (+ PC banner) ---
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: 'dark' });
@@ -2293,6 +2293,55 @@ async function runSelfTest() {
     });
     process.stderr.write('SELF-TEST phase-8 OK: orphan-row plant removed\n');
 
+    // ── PHASE 9: orphan-row at 834px self-test ────────────────────────────────
+    // 3-card group forced to 2+1 at mid-viewport (834px).
+    // Card width = 330px; gap = 8px.
+    // 2 cards: 2×330+8 = 668px < 834px → fits on row 1.
+    // 3 cards: 3×330+16 = 1006px > 834px → card 3 wraps to row 2 → 2+1 orphan.
+    // Under the strict rule, this must FAIL with orphan-row naming __self_test_orphan_834__.
+    await ctx.close();
+    const ctx834 = await browser.newContext({ viewport: { width: 834, height: 1112 }, colorScheme: 'light' });
+    const page834 = await ctx834.newPage();
+    await openTab(page834, 'Architecture', 'architecture');
+
+    await page834.evaluate(() => {
+      const tab = document.querySelector('[data-tab="architecture"]');
+      const container = document.createElement('div');
+      container.id = '__self_test_orphan_834__';
+      container.className = '__self_test_orphan_834__';
+      container.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;width:700px;padding:0;visibility:visible;opacity:1;';
+      for (let i = 0; i < 3; i++) {
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'width:330px;height:60px;visibility:visible;opacity:1;flex:none;';
+        const card = document.createElement('div');
+        card.setAttribute('data-ui', 'card');
+        card.style.cssText = 'width:330px;height:60px;border:1px solid #999;display:flex;align-items:center;justify-content:center;';
+        card.textContent = 'C' + i;
+        wrapper.appendChild(card);
+        container.appendChild(wrapper);
+      }
+      tab.appendChild(container);
+    });
+
+    const or834Result = await page834.evaluate(orphanRowCheck, 'architecture');
+    const or834Caught = or834Result.some((s) => s.includes('orphan-row') && s.includes('__self_test_orphan_834__'));
+    process.stderr.write(`SELF-TEST orphan-row phase-9 (834px 2+1): ${or834Caught ? 'OK (orphan-row caught)' : 'UNEXPECTED: not caught'}\n`);
+    process.stderr.write(`  orphan-row output: ${or834Result.length > 0 ? or834Result.slice(0, 2).join(' | ') : '(none)'}\n`);
+    if (!or834Caught) {
+      process.stderr.write('SELF-TEST FAIL: orphan-row did NOT catch the 3-card 2+1 orphan at 834px\n');
+      await browser.close();
+      process.exit(1);
+    }
+    const or834FailureLine = or834Result.find((s) => s.includes('orphan-row') && s.includes('__self_test_orphan_834__'));
+    process.stdout.write(`SELF-TEST orphan-row 834px failure line: ${or834FailureLine}\n`);
+
+    await page834.evaluate(() => {
+      const b = document.getElementById('__self_test_orphan_834__');
+      if (b) b.remove();
+    });
+    process.stderr.write('SELF-TEST phase-9 OK: orphan-row 834px plant removed\n');
+
+    await ctx834.close();
     process.stderr.write('SELF-TEST PASS (all phases)\n');
   } finally {
     await browser.close();

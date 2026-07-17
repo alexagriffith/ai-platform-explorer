@@ -159,43 +159,48 @@ export default function DecisionFlowchart({
                   </p>
                 </div>
 
-                {/* Group Guides */}
-                <div className={`flex flex-wrap justify-center ${density.rowGap}`}>
-                  {group.guides.map((guideKey) => {
-                    const flowData = decisionFlows[guideKey];
-                    const meta = guideMetadata[guideKey];
-                    const Icon = meta.icon;
-
-                    return (
-                      <button
-                        data-ui="card"
-                        key={guideKey}
-                        onClick={() => {
-                          setApplyNotice(null);
-                          setSelectedDecision(guideKey);
-                        }}
-                        className={`flex-none w-full md:w-72 ${density.sectionPad} text-center rounded-card border ${border.hair} ${surface.tint} hover:border-accent hover:bg-tint ${interactive.transition} ${interactive.focusRing} group`}
-                      >
-                        <div className="flex flex-col items-center gap-0.5 mb-1">
-                          <Icon size={16} className={`${text.muted} group-hover:text-accent ${interactive.transition} flex-shrink-0`} />
-                          <div className="min-w-0">
-                            <div className={`${typeScale.meta} font-semibold ${text.faint} uppercase tracking-wide mb-0.5`}>
-                              {meta.category}
+                {/* Group Guides — responsive grid: all-on-one-row or all-stacked, never N+1 orphan */}
+                {(() => {
+                  const gridColsMap = { 2: 'grid-cols-1 md:grid-cols-2', 3: 'grid-cols-1 md:grid-cols-3', 4: 'grid-cols-1 md:grid-cols-4' };
+                  const gridCols = gridColsMap[group.guides.length] || 'grid-cols-1';
+                  return (
+                    <div className={`grid ${gridCols} gap-2`}>
+                      {group.guides.map((guideKey) => {
+                        const flowData = decisionFlows[guideKey];
+                        const meta = guideMetadata[guideKey];
+                        const Icon = meta.icon;
+                        return (
+                          <button
+                            data-ui="card"
+                            key={guideKey}
+                            onClick={() => {
+                              setApplyNotice(null);
+                              setSelectedDecision(guideKey);
+                            }}
+                            className={`w-full ${density.sectionPad} text-center rounded-card border ${border.hair} ${surface.tint} hover:border-accent hover:bg-tint ${interactive.transition} ${interactive.focusRing} group`}
+                          >
+                            <div className="flex flex-col items-center gap-0.5 mb-1">
+                              <Icon size={16} className={`${text.muted} group-hover:text-accent ${interactive.transition} flex-shrink-0`} />
+                              <div className="min-w-0">
+                                <div className={`${typeScale.meta} font-semibold ${text.faint} uppercase tracking-wide mb-0.5`}>
+                                  {meta.category}
+                                </div>
+                                <h4 className={`${typeScale.componentName} ${text.ink}`}>
+                                  {flowData.title}
+                                </h4>
+                              </div>
                             </div>
-                            <h4 className={`${typeScale.componentName} ${text.ink}`}>
-                              {flowData.title}
-                            </h4>
-                          </div>
-                        </div>
-                        {flowData.description && (
-                          <p className={`${typeScale.secondary} ${text.muted}`}>
-                            {flowData.description}
-                          </p>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
+                            {flowData.description && (
+                              <p className={`${typeScale.secondary} ${text.muted}`}>
+                                {flowData.description}
+                              </p>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
               </div>
             );
           })}
