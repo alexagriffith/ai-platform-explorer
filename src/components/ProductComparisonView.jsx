@@ -148,13 +148,13 @@ function DecisionBeat() {
         need="You just need to serve models, fast"
         product="Red Hat AI Inference Server"
         facts={decisionBeatFacts.a.map((f) => f.text)}
-        className="pb-4 md:pb-0 md:pr-8"
+        className="pb-4 md:pb-0 md:pr-6"
       />
       <DecisionColumn
         need="You need the whole machine-learning lifecycle"
         product="Red Hat OpenShift AI"
         facts={decisionBeatFacts.b.map((f) => f.text)}
-        className="pt-4 md:pt-0 md:pl-8"
+        className="pt-4 md:pt-0 md:pl-6"
       />
     </div>
   );

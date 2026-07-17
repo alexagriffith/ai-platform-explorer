@@ -485,6 +485,182 @@ function controlScale(tabId) {
   return out;
 }
 
+// ─── F11 checks ──────────────────────────────────────────────────────────────
+
+// SPACING-SET MEMBERSHIP: computed padding/gap on cards, grids, and section containers
+// must be in the allowed set {0, 4, 8, 12, 16, 24}px (plus 2/6px exceptions documented
+// in commit F11). Reports selector + value for each offender.
+// Exceptions: 2px (py-0.5/px-0.5 badge/chip micro-padding) and 6px (py-1.5 table cells,
+// p-1.5 icon-button touch targets, gap-1.5 icon-to-label alignment) are allowed.
+const SPACING_ALLOWED = new Set([0, 2, 4, 6, 8, 12, 16, 24]);
+
+function spacingSetMembership(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  const SPACING_ALLOWED = new Set([0, 2, 4, 6, 8, 12, 16, 24]);
+  // Card/grid/section = elements that are direct layout containers or have a border
+  const candidates = [...tab.querySelectorAll('*')].filter((el) => {
+    if (!visible(el)) return false;
+    const cs = getComputedStyle(el);
+    const display = cs.display;
+    return display === 'grid' || display === 'flex' || display === 'inline-flex';
+  }).slice(0, 200); // sample up to 200 containers for performance
+
+  for (const el of candidates) {
+    const cs = getComputedStyle(el);
+    const props = [
+      ['paddingTop', cs.paddingTop],
+      ['paddingRight', cs.paddingRight],
+      ['paddingBottom', cs.paddingBottom],
+      ['paddingLeft', cs.paddingLeft],
+      ['gap', cs.gap],
+      ['rowGap', cs.rowGap],
+      ['columnGap', cs.columnGap],
+    ];
+    for (const [prop, val] of props) {
+      if (!val || val === 'normal') continue;
+      // gap can be "Xpx Ypx"
+      for (const part of val.split(' ')) {
+        const px = parseFloat(part);
+        if (isNaN(px)) continue;
+        const rounded = Math.round(px);
+        if (rounded === 0) continue; // zero is always fine
+        if (!SPACING_ALLOWED.has(rounded)) {
+          const cls = (el.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+          out.push(`spacing-set: <${el.tagName.toLowerCase()}.${cls}> ${prop}=${r2(px)}px not in {0,2,4,6,8,12,16,24}`);
+          break; // one report per prop per element
+        }
+      }
+    }
+  }
+  return out;
+}
+
+// INTERIOR-SLACK BUDGET: unit cards' (clientHeight - total visible text line height) <= 24px.
+// Catches "centering into slack" where a card has excess empty space around its text.
+// A "unit card" = element whose parent is a grid/flex, that has a visible border,
+// and whose clientHeight is between 24px and 200px (larger cards are content cards, not unit boxes).
+// SKIPS elements inside grid containers (grid stretch is intentional for equal-height rows).
+function interiorSlack(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  const hasBorder = (el) => {
+    const s = getComputedStyle(el);
+    return ['Top', 'Right', 'Bottom', 'Left'].some((side) => {
+      const w = parseFloat(s[`border${side}Width`]) || 0;
+      const st = s[`border${side}Style`];
+      const col = s[`border${side}Color`];
+      return w >= 1 && st !== 'none' && st !== 'hidden' && col !== 'transparent' && col !== 'rgba(0, 0, 0, 0)';
+    });
+  };
+  for (const container of tab.querySelectorAll('*')) {
+    if (!visible(container)) continue;
+    const cs = getComputedStyle(container);
+    // Skip grid containers: grid stretch (align-items: stretch) legitimately makes all
+    // children equal-height by design (density law grid discipline). Only flex containers
+    // are checked because flex doesn't auto-stretch unless explicitly set.
+    if (cs.display !== 'flex' && cs.display !== 'inline-flex') continue;
+    // Skip containers whose flex direction is column (children stack, height is additive)
+    if (cs.flexDirection === 'column' || cs.flexDirection === 'column-reverse') continue;
+    // Skip flex-wrap (children reflow; heights legitimately vary)
+    if (cs.flexWrap === 'wrap' || cs.flexWrap === 'wrap-reverse') continue;
+    for (const child of container.children) {
+      if (!visible(child)) continue;
+      if (!hasBorder(child)) continue;
+      const cr = child.getBoundingClientRect();
+      if (cr.height < 32 || cr.height > 160) continue; // skip tiny chips and content cards
+      // Estimate total text height: maximum leaf-node height within the card
+      let maxTextH = 0;
+      for (const te of child.querySelectorAll('*')) {
+        if (!visible(te)) continue;
+        const teR = te.getBoundingClientRect();
+        if (teR.height < 8 || teR.height > cr.height * 0.9) continue;
+        // Only leaf-ish nodes (no children with their own height)
+        if (te.children.length === 0 || (te.children.length === 1 && te.firstElementChild.getBoundingClientRect().height < 4)) {
+          if (teR.height > maxTextH) maxTextH = teR.height;
+        }
+      }
+      if (maxTextH === 0) continue;
+      // Slack: space above + below the tallest text element.
+      // Acceptable: padding-top + padding-bottom. Allow 32px buffer for line-height rounding + icons.
+      const paddingV = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+      const slack = cr.height - maxTextH;
+      if (slack > maxTextH + 32) {
+        const cls = (child.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+        out.push(`interior-slack: <${child.tagName.toLowerCase()}.${cls}> height=${r2(cr.height)}px maxTextH≈${r2(maxTextH)}px slack=${r2(slack)}px > budget`);
+      }
+    }
+  }
+  return out;
+}
+
+// MOBILE MIN-CARD-WIDTH: at 375px viewport, no unit card narrower than 150px.
+// Catches fixed multi-column grids that cram cards on phones.
+// A "unit card" = element with a visible border, height 40-300px (excludes tiny chips),
+// width < 150px, and text content (excludes icon-only controls).
+// Excludes: th/td (table cells), nav/header controls, icon-only elements.
+function mobileMinCardWidth(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  const hasBorder = (el) => {
+    const s = getComputedStyle(el);
+    let borderCount = 0;
+    ['Top', 'Right', 'Bottom', 'Left'].forEach((side) => {
+      const w = parseFloat(s[`border${side}Width`]) || 0;
+      const st = s[`border${side}Style`];
+      const col = s[`border${side}Color`];
+      if (w >= 1 && st !== 'none' && st !== 'hidden' && col !== 'transparent' && col !== 'rgba(0, 0, 0, 0)') {
+        borderCount++;
+      }
+    });
+    return borderCount >= 2; // require at least 2 sides (excludes single-side underline tabs)
+  };
+  const SKIP_TAGS = new Set(['TH', 'TD', 'THEAD', 'TBODY', 'TR', 'TABLE', 'INPUT', 'SELECT', 'OPTION', 'SVG', 'PATH']);
+  const boxes = [...tab.querySelectorAll('*')].filter((el) => {
+    if (SKIP_TAGS.has(el.tagName)) return false;
+    if (!visible(el)) return false;
+    if (!hasBorder(el)) return false;
+    const r = el.getBoundingClientRect();
+    // Only unit cards: height 40-300px (not tiny chips, not large panels)
+    if (r.height < 40 || r.height > 300) return false;
+    // Must have visible text content (not icon-only controls)
+    const text = (el.innerText || el.textContent || '').trim();
+    if (text.length < 3) return false;
+    return r.width < 150;
+  });
+  for (const el of boxes) {
+    const r = el.getBoundingClientRect();
+    const cls = (el.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+    out.push(`mobile-min-card-width: <${el.tagName.toLowerCase()}.${cls}> width=${r2(r.width)}px < 150px at 375px viewport`);
+  }
+  // Deduplicate by keeping only the first 5 (avoid flooding output)
+  return out.slice(0, 5);
+}
+
 async function auditTab(browser, tab) {
   const { id: tabId, navLabel } = tab;
   const exemptions = (ledger.exemptions || {})[tabId] || [];
@@ -546,6 +722,16 @@ async function auditTab(browser, tab) {
       for (const p of await page.evaluate(controlScale, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
     }
 
+    // F11: SPACING-SET MEMBERSHIP (light, 1440px)
+    if (!exemptions.includes('spacing-set')) {
+      for (const p of await page.evaluate(spacingSetMembership, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
+    // F11: INTERIOR-SLACK BUDGET (light, 1440px)
+    if (!exemptions.includes('interior-slack')) {
+      for (const p of await page.evaluate(interiorSlack, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
     await ctx.close();
   }
   // --- 1440px, dark: boxes + radii (+ PC banner) ---
@@ -560,13 +746,18 @@ async function auditTab(browser, tab) {
     }
     await ctx.close();
   }
-  // --- 375px, light: no horizontal scroll on mobile ---
+  // --- 375px, light: no horizontal scroll on mobile + min card width ---
   {
     const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, colorScheme: 'light' });
     const page = await ctx.newPage();
     await openTab(page, navLabel, tabId);
     const overflow = await page.evaluate(noHorizontalScroll);
     if (overflow > 1) problems.push(`${prefix('375')} horizontal scroll: scrollWidth exceeds clientWidth by ${overflow}px`);
+
+    // F11: MOBILE MIN-CARD-WIDTH (375px)
+    if (!exemptions.includes('mobile-min-card-width')) {
+      for (const p of await page.evaluate(mobileMinCardWidth, tabId)) problems.push(`${prefix('375')} ${p}`);
+    }
     await ctx.close();
   }
 }

@@ -260,6 +260,47 @@ def section_design_static():
         )
 
 
+# ── (d2) duplicate-logic scan ─────────────────────────────────────────────────
+# Fails if the same function declaration name appears in 2+ files under src/components/.
+# Catches copy-paste helpers (the distributingGridCols duplication F11 fixed is the
+# canonical example). An allowlist entry may be added here if a legitimate collision
+# is found; none are expected.
+DUPE_ALLOWLIST = set()  # e.g. {"helperName"} — add if a collision is intentional
+
+_FN_DECL = re.compile(r"^(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*\(")
+
+
+def section_duplicate_logic():
+    fn_files = {}  # name -> list of rel paths
+    components_dir = os.path.join(REPO, "src", "components")
+    for dp, _, fns in os.walk(components_dir):
+        for fn in fns:
+            ext = os.path.splitext(fn)[1].lower()
+            if ext not in {".js", ".jsx", ".ts", ".tsx"}:
+                continue
+            path = os.path.join(dp, fn)
+            rel = os.path.relpath(path, REPO)
+            try:
+                with open(path, "r", encoding="utf-8", errors="ignore") as fh:
+                    for line in fh:
+                        m = _FN_DECL.match(line.lstrip())
+                        if m:
+                            name = m.group(1)
+                            fn_files.setdefault(name, []).append(rel)
+            except OSError:
+                continue
+
+    hits = []
+    for name, files in sorted(fn_files.items()):
+        if len(files) < 2:
+            continue
+        if name in DUPE_ALLOWLIST:
+            continue
+        hits.append("duplicate function '%s' in: %s" % (name, ", ".join(sorted(files))))
+    if hits:
+        fail("duplicate-logic scan (copy-paste helpers)", "\n".join(hits))
+
+
 # ── (e) style checks (Playwright against a preview server) ───────────────────
 PORT = int(os.environ.get("GATE_PORT", "4390"))
 BASE_URL = "http://localhost:%d/ai-platform-explorer/" % PORT
@@ -311,6 +352,7 @@ def main():
     section_links()
     section_leaks()
     section_design_static()
+    section_duplicate_logic()
     section_style()
     sys.stdout.write("PASS")
 
