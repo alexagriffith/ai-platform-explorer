@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Layers, Target, Package, GitBranch, AlertCircle, GitCompare, Scale, Sun, Moon } from 'lucide-react';
+import { Layers, Package, GitBranch, AlertCircle, GitCompare, Sun, Moon } from 'lucide-react';
 import ArchitectureHub from './components/ArchitectureHub';
 import ProductsHub from './components/ProductsHub';
 import DecisionFlowchart from './components/DecisionFlowchart';
@@ -76,13 +76,14 @@ function App() {
   const [selectedCapabilities, setSelectedCapabilities] = useState({});
   const [selectedDecisionGuide, setSelectedDecisionGuide] = useState('');
 
+  // Four-tab bar: Architecture · Decision Guides · Products · Deployment Impact.
+  // Removed ids (use-cases, product-comparison) are still handled in renderView as
+  // backward-compat stubs (redirect to Products) but do not appear in navigation.
   const views = [
     { id: 'architecture', name: 'Architecture', icon: Layers },
     { id: 'decisions', name: 'Decision Guides', icon: GitBranch },
-    { id: 'use-cases', name: 'Use Cases', icon: Target },
     { id: 'products', name: 'Products', icon: Package },
     { id: 'deployment-impact', name: 'Deployment Impact', icon: GitCompare },
-    { id: 'product-comparison', name: 'Product Comparison', icon: Scale }
   ];
 
   const renderView = () => {

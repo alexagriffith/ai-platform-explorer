@@ -191,7 +191,7 @@ export default function UseCaseView() {
 
 
   return (
-    <div data-tab="use-cases" className="space-y-3">
+    <div className="space-y-3">
       {/* Header */}
       <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <div className="flex items-center gap-3 mb-2">
