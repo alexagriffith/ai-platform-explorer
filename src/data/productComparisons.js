@@ -468,7 +468,7 @@ export const aiInferenceVsRhoai = {
       },
       b: {
         support: 'yes',
-        detail: 'Distributed fine-tuning via Kubeflow Trainer v2 (GA in Red Hat OpenShift AI). InstructLab fine-tuning pipelines removed since Red Hat OpenShift AI 3.0; current fine-tuning path is Kubeflow Trainer v2. Confirm current options with your Red Hat account team.',
+        detail: 'Distributed fine-tuning via Kubeflow Trainer v2 (included in Red Hat OpenShift AI). InstructLab fine-tuning pipelines removed since Red Hat OpenShift AI 3.0; current fine-tuning path is Kubeflow Trainer v2. Confirm current options with your Red Hat account team.',
         tier: 'inferred',
         sourceUrl: gam(53),
         sourceLabel: 'opendatahub-operator get_all_manifests.sh — trainer (Kubeflow Trainer v2, included in RHOAI)'
