@@ -57,7 +57,7 @@ export const products = [
     customerProfile: ['Edge deployments', 'Developers', 'Small teams', 'Linux infrastructure teams'],
     deploymentPattern: 'Bare metal or VM (RHEL, no container orchestration required)',
     resources: {
-      docs: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai/3.2'
+      docs: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai/3.5'
     }
   },
   {

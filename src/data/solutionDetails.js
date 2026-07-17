@@ -769,7 +769,7 @@ export const solutionDetails = {
       'Linux-native AI serving for teams without an OpenShift footprint',
       'Development and testing before scaling to Red Hat OpenShift AI'
     ],
-    documentation: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai/3.2',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai/3.5',
     contacts: ['Ask your Red Hat account team.']
   },
   'batch-gateway': {
