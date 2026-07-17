@@ -60,9 +60,10 @@ const SRC = {
   rhoaiSupportedConfigs: 'https://access.redhat.com/articles/rhoai-supported-configs-3.x',
   rhoaiCatalog: 'https://catalog.redhat.com/en/software/container-stacks/detail/63b85b573112fe5a95ee9a3a',
   // Two delivery Helm charts, both under the Red Hat AI ("rhai") namespace — one product family, two
-  // platform wirings (Alexa's framing, 2026-07-10). The OpenShift chart is catalog-verified.
-  // The any-Kubernetes chart URL became unreachable 2026-07-17; cells that cited it now use the
-  // getting-started doc which covers both deployment paths.
+  // platform wirings (Alexa's framing, 2026-07-10). Catalog API (requires_terms:true, Tech Preview,
+  // content_stream_tags v3.4) confirms the split; chart bodies stay auth-gated (pull commands in
+  // work-log SOURCES.md S3b). Both catalog UI URLs validated HTTP 200.
+  rhaiXksChart: 'https://catalog.redhat.com/en/software/containers/rhai/rhai-on-xks-chart/69d5330e2782c2d898f3899e',
   rhaiOpenshiftChart: 'https://catalog.redhat.com/en/software/containers/rhai/rhai-on-openshift-chart/69d5326b4f12a69777fa181d',
   // Verification round 2 (2026-07-13): per-image catalog records that carry the disputed maturity
   // (release_categories), fetched live from the catalog.redhat.com Pyxis API and rendered-validated
@@ -213,8 +214,8 @@ export const aiInferenceVsRhoai = {
         included: 'confirm',
         detail: 'Runs on Kubernetes footprints — confirm supported platforms with your Red Hat account team',
         tier: 'clear',
-        sourceUrl: SRC.rhaisGettingStarted,
-        sourceLabel: 'Red Hat AI Inference Server 3.1 Getting Started — Kubernetes deployment path (non-OpenShift); docs.redhat.com'
+        sourceUrl: SRC.rhaiXksChart,
+        sourceLabel: 'Red Hat AI any-Kubernetes Helm chart (rhai/rhai-on-xks-chart) — non-OLM install on any Kubernetes (EKS/AKS/GKE/self-managed); catalog.redhat.com, Tech Preview v3.4'
       },
       b: {
         included: 'included',
@@ -576,10 +577,11 @@ export const decisionBeatFacts = {
       sourceLabel: 'Red Hat AI Inference Server 3.1 docs — Getting started'
     },
     {
-      // Any-Kubernetes delivery chart is Tech Preview; standalone RHEL: getting-started doc describes a container image that runs on RHEL.
+      // Any-Kubernetes delivery chart is Tech Preview (catalog row, rhaiXksChart).
+      // Standalone RHEL: getting-started doc describes a container image that runs on RHEL.
       text: 'Any Kubernetes (delivery chart Tech Preview) · standalone on Red Hat Enterprise Linux',
-      sourceUrl: SRC.rhaisGettingStarted,
-      sourceLabel: 'Red Hat AI Inference Server 3.1 docs — Getting started; any-Kubernetes and RHEL deployment paths'
+      sourceUrl: SRC.rhaiXksChart,
+      sourceLabel: 'Red Hat AI any-Kubernetes Helm chart — catalog.redhat.com, Tech Preview v3.4; standalone RHEL via getting-started doc'
     }
   ],
   /** Red Hat OpenShift AI column */
