@@ -219,7 +219,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
                                 </span>
                               </div>
                               {option.recommendation && (
-                                <div className={`mt-0.5 ${typeScale.meta} text-green-600 dark:text-green-400 font-semibold`}>
+                                <div className={`mt-0.5 ${typeScale.meta} text-link font-semibold`}>
                                   View recommendation
                                 </div>
                               )}

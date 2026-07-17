@@ -8,7 +8,7 @@ import {
   capabilityMapToFlowShape
 } from '../lib/capabilityBlueprint';
 import { reconcileContainerAiPlatform, isCapabilityOptionDisabled } from '../lib/platformAiConstraints';
-import { button, interactive, providerMark, status, text, toggle } from '../lib/styleTokens';
+import { badge, button, interactive, productStatus, providerMark, status, text, toggle } from '../lib/styleTokens';
 import DeepDiveModal from './DeepDiveModal';
 import FlowVisualization from './FlowVisualization';
 
@@ -209,12 +209,12 @@ function CapabilitySelector({
                             </span>
                           )}
                           {option.recommended && (
-                            <span data-ui="chip" className="px-2 py-0.5 bg-accent text-on-accent text-xs rounded-card">
+                            <span data-ui="chip" className={badge.recommended}>
                               Recommended
                             </span>
                           )}
                           {option.status && (
-                            <span data-ui="chip" className={`px-2 py-0.5 bg-page ${text.muted} border border-hair text-xs rounded-card`}>
+                            <span data-ui="chip" className={`rounded-card px-2 py-0.5 bg-page border border-hair text-xs ${productStatus[option.status] ?? text.muted}`}>
                               {option.status}
                             </span>
                           )}

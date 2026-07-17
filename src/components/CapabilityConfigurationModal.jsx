@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { X, Check, Microscope } from 'lucide-react';
 import { isCapabilityOptionDisabled, MCP_CAPABILITY_ID, LLAMA_STACK_CAPABILITY_ID } from '../lib/platformAiConstraints';
-import { badge, button, card, interactive, modal, redHatFirst, text } from '../lib/styleTokens';
+import { badge, card, interactive, modal, productStatus, redHatFirst, text } from '../lib/styleTokens';
 import { solutionDetails } from '../data/solutionDetails';
 
 /**
@@ -105,22 +105,22 @@ export default function CapabilityConfigurationModal({
                         <div className="mb-1 flex items-center gap-2 flex-wrap">
                           <h4 className={`font-bold ${text.ink}`}>{option.name}</h4>
                           {disabled && (
-                            <span className={badge.neutral}>
+                            <span className="rounded-card px-2 py-0.5 text-xs bg-page text-muted">
                               N/A for pairing
                             </span>
                           )}
                           {option.isCustomer && (
-                            <span className={badge.customer}>
+                            <span className="rounded-card px-2 py-0.5 text-xs bg-tint text-ink">
                               Customer
                             </span>
                           )}
                           {option.recommended && (
-                            <span className={badge.positive}>
+                            <span className={badge.recommended}>
                               Recommended
                             </span>
                           )}
                           {option.status && (
-                            <span className={badge.neutral}>
+                            <span className={`rounded-card px-2 py-0.5 text-xs bg-page border border-hair ${productStatus[option.status] ?? 'text-muted'}`}>
                               {option.status}
                             </span>
                           )}
@@ -130,16 +130,16 @@ export default function CapabilityConfigurationModal({
                     </div>
                   </button>
                   {option.provider === 'Red Hat' && solutionDetails[option.id] && (
-                    <div className="mt-3">
+                    <div className="mt-3 pt-3 border-t border-hair">
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           onDeepDive(option.id);
                         }}
-                        className={`${button.secondary} w-full justify-center`}
+                        className={`inline-flex items-center gap-1.5 text-sm font-medium text-link hover:underline ${interactive.focusRing} ${interactive.transition} rounded-card`}
                       >
-                        <Microscope size={16} />
+                        <Microscope size={14} aria-hidden="true" />
                         Technical Details
                       </button>
                     </div>

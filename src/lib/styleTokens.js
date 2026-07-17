@@ -110,6 +110,11 @@ export const badge = {
   neutral: 'rounded-card border border-hair bg-page px-2 py-0.5 text-xs text-muted',
   customer: 'rounded-card px-2 py-0.5 text-xs bg-tint border border-edge text-ink',
   positive: 'rounded-card px-2 py-0.5 text-xs bg-green-600 text-white',
+  /**
+   * 'Recommended' badge — accent ring on tinted surface. NOT status-green (DESIGN-LAW:
+   * status colors are status-only; recommended is a UI affordance, not a completion state).
+   */
+  recommended: 'rounded-card px-2 py-0.5 text-xs ring-1 ring-accent bg-tint text-accent font-medium',
 };
 
 export const modal = {
