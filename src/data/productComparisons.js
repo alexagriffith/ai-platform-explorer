@@ -346,7 +346,7 @@ export const aiInferenceVsRhoai = {
       },
       b: {
         support: 'yes',
-        detail: 'Via KServe — Horizontal Pod Autoscaler (HPA), KEDA, or Knative',
+        detail: 'Via KServe (RawDeployment mode) — Horizontal Pod Autoscaler (HPA) or KEDA',
         tier: 'clear',
         sourceUrl: dsc(43),
         sourceLabel: 'opendatahub-operator DataScienceCluster v2 API — "Only RawDeployment mode is supported" (HPA/KEDA; not Knative)'
@@ -367,9 +367,9 @@ export const aiInferenceVsRhoai = {
       b: {
         support: 'confirm',
         detail: 'Red Hat AI Gateway integration — confirm availability and scope with your Red Hat account team',
-        tier: 'clear',
+        tier: 'inferred',
         sourceUrl: gam(54),
-        sourceLabel: 'opendatahub-operator get_all_manifests.sh — maas (Models-as-a-Service; RHCL/Kuadrant-backed)'
+        sourceLabel: 'opendatahub-operator get_all_manifests.sh — maas-billing operator present (billing/metering component; user-facing MaaS gateway scope unconfirmed)'
       },
       overlap: true,
       illustrative: true,
@@ -438,8 +438,8 @@ export const aiInferenceVsRhoai = {
     {
       capability: 'Model registry integration',
       a: {
-        support: 'yes',
-        detail: 'Integrates with Model Registry',
+        support: 'no',
+        detail: 'Model Registry is not part of the Red Hat AI Inference Server bill of materials; model-registry images ship under rhoai/ only',
         status: 'Tech Preview',
         tier: 'inferred',
         sourceUrl: SRC.rhoaiCatalog,
@@ -468,11 +468,11 @@ export const aiInferenceVsRhoai = {
         sourceLabel: 'Red Hat AI Inference Server 3.1 supported configs — LLM Compressor (compression, not fine-tuning)'
       },
       b: {
-        support: 'yes',
-        detail: 'InstructLab — alignment and fine-tuning using synthetic data and the LAB method',
-        tier: 'clear',
+        support: 'no',
+        detail: 'InstructLab fine-tuning pipelines removed since Red Hat OpenShift AI 3.0. Distributed fine-tuning is available via Kubeflow Trainer v2 (GA). Confirm current fine-tuning path with your Red Hat account team.',
+        tier: 'inferred',
         sourceUrl: cpe(20),
-        sourceLabel: 'opendatahub-operator component-params-env.yaml — "Removed with InstrutLab pipeline removal since RHOAI 3.0" (now Kubeflow Trainer v2)'
+        sourceLabel: 'opendatahub-operator component-params-env.yaml — "Removed with InstrutLab pipeline removal since RHOAI 3.0" (Kubeflow Trainer v2 is GA in RHOAI 3.4)'
       },
       overlap: false,
       illustrative: true,
