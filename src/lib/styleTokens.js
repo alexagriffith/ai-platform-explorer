@@ -178,6 +178,18 @@ export const categoricalMark = {
 };
 
 /**
+ * Capability support / presence marks for comparison tables.
+ * Symbols: ✓ yes · ~ partial · ✕ no · ? confirm.
+ * Class strings reuse productStatus / status.attention hues — single source.
+ */
+export const supportMark = {
+  yes:     { symbol: '✓', ariaLabel: 'supported',            className: `${productStatus['GA']} font-bold` },
+  partial: { symbol: '~', ariaLabel: 'partially supported',  className: `${status.attention.text} font-bold` },
+  no:      { symbol: '✕', ariaLabel: 'not supported',        className: 'text-faint font-bold' },
+  confirm: { symbol: '?', ariaLabel: 'confirm with Red Hat', className: 'text-faint' },
+};
+
+/**
  * Hardware cost/performance badge class maps for GPU comparison tables.
  * Used by TrainingDeepDive; centralized here per the no-re-implement-color-maps rule.
  */

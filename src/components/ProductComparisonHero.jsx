@@ -7,7 +7,8 @@ import { readSide } from '../lib/ledgerModel';
  *
  * Layout: outer ring = Red Hat OpenShift AI (the platform). Inside it, a nested
  * section = Red Hat AI Inference Server (the engine). Nesting geometry conveys
- * the containment relationship; labels are PRODUCT NAMES ONLY.
+ * the containment relationship; zone labels are product names; cells carry
+ * canonical component/capability names.
  *
  * Anti-box law: outer ring uses ONE border. Inner section uses a tinted surface
  * (bg-tint) without any additional border — tonal separation only. No nested

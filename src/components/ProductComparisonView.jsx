@@ -5,7 +5,7 @@ import { getComponentVersions } from '../data/componentVersions';
 import SharedSpineLedger from './SharedSpineLedger';
 import ProductComparisonHero from './ProductComparisonHero';
 import { buildLedgerModel } from '../lib/ledgerModel';
-import { interactive } from '../lib/styleTokens';
+import { interactive, supportMark as SUPPORT_MARK } from '../lib/styleTokens';
 
 /**
  * ProductComparisonView — the Product Comparison tab, structured as THREE BEATS top to bottom so a
@@ -35,16 +35,6 @@ const INCLUSION_LABEL = {
   confirm: 'Confirm with Red Hat'
 };
 
-/**
- * Capability presence marks — check/X with aria-labels; never Yes/No words.
- * Shared token map per the DESIGN-LAW closed-world rule.
- */
-const SUPPORT_MARK = {
-  yes:     { symbol: '✓', ariaLabel: 'supported',         className: 'text-green-700 dark:text-green-400 font-bold' },
-  partial: { symbol: '~', ariaLabel: 'partially supported', className: 'text-amber-700 dark:text-amber-400 font-bold' },
-  no:      { symbol: '✕', ariaLabel: 'not supported',      className: 'text-faint font-bold' },
-  confirm: { symbol: '?', ariaLabel: 'confirm with Red Hat', className: 'text-faint' },
-};
 
 const DRAFT_BANNER_TEXT =
   'Draft — pending bill of materials (BOM) curation. Rows below are illustrative placeholders, not confirmed product contents. Confirm anything here with your Red Hat account team.';
