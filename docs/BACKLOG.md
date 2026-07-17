@@ -6,7 +6,7 @@ Working checklist for this repo. Every open item is written to be **directly exe
 1. Work one package (WP) at a time. File ownership per package is exclusive — do not touch files outside your package.
 2. Run order: WP0 → (WP1, WP2, WP3 may run in parallel — disjoint files) → WP4 → WP5 → WP6 → WP7. WP4 must wait for WP1–WP3 because it edits the same data files.
 3. Never rename capability/option/product ids. Fix display strings only.
-4. After each package: `npm run lint` (0 errors), `npm test` (all green), `npm run build` (succeeds), browser-check the affected tab(s) in light AND dark mode (dark = OS/devtools emulation; there is no in-app toggle), stage everything and run `.git/hooks/pre-commit` (leak check must pass), then check off the items here.
+4. After each package: `npm run lint` (0 errors), `npm test` (all green), `npm run build` (succeeds), browser-check the affected tab(s) in light AND dark mode (dark = flip the header toggle or emulate in devtools; theming is class-based `html.dark`, persisted to `localStorage`, falls back to `matchMedia`), stage everything and run `.git/hooks/pre-commit` (leak check must pass), then check off the items here.
 5. Line numbers below were exact at review time (2026-07-03) but drift as edits land — locate by the quoted text, not the number.
 
 ---
@@ -247,6 +247,16 @@ Branch: `ws/style-unification`. Two commits.
 - `SharedSpineLedger` `LedgerRow` bg-tint rows (14 — exempted as interior of table; `GroupHeader` and `StickyHeader` → `section-header`)
 
 **Gate result:** `PASS`. Coverage per tab: architecture 203/40/0/0, product-comparison 560/9/14/0, deployment-impact 23/2/0/0, decisions 103/10/0/0, products 230/21/0/0, use-cases 1631/56/0/0.
+
+---
+
+### Review-fixes notes — deferred items (2026-07-17)
+
+- [ ] **Nested `<button>` inside `<button data-ui="card">` in InteractiveBuilder option cards** (`src/components/InteractiveBuilder.jsx`, `CapabilitySelector` component, "Learn more" guide toggle). Invalid HTML — browsers silently restructure the DOM, breaking event propagation; React logs a hydration warning in every vitest run. Fix: change the outer option card from `<button data-ui="card">` to `<div role="button" tabIndex={0} onKeyDown=...>` (or extract the inner help-circle toggle above the card boundary). A11y hazard: two focusable elements must not be nested.
+
+- [ ] **`DecisionTree` "View recommendation" link uses `text-green-600`** (`src/components/DecisionTree.jsx`) — raw color class, violates the style law rule "status colors are status-only" (green = GA/complete status only). Fix: replace `text-green-600` with `text-link` (or `text-accent`) so it uses the semantic action-link token, not the completion-status color.
+
+- [ ] **`ComponentVersionsPanel` links missing `rel='noopener noreferrer'`** — deferred; file is owned by the compare lane. Do not edit outside that lane's scope.
 
 ---
 
