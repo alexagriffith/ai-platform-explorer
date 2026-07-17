@@ -76,14 +76,14 @@ export default function ProductExplorer() {
               className={`rounded-card border ${border.hair} ${surface.raised} hover:-translate-y-0.5 ${interactive.transitionAll}`}
             >
               <div className={density.sectionPad}>
-                <div className="mb-1">
+                <div className="mb-1 text-center">
                   <h3 className={`${typeScale.componentName} ${text.ink}`}>
                     {product.name}
                   </h3>
                 </div>
 
                 {/* Status and category — text-only, no bordered badges inside card */}
-                <div className="flex flex-wrap items-center gap-2 mb-2">
+                <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
                   <span className={`${typeScale.meta} font-semibold uppercase tracking-wide ${statusTextClass(product.status)}`}>
                     {product.status}
                   </span>

@@ -1460,11 +1460,11 @@ export default function DecisionFlowchart({
                           setApplyNotice(null);
                           setSelectedDecision(guideKey);
                         }}
-                        className={`${density.sectionPad} text-left rounded-card border ${border.hair} ${surface.tint} hover:border-accent hover:bg-tint ${interactive.transition} ${interactive.focusRing} group`}
+                        className={`${density.sectionPad} text-center rounded-card border ${border.hair} ${surface.tint} hover:border-accent hover:bg-tint ${interactive.transition} ${interactive.focusRing} group`}
                       >
-                        <div className="flex items-start gap-2 mb-1">
-                          <Icon size={16} className={`${text.muted} group-hover:text-accent ${interactive.transition} flex-shrink-0 mt-0.5`} />
-                          <div className="flex-1 min-w-0">
+                        <div className="flex flex-col items-center gap-0.5 mb-1">
+                          <Icon size={16} className={`${text.muted} group-hover:text-accent ${interactive.transition} flex-shrink-0`} />
+                          <div className="min-w-0">
                             <div className={`${typeScale.meta} font-semibold ${text.faint} uppercase tracking-wide mb-0.5`}>
                               {meta.category}
                             </div>

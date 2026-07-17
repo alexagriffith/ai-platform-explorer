@@ -249,7 +249,7 @@ export default function UseCaseView() {
             ref={(el) => (useCaseRefs.current[useCase.id] = el)}
             className="rounded-card bg-surface overflow-hidden scroll-mt-4"
           >
-            <div className="border-b border-hair px-4 py-2 flex items-center gap-2">
+            <div className="border-b border-hair px-4 py-2 flex flex-col items-center text-center gap-0.5">
               <Lightbulb className="text-accent flex-shrink-0" size={14} />
               <h3 className={`${typeScale.componentName} text-ink`}>{useCase.title}</h3>
               <span className={`${typeScale.secondary} text-muted`}>{useCase.description}</span>
@@ -263,7 +263,7 @@ export default function UseCaseView() {
                     <CheckCircle2 size={11} className="text-green-600" />
                     Recommended Products
                   </h4>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap justify-center gap-1">
                     {useCase.recommendedProducts.map(productId => {
                       const entry = getCatalogEntry(productId);
                       const name = entry ? entry.name : getCatalogDisplayName(productId);

@@ -41,7 +41,7 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
               key={comparison.id}
               onClick={() => onSelectComparison(comparison.id)}
               className={`
-                text-left px-4 py-3 rounded-card border-2 ${interactive.transitionAll}
+                text-center px-4 py-3 rounded-card border-2 ${interactive.transitionAll}
                 ${interactive.focusRing}
                 ${isSelected
                   ? 'border-accent bg-tint'
@@ -49,8 +49,8 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
                 }
               `}
             >
-              <div className="flex items-start justify-between mb-1.5">
-                <h3 className="text-sm font-semibold text-ink pr-3">
+              <div className="flex flex-col items-center gap-0.5 mb-1.5">
+                <h3 className="text-sm font-semibold text-ink">
                   {comparison.title}
                 </h3>
                 {isSelected && (
@@ -66,14 +66,14 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
                 {comparison.description}
               </p>
 
-              <div className="flex items-center text-xs text-muted">
+              <div className="flex items-center justify-center text-xs text-muted">
                 <Users size={13} className="mr-1.5" />
                 <span className="italic">For: {comparison.audience || 'Technical teams'}</span>
               </div>
 
               {isSelected && (
                 <div className="mt-2 pt-2 border-t border-hair">
-                  <div className="flex items-center text-link text-sm font-medium">
+                  <div className="flex items-center justify-center text-link text-sm font-medium">
                     <span>View Comparison</span>
                     <ArrowRight size={14} className="ml-1.5" />
                   </div>

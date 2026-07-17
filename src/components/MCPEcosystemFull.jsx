@@ -135,8 +135,8 @@ export default function MCPEcosystemFull() {
               {components.map((component) => {
                 const Icon = component.icon;
                 return (
-                  <div key={component.id} className="rounded-card bg-tint px-2 py-1.5">
-                    <div className="flex items-center gap-1 mb-0.5">
+                  <div key={component.id} className="rounded-card bg-tint px-2 py-1.5 text-center">
+                    <div className="flex flex-col items-center gap-0.5 mb-0.5">
                       <Icon size={12} className="text-muted flex-shrink-0" />
                       <h4 className={`${typeScale.meta} font-bold text-ink`}>{component.name}</h4>
                     </div>

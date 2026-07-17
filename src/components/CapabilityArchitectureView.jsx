@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 import {
-  Plus,
   Building2,
   Sparkles,
   X,
@@ -118,25 +117,22 @@ function CapabilityCard({
         onClick={() => onConfigure(capability)}
         className={`${card.unselected} group px-2 py-1.5 w-full h-full`}
       >
-        <div className="flex items-start gap-1.5">
-          <Plus size={12} className={`mt-0.5 opacity-50 group-hover:opacity-100 flex-shrink-0 ${text.faint} group-hover:text-accent`} />
-          <div className="flex-1 min-w-0">
-            <h4 className={`${typeScale.componentName} ${text.ink}`}>
-              {capability.name}
-              {capability.required && (
-                <span className={`ml-1 px-1 py-0.5 text-[10px] ${status.requiredBadge} rounded-card`}>
-                  Req
-                </span>
-              )}
-            </h4>
-            {detailLevel === 2 && (
-              <div className={`${typeScale.meta} ${text.faint} mt-0.5`}>
-                {availableCount === capability.options.length
-                  ? `${capability.options.length} option${capability.options.length !== 1 ? 's' : ''}`
-                  : `${availableCount} of ${capability.options.length} options match current pairing`}
-              </div>
+        <div className="flex flex-col items-center text-center gap-0.5 min-h-0">
+          <h4 className={`${typeScale.componentName} ${text.ink}`}>
+            {capability.name}
+            {capability.required && (
+              <span className={`ml-1 px-1 py-0.5 text-[10px] ${status.requiredBadge} rounded-card`}>
+                Req
+              </span>
             )}
-          </div>
+          </h4>
+          {detailLevel === 2 && (
+            <div className={`${typeScale.meta} ${text.faint}`}>
+              {availableCount === capability.options.length
+                ? `${capability.options.length} option${capability.options.length !== 1 ? 's' : ''}`
+                : `${availableCount} of ${capability.options.length} options match current pairing`}
+            </div>
+          )}
         </div>
       </button>
     );
@@ -164,7 +160,7 @@ function CapabilityCard({
     >
       <div className="flex items-center gap-1.5 px-2 py-1 border-b border-hair">
         <CheckCircle2 size={12} className="text-green-600 shrink-0" aria-hidden />
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 text-center">
           <div className={`${typeScale.componentName} ${text.ink}`}>
             {capability.name}
             {selectedOption?.isCustomer && (
@@ -627,7 +623,8 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
           })}
         </div>
 
-        {/* Categorical legend — colored marks + meanings */}
+        {/* Categorical legend — colored marks + meanings; only shown when at least one selection is active */}
+        {Object.keys(selectedCapabilities).length > 0 && (
         <div className="mt-3 pt-2 border-t border-hair flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-1.5">
             <span className={legendChip.redHat} />
@@ -646,6 +643,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
             <span className={`${typeScale.meta} ${text.muted}`}>Customer / optional</span>
           </div>
         </div>
+        )}
       </div>
 
       {configuringCapability && (
