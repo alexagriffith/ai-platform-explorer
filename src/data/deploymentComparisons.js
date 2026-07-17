@@ -892,7 +892,7 @@ spec:
       'Data Science Pipelines (Kubeflow Pipelines)',
       'Model Registry for versioning and lineage',
       'KServe model serving (multi-framework)',
-      'Distributed training with Ray/CodeFlare',
+      'Distributed training with Ray (distributed compute) and Kubeflow Trainer v2',
       'TrustyAI for explainability and monitoring',
       'Centralized dashboard and project management',
       'Role-based access control (RBAC)',
@@ -957,7 +957,7 @@ spec:
     {
       capability: 'Distributed training',
       beforeState: 'Not available or custom implementation',
-      afterState: 'Ray/CodeFlare for multi-node training',
+      afterState: 'Ray (distributed compute) and Kubeflow Trainer v2 for multi-node training',
       impact: 'positive',
       notes: 'Scale training across GPU nodes without managing Ray cluster'
     },

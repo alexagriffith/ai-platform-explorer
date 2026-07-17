@@ -147,7 +147,7 @@ export const products = [
   {
     id: 'rhoai-distributed',
     name: 'OpenShift AI — distributed training',
-    description: 'Ray / CodeFlare style distributed jobs on OpenShift AI for larger training footprints.',
+    description: 'Ray (distributed compute) and Kubeflow Trainer v2 distributed jobs on OpenShift AI for larger training footprints.',
     category: 'Training',
     status: 'GA',
     layer: 'services',

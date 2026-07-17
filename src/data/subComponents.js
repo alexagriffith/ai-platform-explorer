@@ -80,9 +80,9 @@ export const subComponents = {
         role: 'Job Orchestration'
       },
       {
-        id: 'codeflare',
-        name: 'CodeFlare',
-        description: 'Resource management for distributed workloads on OpenShift',
+        id: 'kubeflow-trainer',
+        name: 'Kubeflow Trainer v2',
+        description: 'Kubernetes-native orchestration for distributed training jobs (PyTorch, TensorFlow)',
         role: 'Resource Management'
       },
       {

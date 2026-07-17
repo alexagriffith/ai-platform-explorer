@@ -86,7 +86,7 @@ export const solutionDetails = {
         { name: 'Workbenches', role: 'Development', description: 'Multi-user notebook environments (managed by the Kubeflow notebook controller) with GPU support and custom images' },
         { name: 'Data Science Pipelines', role: 'MLOps', description: 'Kubeflow Pipelines (KFP) for workflow orchestration' },
         { name: 'Model Serving (KServe)', role: 'Inference', description: 'Multi-framework serving with auto-scaling' },
-        { name: 'Distributed Workloads', role: 'Training', description: 'Kubeflow Trainer v2, CodeFlare, and Ray for distributed training' },
+        { name: 'Distributed Workloads', role: 'Training', description: 'Kubeflow Trainer v2 and Ray (distributed compute) for distributed training' },
         { name: 'Dashboard', role: 'Management', description: 'Unified UI for projects and resources' }
       ],
       integrations: [
@@ -154,7 +154,7 @@ export const solutionDetails = {
       components: [
         { name: 'Ray', role: 'Distributed Computing', description: 'Framework for parallelizing training across multiple nodes' },
         { name: 'Training Operator', role: 'Job Management', description: 'Kubernetes-native orchestration for PyTorch, TensorFlow jobs' },
-        { name: 'CodeFlare', role: 'Resource Management', description: 'Manages distributed resources on OpenShift' }
+        { name: 'Kubeflow Trainer v2', role: 'Resource Management', description: 'Kubernetes-native orchestration for distributed training jobs on OpenShift' }
       ],
       integrations: [
         { name: 'Workbenches', purpose: 'Notebook development environment for training code' },
