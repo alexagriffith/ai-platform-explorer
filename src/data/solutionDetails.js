@@ -744,7 +744,7 @@ export const solutionDetails = {
     architecture: {
       components: [
         { name: 'Red Hat AI Inference (vLLM)', role: 'Inference', description: 'High-throughput LLM serving via the vLLM engine, exposed as an OpenAI-compatible API via a systemd Quadlet service' },
-        { name: 'Red Hat AI Model Optimization Toolkit', role: 'Model Compression', description: 'llm-compressor for model quantization, sparsity, and compression (NVIDIA CUDA; not available on AMD ROCm)' },
+        { name: 'Red Hat AI Model Optimization Toolkit', role: 'Model Compression', description: 'llm-compressor for model quantization, sparsity, and compression (CUDA image available; check with Red Hat for other accelerators)' },
         { name: 'Bootc Image', role: 'Delivery', description: 'Portable RHEL-based bootc container image for bare metal and VM deployment' }
       ],
       integrations: [
@@ -756,8 +756,8 @@ export const solutionDetails = {
     capabilities: [
       'LLM inference via vLLM with OpenAI-compatible API (/v1/completions)',
       'Model quantization, sparsity, and compression via Red Hat AI Model Optimization Toolkit (llm-compressor)',
-      'Validated model architectures: Granite, Llama, Gemma, Mistral, and others',
-      'Model loading from Hugging Face Hub, local file system, or ModelCar container images',
+      'Pre-optimized validated models',
+      'Model loading from Hugging Face models, ModelCar container images, or OCI artifact images',
       'No Kubernetes or OpenShift required — runs on bare metal or VMs',
       'RHEL security and compliance features',
       'NVIDIA GPU support (CUDA); AMD GPU support (ROCm) for inference only'
@@ -769,7 +769,7 @@ export const solutionDetails = {
       'Linux-native AI serving for teams without an OpenShift footprint',
       'Development and testing before scaling to Red Hat OpenShift AI'
     ],
-    documentation: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai/3.5',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai/3.2',
     contacts: ['Ask your Red Hat account team.']
   },
   'batch-gateway': {

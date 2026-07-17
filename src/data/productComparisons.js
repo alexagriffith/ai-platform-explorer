@@ -46,7 +46,6 @@ const PENDING = 'Pending curation — confirm with your Red Hat account team';
 const ODH = 'https://github.com/opendatahub-io/opendatahub-operator/blob/2e3c4206e9a35fb9cbe5eaacf257695560520e83';
 const gam = (line) => `${ODH}/get_all_manifests.sh${line ? `#L${line}` : ''}`;
 const dsc = (line) => `${ODH}/api/datasciencecluster/v2/datasciencecluster_types.go${line ? `#L${line}` : ''}`;
-const cpe = (line) => `${ODH}/component-params-env.yaml${line ? `#L${line}` : ''}`;
 const vllm = (line) => `https://github.com/vllm-project/vllm/blob/ee0da84ab9e04ac7610e28580af62c365e898389/README.md${line ? `#L${line}` : ''}`;
 
 const SRC = {
@@ -468,11 +467,11 @@ export const aiInferenceVsRhoai = {
         sourceLabel: 'Red Hat AI Inference Server 3.1 supported configs — LLM Compressor (compression, not fine-tuning)'
       },
       b: {
-        support: 'no',
-        detail: 'InstructLab fine-tuning pipelines removed since Red Hat OpenShift AI 3.0. Distributed fine-tuning is available via Kubeflow Trainer v2 (GA). Confirm current fine-tuning path with your Red Hat account team.',
+        support: 'yes',
+        detail: 'Distributed fine-tuning via Kubeflow Trainer v2 (GA in Red Hat OpenShift AI). InstructLab fine-tuning pipelines removed since Red Hat OpenShift AI 3.0; current fine-tuning path is Kubeflow Trainer v2. Confirm current options with your Red Hat account team.',
         tier: 'inferred',
-        sourceUrl: cpe(20),
-        sourceLabel: 'opendatahub-operator component-params-env.yaml — "Removed with InstrutLab pipeline removal since RHOAI 3.0" (Kubeflow Trainer v2 is GA in RHOAI 3.4)'
+        sourceUrl: gam(53),
+        sourceLabel: 'opendatahub-operator get_all_manifests.sh — trainer (Kubeflow Trainer v2, included in RHOAI)'
       },
       overlap: false,
       illustrative: true,
