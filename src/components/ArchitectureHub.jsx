@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Layers, Hammer, Settings, HelpCircle, BookOpen } from 'lucide-react';
+import { Layers, HelpCircle } from 'lucide-react';
 import CapabilityArchitectureView from './CapabilityArchitectureView';
 import InteractiveBuilder from './InteractiveBuilder';
 import CustomerConfig from './CustomerConfig';
 import RAGArchitecture from './RAGArchitecture';
 import TrainingDeepDive from './TrainingDeepDive';
-import { interactive, text, toggle } from '../lib/styleTokens';
+import { interactive, text } from '../lib/styleTokens';
 
 export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities, initialMode = 'build', onModeChange }) {
   const [mode, setMode] = useState(initialMode); // 'build', 'interactive', 'generate', 'blueprints'
@@ -19,7 +19,6 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
     {
       id: 'build',
       name: 'Build Your Stack',
-      icon: Layers,
       description: 'Layer-by-layer architecture builder with flexible component selection',
       component: (
         <CapabilityArchitectureView
@@ -32,7 +31,6 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
     {
       id: 'interactive',
       name: 'Interactive Builder',
-      icon: Hammer,
       description: 'Step-by-step guided workflow from infrastructure to application',
       component: (
         <InteractiveBuilder
@@ -44,7 +42,6 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
     {
       id: 'generate',
       name: 'Generate from Environment',
-      icon: Settings,
       description: 'Capture environment signals and copy a draft suggestion list for the workshop',
       component: (
         <CustomerConfig customerEnv={customerEnv} setCustomerEnv={setCustomerEnv} />
@@ -53,7 +50,6 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
     {
       id: 'blueprints',
       name: 'Blueprints',
-      icon: BookOpen,
       description: 'Pre-composed reference architectures — RAG and training patterns (read-only; no stack wiring)',
       component: (
         <div className="space-y-6">
@@ -92,35 +88,33 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
           </div>
         </div>
 
-        {/* Mode segmented control — all modes visible at content width */}
+        {/* Mode nav — text tabs matching top-nav grammar (no borders, no fills) */}
         <div
-          data-ui="chip-row"
-          className="mt-2 pt-2 border-t border-hair flex flex-col gap-1.5 sm:flex-row sm:items-center"
+          className="mt-2 pt-2 border-t border-hair"
         >
-          <span className={`text-xs font-semibold ${text.muted} whitespace-nowrap shrink-0`}>
-            Mode:
-          </span>
-          <div role="tablist" aria-label="Architecture mode" className="flex flex-wrap gap-1">
+          <div role="tablist" aria-label="Architecture mode" className="flex flex-wrap gap-x-4 gap-y-1">
             {modes.map((modeOption) => {
-              const Icon = modeOption.icon;
               const active = mode === modeOption.id;
               return (
                 <button
-                  data-ui="chip"
+                  data-ui="control"
                   key={modeOption.id}
                   type="button"
                   role="tab"
                   aria-selected={active}
                   onClick={() => handleModeChange(modeOption.id)}
-                  className={`inline-flex items-center gap-1 ${toggle.base} ${active ? toggle.active : toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
+                  className={`text-xs font-medium pb-0.5 border-b-2 whitespace-nowrap ${interactive.transition} ${interactive.focusRing} rounded-none ${
+                    active
+                      ? 'border-accent text-link'
+                      : 'border-transparent text-muted hover:text-ink'
+                  }`}
                 >
-                  <Icon size={11} aria-hidden="true" />
                   {modeOption.name}
                 </button>
               );
             })}
           </div>
-          <p className={`text-xs ${text.faint} sm:ml-1`}>
+          <p className={`mt-1 text-xs ${text.faint}`}>
             {currentMode.description}
           </p>
         </div>
