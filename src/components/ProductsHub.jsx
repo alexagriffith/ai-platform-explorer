@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Package, Scale, Network } from 'lucide-react';
+import { Package, Scale, Network, ArrowRight } from 'lucide-react';
 import ProductComparisonView from './ProductComparisonView';
 import ProductExplorer from './ProductExplorer';
 import MCPEcosystemFull from './MCPEcosystemFull';
@@ -27,12 +27,76 @@ const SUB_VIEWS = [
 ];
 
 /**
+ * Use-case index entries — verbatim names from the former Use Cases tab.
+ * Each links to its new home via onNavigate (cross-tab) or setSubView (in-tab).
+ */
+const USE_CASE_INDEX = [
+  {
+    title: 'Model Inference & Serving',
+    action: 'products-catalog',
+  },
+  {
+    title: 'Model Training & Fine-tuning',
+    action: 'architecture-blueprints',
+  },
+  {
+    title: 'Full ML Lifecycle',
+    action: 'products-catalog',
+  },
+  {
+    title: 'Experimentation & POCs',
+    action: 'products-catalog',
+  },
+  {
+    title: 'Agentic AI & Orchestration',
+    action: 'products-mcp',
+  },
+  {
+    title: 'Retrieval Augmented Generation (RAG)',
+    action: 'architecture-blueprints',
+  },
+  {
+    title: 'LLM Security & Vulnerability Testing',
+    action: 'decisions-security',
+  },
+  {
+    title: 'Disaggregated LLM Serving (Prefill/Decode Split)',
+    action: 'products-catalog',
+  },
+  {
+    title: 'High-Volume Batch Inference',
+    action: 'products-catalog',
+  },
+];
+
+/**
  * ProductsHub — the Products tab.
  * Sub-views: Compare (opens by default, the demo closer) | Catalog | MCP Ecosystem.
  * Each sub-view renders its existing component unchanged; no data edits.
+ *
+ * onNavigate({ tab, architectureMode?, decisionGuide? }) — cross-tab deep-link callback.
  */
-export default function ProductsHub() {
+export default function ProductsHub({ onNavigate }) {
   const [subView, setSubView] = useState('compare');
+
+  const handleUseCaseLink = (action) => {
+    switch (action) {
+      case 'products-catalog':
+        setSubView('catalog');
+        break;
+      case 'products-mcp':
+        setSubView('mcp-ecosystem');
+        break;
+      case 'architecture-blueprints':
+        if (onNavigate) onNavigate({ tab: 'architecture', architectureMode: 'blueprints' });
+        break;
+      case 'decisions-security':
+        if (onNavigate) onNavigate({ tab: 'decisions', decisionGuide: 'security' });
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <div data-tab="products" className="space-y-3">
@@ -63,6 +127,27 @@ export default function ProductsHub() {
           );
         })}
       </nav>
+
+      {/* Browse by use case — compact index, always visible as a Products landing feature */}
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
+        <div className="flex items-baseline gap-2 mb-2">
+          <h3 className={`text-sm font-semibold ${text.ink}`}>Browse by use case</h3>
+          <span className={`text-xs ${text.muted}`}>Each use case links to its guide in this app</span>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {USE_CASE_INDEX.map((uc) => (
+            <button
+              key={uc.title}
+              data-ui="control"
+              onClick={() => handleUseCaseLink(uc.action)}
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-card border border-edge text-xs font-medium text-muted hover:text-ink hover:border-accent ${interactive.transition} ${interactive.focusRing}`}
+            >
+              {uc.title}
+              <ArrowRight size={11} aria-hidden="true" />
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* Active sub-view */}
       {subView === 'compare' && <ProductComparisonView />}

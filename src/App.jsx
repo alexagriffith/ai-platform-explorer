@@ -75,6 +75,18 @@ function App() {
   // Canonical architecture blueprint: flat map capabilityId -> optionId (see README "Application state").
   const [selectedCapabilities, setSelectedCapabilities] = useState({});
   const [selectedDecisionGuide, setSelectedDecisionGuide] = useState('');
+  // Architecture sub-mode — lifted so the use-case index can deep-link to Blueprints.
+  const [architectureMode, setArchitectureMode] = useState('build');
+
+  /**
+   * Cross-tab deep-link handler used by the use-case index in ProductsHub.
+   * Accepts { tab, architectureMode?, decisionGuide? }.
+   */
+  const handleNavigate = ({ tab, architectureMode: mode, decisionGuide }) => {
+    if (mode) setArchitectureMode(mode);
+    if (decisionGuide !== undefined) setSelectedDecisionGuide(decisionGuide);
+    setCurrentView(tab);
+  };
 
   // Four-tab bar: Architecture · Decision Guides · Products · Deployment Impact.
   // Removed ids (use-cases, product-comparison) are still handled in renderView as
@@ -96,13 +108,15 @@ function App() {
             selectedCapabilities={selectedCapabilities}
             setSelectedCapabilities={setSelectedCapabilities}
             onSwitchToDecisions={() => setCurrentView('decisions')}
+            initialMode={architectureMode}
+            onModeChange={setArchitectureMode}
           />
         );
       // product-comparison is now the Compare sub-view inside Products; both render ProductsHub
       case 'products':
-        return <ProductsHub />;
+        return <ProductsHub onNavigate={handleNavigate} />;
       case 'product-comparison':
-        return <ProductsHub />;
+        return <ProductsHub onNavigate={handleNavigate} />;
       case 'decisions':
         return (
           <DecisionFlowchart
@@ -114,7 +128,7 @@ function App() {
           />
         );
       case 'use-cases':
-        return <ProductsHub />;
+        return <ProductsHub onNavigate={handleNavigate} />;
       case 'deployment-impact':
         return <DeploymentImpactView />;
       default:

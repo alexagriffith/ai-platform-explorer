@@ -7,8 +7,13 @@ import RAGArchitecture from './RAGArchitecture';
 import TrainingDeepDive from './TrainingDeepDive';
 import { button, interactive, text } from '../lib/styleTokens';
 
-export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities }) {
-  const [mode, setMode] = useState('build'); // 'build', 'interactive', 'generate'
+export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities, initialMode = 'build', onModeChange }) {
+  const [mode, setMode] = useState(initialMode); // 'build', 'interactive', 'generate', 'blueprints'
+
+  const handleModeChange = (newMode) => {
+    setMode(newMode);
+    if (onModeChange) onModeChange(newMode);
+  };
 
   const modes = [
     {
@@ -18,7 +23,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
       description: 'Layer-by-layer architecture builder with flexible component selection',
       component: (
         <CapabilityArchitectureView
-          onSwitchToGenerate={() => setMode('generate')}
+          onSwitchToGenerate={() => handleModeChange('generate')}
           selectedCapabilities={selectedCapabilities}
           setSelectedCapabilities={setSelectedCapabilities}
         />
@@ -96,7 +101,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
             data-ui="control"
             id="architecture-mode"
             value={mode}
-            onChange={(e) => setMode(e.target.value)}
+            onChange={(e) => handleModeChange(e.target.value)}
             className={`flex-1 px-2 py-0.5 bg-surface border border-edge rounded-card text-xs ${text.ink} font-medium hover:border-accent ${interactive.focusRing} ${interactive.transition}`}
           >
             {modes.map((modeOption) => (
