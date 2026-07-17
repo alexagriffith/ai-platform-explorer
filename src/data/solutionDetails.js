@@ -184,7 +184,7 @@ export const solutionDetails = {
   },
   'instructlab': {
     name: 'InstructLab',
-    description: 'Model alignment and fine-tuning using synthetic data generation and the LAB method. Early-stage capability — availability and scope not confirmed; check with your Red Hat account team.',
+    description: 'Model alignment and fine-tuning using synthetic data generation and the LAB method. Technology Preview in Red Hat OpenShift AI — confirm current InstructLab support status with your Red Hat account team.',
     architecture: {
       components: [
         { name: 'LAB Method', role: 'Training Algorithm', description: 'Large-scale Alignment for chatBots - multi-phase training approach' },

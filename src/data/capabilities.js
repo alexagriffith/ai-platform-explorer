@@ -92,8 +92,8 @@ export const capabilities = {
           id: 'instructlab',
           provider: 'Red Hat',
           name: 'InstructLab',
-          description: 'Model alignment and fine-tuning with synthetic data generation',
-          status: 'GA'
+          description: 'Model alignment and fine-tuning with synthetic data generation — confirm current support status with your Red Hat account team',
+          status: 'Tech Preview'
         },
         {
           id: 'data-science-pipelines',
