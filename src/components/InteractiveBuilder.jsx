@@ -589,6 +589,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
               {currentLayerIndex > 0 ? (
                 <button
                   type="button"
+                  data-ui="control"
                   onClick={stepBack}
                   className={button.secondary}
                 >

@@ -460,23 +460,29 @@ function controlScale(tabId) {
   // Find header toolbar panels in the top band of the tab (first 300px offset).
   // A toolbar panel: bg-surface, short height (< 110px), contains 2+ interactive controls.
   // This distinguishes toolbar panels from single-expand-button layer headers.
+  // Excludes data-ui="card" elements (content cards that happen to contain buttons are not toolbars)
+  // and data-ui="section-header" elements (layer-expand toggles are not toolbar controls).
   const tabRect = tab.getBoundingClientRect();
   const toolbars = [];
   for (const el of tab.querySelectorAll('*')) {
     const cn = (el.className || '').toString();
     if (!cn.includes('bg-surface')) continue;
+    if (el.getAttribute('data-ui') === 'card') continue; // content cards are not toolbars
     const r = el.getBoundingClientRect();
     if (r.width < 200) continue;
     if (r.top - tabRect.top > 300) continue;
     if (r.height > 110) continue; // layer headers are taller; toolbars are compact
     // Must contain at least 2 interactive controls to qualify as a toolbar.
-    const ctls = el.querySelectorAll('button, select, [role="switch"]');
+    // Exclude section-header buttons (layer expand/collapse toggles) — not toolbar controls.
+    const ctls = [...el.querySelectorAll('button, select, [role="switch"]')]
+      .filter((b) => b.getAttribute('data-ui') !== 'section-header');
     if (ctls.length < 2) continue;
     toolbars.push(el);
   }
   if (!toolbars.length) return [];
   const controls = toolbars.flatMap((t) =>
-    [...t.querySelectorAll('button, select, [role="switch"]')].filter((el) => visible(el))
+    [...t.querySelectorAll('button, select, [role="switch"]')]
+      .filter((el) => visible(el) && el.getAttribute('data-ui') !== 'section-header')
   );
   if (controls.length < 2) return [];
   const heights = controls.map((el) => Math.round(el.getBoundingClientRect().height));
