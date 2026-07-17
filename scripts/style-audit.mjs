@@ -846,6 +846,159 @@ function skinnyBar(tabId) {
   }
   return out.slice(0, 5);
 }
+// ─── T-2b checks: relational layout checks for card groups ──────────────────
+//
+// A "card group" is a flex-wrap container that has at least one child (at any
+// level within one wrapper div) carrying data-ui="card".
+// Row detection: children (or their card-bearing wrapper divs) grouped by offsetTop
+// within 8px tolerance.
+//
+// MINIMUM-ROWS: if all cards in the group fit on one row (sum of card widths +
+// gaps <= container inner width) but the DOM renders >1 row → FAIL.
+// Reports: minimum-rows: <selector> tab=<tabId> (cards fit on one row but rendered <N> rows)
+//
+// ORPHAN-ROW: if a group renders >1 row and any row has exactly 1 item while a
+// balanced redistribution (row sizes differ by <=1) is possible for the same
+// item count → FAIL.
+// Reports: orphan-row: <selector> tab=<tabId> (row of 1 while N items balance as K×M or …)
+//
+function minimumRowsCheck(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+
+  // Collect flex-wrap containers whose direct children contain data-ui="card" descendants.
+  for (const container of tab.querySelectorAll('*')) {
+    if (!visible(container)) continue;
+    const cs = getComputedStyle(container);
+    if (cs.display !== 'flex' && cs.display !== 'inline-flex') continue;
+    if (cs.flexWrap !== 'wrap' && cs.flexWrap !== 'wrap-reverse') continue;
+
+    // Gather the data-ui="card" elements (direct children or first card within a wrapper child).
+    // We measure content width from the card element itself (not the wrapper, which may be basis-full).
+    const cards = [];
+    for (const child of container.children) {
+      if (!visible(child)) continue;
+      if (child.getAttribute('data-ui') === 'card') {
+        cards.push({ wrapper: child, card: child });
+      } else {
+        const inner = child.querySelector('[data-ui="card"]');
+        if (inner && visible(inner)) cards.push({ wrapper: child, card: inner });
+      }
+    }
+    if (cards.length < 2) continue;
+
+    const containerRect = container.getBoundingClientRect();
+    const paddingLeft = parseFloat(cs.paddingLeft) || 0;
+    const paddingRight = parseFloat(cs.paddingRight) || 0;
+    const innerWidth = containerRect.width - paddingLeft - paddingRight;
+    if (innerWidth < 80) continue;
+
+    // Group by wrapper's top coordinate (within 8px) to detect rendered rows.
+    const rows = [];
+    for (const { wrapper } of cards) {
+      const wr = wrapper.getBoundingClientRect();
+      const existing = rows.find((row) => Math.abs(row.top - wr.top) <= 8);
+      if (existing) {
+        existing.count++;
+      } else {
+        rows.push({ top: wr.top, count: 1 });
+      }
+    }
+
+    if (rows.length <= 1) continue; // already on one row — no problem
+
+    // Check if all card content widths + gaps would fit on one row.
+    const gap = parseFloat(cs.gap || cs.columnGap || '0') || 0;
+    // Use the card element's own width (not wrapper which may be basis-full)
+    const totalCardWidth = cards.reduce((sum, { card }) => sum + card.getBoundingClientRect().width, 0);
+    const totalGapWidth = gap * (cards.length - 1);
+    const totalRequired = totalCardWidth + totalGapWidth;
+
+    if (totalRequired <= innerWidth + 0.5) {
+      const cls = (container.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+      out.push(`minimum-rows: <${container.tagName.toLowerCase()}.${cls}> tab=${tabId} (cards fit on one row — total ${r2(totalRequired)}px <= inner ${r2(innerWidth)}px — but rendered ${rows.length} rows)`);
+    }
+  }
+  return out;
+}
+
+function orphanRowCheck(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+
+  for (const container of tab.querySelectorAll('*')) {
+    if (!visible(container)) continue;
+    const cs = getComputedStyle(container);
+    if (cs.display !== 'flex' && cs.display !== 'inline-flex') continue;
+    if (cs.flexWrap !== 'wrap' && cs.flexWrap !== 'wrap-reverse') continue;
+
+    const cardWrappers = [...container.children].filter((child) => {
+      if (!visible(child)) return false;
+      return child.getAttribute('data-ui') === 'card' || child.querySelector('[data-ui="card"]');
+    });
+    if (cardWrappers.length < 2) continue;
+
+    // Group into rows.
+    const rows = [];
+    for (const wrapper of cardWrappers) {
+      const wr = wrapper.getBoundingClientRect();
+      const existing = rows.find((row) => Math.abs(row.top - wr.top) <= 8);
+      if (existing) {
+        existing.count++;
+      } else {
+        rows.push({ top: wr.top, count: 1 });
+      }
+    }
+
+    if (rows.length <= 1) continue; // only one row — no orphan possible
+
+    // Check if any row has exactly 1 item.
+    const hasOrphan = rows.some((r) => r.count === 1);
+    if (!hasOrphan) continue;
+
+    // Check if a balanced redistribution is possible:
+    // Try col counts from 2 to 4; a balanced layout has all rows differing by <=1 item.
+    const n = cardWrappers.length;
+    let balancedDesc = null;
+    for (let cols = 2; cols <= 4; cols++) {
+      if (cols > n) continue;
+      const fullRows = Math.floor(n / cols);
+      const remainder = n % cols;
+      // Balanced: remainder === 0 (all rows equal) OR remainder rows have cols items and
+      // the last row has (n - fullRows*cols) items — but we need rows to differ by <=1.
+      // With integer division: remainder rows have (cols) items, rest have (cols) items too
+      // Actually: ceil rows = Math.ceil(n/cols); floor rows differ by at most 1 from ceil.
+      // Orphan-free means no row has exactly 1 item — any cols 2+ with remainder != 1 suffices.
+      if (remainder !== 1) {
+        balancedDesc = `${cols} cols (${fullRows > 0 && remainder > 0 ? fullRows + '×' + cols + '+' + remainder : fullRows + '×' + cols})`;
+        break;
+      }
+    }
+    if (!balancedDesc) continue; // no balanced alternative exists — don't flag
+
+    const cls = (container.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+    out.push(`orphan-row: <${container.tagName.toLowerCase()}.${cls}> tab=${tabId} (row of 1 while ${n} items balance as ${balancedDesc} — never one box alone on its own row)`);
+  }
+  return out;
+}
+
 //
 // DOM-side classification function. Runs in-page via page.evaluate().
 // Returns { unclassified: [...], exempted: [...], classified: number, visited: number }.
@@ -1579,6 +1732,16 @@ async function runChecksOnPage(page, tabId, stateLabel, exemptions, viewport, th
     if (!exemptions.includes('status-fill-ban')) {
       addProblems(await page.evaluate(statusFillBan, tabId));
     }
+
+    // T-2b: Minimum-rows
+    if (!exemptions.includes('minimum-rows')) {
+      addProblems(await page.evaluate(minimumRowsCheck, tabId));
+    }
+
+    // T-2b: Orphan-row
+    if (!exemptions.includes('orphan-row')) {
+      addProblems(await page.evaluate(orphanRowCheck, tabId));
+    }
   }
 
   return out;
@@ -1790,6 +1953,16 @@ async function auditTab(browser, tab) {
       }
     }
 
+    // T-2b: MINIMUM-ROWS (light, 1440px)
+    if (!exemptions.includes('minimum-rows')) {
+      for (const p of await page.evaluate(minimumRowsCheck, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
+    // T-2b: ORPHAN-ROW (light, 1440px)
+    if (!exemptions.includes('orphan-row')) {
+      for (const p of await page.evaluate(orphanRowCheck, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
     await ctx.close();
   }
   // --- 1440px, dark: boxes + radii (+ PC banner) ---
@@ -1815,6 +1988,17 @@ async function auditTab(browser, tab) {
     if (!exemptions.includes('skinny-bar')) {
       for (const p of await page.evaluate(skinnyBar, tabId)) problems.push(`${prefix('1920 light')} ${p}`);
     }
+
+    // T-2b: MINIMUM-ROWS at 1920 (wider viewport — cards fit even more easily on one row)
+    if (!exemptions.includes('minimum-rows')) {
+      for (const p of await page.evaluate(minimumRowsCheck, tabId)) problems.push(`${prefix('1920 light')} ${p}`);
+    }
+
+    // T-2b: ORPHAN-ROW at 1920
+    if (!exemptions.includes('orphan-row')) {
+      for (const p of await page.evaluate(orphanRowCheck, tabId)) problems.push(`${prefix('1920 light')} ${p}`);
+    }
+
     await ctx.close();
   }
 
@@ -2018,6 +2202,95 @@ async function runSelfTest() {
       process.exit(1);
     }
     process.stderr.write('SELF-TEST phase-6b OK: green panel removed\n');
+
+    // ── PHASE 7: minimum-rows self-test ───────────────────────────────────────
+    // Plant: container 500px wide, 3 cards each 80px (total 256px <= 500px fits on one row),
+    // but each wrapper has flex-basis:100% forcing each card onto its own row even though
+    // the cards' content widths would fit. The check sums card element widths (not wrapper
+    // widths), so it detects: 3*80 + 2*8 = 256 <= 500 but rows = 3 → FAIL.
+    await openTab(page, 'Architecture', 'architecture');
+    await page.evaluate(() => {
+      const tab = document.querySelector('[data-tab="architecture"]');
+      const container = document.createElement('div');
+      container.id = '__self_test_min_rows__';
+      container.className = '__self_test_min_rows__';
+      container.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;width:500px;padding:0;visibility:visible;opacity:1;';
+      for (let i = 0; i < 3; i++) {
+        const wrapper = document.createElement('div');
+        // flex-basis:100% forces each wrapper onto its own row; card is narrower (80px)
+        wrapper.style.cssText = 'width:80px;height:60px;visibility:visible;opacity:1;flex:none;flex-basis:100%;';
+        const card = document.createElement('div');
+        card.setAttribute('data-ui', 'card');
+        card.style.cssText = 'width:80px;height:60px;border:1px solid #999;display:flex;align-items:center;justify-content:center;';
+        card.textContent = 'Card ' + i;
+        wrapper.appendChild(card);
+        container.appendChild(wrapper);
+      }
+      tab.appendChild(container);
+    });
+
+    const mrResult = await page.evaluate(minimumRowsCheck, 'architecture');
+    const mrCaught = mrResult.some((s) => s.includes('minimum-rows') && s.includes('__self_test_min_rows__'));
+    process.stderr.write(`SELF-TEST minimum-rows phase-7: ${mrCaught ? 'OK (minimum-rows caught)' : 'UNEXPECTED: not caught'}\n`);
+    process.stderr.write(`  minimum-rows output: ${mrResult.length > 0 ? mrResult.slice(0, 2).join(' | ') : '(none)'}\n`);
+    if (!mrCaught) {
+      process.stderr.write('SELF-TEST FAIL: minimum-rows did NOT catch the fitting-group-forced-to-2-rows plant\n');
+      await browser.close();
+      process.exit(1);
+    }
+    const mrFailureLine = mrResult.find((s) => s.includes('minimum-rows') && s.includes('__self_test_min_rows__'));
+    process.stdout.write(`SELF-TEST minimum-rows failure line: ${mrFailureLine}\n`);
+
+    await page.evaluate(() => {
+      const b = document.getElementById('__self_test_min_rows__');
+      if (b) b.remove();
+    });
+    process.stderr.write('SELF-TEST phase-7 OK: minimum-rows plant removed\n');
+
+    // ── PHASE 8: orphan-row self-test ─────────────────────────────────────────
+    // Plant a flex-wrap container with 5 cards where the natural wrap produces 4+1.
+    // Container width = 340px, each card 80px, gap=8px.
+    // 4 cards: 4*80 + 3*8 = 344px > 340px so they wrap at 3+2? Actually let's be precise.
+    // Each wrapper must render exactly 80px. 4 cards at 80px + 3*8 gap = 344 > 340 → 3+2.
+    // We need 4+1 so use 5 cards in a 370px container: 5*80+4*8=432 > 370, 4*80+3*8=344 < 370.
+    // → row 1: 4 cards, row 2: 1 card. That's a 4+1 orphan. 5 items balance as 3+2 (2 cols) or
+    // the original 3+2 (3 cols: 3+2 has remainder 2, not orphan). So balanced desc = "3 cols (1×3+2)".
+    await page.evaluate(() => {
+      const tab = document.querySelector('[data-tab="architecture"]');
+      const container = document.createElement('div');
+      container.id = '__self_test_orphan__';
+      container.className = '__self_test_orphan__';
+      container.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;width:370px;padding:0;visibility:visible;opacity:1;';
+      for (let i = 0; i < 5; i++) {
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'width:80px;height:60px;visibility:visible;opacity:1;flex:none;';
+        const card = document.createElement('div');
+        card.setAttribute('data-ui', 'card');
+        card.style.cssText = 'width:80px;height:60px;border:1px solid #999;display:flex;align-items:center;justify-content:center;';
+        card.textContent = 'C' + i;
+        wrapper.appendChild(card);
+        container.appendChild(wrapper);
+      }
+      tab.appendChild(container);
+    });
+
+    const orResult = await page.evaluate(orphanRowCheck, 'architecture');
+    const orCaught = orResult.some((s) => s.includes('orphan-row') && s.includes('__self_test_orphan__'));
+    process.stderr.write(`SELF-TEST orphan-row phase-8: ${orCaught ? 'OK (orphan-row caught)' : 'UNEXPECTED: not caught'}\n`);
+    process.stderr.write(`  orphan-row output: ${orResult.length > 0 ? orResult.slice(0, 2).join(' | ') : '(none)'}\n`);
+    if (!orCaught) {
+      process.stderr.write('SELF-TEST FAIL: orphan-row did NOT catch the 4+1 orphan group plant\n');
+      await browser.close();
+      process.exit(1);
+    }
+    const orFailureLine = orResult.find((s) => s.includes('orphan-row') && s.includes('__self_test_orphan__'));
+    process.stdout.write(`SELF-TEST orphan-row failure line: ${orFailureLine}\n`);
+
+    await page.evaluate(() => {
+      const b = document.getElementById('__self_test_orphan__');
+      if (b) b.remove();
+    });
+    process.stderr.write('SELF-TEST phase-8 OK: orphan-row plant removed\n');
 
     process.stderr.write('SELF-TEST PASS (all phases)\n');
   } finally {

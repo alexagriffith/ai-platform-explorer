@@ -31,6 +31,7 @@ Notes on the leak scan (see inline comments):
 import json
 import os
 import re
+import socket
 import subprocess
 import sys
 import time
@@ -302,7 +303,13 @@ def section_duplicate_logic():
 
 
 # ── (e) style checks (Playwright against a preview server) ───────────────────
-PORT = int(os.environ.get("GATE_PORT", "4390"))
+def _find_free_port():
+    """Bind to port 0 so the OS assigns a free ephemeral port, then release it."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(('127.0.0.1', 0))
+        return s.getsockname()[1]
+
+PORT = int(os.environ.get("GATE_PORT", "0")) or _find_free_port()
 BASE_URL = "http://localhost:%d/ai-platform-explorer/" % PORT
 
 
