@@ -260,6 +260,16 @@ Branch: `ws/style-unification`. Two commits.
 
 ---
 
+### ws/review2-notes — second-review fixes (2026-07-17)
+
+- [x] **Token consolidation: `supportMark` shared map** (`src/lib/styleTokens.js`). Added `supportMark` export (symbols ✓ ~ ✕ ?) whose class strings reuse `productStatus['GA']` and `status.attention.text` — single source of truth per WP5 no-re-implement rule. `ProductComparisonView.jsx` updated to import and use it (local `SUPPORT_MARK` constant removed). Also fixed `ProductComparisonHero.jsx` docstring: 'labels are PRODUCT NAMES ONLY' → accurate: zone labels are product names; cells carry canonical component/capability names.
+
+- [x] **CodeFlare staleness sweep** (`src/data/products.js`, `subComponents.js`, `deploymentComparisons.js`, `solutionDetails.js`). Applied same replacement pattern WP1 used in `trainingDeepDive.js:15`. Removed/replaced all CodeFlare mentions with Kubeflow Trainer v2 / Ray (distributed compute) framing consistent with `capabilities.js:87`. No new claims — wording reused from repo.
+
+- [x] **WP3 verification** (`docs/BACKLOG.md`). Verified all 15 WP3 items against current code: (a) MCP Tech Preview banner — already fixed; (b) `QuickComparisonTable` `decisionFactors` guard — already fixed; (c) `YAMLDiffView` nested button + dark-mode black slab — already fixed. All checkboxes marked `[x]` to match the `✅ COMPLETE` header.
+
+---
+
 ### Parked (do not do without a user decision)
 
 - "Ownership" tab in Deployment Impact rendering `operationalShifts`/`appTeamOwns`/`platformTeamOwns` (hundreds of lines of corrected data currently invisible) — feature addition, needs design.
