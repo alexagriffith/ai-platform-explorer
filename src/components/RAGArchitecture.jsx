@@ -5,7 +5,7 @@ import { ragPipeline, ragDocumentFormats, ragOptimizations } from '../data/ragAr
 export default function RAGArchitecture() {
   const pipeline = ragPipeline;
   const documentFormats = ragDocumentFormats;
-  const autoRAGOptimizations = ragOptimizations;
+  const optimizations = ragOptimizations;
 
   return (
     <div className={density.stackGap}>
@@ -84,7 +84,7 @@ export default function RAGArchitecture() {
               Parameters worth testing systematically to improve retrieval quality
             </p>
             <div className={`grid grid-cols-2 ${density.rowGap} mb-2`}>
-              {autoRAGOptimizations.map((opt, index) => (
+              {optimizations.map((opt, index) => (
                 <div key={index} data-ui="card" className="rounded-card bg-tint px-2 py-1.5">
                   <h4 className={`${typeScale.secondary} font-semibold text-ink mb-0.5`}>{opt.name}</h4>
                   <p className={`${typeScale.meta} text-muted mb-0.5`}>{opt.description}</p>
