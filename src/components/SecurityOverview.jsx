@@ -1,11 +1,8 @@
 import { Shield } from 'lucide-react';
 import { typeScale, density, border, surface, text } from '../lib/styleTokens';
-import { distributingFlexBasis } from '../lib/layout';
 import { securityLayers } from '../data/securityLayers';
 
 export default function SecurityOverview() {
-  const basisClass = distributingFlexBasis(securityLayers.length);
-
   return (
     <div>
       <div data-ui="section-header" className="mb-3">
@@ -18,12 +15,11 @@ export default function SecurityOverview() {
         </p>
       </div>
 
-      {/* Security layer cards — flex-wrap + distributingFlexBasis centers partial rows */}
       <div className={`flex flex-wrap justify-center ${density.rowGap} mb-3`}>
         {securityLayers.map((layer, index) => {
           const Icon = layer.icon;
           return (
-            <div key={index} data-ui="card" className={`${basisClass} rounded-card ${surface.tint} overflow-hidden`}>
+            <div key={index} data-ui="card" className={`flex-none w-full md:w-96 rounded-card ${surface.tint} overflow-hidden`}>
               {/* Header — hairline separator */}
               <div className={`border-b ${border.hair} px-3 py-2`}>
                 <div className="flex items-center gap-1.5 mb-0.5">

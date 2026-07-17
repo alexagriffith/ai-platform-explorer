@@ -8,7 +8,6 @@
     "src/components/DeepDiveModal.jsx",
     "src/components/AcronymGlossary.jsx",
     "src/lib/styleTokens.js",
-    "src/lib/layout.js",
     "src/components/ProductComparisonView.jsx",
     "src/components/ProductComparisonHero.jsx",
     "src/components/SharedSpineLedger.jsx",
@@ -52,10 +51,10 @@
   "legacyViolatingFilesMax": 0,
   "heightBudgets": {
     "_note": "Per-tab scrollHeight/viewport budgets at 1440x900. Set just above post-fix measured values. Regressions fail immediately.",
-    "_measured": "architecture:1.20 deployment-impact:0.17 decisions:0.70 products:2.2 (post-WS-COMPARE-2: hero added above ledger)",
+    "_measured": "architecture:1.20 deployment-impact:0.17 decisions:0.78 products:2.2 (post-AR3-fit-first: decisions budget updated; fit-first layout makes guide buttons narrower than old stretched grid cells)",
     "architecture": 1.25,
     "deployment-impact": 0.3,
-    "decisions": 0.75,
+    "decisions": 0.85,
     "products": 2.3
   },
   "exemptions": {
@@ -66,8 +65,7 @@
       "no-ghost-cells"
     ],
     "deployment-impact": [
-      "card-text-budget",
-      "no-ghost-cells"
+      "card-text-budget"
     ],
     "architecture": [
       "card-text-budget"
@@ -91,7 +89,6 @@
     "products/row-fill": "Search-filtered catalog results may produce a single orphan card when the query returns one match. This is correct filtered-state behavior; enforcing balance on dynamic search results would require artificial padding.",
     "products/no-ghost-cells": "Search-filtered results may produce a single item in a 3-col grid. Correct filtered-state behavior; resting state has full rows.",
     "architecture/card-text-budget": "Generate-from-Environment mode renders multi-field form sections whose aggregate text exceeds 140 chars by design. Blueprints mode shows comparison descriptions that are inherently verbose. Both are deliberate disclosure levels for their interaction mode.",
-    "deployment-impact/no-ghost-cells": "Documentation and legend grids in deployment-impact views use distributingGridCols() which intentionally creates balanced-row layouts (e.g., 5 items → 3+2). The partial last row is design-law compliant (≥ 2/3 fill). Full CSS centering of variable-count grids conflicts with equal-width stretch.",
     "products/unit-box-width": "ProductExplorer catalog cards are intentionally wider than the 360px max (they render in a 2-3 column grid at 1440px, producing ~400px cards). The wider width gives room for product name, status badge, and description. The 360px bound targets capability unit boxes, not product catalog cards."
   }
 }

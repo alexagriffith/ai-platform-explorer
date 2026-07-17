@@ -15,7 +15,6 @@ import { capabilities } from '../data/capabilities';
 import { products } from '../data/products';
 import { reconcileContainerAiPlatform } from '../lib/platformAiConstraints';
 import { button, text, interactive, modal, surface, border, density, typeScale, productStatus } from '../lib/styleTokens';
-import { distributingGridCols } from '../lib/layout';
 import { guideMetadata, guideGroups, decisionFlows } from '../data/decisionGuides';
 
 /** Look up status from products catalog by id. Returns null when no match. */
@@ -161,7 +160,7 @@ export default function DecisionFlowchart({
                 </div>
 
                 {/* Group Guides */}
-                <div className={`grid ${distributingGridCols(group.guides.length)} ${density.rowGap}`}>
+                <div className={`flex flex-wrap justify-center ${density.rowGap}`}>
                   {group.guides.map((guideKey) => {
                     const flowData = decisionFlows[guideKey];
                     const meta = guideMetadata[guideKey];
@@ -175,7 +174,7 @@ export default function DecisionFlowchart({
                           setApplyNotice(null);
                           setSelectedDecision(guideKey);
                         }}
-                        className={`${density.sectionPad} text-center rounded-card border ${border.hair} ${surface.tint} hover:border-accent hover:bg-tint ${interactive.transition} ${interactive.focusRing} group`}
+                        className={`flex-none w-full md:w-72 ${density.sectionPad} text-center rounded-card border ${border.hair} ${surface.tint} hover:border-accent hover:bg-tint ${interactive.transition} ${interactive.focusRing} group`}
                       >
                         <div className="flex flex-col items-center gap-0.5 mb-1">
                           <Icon size={16} className={`${text.muted} group-hover:text-accent ${interactive.transition} flex-shrink-0`} />
