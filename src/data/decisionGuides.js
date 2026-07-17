@@ -1025,7 +1025,7 @@ export const decisionFlows = {
         question: 'How many benchmarks do you need?',
         condition: { step: 0, value: 'llm-quality' },
         options: [
-          { value: 'comprehensive', label: '100+ standard benchmarks', recommendation: 'lm-eval-harness' },
+          { value: 'comprehensive', label: 'Many standard benchmarks (MMLU, HellaSwag, etc.)', recommendation: 'lm-eval-harness' },
           { value: 'custom', label: 'Custom evaluation metrics', recommendation: 'lm-eval-custom' }
         ]
       },
@@ -1058,10 +1058,10 @@ export const decisionFlows = {
       'lm-eval-harness': {
         product: 'LM Evaluation Harness (via EvalHub)',
         icon: '📊',
-        why: '167+ standard benchmarks including MMLU, HellaSwag, TruthfulQA',
+        why: 'A large library of standard benchmarks including MMLU (knowledge test), HellaSwag, TruthfulQA, and others',
         bestFor: ['Comprehensive quality assessment', 'Standard benchmark comparison', 'Academic research', 'Model releases'],
         tradeoffs: [
-          { pro: '167+ pre-configured benchmarks', con: 'Can be slow for large models' },
+          { pro: 'Broad set of pre-configured benchmarks', con: 'Can be slow for large models' },
           { pro: 'Industry-standard metrics', con: 'Less customizable than custom eval' }
         ],
         alternatives: ['For performance: GuideLLM', 'For RAG: RAGAS']
@@ -1179,7 +1179,7 @@ export const decisionFlows = {
         why: 'Multi-node distributed training with Ray, PyTorchJob, and Kueue',
         bestFor: ['Large models (70B+)', 'Multi-GPU training', 'Tensor parallelism', 'Data parallelism'],
         tradeoffs: [
-          { pro: 'Scales to 100+ GPUs', con: 'More complex infrastructure' },
+          { pro: 'Scales across many GPUs', con: 'More complex infrastructure' },
           { pro: 'Tensor + data parallelism', con: 'Higher cost' },
           { pro: 'Ray and Kubeflow Training Operator support', con: 'Steeper learning curve' }
         ],

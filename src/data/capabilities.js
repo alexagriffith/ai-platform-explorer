@@ -187,7 +187,7 @@ export const capabilities = {
           id: 'batch-gateway',
           provider: 'Red Hat',
           name: 'Red Hat Batch Gateway',
-          description: 'OpenAI-compatible batch inference API (up to 50K requests per batch)',
+          description: 'OpenAI-compatible batch inference API (early-stage — confirm current request limits with your Red Hat account team)',
           status: 'Dev Preview',
           recommended: true
         },
@@ -427,7 +427,7 @@ export const capabilities = {
           id: 'rhel-ai',
           provider: 'Red Hat',
           name: 'Red Hat Enterprise Linux AI',
-          description: 'Foundation model serving and InstructLab fine-tuning on individual RHEL servers. Single-node only. Best for edge deployments, development environments, and single-server use cases. For distributed training or production-scale serving, use RHOAI or RHAI.',
+          description: 'LLM inference on individual RHEL servers via the vLLM engine (bootc image, bare metal or VM). Single-node only. Best for edge deployments, development environments, and single-server use cases. For distributed training or production-scale serving, use RHOAI or RHAI.',
           status: 'GA'
         }
       ]
