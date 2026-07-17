@@ -47,3 +47,4 @@ planning/
 
 # Local leak-check denylist (pre-commit hook)
 .leak-denylist
+.vercel
