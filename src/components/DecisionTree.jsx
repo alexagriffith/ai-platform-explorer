@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle, RotateCcw, ChevronLeft } from 'lucide-react';
 import { button, text, interactive, surface, border, density, typeScale } from '../lib/styleTokens';
+import { distributingFlexBasis } from '../lib/layout';
 
 export default function DecisionTree({ flow, onRecommendation }) {
   const [selectedPath, setSelectedPath] = useState({});
@@ -184,11 +185,12 @@ export default function DecisionTree({ flow, onRecommendation }) {
                         {step.question}
                       </h4>
 
-                      {/* Option nodes */}
-                      <div className={`grid md:grid-cols-2 ${density.rowGap}`}>
+                      {/* Option nodes — flex-wrap + justify-center so partial rows center (no ghost cells). */}
+                      <div className={`flex flex-wrap justify-center ${density.rowGap}`}>
                         {step.options.map((option) => {
                           const selected = isOptionSelected(stepIndex, option.value);
                           const disabled = !isActive && !selected;
+                          const basisClass = distributingFlexBasis(step.options.length);
 
                           return (
                             <button
@@ -196,7 +198,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
                               onClick={() => !disabled && handleNodeClick(stepIndex, option.value, option.next)}
                               disabled={disabled}
                               aria-current={selected ? 'true' : undefined}
-                              className={`${density.cardPad} rounded-card border-2 text-left ${interactive.transitionAll} ${
+                              className={`${basisClass} ${density.cardPad} rounded-card border-2 text-left ${interactive.transitionAll} ${
                                 selected
                                   ? `border-accent ${surface.tint}`
                                   : isActive
