@@ -22,7 +22,7 @@ export default function ProductExplorer() {
   });
 
   return (
-    <div data-tab="products" className={density.stackGap}>
+    <div className={density.stackGap}>
       {/* Filters — flat section, no box container (inputs are boxed themselves) */}
       <div>
         <div className="mb-2">

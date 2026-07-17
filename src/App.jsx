@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Layers, Target, Package, GitBranch, AlertCircle, GitCompare, Scale, Sun, Moon } from 'lucide-react';
 import ArchitectureHub from './components/ArchitectureHub';
-import ProductExplorer from './components/ProductExplorer';
-import UseCaseView from './components/UseCaseView';
+import ProductsHub from './components/ProductsHub';
 import DecisionFlowchart from './components/DecisionFlowchart';
 import DeploymentImpactView from './components/DeploymentImpactView';
-import ProductComparisonView from './components/ProductComparisonView';
 import AcronymGlossary from './components/AcronymGlossary';
 import { interactive } from './lib/styleTokens';
 
@@ -99,8 +97,11 @@ function App() {
             onSwitchToDecisions={() => setCurrentView('decisions')}
           />
         );
+      // product-comparison is now the Compare sub-view inside Products; both render ProductsHub
       case 'products':
-        return <ProductExplorer />;
+        return <ProductsHub />;
+      case 'product-comparison':
+        return <ProductsHub />;
       case 'decisions':
         return (
           <DecisionFlowchart
@@ -112,11 +113,9 @@ function App() {
           />
         );
       case 'use-cases':
-        return <UseCaseView />;
+        return <ProductsHub />;
       case 'deployment-impact':
         return <DeploymentImpactView />;
-      case 'product-comparison':
-        return <ProductComparisonView />;
       default:
         return null;
     }

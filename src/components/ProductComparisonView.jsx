@@ -322,7 +322,7 @@ export default function ProductComparisonView() {
   if (!comparison) return null;
 
   return (
-    <div data-tab="product-comparison" className="space-y-6">
+    <div className="space-y-6">
       {/* Toolbar — outside the capture root, so the exported image is the three beats alone. */}
       <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-end">
         <div className="flex gap-2">
