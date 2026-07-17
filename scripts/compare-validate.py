@@ -13,21 +13,19 @@ CHECKS
                              support ∈ {yes, partial, no, confirm};
                              status (when present) ∈ the four canonical values.
   (3) Source-URL shape     — every sourceUrl is https://; label is non-empty.
-  (4) decisionBeatFacts    — (retired: decision cards now render tag+name only; check
-                             is a no-op when decisionBeatFacts is absent from the data).
-  (5) Ledger spine coverage— every SPINE entry key resolves to a row in bomRows or
+  (4) Ledger spine coverage— every SPINE entry key resolves to a row in bomRows or
                              capabilityRows (no broken spine-to-row reference).
-  (6) Hero cell resolution — every hero.inner/outer component cell resolves to an
+  (5) Hero cell resolution — every hero.inner/outer component cell resolves to an
                              existing row + side and that side has a sourceUrl; a cell
                              with a broken reference is a cross-surface inconsistency.
-  (7) illustrative/draft   — no row with illustrative=false while draft=true (would
+  (6) illustrative/draft   — no row with illustrative=false while draft=true (would
                              silently present unvetted data as confirmed); draft=true
                              requires illustrative=true on >=1 row (the data fence).
-  (8) Version mixing guard — placeholder for upcoming componentVersions feature:
+  (7) Version mixing guard — placeholder for upcoming componentVersions feature:
                              when a row carries a versionTable field, every entry in
                              that table must share the same release string (no mixing
                              e.g. "3.1" and "3.4" in the same product-version table).
-  (9) sourceUrl uniqueness  — identical sourceUrl shared across >=5 different row-side
+  (8) sourceUrl uniqueness  — identical sourceUrl shared across >=5 different row-side
                              pairs is flagged as a "provenance collapse" (one source
                              cited for too many distinct facts is a coverage gap).
 
@@ -263,50 +261,6 @@ def _extract_rows(text, array_name, area_key):
     return rows
 
 
-def _extract_decision_beat_facts(text):
-    """Extract decisionBeatFacts.a and .b arrays."""
-    # Find the decisionBeatFacts object block
-    pat = re.compile(r"""\bdecisionBeatFacts\s*=\s*\{""")
-    m = pat.search(text)
-    if not m:
-        return {"a": [], "b": []}
-    block = _between(text, m.end() - 1)
-    facts = {}
-    for side in ["a", "b"]:
-        side_pat = re.compile(r"""\b""" + re.escape(side) + r"""\s*:\s*\[""")
-        sm = side_pat.search(block)
-        if not sm:
-            facts[side] = []
-            continue
-        arr_start = sm.end() - 1
-        # find matching ]
-        depth = 0
-        i = arr_start
-        arr_text = block
-        end_i = len(arr_text)
-        while i < len(arr_text):
-            if arr_text[i] == "[":
-                depth += 1
-            elif arr_text[i] == "]":
-                depth -= 1
-                if depth == 0:
-                    end_i = i + 1
-                    break
-            i += 1
-        arr_snippet = arr_text[arr_start:end_i]
-        entry_pat = re.compile(r"""\{""")
-        entries = []
-        for em in entry_pat.finditer(arr_snippet):
-            entry_snip = _between(arr_snippet, em.start())
-            entries.append({
-                "sourceUrl": _str_val(entry_snip, "sourceUrl"),
-                "sourceLabel": _str_val(entry_snip, "sourceLabel"),
-                "text": _str_val(entry_snip, "text"),
-            })
-        facts[side] = entries
-    return facts
-
-
 def _extract_hero_cells(text):
     """Extract hero inner + outer component cells."""
     pat = re.compile(r"""\bhero\s*:\s*\{""")
@@ -346,14 +300,12 @@ def parse_comparison_data(text):
     """Parse the JS source into a dict with structured comparison data."""
     bom_rows = _extract_rows(text, "bomRows", "area")
     cap_rows = _extract_rows(text, "capabilityRows", "capability")
-    facts = _extract_decision_beat_facts(text)
     hero_cells = _extract_hero_cells(text)
     draft = _extract_draft_flag(text)
     src_urls = _extract_src_urls(text)
     return {
         "bom_rows": bom_rows,
         "cap_rows": cap_rows,
-        "facts": facts,
         "hero_cells": hero_cells,
         "draft": draft,
         "all_rows": bom_rows + cap_rows,
@@ -466,59 +418,6 @@ def check_source_url_shape(data):
             if url and not label.strip():
                 failures.append(
                     'EMPTY sourceLabel for URL: "%s" side %s' % (row["key"], side_key)
-                )
-    return failures
-
-
-def check_decision_beat_facts(data):
-    """(4) decisionBeatFacts: each entry has sourceUrl + sourceLabel.
-
-    Cross-surface rule: a decisionBeatFact sourceUrl must be in either the set of
-    row sourceUrls OR the vetted SRC URL namespace (both are validated public origins).
-    A URL that appears in neither is a provenance gap — it cites a source not present
-    anywhere in the comparison data.
-    """
-    failures = []
-    # Collect real (non-synthetic) row source URLs
-    row_source_urls = set()
-    for row in data["all_rows"]:
-        for side_key in ("a", "b"):
-            s = row[side_key]
-            if s and s.get("sourceUrl"):
-                real = _normalize_url(s["sourceUrl"])
-                if real:
-                    row_source_urls.add(real)
-
-    src_urls = data.get("src_urls", set())
-    all_known_urls = row_source_urls | src_urls
-
-    for side_key in ("a", "b"):
-        for i, fact in enumerate(data["facts"].get(side_key, [])):
-            url = fact.get("sourceUrl") or ""
-            label = fact.get("sourceLabel") or ""
-            if not url:
-                failures.append(
-                    'MISSING sourceUrl: decisionBeatFacts[%s][%d]' % (side_key, i)
-                )
-                continue
-            # Synthetic expression placeholder — check the expression is a known SRC key
-            real_url = _normalize_url(url)
-            if real_url is None:
-                # The fact uses an SRC.xxx expression which our parser recognized as https-rooted.
-                # The expression-level shape is correct; no further check needed here.
-                pass
-            elif not real_url.startswith("https://"):
-                failures.append(
-                    'NON-HTTPS sourceUrl: decisionBeatFacts[%s][%d] "%s"' % (side_key, i, url[:60])
-                )
-            elif all_known_urls and real_url not in all_known_urls:
-                failures.append(
-                    'UNMATCHED sourceUrl: decisionBeatFacts[%s][%d] "%s" not in any row or SRC namespace'
-                    % (side_key, i, real_url[:80])
-                )
-            if url and not label.strip():
-                failures.append(
-                    'EMPTY sourceLabel: decisionBeatFacts[%s][%d]' % (side_key, i)
                 )
     return failures
 
@@ -682,7 +581,6 @@ CHECKS = [
     ("schema completeness (tier + sourceUrl + sourceLabel on every side)", check_schema_completeness),
     ("vocab conformance (tier/included/support/status enum values)", check_vocab_conformance),
     ("source URL shape (https:// prefix, non-empty label)", check_source_url_shape),
-    ("decisionBeatFacts cross-surface consistency", check_decision_beat_facts),
     ("ledger spine coverage (every SPINE entry resolves to a row)", check_ledger_spine_coverage),
     ("hero cell resolution (every cell resolves to a row+side with source)", check_hero_cell_resolution),
     ("illustrative/draft data fence consistency", check_illustrative_draft_fence),
@@ -773,10 +671,6 @@ def _make_clean_data():
         "bom_rows": [row],
         "cap_rows": [cap_row],
         "all_rows": [row, cap_row],
-        "facts": {
-            "a": [{"sourceUrl": url_a, "sourceLabel": "Red Hat AI docs", "text": "One container"}],
-            "b": [{"sourceUrl": url_b, "sourceLabel": "RHOAI docs", "text": "Notebooks + serving"}],
-        },
         "hero_cells": [
             {"zone": "inner", "label": "vLLM Engine", "view": "bom", "key": "Inference engine", "side": "a"},
         ],
@@ -856,20 +750,10 @@ def _run_self_tests():
     broken2["all_rows"][0]["b"]["sourceLabel"] = "   "
     expect_fail(check_source_url_shape, broken2, "(3) empty label caught", "EMPTY sourceLabel")
 
-    # ── (4) decisionBeatFacts ────────────────────────────────────────────────
-    expect_pass(check_decision_beat_facts, clean, "(4) clean data passes facts check")
-    broken = _copy_data(clean)
-    broken["facts"]["a"][0]["sourceUrl"] = "https://completely.different.example.com/page"
-    expect_fail(check_decision_beat_facts, broken, "(4) unmatched fact URL caught", "UNMATCHED sourceUrl")
-
-    broken2 = _copy_data(clean)
-    broken2["facts"]["b"][0]["sourceUrl"] = None
-    expect_fail(check_decision_beat_facts, broken2, "(4) missing fact sourceUrl caught", "MISSING sourceUrl")
-
-    # ── (5) ledger spine coverage ─────────────────────────────────────────────
+    # ── (4) ledger spine coverage ─────────────────────────────────────────────
     # The clean data has only "Inference engine" (bom) and one cap row — the spine
     # check WILL flag the other 12 SPINE entries that are missing from the synthetic
-    # dataset. We test the check correctly by building a full-spine dataset.
+    # dataset. We test it correctly by building a full-spine dataset.
     full_spine = _copy_data(clean)
     # Populate every SPINE entry with a minimal row so the check passes.
     url_a = "https://docs.redhat.com/rhai/getting-started"
@@ -894,32 +778,32 @@ def _run_self_tests():
                 full_spine["cap_rows"].append(row)
         if not any(r["key"] == entry["key"] for r in full_spine["all_rows"]):
             full_spine["all_rows"].append(row)
-    expect_pass(check_ledger_spine_coverage, full_spine, "(5) full-spine data passes spine check")
+    expect_pass(check_ledger_spine_coverage, full_spine, "(4) full-spine data passes spine check")
 
     # Breaking one spine entry triggers the failure.
     broken = _copy_data(full_spine)
     broken["bom_rows"] = [r for r in broken["bom_rows"] if r["key"] != "Inference engine"]
     broken["all_rows"] = [r for r in broken["all_rows"] if r["key"] != "Inference engine"]
-    expect_fail(check_ledger_spine_coverage, broken, "(5) broken spine key caught", "SPINE BROKEN")
+    expect_fail(check_ledger_spine_coverage, broken, "(4) broken spine key caught", "SPINE BROKEN")
 
-    # ── (6) hero cell resolution ──────────────────────────────────────────────
-    expect_pass(check_hero_cell_resolution, clean, "(6) clean data passes hero check")
+    # ── (5) hero cell resolution ──────────────────────────────────────────────
+    expect_pass(check_hero_cell_resolution, clean, "(5) clean data passes hero check")
     broken = _copy_data(clean)
     broken["hero_cells"][0]["key"] = "Does not exist"
-    expect_fail(check_hero_cell_resolution, broken, "(6) broken hero key caught", "HERO UNRESOLVED")
+    expect_fail(check_hero_cell_resolution, broken, "(5) broken hero key caught", "HERO UNRESOLVED")
 
     broken2 = _copy_data(clean)
     broken2["bom_rows"][0]["a"]["sourceUrl"] = None
     broken2["all_rows"][0]["a"]["sourceUrl"] = None
-    expect_fail(check_hero_cell_resolution, broken2, "(6) hero cell with no sourceUrl caught", "HERO NO SOURCE")
+    expect_fail(check_hero_cell_resolution, broken2, "(5) hero cell with no sourceUrl caught", "HERO NO SOURCE")
 
-    # ── (7) illustrative/draft fence ─────────────────────────────────────────
-    expect_pass(check_illustrative_draft_fence, clean, "(7) clean draft+illustrative passes")
+    # ── (6) illustrative/draft fence ─────────────────────────────────────────
+    expect_pass(check_illustrative_draft_fence, clean, "(6) clean draft+illustrative passes")
     broken = _copy_data(clean)
     broken["draft"] = True
     for r in broken["all_rows"]:
         r["illustrative"] = False  # draft=true but no illustrative=true
-    expect_fail(check_illustrative_draft_fence, broken, "(7) draft without illustrative caught", "FENCE VIOLATION")
+    expect_fail(check_illustrative_draft_fence, broken, "(6) draft without illustrative caught", "FENCE VIOLATION")
 
     mixed = _copy_data(clean)
     mixed["draft"] = True
@@ -929,20 +813,20 @@ def _run_self_tests():
     extra["key"] = "Second row"
     extra["illustrative"] = False
     mixed["all_rows"].append(extra)
-    expect_fail(check_illustrative_draft_fence, mixed, "(7) mixed illustrative flags caught", "FENCE MIXED")
+    expect_fail(check_illustrative_draft_fence, mixed, "(6) mixed illustrative flags caught", "FENCE MIXED")
 
-    # ── (8) version mixing ────────────────────────────────────────────────────
-    expect_pass(check_version_mixing, clean, "(8) clean data (no versionTable) passes")
+    # ── (7) version mixing ────────────────────────────────────────────────────
+    expect_pass(check_version_mixing, clean, "(7) clean data (no versionTable) passes")
     broken = _copy_data(clean)
     broken["all_rows"][0]["versionTable"] = [{"release": "3.1", "component": "vLLM"}, {"release": "3.4", "component": "vLLM"}]
-    expect_fail(check_version_mixing, broken, "(8) version mixing caught", "VERSION MIXING")
+    expect_fail(check_version_mixing, broken, "(7) version mixing caught", "VERSION MIXING")
 
     good_vt = _copy_data(clean)
     good_vt["all_rows"][0]["versionTable"] = [{"release": "3.1", "component": "vLLM"}, {"release": "3.1", "component": "KServe"}]
-    expect_pass(check_version_mixing, good_vt, "(8) single-release versionTable passes")
+    expect_pass(check_version_mixing, good_vt, "(7) single-release versionTable passes")
 
-    # ── (9) provenance collapse ───────────────────────────────────────────────
-    expect_pass(check_provenance_collapse, clean, "(9) clean data (few rows) passes collapse check")
+    # ── (8) provenance collapse ───────────────────────────────────────────────
+    expect_pass(check_provenance_collapse, clean, "(8) clean data (few rows) passes collapse check")
     many = _copy_data(clean)
     shared_url = "https://docs.redhat.com/rhai/everything"
     # Add enough rows (THRESHOLD + 1 sides, using 2 sides per row) to trigger the collapse.
@@ -954,7 +838,7 @@ def _run_self_tests():
         r["a"] = dict(r["a"], sourceUrl=shared_url)
         r["b"] = dict(r["b"], sourceUrl=shared_url)
         many["all_rows"].append(r)
-    expect_fail(check_provenance_collapse, many, "(9) provenance collapse caught", "PROVENANCE COLLAPSE")
+    expect_fail(check_provenance_collapse, many, "(8) provenance collapse caught", "PROVENANCE COLLAPSE")
 
     return passed, failed
 
