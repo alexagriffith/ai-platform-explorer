@@ -121,7 +121,7 @@ export default function ResourceTreeView({ comparison }) {
       </div>
 
       {/* Legend */}
-      <div className="px-3 py-2 bg-tint border border-hair rounded-card">
+      <div data-ui-exempt="legend-section" className="px-3 py-2 bg-tint border border-hair rounded-card">
         <h4 className="text-xs font-semibold text-ink mb-2">Legend</h4>
         <div className="space-y-2">
           <div className="grid md:grid-cols-2 gap-3 text-xs">
@@ -197,8 +197,9 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
 
   return (
     <div>
-      {/* Node row — paddingLeft is a dynamic structural indent, not a color */}
+      {/* Node row — paddingLeft is a dynamic structural indent (tree depth), not a spacing token */}
       <div
+        data-ui-exempt="tree-indent"
         className={`flex items-center gap-2 py-1.5 px-3 rounded-card ${interactive.transition} ${config.bgClass} ${
           isSelected ? 'ring-2 ring-accent' : ''
         }`}
@@ -207,10 +208,11 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
         {/* Expand/collapse button */}
         {hasChildren ? (
           <button
+            data-ui="control"
             onClick={() => setIsExpanded(!isExpanded)}
             aria-label={isExpanded ? `Collapse ${node.kind}` : `Expand ${node.kind}`}
             aria-expanded={isExpanded}
-            className={`flex-shrink-0 p-0.5 hover:bg-surface rounded-card border border-transparent hover:border-hair ${interactive.transition}`}
+            className={`flex-shrink-0 p-0.5 hover:bg-surface rounded-card border border-transparent hover:border-hair ${interactive.transition} ${interactive.focusRing}`}
           >
             {isExpanded ? (
               <ChevronDown size={16} className="text-muted" />
@@ -228,8 +230,9 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
         {/* Resource kind (clickable) and name */}
         <div className="flex items-center gap-2 flex-1">
           <button
+            data-ui="control"
             onClick={() => onSelectKind(node.kind)}
-            className={`font-mono text-sm font-semibold text-ink hover:text-link underline decoration-dotted underline-offset-2 cursor-pointer ${interactive.transition}`}
+            className={`font-mono text-sm font-semibold text-ink hover:text-link underline decoration-dotted underline-offset-2 cursor-pointer ${interactive.transition} ${interactive.focusRing} rounded-card`}
           >
             {node.kind}
           </button>

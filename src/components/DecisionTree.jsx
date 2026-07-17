@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle, RotateCcw, ChevronLeft } from 'lucide-react';
 import { button, text, interactive, surface, border, density, typeScale } from '../lib/styleTokens';
+import { distributingGridCols } from '../lib/layout';
 
 export default function DecisionTree({ flow, onRecommendation }) {
   const [selectedPath, setSelectedPath] = useState({});
@@ -120,6 +121,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
         </div>
         <div className="flex gap-2 flex-shrink-0">
           <button
+            data-ui="control"
             onClick={goBack}
             disabled={!canGoBack}
             className={`flex items-center gap-1.5 ${button.secondary} disabled:opacity-50 disabled:pointer-events-none`}
@@ -129,6 +131,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
             Back
           </button>
           <button
+            data-ui="control"
             onClick={resetTree}
             className={`flex items-center gap-1.5 ${button.secondary}`}
             aria-label="Reset all choices"
@@ -159,12 +162,12 @@ export default function DecisionTree({ flow, onRecommendation }) {
 
               {/* Question node */}
               <div className="flex flex-col items-center">
-                <div className={`max-w-2xl w-full ${density.sectionPad} rounded-card border ${interactive.transitionAll} ${
+                <div data-ui="card" className={`max-w-2xl w-full ${density.sectionPad} rounded-card border-l-4 ${interactive.transitionAll} ${
                   isActive
-                    ? `border-accent ${surface.tint}`
+                    ? 'border-l-accent bg-tint'
                     : isCompleted
-                    ? `border-edge ${surface.raised}`
-                    : `${border.edge} ${surface.raised}`
+                    ? 'border-l-green-600 bg-surface'
+                    : 'border-l-edge bg-surface'
                 }`}>
                   <div className="flex items-start gap-2">
                     <div className="flex-shrink-0 mt-0.5">
@@ -184,14 +187,15 @@ export default function DecisionTree({ flow, onRecommendation }) {
                         {step.question}
                       </h4>
 
-                      {/* Option nodes */}
-                      <div className={`grid md:grid-cols-2 ${density.rowGap}`}>
+                      {/* Option nodes — balanced grid avoids orphan trailing row */}
+                      <div className={`grid ${distributingGridCols(step.options.length)} ${density.rowGap}`}>
                         {step.options.map((option) => {
                           const selected = isOptionSelected(stepIndex, option.value);
                           const disabled = !isActive && !selected;
 
                           return (
                             <button
+                              data-ui="control"
                               key={option.value}
                               onClick={() => !disabled && handleNodeClick(stepIndex, option.value, option.next)}
                               disabled={disabled}

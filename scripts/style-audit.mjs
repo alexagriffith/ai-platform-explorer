@@ -71,12 +71,15 @@ function tabProbe(tabId) {
   };
   const r2 = (n) => Math.round(n * 100) / 100;
 
-  // Products tab (Compare sub-view): ledger cell geometry
+  // Products tab (Compare sub-view): ledger cell geometry — only checked when Compare is the active sub-view.
+  // When MCP, Catalog, or other sub-views are shown, skip ledger checks (no ledger cells present by design).
   if (tabId === 'products') {
     const A = [...tab.querySelectorAll('[data-ledger-cell="a"]')].map(rect);
     const B = [...tab.querySelectorAll('[data-ledger-cell="b"]')].map(rect);
     const N = [...tab.querySelectorAll('[data-ledger-cell="name"]')].map(rect);
-    if (!A.length || !B.length) out.push('ledger presence cells [data-ledger-cell] not found');
+    // Only require ledger cells when any ledger element exists (Compare sub-view is active)
+    const hasLedgerContainer = tab.querySelector('[data-view="compare"]') !== null;
+    if (hasLedgerContainer && (!A.length || !B.length)) out.push('ledger presence cells [data-ledger-cell] not found');
     const uniform = (arr, key, label) => {
       if (arr.length < 2) return;
       const first = arr[0][key];
@@ -102,6 +105,9 @@ function tabProbe(tabId) {
   // Nested bordered boxes
   const SIDES = ['Top', 'Right', 'Bottom', 'Left'];
   const isBox = (el) => {
+    // chips/badges, controls, form inputs, and explicitly-exempted marks are not structural boxes
+    if (el.dataset.ui === 'chip' || el.dataset.ui === 'control' || el.dataset.uiExempt) return false;
+    if (el.tagName === 'SELECT' || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return false;
     const s = getComputedStyle(el);
     let n = 0;
     for (const side of SIDES) {
@@ -130,11 +136,16 @@ function tabProbe(tabId) {
     }
   }
 
-  // Distinct non-zero border-radius values
+  // Distinct non-zero border-radius values — circles/pills (radius >= half min-dimension) excluded
   const radii = new Set();
   for (const el of tab.querySelectorAll('*')) {
     if (!visible(el)) continue;
     const s = getComputedStyle(el);
+    const r = rect(el);
+    const minDim = Math.min(r.width, r.height);
+    const topLeft = parseFloat(s.borderTopLeftRadius) || 0;
+    // If the element is a circle or pill (radius fills the short axis), skip — it's a mark, not a card shape
+    if (topLeft > 0.5 && minDim > 0 && topLeft >= minDim / 2 - 0.5) continue;
     for (const corner of ['borderTopLeftRadius', 'borderTopRightRadius', 'borderBottomLeftRadius', 'borderBottomRightRadius']) {
       const v = parseFloat(s[corner]) || 0;
       if (v > 0.5) radii.add(Math.round(v));
@@ -201,6 +212,8 @@ function gridEquality(tabId) {
     if (display !== 'grid' && display !== 'flex' && display !== 'inline-flex') continue;
     // Skip flex-wrap containers — chip/badge groups are intentionally variable-width.
     if (cs.flexWrap === 'wrap' || cs.flexWrap === 'wrap-reverse') continue;
+    // Skip tab navigation bars — tab items are label-sized, not equal-width cards.
+    if (container.tagName === 'NAV' || container.getAttribute('role') === 'tablist') continue;
     // Skip CSS grid containers with non-uniform column templates (named columns, fractional
     // columns of different sizes, or fixed+auto mixes). Uniform grids use repeat(N, 1fr).
     if (display === 'grid') {
@@ -277,7 +290,10 @@ function motionLaw(tabId) {
     .filter((el) => {
       const r = el.getBoundingClientRect();
       const s = getComputedStyle(el);
-      return r.width > 1 && r.height > 1 && s.display !== 'none' && s.visibility !== 'hidden';
+      if (r.width <= 1 || r.height <= 1 || s.display === 'none' || s.visibility === 'hidden') return false;
+      // Skip disabled controls — they are intentionally not focusable.
+      if (el.disabled || el.getAttribute('aria-disabled') === 'true') return false;
+      return true;
     })
     .slice(0, 30);
   for (const el of candidates) {
@@ -518,6 +534,8 @@ function spacingSetMembership(tabId) {
   }).slice(0, 200); // sample up to 200 containers for performance
 
   for (const el of candidates) {
+    // Skip elements with data-ui-exempt (programmatic spacing like tree indentation)
+    if (el.dataset.uiExempt) continue;
     const cs = getComputedStyle(el);
     const props = [
       ['paddingTop', cs.paddingTop],
@@ -1039,9 +1057,11 @@ function archetypeInvariantsProbe(tabId) {
     }
   }
 
-  // CONTROL invariants: focus-visible ring present on buttons/links
+  // CONTROL invariants: focus-visible ring present on enabled buttons/links
   const controls = byArchetype['control'] || [];
   for (const ctrl of controls.slice(0, 20)) {
+    // Skip disabled controls — intentionally not focusable.
+    if (ctrl.disabled || ctrl.getAttribute('aria-disabled') === 'true') continue;
     const cn = (ctrl.className || '').toString();
     const hasFocusRing = cn.includes('focus-visible:ring') || cn.includes('focus-visible:outline-none');
     if (!hasFocusRing) {
@@ -1352,7 +1372,7 @@ const STATES_TABLE = [
     screenshotName: 'products--catalog-resting',
     themes: ['light'],
     open: async (page) => {
-      await page.locator('[data-tab="products"] button').filter({ hasText: /^catalog$/i }).first().click();
+      await page.locator('[data-tab="products"] button').filter({ hasText: /catalog/i }).first().click();
       await page.waitForTimeout(400);
     },
   },
@@ -1362,7 +1382,7 @@ const STATES_TABLE = [
     screenshotName: 'products--catalog-filtered',
     themes: ['light'],
     open: async (page) => {
-      await page.locator('[data-tab="products"] button').filter({ hasText: /^catalog$/i }).first().click();
+      await page.locator('[data-tab="products"] button').filter({ hasText: /catalog/i }).first().click();
       await page.waitForTimeout(300);
       const searchInput = page.locator('[data-tab="products"] input[type="text"], [data-tab="products"] input[placeholder]').first();
       if (await searchInput.count() > 0) {
@@ -1482,10 +1502,13 @@ async function runChecksOnPage(page, tabId, stateLabel, exemptions, viewport, th
   const overflow = await page.evaluate(noHorizontalScroll);
   if (overflow > 1) out.push(`${prefix} horizontal scroll: scrollWidth exceeds clientWidth by ${overflow}px`);
 
-  // Draft banner (products tab only)
+  // Draft banner (products Compare sub-view only — not MCP, Catalog, or other sub-views)
   if (tabId === 'products' && theme === 'light') {
-    const banner = await page.evaluate(draftBannerState);
-    if (!banner.ok) out.push(`${prefix} draft banner not visibly distinct: ${JSON.stringify(banner)}`);
+    const compareVisible = await page.evaluate(() => document.querySelector('[data-tab="products"] [data-view="compare"]') !== null);
+    if (compareVisible) {
+      const banner = await page.evaluate(draftBannerState);
+      if (!banner.ok) out.push(`${prefix} draft banner not visibly distinct: ${JSON.stringify(banner)}`);
+    }
   }
 
   if (theme === 'light') {

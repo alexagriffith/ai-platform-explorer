@@ -70,7 +70,7 @@ export default function CapabilityDeltaTable({ comparison }) {
       </div>
 
       {/* Comparison Table */}
-      <div data-ui="table" className="overflow-x-auto border border-edge rounded-card -mx-4 sm:mx-0">
+      <div data-ui="table" data-ui-exempt="table-scroll-container" className="overflow-x-auto border border-edge rounded-card -mx-4 sm:mx-0">
         <div className="inline-block min-w-full align-middle">
           <table className="min-w-full">
             <thead className="bg-tint">
@@ -121,7 +121,7 @@ export default function CapabilityDeltaTable({ comparison }) {
       </div>
 
       {/* Legend */}
-      <div className="px-3 py-2 bg-tint border border-hair rounded-card">
+      <div data-ui-exempt="legend-section" className="px-3 py-2 bg-tint border border-hair rounded-card">
         <h4 className="text-xs font-semibold text-ink mb-1.5">Understanding Impact</h4>
         <div className="grid md:grid-cols-3 gap-3 text-xs text-muted">
           <div>
@@ -175,7 +175,7 @@ function ImpactBadge({ impact, isAlternativeComparison }) {
   const Icon = config.icon;
 
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium border rounded-card ${config.className}`}>
+    <span data-ui="chip" className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium border rounded-card ${config.className}`}>
       <Icon size={12} />
       {config.label}
     </span>

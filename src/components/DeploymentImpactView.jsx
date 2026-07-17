@@ -7,6 +7,7 @@ import ResourceTreeView from './ResourceTreeView';
 import QuickComparisonTable from './QuickComparisonTable';
 import { getComparisonById } from '../data/deploymentComparisons';
 import { interactive, text } from '../lib/styleTokens';
+import { distributingGridCols } from '../lib/layout';
 
 /**
  * DeploymentImpactView
@@ -64,14 +65,15 @@ export default function DeploymentImpactView() {
           {/* View Tabs */}
           <div data-ui="card" className="rounded-card border border-edge bg-surface">
             <div className="border-b border-hair">
-              <nav className="flex gap-0.5 px-3">
+              <nav className="flex px-3">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   return (
                     <button
+                      data-ui="control"
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-1.5 px-3 py-2 font-medium text-sm ${interactive.transition} border-b-2 ${
+                      className={`flex items-center gap-1.5 px-3 py-2 font-medium text-sm ${interactive.transition} ${interactive.focusRing} border-b-2 ${
                         activeTab === tab.id
                           ? 'border-accent text-link'
                           : 'border-transparent text-muted hover:text-ink'
@@ -100,7 +102,7 @@ export default function DeploymentImpactView() {
                 data-ui="section-header"
                 onClick={() => setMigrationNotesExpanded(!migrationNotesExpanded)}
                 aria-expanded={migrationNotesExpanded}
-                className={`w-full px-4 py-2 flex items-center justify-between ${interactive.hoverTint} ${interactive.transition}`}
+                className={`w-full px-4 py-2 flex items-center justify-between ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
               >
                 <h3 className="text-sm font-bold text-ink flex items-center gap-2">
                   {migrationNotesExpanded ? (
@@ -135,23 +137,24 @@ export default function DeploymentImpactView() {
 
           {/* Documentation Links */}
           {comparison.docsLinks && comparison.docsLinks.length > 0 && (
-            <div className="rounded-card border border-edge bg-surface px-4 py-3">
-              <h3 className={`text-sm font-bold ${text.ink} mb-2`}>
+            <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
+              <h3 data-ui="section-header" className={`text-sm font-bold ${text.ink} mb-2`}>
                 Additional Resources
               </h3>
-              <div className="grid md:grid-cols-2 gap-2">
+              <div className={`grid ${distributingGridCols(comparison.docsLinks.length)} gap-2`}>
                 {comparison.docsLinks.map((link, idx) => (
                   <a
+                    data-ui="control"
                     key={idx}
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`flex items-center gap-2 px-3 py-2 border border-edge rounded-card ${interactive.hoverTint} ${interactive.transition} group`}
+                    className={`flex items-center gap-2 px-3 py-2 text-link underline-offset-2 hover:underline ${interactive.transition} ${interactive.focusRing} rounded-card`}
                   >
-                    <svg className="w-4 h-4 text-faint group-hover:text-link flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
-                    <span className="text-sm font-medium text-ink group-hover:text-link">
+                    <span className="text-sm font-medium">
                       {link.label}
                     </span>
                   </a>

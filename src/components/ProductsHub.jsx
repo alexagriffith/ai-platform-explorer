@@ -150,7 +150,7 @@ export default function ProductsHub({ onNavigate }) {
       </div>
 
       {/* Active sub-view */}
-      {subView === 'compare' && <ProductComparisonView />}
+      {subView === 'compare' && <div data-view="compare"><ProductComparisonView /></div>}
       {subView === 'catalog' && <ProductExplorer />}
       {subView === 'mcp-ecosystem' && <MCPEcosystemFull />}
     </div>

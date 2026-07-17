@@ -65,7 +65,8 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
         </div>
         <button
           onClick={() => onEdit(index)}
-          className={`text-xs font-medium ${text.link} hover:underline ${interactive.focusRing} rounded-card`}
+          data-ui="control"
+          className={`text-xs font-medium ${text.link} hover:underline ${interactive.focusRing} ${interactive.transition} rounded-card`}
         >
           Edit
         </button>
@@ -84,7 +85,7 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
               data-ui="chip"
               key={capId}
               onClick={() => canDeepDive && onDeepDive(optionId)}
-              className={`px-2 py-1 rounded-card text-xs font-medium border ${interactive.transitionAll} ${
+              className={`px-2 py-1 rounded-card text-xs font-medium border ${interactive.transitionAll} ${interactive.focusRing} ${
                 canDeepDive ? 'cursor-pointer hover:-translate-y-0.5 motion-reduce:hover:translate-y-0' : ''
               } ${
                 option.isCustomer
@@ -131,7 +132,7 @@ function CapabilitySelector({
           <h4 className={`font-bold ${text.ink} flex items-center gap-2`}>
             {capability.name}
             {capability.required && (
-              <span className={`px-2 py-0.5 ${status.requiredBadge} text-xs rounded-card`}>
+              <span data-ui="chip" className={`px-2 py-0.5 ${status.requiredBadge} text-xs rounded-card`}>
                 Required
               </span>
             )}
@@ -149,7 +150,7 @@ function CapabilitySelector({
         )}
       </div>
 
-      <div className="grid gap-2">
+      <div className="space-y-2">
         {capability.options.map((option) => {
           const isOptionSelected = selectedOptionId === option.id;
           const guide = optionGuides[option.id];
@@ -189,22 +190,22 @@ function CapabilitySelector({
                           {option.name}
                         </span>
                         {disabled && (
-                          <span className={`px-2 py-0.5 bg-page ${text.muted} border border-edge text-xs rounded-card`}>
+                          <span data-ui="chip" className={`px-2 py-0.5 bg-page ${text.muted} border border-edge text-xs rounded-card`}>
                             N/A
                           </span>
                         )}
                         {option.isCustomer && (
-                          <span className={`px-2 py-0.5 ${providerMark.customer} ${text.ink} text-xs rounded-card`}>
+                          <span data-ui="chip" className={`px-2 py-0.5 ${providerMark.customer} ${text.ink} text-xs rounded-card`}>
                             Customer
                           </span>
                         )}
                         {option.recommended && (
-                          <span className={`px-2 py-0.5 ${status.completeBanner} text-xs rounded-card`}>
+                          <span data-ui="chip" className="px-2 py-0.5 bg-accent text-on-accent text-xs rounded-card">
                             Recommended
                           </span>
                         )}
                         {option.status && (
-                          <span className={`px-2 py-0.5 bg-page ${text.muted} border border-hair text-xs rounded-card`}>
+                          <span data-ui="chip" className={`px-2 py-0.5 bg-page ${text.muted} border border-hair text-xs rounded-card`}>
                             {option.status}
                           </span>
                         )}
@@ -384,31 +385,32 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
 
     return (
       <div className="space-y-6">
-        {/* Success Header */}
-        <div className={`${status.completeBanner} rounded-card p-6`}>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-              <Check size={24} />
+        {/* Success Header — neutral surface; status via mark + heading (status-fill-ban law) */}
+        <div data-ui="card" className="bg-surface rounded-card p-6 border border-edge">
+          <div className="flex items-center gap-3 mb-4">
+            <div data-ui-exempt="status-check-mark" className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true">
+              <Check size={16} className="text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Guided steps complete</h2>
-              <p className="text-green-100">
+              <h2 className={`text-xl font-bold ${text.ink}`}>Guided steps complete</h2>
+              <p className={`text-sm ${text.muted} mt-0.5`}>
                 Selections are saved to Build Your Stack — switch to that mode above to review or fine-tune by layer.
               </p>
             </div>
           </div>
-          <div className="mt-4 flex gap-4">
-            <div className="bg-white/20 rounded-card px-4 py-2">
-              <div className="text-2xl font-bold">{buildOrder.length}</div>
-              <div className="text-sm text-green-100">Layers Configured</div>
+          <div className="flex gap-4 mb-4">
+            <div className="rounded-card bg-tint px-4 py-2 text-center">
+              <div className={`text-2xl font-bold ${text.ink}`}>{buildOrder.length}</div>
+              <div className={`text-sm ${text.muted}`}>Layers configured</div>
             </div>
-            <div className="bg-white/20 rounded-card px-4 py-2">
-              <div className="text-2xl font-bold">{totalComponents}</div>
-              <div className="text-sm text-green-100">Total Components</div>
+            <div className="rounded-card bg-tint px-4 py-2 text-center">
+              <div className={`text-2xl font-bold ${text.ink}`}>{totalComponents}</div>
+              <div className={`text-sm ${text.muted}`}>Total components</div>
             </div>
           </div>
-          <div className="mt-4 flex gap-3">
+          <div className="flex gap-3">
             <button
+              data-ui="control"
               onClick={resetBuilder}
               className={button.secondary}
             >
@@ -416,6 +418,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
               Start Over
             </button>
             <button
+              data-ui="control"
               onClick={() => setShowFlowViz(true)}
               className={button.primary}
             >
@@ -426,7 +429,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
         </div>
 
         {/* Complete Stack View */}
-        <div className="bg-tint rounded-card p-6">
+        <div data-ui="card" className="bg-tint rounded-card p-6">
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <div>
               <h3 className={`text-xl font-bold ${text.ink}`}>Your Complete Stack</h3>
@@ -434,6 +437,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
             <div className="flex gap-2">
               {/* View Order Toggle */}
               <button
+                data-ui="control"
                 onClick={() => setViewOrder(viewOrder === 'bottom-up' ? 'top-down' : 'bottom-up')}
                 className={`flex items-center gap-2 px-3 py-2 rounded-card text-xs font-medium border border-edge ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
               >
@@ -500,7 +504,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
   return (
     <div className="space-y-6">
       {/* Progress Header */}
-      <div className="bg-surface rounded-card p-4">
+      <div data-ui="section-header" className="bg-surface rounded-card p-4">
         <div className="flex items-center justify-between mb-3">
           <div>
             <h2 className={`text-xl font-bold ${text.ink}`}>
@@ -512,6 +516,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
           </div>
           <button
             onClick={resetBuilder}
+            data-ui="control"
             className={`text-sm ${text.muted} hover:text-ink flex items-center gap-1 ${interactive.transition} ${interactive.focusRing} rounded-card`}
           >
             <RotateCcw size={14} />
@@ -520,7 +525,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
         </div>
 
         {/* Progress Bar */}
-        <div className="relative w-full h-2 bg-page rounded-full overflow-hidden">
+        <div data-ui-exempt="progress-bar-track" className="relative w-full h-2 bg-page rounded-card overflow-hidden">
           <div
             className="absolute inset-y-0 left-0 bg-accent transition-all duration-200 ease-out motion-reduce:transition-none"
             style={{ width: `${progress}%` }}
@@ -532,6 +537,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
           {buildOrder.map((layer, idx) => (
             <div key={layer.id} className="flex items-center">
               <div
+                data-ui-exempt="step-indicator-circle"
                 className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${interactive.transitionAll} ${
                   idx < currentLayerIndex
                     ? 'bg-green-600 text-white'
@@ -553,7 +559,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Main Configuration Area */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="bg-surface rounded-card p-6">
+          <div data-ui="card" className="bg-surface rounded-card p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className={`w-2 h-12 rounded-full ${layerAccentClass}`} />
               <div>
@@ -595,7 +601,8 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
               <button
                 onClick={proceedToNextLayer}
                 disabled={!canProceed()}
-                className={`flex items-center gap-2 px-6 py-3 rounded-card font-semibold ${interactive.transitionAll} ${
+                data-ui="control"
+                className={`flex items-center gap-2 px-6 py-3 rounded-card font-semibold ${interactive.transitionAll} ${interactive.focusRing} ${
                   canProceed()
                     ? 'bg-accent text-on-accent hover:bg-accent-strong'
                     : 'bg-page text-muted cursor-not-allowed'
@@ -619,7 +626,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
 
         {/* Stack Preview Sidebar */}
         <div className="space-y-4">
-          <div className="bg-surface rounded-card p-4 sticky top-4">
+          <div data-ui="card" className="bg-surface rounded-card p-4 sticky top-4">
             <div className="flex items-center gap-2 mb-4">
               <Package size={18} className="text-accent" />
               <h4 className={`font-bold ${text.ink}`}>Stack Preview</h4>
@@ -632,6 +639,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
                 return (
                   <div key={layer.id}>
                     <div
+                      data-ui="card"
                       className={`p-3 rounded-card border ${interactive.transitionAll} ${
                         isCurrentLayer
                           ? 'border-accent bg-tint'

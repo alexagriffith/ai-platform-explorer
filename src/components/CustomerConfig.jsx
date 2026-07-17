@@ -308,7 +308,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
       {/* Additional Requirements */}
       <div className="grid md:grid-cols-3 gap-6">
         {/* Compliance & Security */}
-        <div className="bg-surface rounded-card p-6 border border-edge">
+        <div data-ui="card" className="bg-surface rounded-card p-6 border border-edge">
           <h3 className={`text-lg font-semibold ${text.ink} mb-4`}>
             Compliance & Security
           </h3>
@@ -398,7 +398,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
         </div>
 
         {/* Operations & Budget */}
-        <div className="bg-surface rounded-card p-6 border border-edge">
+        <div data-ui="card" className="bg-surface rounded-card p-6 border border-edge">
           <h3 className={`text-lg font-semibold ${text.ink} mb-4`}>
             Operations & Budget
           </h3>
