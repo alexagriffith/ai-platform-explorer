@@ -34,6 +34,7 @@ export default function ProductExplorer() {
           <div className="relative">
             <Search className={`absolute left-3 top-2.5 ${text.faint}`} size={16} />
             <input
+              data-ui="control"
               type="text"
               placeholder="Search products..."
               value={searchTerm}
@@ -43,6 +44,7 @@ export default function ProductExplorer() {
           </div>
 
           <select
+            data-ui="control"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
             className={field.input}
@@ -54,6 +56,7 @@ export default function ProductExplorer() {
           </select>
 
           <select
+            data-ui="control"
             value={filterLayer}
             onChange={(e) => setFilterLayer(e.target.value)}
             className={field.input}

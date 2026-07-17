@@ -324,7 +324,7 @@ export default function UseCaseView() {
       <SecurityOverview />
 
       {/* Quick Decision Guide */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <h3 className={`${typeScale.componentName} text-ink mb-2`}>Quick Decision Guide</h3>
         <div className="grid md:grid-cols-2 gap-x-6 gap-y-1">
           <div className="flex items-start gap-1.5">

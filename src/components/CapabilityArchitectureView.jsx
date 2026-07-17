@@ -448,13 +448,14 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
   return (
     <div className="space-y-3">
       {/* Header — one surface */}
-      <div className="rounded-card bg-surface px-3 py-2">
+      <div data-ui="card" className="rounded-card bg-surface px-3 py-2">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex-1 min-w-0">
             <h2 className={`font-display text-base font-bold ${text.ink}`}>Build Your AI Stack</h2>
           </div>
           <div className="flex flex-wrap gap-2 shrink-0">
             <button
+              data-ui="control"
               type="button"
               onClick={loadBasicInferenceStack}
               className={button.primaryCompact}
@@ -464,6 +465,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
               Quick Start
             </button>
             <button
+              data-ui="control"
               type="button"
               onClick={handleDownloadStackPng}
               disabled={stackImageBusy}
@@ -477,6 +479,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
             </button>
             {totalSelected > 0 && (
               <button
+                data-ui="control"
                 type="button"
                 onClick={clearEntireStack}
                 className={button.secondaryCompact}
@@ -488,6 +491,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
             )}
             {totalSelected > 0 && (
               <button
+                data-ui="control"
                 type="button"
                 onClick={() => setShowFlowViz(true)}
                 className={button.secondaryCompact}
@@ -503,6 +507,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
         )}
         <div className="pt-2 mt-1 border-t border-hair flex items-center gap-3 flex-wrap">
           <button
+            data-ui="chip"
             type="button"
             onClick={() => setViewOrder(viewOrder === 'bottom-up' ? 'top-down' : 'bottom-up')}
             className={`flex items-center gap-1 ${toggle.base} ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
@@ -515,6 +520,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
 
       {/* Stack — #stack-capture-root is the PNG capture region (layers + legend) */}
       <div
+        data-ui="card"
         id="stack-capture-root"
         className="rounded-card bg-tint p-2"
       >
@@ -550,7 +556,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                         </p>
                       </div>
                     </div>
-                    <div className={`px-2 py-0.5 rounded-card ${typeScale.meta} font-bold shrink-0 bg-tint ${text.faint}`}>
+                    <div data-ui="chip" className={`px-2 py-0.5 rounded-card ${typeScale.meta} font-bold shrink-0 bg-tint ${text.faint}`}>
                       L{index + 1}
                     </div>
                   </button>

@@ -93,7 +93,7 @@ function LedgerRow({ row, last }) {
   const band = row.shared ? 'bg-tint' : 'bg-surface';
   const rounded = last ? 'rounded-b-card' : '';
   return (
-    <div className={`${COLS} ${band} ${rounded}`} data-ledger-row>
+    <div data-ui-exempt="ledger-row inside data-ui=table" className={`${COLS} ${band} ${rounded}`} data-ledger-row>
       <div
         className="flex h-10 items-center justify-center border-b border-hair"
         data-ledger-cell="a"
@@ -120,7 +120,7 @@ function LedgerRow({ row, last }) {
 
 function GroupHeader({ title }) {
   return (
-    <div className="border-b border-hair bg-tint px-3 py-2 sm:px-4">
+    <div data-ui="section-header" className="border-b border-hair bg-tint px-3 py-2 sm:px-4">
       <span className="text-xs font-semibold uppercase tracking-wider text-faint">{title}</span>
     </div>
   );
@@ -151,7 +151,7 @@ function Legend() {
 
 function StickyHeader() {
   return (
-    <div className={`${COLS} sticky top-0 z-10 border-b border-edge bg-surface`}>
+    <div data-ui="section-header" className={`${COLS} sticky top-0 z-10 border-b border-edge bg-surface`}>
       <div className="flex flex-col items-center justify-center px-2 py-2 text-center">
         <span className="text-xs font-bold leading-tight text-ink sm:text-sm">{LEDGER_PRODUCTS.a.label}</span>
         <span className="mt-0.5 text-[10px] text-faint sm:text-xs">{LEDGER_PRODUCTS.a.descriptor}</span>
@@ -178,6 +178,7 @@ export default function SharedSpineLedger({ comparison }) {
 
   return (
     <section
+      data-ui="table"
       aria-label="What ships in each product — side-by-side bill of materials"
       data-ledger
       className="rounded-card border border-edge bg-surface"

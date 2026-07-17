@@ -327,6 +327,7 @@ export default function ProductComparisonView() {
       <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-end">
         <div className="flex gap-2">
           <button
+            data-ui="control"
             onClick={handleDownloadPng}
             disabled={pngBusy}
             className={`inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-card border border-edge text-ink hover:bg-tint ${interactive.transition} ${interactive.focusRing} disabled:opacity-60`}
@@ -335,6 +336,7 @@ export default function ProductComparisonView() {
             {pngBusy ? 'Exporting…' : 'Export PNG'}
           </button>
           <button
+            data-ui="control"
             onClick={handleCopy}
             className={`inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-card border border-edge text-ink hover:bg-tint ${interactive.transition} ${interactive.focusRing}`}
           >
@@ -363,6 +365,7 @@ export default function ProductComparisonView() {
           <nav className="flex gap-1 border-b border-hair">
             {TOGGLES.map((toggle) => (
               <button
+                data-ui="control"
                 key={toggle.id}
                 onClick={() => setView(toggle.id)}
                 className={`flex items-center gap-2 px-4 py-2 font-medium text-sm border-b-2 ${interactive.transition} ${interactive.focusRing} ${

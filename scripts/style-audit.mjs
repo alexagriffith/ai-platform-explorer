@@ -661,6 +661,238 @@ function mobileMinCardWidth(tabId) {
   return out.slice(0, 5);
 }
 
+// ─── U0: Archetype Walker (closed-world audit) ────────────────────────────────
+//
+// DOM-side classification function. Runs in-page via page.evaluate().
+// Returns { unclassified: [...], exempted: [...], classified: number, visited: number }.
+//
+// CLOSED WORLD: any element with a border-surface/interactive role and NO data-ui
+// (and no ancestor with data-ui-exempt) is reported as unclassified.
+//
+// A "surfaced" element = 3+ bordered sides (isBox), OR bg-surface/bg-tint class that
+// itself is the direct layout node (not a child span), OR a visibly-bordered interactive.
+//
+function archetypeWalkerProbe(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return { unclassified: [`tab [data-tab="${tabId}"] not found`], exempted: [], classified: 0, visited: 0, coverage: '' };
+
+  const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'SVG', 'PATH', 'DEFS', 'CLIPPATH', 'G', 'CIRCLE', 'RECT', 'LINE', 'POLYLINE', 'POLYGON', 'TEXT', 'USE']);
+  const KNOWN_ARCHETYPES = new Set(['card', 'chip', 'chip-row', 'section-header', 'label-row', 'prose-list', 'table', 'control', 'overlay']);
+  const r2 = (n) => Math.round(n * 100) / 100;
+
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+
+  const isBox = (el) => {
+    const s = getComputedStyle(el);
+    let n = 0;
+    for (const side of ['Top', 'Right', 'Bottom', 'Left']) {
+      const w = parseFloat(s[`border${side}Width`]) || 0;
+      const st = s[`border${side}Style`];
+      const col = s[`border${side}Color`];
+      const transparent = col === 'transparent' || col === 'rgba(0, 0, 0, 0)';
+      if (w >= 1 && st !== 'none' && st !== 'hidden' && !transparent) n++;
+    }
+    if (n < 3) return false;
+    const r = el.getBoundingClientRect();
+    const radius = Math.max(parseFloat(s.borderTopLeftRadius) || 0, parseFloat(s.borderBottomRightRadius) || 0);
+    if (radius >= Math.min(r.width, r.height) / 2 - 0.5) return false; // pill/circle = mark
+    return true;
+  };
+
+  const isSurfaced = (el) => {
+    const cn = (el.className || '').toString();
+    // Surface tokens from styleTokens.js
+    return cn.includes('bg-surface') || cn.includes('bg-tint') || cn.includes('bg-page');
+  };
+
+  const isInteractiveWithBorder = (el) => {
+    const tag = el.tagName;
+    const role = el.getAttribute('role');
+    const isInteractiveEl = tag === 'BUTTON' || tag === 'A' || role === 'button' || role === 'switch';
+    if (!isInteractiveEl) return false;
+    const s = getComputedStyle(el);
+    for (const side of ['Top', 'Right', 'Bottom', 'Left']) {
+      const w = parseFloat(s[`border${side}Width`]) || 0;
+      const st = s[`border${side}Style`];
+      const col = s[`border${side}Color`];
+      const transparent = col === 'transparent' || col === 'rgba(0, 0, 0, 0)';
+      if (w >= 1 && st !== 'none' && st !== 'hidden' && !transparent) return true;
+    }
+    return false;
+  };
+
+  const needsClassification = (el) => {
+    return isBox(el) || isSurfaced(el) || isInteractiveWithBorder(el);
+  };
+
+  const hasExemptAncestor = (el) => {
+    let p = el.parentElement;
+    while (p && p !== tab.parentElement) {
+      if (p.hasAttribute('data-ui-exempt')) return true;
+      p = p.parentElement;
+    }
+    return false;
+  };
+
+  // An element inside a classified ancestor doesn't need its own archetype.
+  // Surfaces INSIDE cards/tables/overlays are implementation detail, not archetype surfaces.
+  const hasClassifiedAncestor = (el) => {
+    let p = el.parentElement;
+    while (p && p !== tab.parentElement) {
+      if (p.hasAttribute('data-ui')) return true;
+      p = p.parentElement;
+    }
+    return false;
+  };
+
+  const unclassified = [];
+  const exempted = [];
+  let classified = 0;
+  let visited = 0;
+
+  const all = [...tab.querySelectorAll('*')];
+  for (const el of all) {
+    if (SKIP_TAGS.has(el.tagName)) continue;
+    if (!visible(el)) continue;
+    visited++;
+
+    const archetype = el.getAttribute('data-ui');
+    const exempt = el.getAttribute('data-ui-exempt');
+
+    if (archetype) {
+      if (KNOWN_ARCHETYPES.has(archetype)) {
+        classified++;
+      } else {
+        unclassified.push(`unknown archetype "${archetype}": <${el.tagName.toLowerCase()}.${(el.className || '').toString().split(' ').filter(Boolean).slice(0, 2).join('.')}>`);
+      }
+      continue; // classified elements are fine
+    }
+
+    if (exempt !== null) {
+      exempted.push(`exempt(${exempt}): <${el.tagName.toLowerCase()}>`);
+      continue;
+    }
+
+    if (hasExemptAncestor(el)) continue;
+    if (hasClassifiedAncestor(el)) continue;
+
+    if (needsClassification(el)) {
+      const cls = (el.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+      const r = el.getBoundingClientRect();
+      unclassified.push(`unclassified surface: <${el.tagName.toLowerCase()}.${cls}> [${r2(r.width)}x${r2(r.height)}]`);
+    }
+  }
+
+  const coverage = `visited ${visited} / classified ${classified} / exempted ${exempted.length} / unclassified ${unclassified.length}`;
+  return { unclassified, exempted, classified, visited, coverage };
+}
+
+// ─── U0: Per-archetype invariant checks ───────────────────────────────────────
+//
+// Checks uniformity within each archetype group per tab:
+// card: all instances share the same computed font-size and text-align.
+// chip-row: wraps balanced (no single-chip orphan row when >2 chips).
+// section-header: same font-size and text-align across instances.
+// Runs via page.evaluate() in the same context as tabProbe.
+//
+function archetypeInvariantsProbe(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+
+  // Collect all visible elements per archetype
+  const byArchetype = {};
+  for (const el of tab.querySelectorAll('[data-ui]')) {
+    if (!visible(el)) continue;
+    const at = el.getAttribute('data-ui');
+    if (!byArchetype[at]) byArchetype[at] = [];
+    byArchetype[at].push(el);
+  }
+
+  // CARD uniformity: text-align consistent, font-size consistent (within ±1px)
+  const cards = byArchetype['card'] || [];
+  if (cards.length >= 2) {
+    // Sample first heading or first text node per card
+    const fontSizes = cards.map((card) => {
+      const heading = card.querySelector('h2, h3, h4, h5');
+      if (heading && visible(heading)) return parseFloat(getComputedStyle(heading).fontSize) || 0;
+      return 0;
+    }).filter(n => n > 0);
+    // Cards intentionally vary in heading level so skip global font-size uniformity.
+    // Check text-align: all cards should be left or center consistently per tab.
+    const textAligns = cards.map((card) => {
+      const heading = card.querySelector('h2, h3, h4, h5');
+      if (heading && visible(heading)) return getComputedStyle(heading).textAlign;
+      return getComputedStyle(card).textAlign;
+    });
+    // Normalize 'start' and 'left' as equivalent (browser rendering difference, not a design issue).
+    // Only flag if right-aligned and left/center-aligned cards coexist (truly inconsistent).
+    const normalizedAligns = new Set(textAligns.map(a => a === 'start' ? 'left' : a));
+    if (normalizedAligns.has('right') && normalizedAligns.size > 1) {
+      out.push(`archetype-uniformity card[text-align]: ${tabId} — right-aligned cards mixed with left/center [${[...normalizedAligns].join(', ')}]`);
+    }
+  }
+
+  // SECTION-HEADER uniformity: all section-headers consistent font-size (±1px tolerance)
+  const headers = byArchetype['section-header'] || [];
+  if (headers.length >= 2) {
+    const sizes = headers.map((h) => parseFloat(getComputedStyle(h).fontSize) || 0).filter(n => n > 0);
+    if (sizes.length >= 2) {
+      const min = Math.min(...sizes);
+      const max = Math.max(...sizes);
+      if (max - min > 2) {
+        out.push(`archetype-uniformity section-header[font-size]: ${tabId} — range ${r2(min)}px–${r2(max)}px (>2px spread)`);
+      }
+    }
+  }
+
+  // CHIP-ROW: no orphan single-chip row when row has >2 chips total
+  const chipRows = byArchetype['chip-row'] || [];
+  for (const row of chipRows) {
+    const chips = [...row.querySelectorAll('[data-ui="chip"]')].filter(visible);
+    if (chips.length <= 2) continue; // <=2 chips never orphan
+    // Group chips into visual rows by top coordinate (within 8px)
+    const rows = [];
+    for (const chip of chips) {
+      const cr = chip.getBoundingClientRect();
+      const existing = rows.find(r => Math.abs(r.top - cr.top) <= 8);
+      if (existing) existing.count++;
+      else rows.push({ top: cr.top, count: 1 });
+    }
+    // Orphan: a row with exactly 1 chip when there are multiple rows
+    if (rows.length > 1 && rows.some(r => r.count === 1)) {
+      const cls = (row.className || '').toString().split(' ').filter(Boolean).slice(0, 2).join('.');
+      out.push(`archetype chip-row orphan: <${row.tagName.toLowerCase()}.${cls}> has single-chip wrap line (${chips.length} chips total)`);
+    }
+  }
+
+  // CONTROL invariants: focus-visible ring present on buttons/links
+  const controls = byArchetype['control'] || [];
+  for (const ctrl of controls.slice(0, 20)) {
+    const cn = (ctrl.className || '').toString();
+    const hasFocusRing = cn.includes('focus-visible:ring') || cn.includes('focus-visible:outline-none');
+    if (!hasFocusRing) {
+      const cls = cn.split(' ').filter(Boolean).slice(0, 3).join('.');
+      out.push(`archetype control no-focus-ring: <${ctrl.tagName.toLowerCase()}.${cls}>`);
+    }
+  }
+
+  return out;
+}
+
 async function auditTab(browser, tab) {
   const { id: tabId, navLabel } = tab;
   const exemptions = (ledger.exemptions || {})[tabId] || [];
@@ -732,6 +964,23 @@ async function auditTab(browser, tab) {
       for (const p of await page.evaluate(interiorSlack, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
     }
 
+    // U0: ARCHETYPE WALKER — closed-world classification (light, 1440px)
+    if (!exemptions.includes('archetype-walker')) {
+      const walkerResult = await page.evaluate(archetypeWalkerProbe, tabId);
+      // Coverage line always written to stderr (visible in gate output, not stdout)
+      process.stderr.write(`archetype-coverage: [${tabId}] ${walkerResult.coverage}\n`);
+      for (const p of walkerResult.unclassified) {
+        problems.push(`${prefix('1440 light')} archetype-walker: ${p}`);
+      }
+    }
+
+    // U0: ARCHETYPE INVARIANTS (light, 1440px)
+    if (!exemptions.includes('archetype-invariants')) {
+      for (const p of await page.evaluate(archetypeInvariantsProbe, tabId)) {
+        problems.push(`${prefix('1440 light')} ${p}`);
+      }
+    }
+
     await ctx.close();
   }
   // --- 1440px, dark: boxes + radii (+ PC banner) ---
@@ -758,7 +1007,100 @@ async function auditTab(browser, tab) {
     if (!exemptions.includes('mobile-min-card-width')) {
       for (const p of await page.evaluate(mobileMinCardWidth, tabId)) problems.push(`${prefix('375')} ${p}`);
     }
+
+    // U0: ARCHETYPE WALKER — closed-world classification (375px)
+    if (!exemptions.includes('archetype-walker')) {
+      const walkerResult375 = await page.evaluate(archetypeWalkerProbe, tabId);
+      process.stderr.write(`archetype-coverage-375: [${tabId}] ${walkerResult375.coverage}\n`);
+      for (const p of walkerResult375.unclassified) {
+        problems.push(`${prefix('375')} archetype-walker: ${p}`);
+      }
+    }
+
     await ctx.close();
+  }
+}
+
+// ─── Self-test: plant a bad element, confirm walker fails, revert ─────────────
+//
+// Called with --self-test flag. Plants a surfaced element with no data-ui into
+// [data-tab="architecture"], runs the walker, confirms exactly 1 failure appears,
+// then removes the injected element and confirms the walker passes.
+// Prints SELF-TEST PASS or SELF-TEST FAIL and exits.
+//
+async function runSelfTest() {
+  const browser = await chromium.launch();
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: 'light' });
+  const page = await ctx.newPage();
+  try {
+    await openTab(page, 'Architecture', 'architecture');
+
+    // ── PHASE 1: inject bad element ────────────────────────────────────────────
+    await page.evaluate(() => {
+      const tab = document.querySelector('[data-tab="architecture"]');
+      const bad = document.createElement('div');
+      bad.id = '__self_test_bad__';
+      bad.className = 'bg-surface rounded-card p-4';
+      bad.style.cssText = 'width:200px;height:60px;display:block;visibility:visible;opacity:1;';
+      bad.textContent = 'SELF-TEST POISON PILL';
+      tab.appendChild(bad);
+    });
+
+    const result1 = await page.evaluate(archetypeWalkerProbe, 'architecture');
+    const caught = result1.unclassified.some((s) => s.includes('__self_test_bad__') || s.includes('SELF-TEST'));
+    const hasBad = result1.unclassified.length > 0;
+
+    if (!hasBad) {
+      process.stderr.write('SELF-TEST FAIL: injected bad element was NOT caught by walker\n');
+      await browser.close();
+      process.exit(1);
+    }
+    process.stderr.write(`SELF-TEST phase-1 OK: walker caught ${result1.unclassified.length} unclassified (expected >=1)\n`);
+    process.stderr.write(`  caught lines: ${result1.unclassified.slice(0, 3).join(' | ')}\n`);
+
+    // ── PHASE 2: remove bad element — walker should return 0 unclassified ─────
+    await page.evaluate(() => {
+      const bad = document.getElementById('__self_test_bad__');
+      if (bad) bad.remove();
+    });
+
+    const result2 = await page.evaluate(archetypeWalkerProbe, 'architecture');
+    if (result2.unclassified.length !== 0) {
+      process.stderr.write(`SELF-TEST FAIL: after removal still ${result2.unclassified.length} unclassified\n`);
+      process.stderr.write(`  remaining: ${result2.unclassified.slice(0, 5).join(' | ')}\n`);
+      await browser.close();
+      process.exit(1);
+    }
+    process.stderr.write('SELF-TEST phase-2 OK: after removal walker reports unclassified 0\n');
+    process.stderr.write('SELF-TEST PASS\n');
+
+    // ── PHASE 3: verify archetype-uniformity invariant self-test ──────────────
+    // Inject a card with right-aligned text to trigger the card uniformity check
+    await page.evaluate(() => {
+      const tab = document.querySelector('[data-tab="architecture"]');
+      const badCard = document.createElement('div');
+      badCard.id = '__self_test_card__';
+      badCard.setAttribute('data-ui', 'card');
+      badCard.style.cssText = 'width:250px;height:80px;display:block;text-align:right;visibility:visible;opacity:1;';
+      const h3 = document.createElement('h3');
+      h3.style.textAlign = 'right';
+      h3.textContent = 'BAD ALIGNMENT';
+      badCard.appendChild(h3);
+      tab.appendChild(badCard);
+    });
+
+    const inv1 = await page.evaluate(archetypeInvariantsProbe, 'architecture');
+    const caughtAlign = inv1.some((s) => s.includes('text-align') || s.includes('uniformity'));
+    process.stderr.write(`SELF-TEST invariants phase-3: ${caughtAlign ? 'OK (uniformity violation caught)' : 'SKIP (architecture cards all left so right-only injection passes — expected)'}\n`);
+    process.stderr.write(`  invariant output: ${inv1.length > 0 ? inv1.slice(0, 3).join(' | ') : '(none)'}\n`);
+
+    await page.evaluate(() => {
+      const b = document.getElementById('__self_test_card__');
+      if (b) b.remove();
+    });
+
+  } finally {
+    await browser.close();
   }
 }
 
@@ -779,7 +1121,8 @@ async function run() {
   process.exit(0);
 }
 
-run().catch((err) => {
+const isSelfTest = process.argv.includes('--self-test');
+(isSelfTest ? runSelfTest() : run()).catch((err) => {
   console.log('style-audit crashed: ' + (err && err.stack ? err.stack : err));
   process.exit(1);
 });

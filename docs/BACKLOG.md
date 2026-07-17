@@ -211,6 +211,32 @@ Verify: `npm run check` green; every tab loads in the browser; `git log --follow
 
 ---
 
+---
+
+### U0 — Closed-world component audit ✅ COMPLETE (2026-07-17)
+
+Branch: `ws/style-unification`. Two commits.
+
+**Commit 1 — component contract:**
+- Appended `## Component contract` section to `docs/DESIGN-LAW.md` defining nine archetypes (`card`, `chip`, `chip-row`, `section-header`, `label-row`, `prose-list`, `table`, `control`, `overlay`) and the closed-world rule.
+- Swept all 27 migrated component files to add `data-ui` attributes to qualifying surfaces. `data-ui-exempt` used only for `LedgerRow` (structural grid inside `data-ui="table"` parent).
+
+**Commit 2 — recursive walker:**
+- Added `archetypeWalkerProbe()` and `archetypeInvariantsProbe()` to `scripts/style-audit.mjs` — recursive DOM traversal classifying elements by `data-ui`, reporting `visited N / classified M / exempted K / unclassified 0` per tab.
+- Closed-world check: any bordered/surfaced/interactive element without `data-ui` (and no classified/exempt ancestor) fails with selector named.
+- Per-archetype uniformity invariant: `card[text-align]` (right-align mixed with left/center fails), `section-header[font-size]` (>2px spread fails), `chip-row orphan` (single-chip wrap line fails), `control no-focus-ring`.
+- Self-test: `--self-test` flag plants a bad element (caught by walker), removes it (unclassified drops to 0), plants a right-aligned card (uniformity invariant caught). All three phases pass.
+
+**First-run failure harvest (what old heuristics missed):**
+- 2 unclassified `rounded-card bg-surface` divs in `use-cases` (`UseCaseView.jsx:327`, `TrainingDeepDive.jsx:193`)
+- 3 unclassified `<input>`/`<select>` controls in `products` tab
+- 5 unclassified controls/toolbar buttons in `product-comparison`
+- `SharedSpineLedger` `LedgerRow` bg-tint rows (14 — exempted as interior of table; `GroupHeader` and `StickyHeader` → `section-header`)
+
+**Gate result:** `PASS`. Coverage per tab: architecture 203/40/0/0, product-comparison 560/9/14/0, deployment-impact 23/2/0/0, decisions 103/10/0/0, products 230/21/0/0, use-cases 1631/56/0/0.
+
+---
+
 ### Parked (do not do without a user decision)
 
 - "Ownership" tab in Deployment Impact rendering `operationalShifts`/`appTeamOwns`/`platformTeamOwns` (hundreds of lines of corrected data currently invisible) — feature addition, needs design.

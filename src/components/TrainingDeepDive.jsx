@@ -190,7 +190,7 @@ export default function TrainingDeepDive() {
       </div>
 
       {/* Resources */}
-      <div className="rounded-card bg-surface px-4 py-2">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-2">
         <div className="flex items-start gap-2">
           <Info className="text-muted mt-0.5 flex-shrink-0" size={14} />
           <div className="flex-1">

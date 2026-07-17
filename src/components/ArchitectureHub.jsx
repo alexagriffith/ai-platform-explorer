@@ -79,6 +79,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
             Build mode:
           </label>
           <select
+            data-ui="control"
             id="architecture-mode"
             value={mode}
             onChange={(e) => setMode(e.target.value)}
