@@ -39,8 +39,14 @@ export const interactive = {
 export const button = {
   primary:
     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-card bg-accent text-on-accent text-sm font-medium hover:bg-accent-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page transition-colors duration-150 ease-out motion-reduce:transition-none disabled:opacity-50 disabled:pointer-events-none',
+  /** Compact primary: same red fill, same inline weight — matches toggle.base height so controls share one scale. */
+  primaryCompact:
+    'inline-flex items-center gap-1 px-2 py-0.5 rounded-card bg-accent text-on-accent text-xs font-medium hover:bg-accent-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page transition-colors duration-150 ease-out motion-reduce:transition-none disabled:opacity-50 disabled:pointer-events-none',
   secondary:
     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-card border border-edge text-ink text-sm font-medium hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page transition-colors duration-150 ease-out motion-reduce:transition-none',
+  /** Compact secondary: same outline, matches toggle.base height. */
+  secondaryCompact:
+    'inline-flex items-center gap-1 px-2 py-0.5 rounded-card border border-edge text-ink text-xs font-medium hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page transition-colors duration-150 ease-out motion-reduce:transition-none',
 };
 
 export const field = {

@@ -65,10 +65,10 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
             <span className={`text-xs ${text.muted}`}>Not sure what to choose?</span>
             <button
               onClick={onSwitchToDecisions}
-              className={`${button.primary} group`}
+              className={`${button.primaryCompact} group`}
             >
               <span>Decision Guides</span>
-              <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform duration-150 ease-out motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
+              <ArrowRight size={11} className="group-hover:translate-x-0.5 transition-transform duration-150 ease-out motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
             </button>
           </div>
         </div>

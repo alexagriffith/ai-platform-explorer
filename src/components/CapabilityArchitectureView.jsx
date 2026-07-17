@@ -39,6 +39,17 @@ import {
   typeScale,
 } from '../lib/styleTokens';
 
+/**
+ * Return a complete grid-cols class based on item count (max 4 columns).
+ * Complete class literals only — no template-built strings (Tailwind JIT rule).
+ */
+function distributingGridCols(count) {
+  if (count <= 1) return 'grid-cols-1';
+  if (count === 2) return 'grid-cols-2';
+  if (count === 3) return 'grid-cols-3';
+  return 'grid-cols-4';
+}
+
 /** Map option provider string to a categoricalMark key. */
 function providerMarkKey(option) {
   if (!option) return 'customer';
@@ -118,11 +129,6 @@ function CapabilityCard({
                 </span>
               )}
             </h4>
-            {detailLevel === 2 && capability.description && (
-              <p className={`${typeScale.secondary} ${text.muted} mt-0.5`}>
-                {capability.description}
-              </p>
-            )}
             {detailLevel === 2 && (
               <div className={`${typeScale.meta} ${text.faint} mt-0.5`}>
                 {availableCount === capability.options.length
@@ -215,11 +221,6 @@ function CapabilityCard({
           {selectedOption.status}
         </div>
       )}
-      {detailLevel === 2 && selectedOption?.description && (
-        <div className={`px-2 pb-1 ${typeScale.secondary} ${text.muted}`}>
-          {selectedOption.description}
-        </div>
-      )}
 
       {/* Sub-components (expanded) — hairline list */}
       {isExpanded && hasSubComponents && (
@@ -271,7 +272,7 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('orchestration')}
           />
           {servicesSubOpen.orchestration && (
-            <div className={`grid grid-cols-2 md:grid-cols-3 items-stretch ${density.rowGap}`}>
+            <div className={`grid ${distributingGridCols(orchestration.length)} items-stretch ${density.rowGap}`}>
               {orchestration.map((cap) => (
                 <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
@@ -293,7 +294,7 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('wrapper')}
           />
           {servicesSubOpen.wrapper && (
-            <div className={`grid grid-cols-2 md:grid-cols-3 items-stretch ${density.rowGap}`}>
+            <div className={`grid ${distributingGridCols(wrapper.length)} items-stretch ${density.rowGap}`}>
               {wrapper.map((cap) => (
                 <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
@@ -315,7 +316,7 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('core')}
           />
           {servicesSubOpen.core && (
-            <div className={`grid grid-cols-2 md:grid-cols-3 items-stretch ${density.rowGap}`}>
+            <div className={`grid ${distributingGridCols(coreBase.length + coreAdjacent.length)} items-stretch ${density.rowGap}`}>
               {coreBase.map((cap) => (
                 <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
@@ -472,32 +473,32 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
             <button
               type="button"
               onClick={loadBasicInferenceStack}
-              className={button.primary}
+              className={button.primaryCompact}
               title="Load starter stack"
             >
-              <Sparkles size={14} />
+              <Sparkles size={12} />
               Quick Start
             </button>
             <button
               type="button"
               onClick={handleDownloadStackPng}
               disabled={stackImageBusy}
-              className={button.secondary}
+              className={button.secondaryCompact}
               title="Export PNG"
             >
               {exportDone
-                ? <><Check size={14} className="motion-reduce:hidden" />Exported</>
-                : <><Image size={14} />{stackImageBusy ? 'Working…' : 'Export PNG'}</>
+                ? <><Check size={12} className="motion-reduce:hidden" />Exported</>
+                : <><Image size={12} />{stackImageBusy ? 'Working…' : 'Export PNG'}</>
               }
             </button>
             {totalSelected > 0 && (
               <button
                 type="button"
                 onClick={clearEntireStack}
-                className={button.secondary}
+                className={button.secondaryCompact}
                 title="Clear all"
               >
-                <RotateCcw size={14} />
+                <RotateCcw size={12} />
                 Clear stack
               </button>
             )}
@@ -505,9 +506,9 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
               <button
                 type="button"
                 onClick={() => setShowFlowViz(true)}
-                className={button.secondary}
+                className={button.secondaryCompact}
               >
-                <Workflow size={14} />
+                <Workflow size={12} />
                 Architecture flow
               </button>
             )}
@@ -600,7 +601,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                           cardProps={cardProps}
                         />
                       ) : (
-                        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-stretch ${density.rowGap}`}>
+                        <div className={`grid ${distributingGridCols(layerCapabilities.length)} items-stretch ${density.rowGap}`}>
                           {layerCapabilities.map(capability => (
                             <CapabilityCard
                               key={capability.id}
