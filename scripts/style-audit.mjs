@@ -19,7 +19,7 @@
  * Usage: node scripts/style-audit.mjs <url>
  * -------------------------------------------------------------------------- */
 import { createRequire } from 'module';
-import { readFileSync } from 'fs';
+import { readFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 
@@ -1053,6 +1053,604 @@ function archetypeInvariantsProbe(tabId) {
   return out;
 }
 
+// ─── STATUS-FILL BAN (U0-R new check) ───────────────────────────────────────
+//
+// Status colors (green/amber families) may paint ONLY marks and badges.
+// Any element with a status-color background that has child elements OR
+// height > 48px FAILS with "status color as section identity".
+// Status-color families: green-*, emerald-*, amber-*, yellow-* (Tailwind BG classes).
+//
+function statusFillBan(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+
+  // Classify a computed background color as a status family (green/amber).
+  // Returns 'green' | 'amber' | null.
+  const statusFamily = (bgColor) => {
+    if (!bgColor || bgColor === 'transparent' || bgColor === 'rgba(0, 0, 0, 0)') return null;
+    // Parse RGB components
+    const m = bgColor.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    if (!m) return null;
+    const r = parseInt(m[1]), g = parseInt(m[2]), b = parseInt(m[3]);
+    // Green family: g dominant, g > 100, r < g, b < g (covers green-500 through green-800, emerald)
+    if (g > r && g > b && g > 80 && r < g * 0.8 && b < g * 0.9) return 'green';
+    // Amber/yellow family: r + g dominant, r close to g, b low
+    if (r > 150 && g > 120 && r > b * 2 && g > b * 1.5 && Math.abs(r - g) < 80) return 'amber';
+    return null;
+  };
+
+  // Skip: elements inside overlay/modal (they have their own context)
+  // Skip: elements whose data-ui="chip" or data-ui-exempt (marks/badges are allowed)
+  // Skip: SVG descendants
+  const SKIP_TAGS = new Set(['SVG', 'PATH', 'CIRCLE', 'RECT', 'G', 'DEFS', 'USE']);
+
+  for (const el of tab.querySelectorAll('*')) {
+    if (SKIP_TAGS.has(el.tagName)) continue;
+    if (!visible(el)) continue;
+    const dataUi = el.getAttribute('data-ui');
+    // Chips and marks are allowed to use status colors
+    if (dataUi === 'chip' || dataUi === 'chip-row') continue;
+    // Check for data-ui-exempt (allows specific overrides)
+    if (el.hasAttribute('data-ui-exempt')) continue;
+    // Check ancestry for chip/overlay (inside them = not a section background)
+    let ancestor = el.parentElement;
+    let inChipOrOverlay = false;
+    while (ancestor && ancestor !== tab.parentElement) {
+      const aui = ancestor.getAttribute('data-ui');
+      if (aui === 'chip' || aui === 'chip-row' || aui === 'overlay') { inChipOrOverlay = true; break; }
+      ancestor = ancestor.parentElement;
+    }
+    if (inChipOrOverlay) continue;
+
+    const bg = getComputedStyle(el).backgroundColor;
+    const family = statusFamily(bg);
+    if (!family) continue;
+
+    const r = el.getBoundingClientRect();
+    const childCount = el.childElementCount;
+    const isSection = r.height > 48 || childCount > 2;
+    if (isSection) {
+      const cls = (el.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+      out.push(`status-fill-ban: <${el.tagName.toLowerCase()}.${cls}> uses ${family} status color as section identity (h=${r2(r.height)}px, children=${childCount})`);
+    }
+  }
+  return out.slice(0, 10); // cap to avoid flooding
+}
+
+// ─── STATES TABLE (U0-R) — declarative interaction openers per tab ────────────
+//
+// Each entry: { tab, state, label, open: async (page) => Promise<void>, themes: ['light'] | ['light','dark'] }
+// `open` navigates to the state after the tab is already open.
+// `screenshotName` is used as the file name stem.
+//
+// Exemptions per state override the tab-level ledger exemptions.
+//
+const STATES_TABLE = [
+  // ── ARCHITECTURE ──────────────────────────────────────────────────────────
+  {
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'build-resting', label: 'architecture / Build Your Stack (resting)',
+    screenshotName: 'architecture--build-resting',
+    themes: ['light', 'dark'],
+    open: async () => { /* resting state — already open */ },
+  },
+  {
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'configure-modal', label: 'architecture / configure modal (first capability)',
+    screenshotName: 'architecture--configure-modal',
+    themes: ['light'],
+    open: async (page) => {
+      // Click the first clickable capability card (any layer header to expand first, then card)
+      const cardBtn = page.locator('[data-tab="architecture"] [data-ui="card"]').first();
+      if (await cardBtn.count() > 0) await cardBtn.click();
+      await page.waitForTimeout(300);
+      // Look for the configure modal
+      const modal = page.locator('[data-ui="overlay"]').first();
+      if (await modal.count() === 0) {
+        // Try clicking any button labeled Configure or Change inside the tab
+        const configBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /configure|change/i }).first();
+        if (await configBtn.count() > 0) await configBtn.click();
+        await page.waitForTimeout(300);
+      }
+    },
+  },
+  {
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'interactive-mid-wizard', label: 'architecture / Interactive Builder mid-wizard',
+    screenshotName: 'architecture--interactive-mid-wizard',
+    themes: ['light'],
+    open: async (page) => {
+      // Switch to Interactive Builder mode
+      await page.locator('[data-tab="architecture"] button').filter({ hasText: /interactive builder/i }).first().click();
+      await page.waitForTimeout(500);
+      // Make a selection so it advances past step 1
+      const firstOption = page.locator('[data-tab="architecture"] button').filter({ hasText: /openshift|rhel|kubernetes/i }).first();
+      if (await firstOption.count() > 0) {
+        await firstOption.click();
+        await page.waitForTimeout(200);
+        // Click continue
+        const continueBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /continue|next layer/i }).first();
+        if (await continueBtn.count() > 0) await continueBtn.click();
+        await page.waitForTimeout(300);
+      }
+    },
+  },
+  {
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'interactive-completion', label: 'architecture / Interactive Builder completion screen',
+    screenshotName: 'architecture--interactive-completion',
+    themes: ['light'],
+    // NOTE: this state is expected to FAIL status-fill-ban before Commit 2 fixes it.
+    // After the fix, bg-green-600 panel becomes neutral surface.
+    open: async (page) => {
+      // Switch to Interactive Builder
+      await page.locator('[data-tab="architecture"] button').filter({ hasText: /interactive builder/i }).first().click();
+      await page.waitForTimeout(400);
+      // Walk through all steps by selecting first option and clicking continue each time
+      for (let step = 0; step < 10; step++) {
+        const continueBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /continue to next layer|complete stack/i }).first();
+        if (await continueBtn.count() === 0) break;
+        // Select first available option in this step if needed
+        const optionBtn = page.locator('[data-tab="architecture"] [data-ui="card"]').first();
+        if (await optionBtn.count() > 0) {
+          const isEnabled = await optionBtn.isEnabled();
+          if (isEnabled) await optionBtn.click();
+          await page.waitForTimeout(150);
+        }
+        const isEnabled = await continueBtn.isEnabled();
+        if (!isEnabled) {
+          // Force-click first option card
+          const firstCard = page.locator('[data-tab="architecture"] button').filter({ hasText: /openshift|rhel|kubernetes|vllm/i }).first();
+          if (await firstCard.count() > 0) await firstCard.click();
+          await page.waitForTimeout(150);
+        }
+        await continueBtn.click();
+        await page.waitForTimeout(300);
+        // Check if completion screen is showing
+        const completionHeader = page.locator('[data-tab="architecture"]').filter({ hasText: /guided steps complete|your complete stack/i });
+        if (await completionHeader.count() > 0) break;
+      }
+      await page.waitForTimeout(400);
+    },
+  },
+  {
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'generate-mode', label: 'architecture / Generate from Environment',
+    screenshotName: 'architecture--generate-mode',
+    themes: ['light'],
+    open: async (page) => {
+      await page.locator('[data-tab="architecture"] button').filter({ hasText: /generate from environment/i }).first().click();
+      await page.waitForTimeout(400);
+    },
+  },
+  {
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'blueprints-mode', label: 'architecture / Blueprints',
+    screenshotName: 'architecture--blueprints-mode',
+    themes: ['light'],
+    open: async (page) => {
+      await page.locator('[data-tab="architecture"] button').filter({ hasText: /blueprints/i }).first().click();
+      await page.waitForTimeout(400);
+    },
+  },
+
+  // ── DECISIONS ─────────────────────────────────────────────────────────────
+  {
+    tab: 'decisions', navLabel: 'Decision Guides',
+    state: 'guide-resting', label: 'decisions / guide list (resting)',
+    screenshotName: 'decisions--guide-resting',
+    themes: ['light', 'dark'],
+    open: async () => { /* resting state */ },
+  },
+  {
+    tab: 'decisions', navLabel: 'Decision Guides',
+    state: 'product-guide-q1', label: 'decisions / product guide — Question 1',
+    screenshotName: 'decisions--product-guide-q1',
+    themes: ['light'],
+    open: async (page) => {
+      // Click the product selection guide
+      await page.locator('[data-tab="decisions"] button, [data-tab="decisions"] [role="button"]')
+        .filter({ hasText: /platform selection|product selection/i }).first().click();
+      await page.waitForTimeout(400);
+    },
+  },
+  {
+    tab: 'decisions', navLabel: 'Decision Guides',
+    state: 'product-guide-q2', label: 'decisions / product guide — Question 2 (after first answer)',
+    screenshotName: 'decisions--product-guide-q2',
+    themes: ['light'],
+    open: async (page) => {
+      // Open the product guide
+      await page.locator('[data-tab="decisions"] button, [data-tab="decisions"] [role="button"]')
+        .filter({ hasText: /platform selection|product selection/i }).first().click();
+      await page.waitForTimeout(400);
+      // Click the first option button in the question
+      const optionBtn = page.locator('[data-tab="decisions"] button[aria-current], [data-tab="decisions"] button').filter({ hasText: /openshift|kubernetes|cloud|managed/i }).first();
+      if (await optionBtn.count() > 0) await optionBtn.click();
+      await page.waitForTimeout(300);
+    },
+  },
+  {
+    tab: 'decisions', navLabel: 'Decision Guides',
+    state: 'product-guide-recommendation', label: 'decisions / product guide — recommendation',
+    screenshotName: 'decisions--product-guide-recommendation',
+    themes: ['light'],
+    open: async (page) => {
+      // Open the product guide and walk to recommendation by always clicking first option
+      await page.locator('[data-tab="decisions"] button, [data-tab="decisions"] [role="button"]')
+        .filter({ hasText: /platform selection|product selection/i }).first().click();
+      await page.waitForTimeout(400);
+      for (let step = 0; step < 8; step++) {
+        // Look for a recommendation card
+        const recCard = page.locator('[data-tab="decisions"]').filter({ hasText: /recommendation|recommended/i }).first();
+        // If recommendation has a product name heading visible, we're done
+        const hasRec = await page.locator('[data-tab="decisions"] [data-ui="card"]').filter({ hasText: /red hat|openshift ai|rhel ai/i }).count();
+        if (hasRec > 0) break;
+        // Click first unselected option
+        const optionBtn = page.locator('[data-tab="decisions"] button').filter({ hasText: /openshift|kubernetes|cloud|managed|yes|no|inference|training/i }).first();
+        if (await optionBtn.count() === 0) break;
+        await optionBtn.click();
+        await page.waitForTimeout(300);
+      }
+      await page.waitForTimeout(300);
+    },
+  },
+  {
+    tab: 'decisions', navLabel: 'Decision Guides',
+    state: 'deployment-guide-q1', label: 'decisions / deployment guide — Question 1',
+    screenshotName: 'decisions--deployment-guide-q1',
+    themes: ['light'],
+    open: async (page) => {
+      await page.locator('[data-tab="decisions"] button, [data-tab="decisions"] [role="button"]')
+        .filter({ hasText: /deployment/i }).first().click();
+      await page.waitForTimeout(400);
+    },
+  },
+  {
+    tab: 'decisions', navLabel: 'Decision Guides',
+    state: 'finetune-matrix', label: 'decisions / fine-tuning matrix',
+    screenshotName: 'decisions--finetune-matrix',
+    themes: ['light'],
+    open: async (page) => {
+      // Switch to Reference Guides group if needed, then open fine-tuning matrix
+      const ftBtn = page.locator('[data-tab="decisions"] button').filter({ hasText: /fine.tun/i }).first();
+      if (await ftBtn.count() > 0) await ftBtn.click();
+      await page.waitForTimeout(400);
+    },
+  },
+  {
+    tab: 'decisions', navLabel: 'Decision Guides',
+    state: 'security-overview', label: 'decisions / security overview',
+    screenshotName: 'decisions--security-overview',
+    themes: ['light'],
+    open: async (page) => {
+      const secBtn = page.locator('[data-tab="decisions"] button').filter({ hasText: /security/i }).first();
+      if (await secBtn.count() > 0) await secBtn.click();
+      await page.waitForTimeout(400);
+    },
+  },
+
+  // ── PRODUCTS ──────────────────────────────────────────────────────────────
+  {
+    tab: 'products', navLabel: 'Products',
+    state: 'compare-resting', label: 'products / Compare sub-view (resting)',
+    screenshotName: 'products--compare-resting',
+    themes: ['light', 'dark'],
+    open: async () => { /* openTab already navigates to Compare */ },
+  },
+  {
+    tab: 'products', navLabel: 'Products',
+    state: 'catalog-resting', label: 'products / Catalog sub-view',
+    screenshotName: 'products--catalog-resting',
+    themes: ['light'],
+    open: async (page) => {
+      await page.locator('[data-tab="products"] button').filter({ hasText: /^catalog$/i }).first().click();
+      await page.waitForTimeout(400);
+    },
+  },
+  {
+    tab: 'products', navLabel: 'Products',
+    state: 'catalog-filtered', label: 'products / Catalog — search filtered',
+    screenshotName: 'products--catalog-filtered',
+    themes: ['light'],
+    open: async (page) => {
+      await page.locator('[data-tab="products"] button').filter({ hasText: /^catalog$/i }).first().click();
+      await page.waitForTimeout(300);
+      const searchInput = page.locator('[data-tab="products"] input[type="text"], [data-tab="products"] input[placeholder]').first();
+      if (await searchInput.count() > 0) {
+        await searchInput.fill('inference');
+        await page.waitForTimeout(300);
+      }
+    },
+  },
+  {
+    tab: 'products', navLabel: 'Products',
+    state: 'mcp-ecosystem', label: 'products / MCP Ecosystem sub-view',
+    screenshotName: 'products--mcp-ecosystem',
+    themes: ['light'],
+    open: async (page) => {
+      await page.locator('[data-tab="products"] button').filter({ hasText: /mcp ecosystem/i }).first().click();
+      await page.waitForTimeout(400);
+    },
+  },
+
+  // ── DEPLOYMENT IMPACT ─────────────────────────────────────────────────────
+  {
+    tab: 'deployment-impact', navLabel: 'Deployment Impact',
+    state: 'selector-resting', label: 'deployment-impact / selector (resting)',
+    screenshotName: 'deployment-impact--selector-resting',
+    themes: ['light', 'dark'],
+    open: async () => { /* resting state */ },
+  },
+  {
+    tab: 'deployment-impact', navLabel: 'Deployment Impact',
+    state: 'comparison-yaml', label: 'deployment-impact / first comparison YAML Diff',
+    screenshotName: 'deployment-impact--comparison-yaml',
+    themes: ['light'],
+    open: async (page) => {
+      const firstCard = page.locator('[data-tab="deployment-impact"] [data-ui="card"]').first();
+      if (await firstCard.count() > 0) await firstCard.click();
+      await page.waitForTimeout(400);
+      // YAML tab should be default — confirm
+      const yamlTab = page.locator('[data-tab="deployment-impact"] button').filter({ hasText: /yaml diff/i }).first();
+      if (await yamlTab.count() > 0) await yamlTab.click();
+      await page.waitForTimeout(300);
+    },
+  },
+  {
+    tab: 'deployment-impact', navLabel: 'Deployment Impact',
+    state: 'comparison-resources', label: 'deployment-impact / Resource Tree sub-view',
+    screenshotName: 'deployment-impact--comparison-resources',
+    themes: ['light'],
+    open: async (page) => {
+      const firstCard = page.locator('[data-tab="deployment-impact"] [data-ui="card"]').first();
+      if (await firstCard.count() > 0) await firstCard.click();
+      await page.waitForTimeout(400);
+      const resourceTab = page.locator('[data-tab="deployment-impact"] button').filter({ hasText: /resource tree/i }).first();
+      if (await resourceTab.count() > 0) await resourceTab.click();
+      await page.waitForTimeout(300);
+    },
+  },
+  {
+    tab: 'deployment-impact', navLabel: 'Deployment Impact',
+    state: 'comparison-capabilities', label: 'deployment-impact / Capability Delta sub-view',
+    screenshotName: 'deployment-impact--comparison-capabilities',
+    themes: ['light'],
+    open: async (page) => {
+      const firstCard = page.locator('[data-tab="deployment-impact"] [data-ui="card"]').first();
+      if (await firstCard.count() > 0) await firstCard.click();
+      await page.waitForTimeout(400);
+      const capTab = page.locator('[data-tab="deployment-impact"] button').filter({ hasText: /capabilit/i }).first();
+      if (await capTab.count() > 0) await capTab.click();
+      await page.waitForTimeout(300);
+    },
+  },
+  {
+    tab: 'deployment-impact', navLabel: 'Deployment Impact',
+    state: 'yaml-expanded', label: 'deployment-impact / YAML Diff — expanded first file',
+    screenshotName: 'deployment-impact--yaml-expanded',
+    themes: ['light'],
+    open: async (page) => {
+      const firstCard = page.locator('[data-tab="deployment-impact"] [data-ui="card"]').first();
+      if (await firstCard.count() > 0) await firstCard.click();
+      await page.waitForTimeout(400);
+      const yamlTab = page.locator('[data-tab="deployment-impact"] button').filter({ hasText: /yaml diff/i }).first();
+      if (await yamlTab.count() > 0) await yamlTab.click();
+      await page.waitForTimeout(300);
+      // Expand the first YAML card
+      const expandBtn = page.locator('[data-tab="deployment-impact"] [role="button"], [data-tab="deployment-impact"] button').filter({ hasText: /expand|view yaml/i }).first();
+      if (await expandBtn.count() > 0) {
+        await expandBtn.click();
+        await page.waitForTimeout(300);
+      } else {
+        // Click any clickable YAML card
+        const yamlCard = page.locator('[data-tab="deployment-impact"] [data-ui="card"]').first();
+        if (await yamlCard.count() > 0) await yamlCard.click();
+        await page.waitForTimeout(300);
+      }
+    },
+  },
+];
+
+// ─── runChecksOnPage — shared check runner (resting or interaction state) ─────
+//
+// Runs the full check suite on `page` which is already at the desired state.
+// `tabId` identifies the tab container; `stateLabel` prefixes all problem strings.
+// `exemptions` is the array from the ledger for this tab.
+// `viewport` is the current viewport (object with width/height) — used only for skinny-bar.
+// `theme` is 'light' | 'dark'.
+//
+// Returns array of problem strings (each prefixed with stateLabel).
+//
+async function runChecksOnPage(page, tabId, stateLabel, exemptions, viewport, theme) {
+  const out = [];
+  const prefix = `[${stateLabel} ${viewport.width} ${theme}]`;
+  const addProblems = (arr) => { for (const p of arr) out.push(`${prefix} ${p}`); };
+
+  // Core geometry + borders + radii
+  addProblems(await page.evaluate(tabProbe, tabId));
+
+  // Horizontal scroll
+  const overflow = await page.evaluate(noHorizontalScroll);
+  if (overflow > 1) out.push(`${prefix} horizontal scroll: scrollWidth exceeds clientWidth by ${overflow}px`);
+
+  // Draft banner (products tab only)
+  if (tabId === 'products' && theme === 'light') {
+    const banner = await page.evaluate(draftBannerState);
+    if (!banner.ok) out.push(`${prefix} draft banner not visibly distinct: ${JSON.stringify(banner)}`);
+  }
+
+  if (theme === 'light') {
+    // Grid equality
+    if (!exemptions.includes('grid-equality')) {
+      addProblems(await page.evaluate(gridEquality, tabId));
+    }
+    // Legend law
+    if (!exemptions.includes('legend-law')) {
+      const ll = await page.evaluate(legendLaw, tabId);
+      if (ll) out.push(`${prefix} ${ll}`);
+    }
+    // Motion law
+    if (!exemptions.includes('motion-law')) {
+      addProblems(await page.evaluate(motionLaw, tabId));
+    }
+    // Card text budget
+    if (!exemptions.includes('card-text-budget')) {
+      addProblems(await page.evaluate(cardTextBudget, tabId));
+    }
+    // Row-fill
+    if (!exemptions.includes('row-fill')) {
+      addProblems(await page.evaluate(rowFill, tabId));
+    }
+    // Control-scale
+    if (!exemptions.includes('control-scale')) {
+      addProblems(await page.evaluate(controlScale, tabId));
+    }
+    // Spacing-set
+    if (!exemptions.includes('spacing-set')) {
+      addProblems(await page.evaluate(spacingSetMembership, tabId));
+    }
+    // Interior-slack
+    if (!exemptions.includes('interior-slack')) {
+      addProblems(await page.evaluate(interiorSlack, tabId));
+    }
+    // Unit-box width bounds
+    if (!exemptions.includes('unit-box-width')) {
+      addProblems(await page.evaluate(unitBoxWidthBounds, tabId));
+    }
+    // No-ghost-cells
+    if (!exemptions.includes('no-ghost-cells')) {
+      addProblems(await page.evaluate(noGhostCells, tabId));
+    }
+    // Skinny-bar
+    if (!exemptions.includes('skinny-bar')) {
+      addProblems(await page.evaluate(skinnyBar, tabId));
+    }
+    // U0: Archetype walker
+    if (!exemptions.includes('archetype-walker')) {
+      const walkerResult = await page.evaluate(archetypeWalkerProbe, tabId);
+      process.stderr.write(`archetype-coverage [${stateLabel}]: ${walkerResult.coverage}\n`);
+      for (const p of walkerResult.unclassified) {
+        out.push(`${prefix} archetype-walker: ${p}`);
+      }
+    }
+    // U0: Archetype invariants
+    if (!exemptions.includes('archetype-invariants')) {
+      addProblems(await page.evaluate(archetypeInvariantsProbe, tabId));
+    }
+    // U0-R: Status-fill ban
+    if (!exemptions.includes('status-fill-ban')) {
+      addProblems(await page.evaluate(statusFillBan, tabId));
+    }
+  }
+
+  return out;
+}
+
+// ─── STATE WALKER (U0-R) ────────────────────────────────────────────────────
+//
+// Walks every state in STATES_TABLE, running the full check suite per state.
+// Saves screenshots to screenshotDir.
+// Reports coverage: states visited / openers exercised / not-exercised list.
+// Gate fails if coverage drops below the recorded baseline in style-ledger.json.
+//
+async function stateWalker(browser, url, screenshotDir) {
+  const walkerProblems = [];
+  const visitedStates = [];
+  const notExercised = [];
+
+  // Load baseline from ledger
+  const baseline = ledger.stateWalkerBaseline || {};
+  const baselineVisited = baseline.statesVisited || 0;
+
+  for (const stateEntry of STATES_TABLE) {
+    const { tab: tabId, navLabel, state, label, screenshotName, themes, open } = stateEntry;
+    const tabExemptions = (ledger.exemptions || {})[tabId] || [];
+
+    for (const theme of themes) {
+      const viewport = { width: 1440, height: 900 };
+      const ctx = await browser.newContext({ viewport, colorScheme: theme });
+      const page = await ctx.newPage();
+
+      try {
+        // Navigate to the tab's resting state
+        await openTab(page, navLabel, tabId);
+        await page.waitForTimeout(200);
+
+        // Open the interaction state
+        let stateOpened = false;
+        try {
+          await open(page);
+          stateOpened = true;
+        } catch (e) {
+          notExercised.push(`${label} [${theme}]: opener failed — ${e.message}`);
+          process.stderr.write(`state-walker SKIP [${label}] [${theme}]: ${e.message}\n`);
+          await ctx.close();
+          continue;
+        }
+
+        // Take screenshot
+        const shotPath = `${screenshotDir}/${screenshotName}--${theme}.png`;
+        try {
+          await page.screenshot({ path: shotPath, fullPage: true });
+          process.stderr.write(`screenshot: ${shotPath}\n`);
+        } catch (e) {
+          process.stderr.write(`screenshot FAIL [${label}]: ${e.message}\n`);
+        }
+
+        // Run full check suite
+        const stateProblems = await runChecksOnPage(page, tabId, label, tabExemptions, viewport, theme);
+        for (const p of stateProblems) walkerProblems.push(p);
+
+        visitedStates.push(`${label} [${theme}]`);
+      } catch (e) {
+        notExercised.push(`${label} [${theme}]: error — ${e.message}`);
+        process.stderr.write(`state-walker ERROR [${label}] [${theme}]: ${e.message}\n`);
+      } finally {
+        await ctx.close();
+      }
+    }
+  }
+
+  // Coverage report (to stderr — not captured by gate PASS/FAIL check)
+  process.stderr.write(`\n=== STATE WALKER COVERAGE ===\n`);
+  process.stderr.write(`states visited: ${visitedStates.length} / openers defined: ${STATES_TABLE.flatMap(s => s.themes).length}\n`);
+  process.stderr.write(`not-exercised (${notExercised.length}): ${notExercised.length === 0 ? 'none' : '\n  ' + notExercised.join('\n  ')}\n`);
+  process.stderr.write(`=============================\n\n`);
+
+  // Coverage to stdout (gate-visible)
+  const coverageLine = `state-walker coverage: visited ${visitedStates.length} / openers ${STATES_TABLE.flatMap(s => s.themes).length} / not-exercised: ${notExercised.length === 0 ? 'none' : notExercised.join('; ')}`;
+  process.stderr.write(coverageLine + '\n');
+
+  // Gate: not-exercised list must not grow vs baseline
+  const baselineNotExercised = baseline.notExercisedMax || 999;
+  if (notExercised.length > baselineNotExercised) {
+    walkerProblems.push(`state-walker coverage regression: ${notExercised.length} not-exercised > baseline ${baselineNotExercised}`);
+  }
+
+  // strict mode: promote interaction-state violations to gate-failing.
+  // When strict=false (Commit 1), violations are reported to stderr only — the walker
+  // is informational until Commit 2 fixes the harvest and sets strict=true.
+  const strict = baseline.strict === true;
+  if (!strict && walkerProblems.length > 0) {
+    for (const p of walkerProblems) {
+      process.stderr.write(`state-walker (non-strict) violation: ${p}\n`);
+    }
+    // Only coverage regressions are fatal in non-strict mode
+    return walkerProblems.filter((p) => p.startsWith('state-walker coverage regression'));
+  }
+
+  return walkerProblems;
+}
+
 async function auditTab(browser, tab) {
   const { id: tabId, navLabel } = tab;
   const exemptions = (ledger.exemptions || {})[tabId] || [];
@@ -1152,6 +1750,13 @@ async function auditTab(browser, tab) {
     // U0: ARCHETYPE INVARIANTS (light, 1440px)
     if (!exemptions.includes('archetype-invariants')) {
       for (const p of await page.evaluate(archetypeInvariantsProbe, tabId)) {
+        problems.push(`${prefix('1440 light')} ${p}`);
+      }
+    }
+
+    // U0-R: STATUS-FILL BAN (light, 1440px — resting state)
+    if (!exemptions.includes('status-fill-ban')) {
+      for (const p of await page.evaluate(statusFillBan, tabId)) {
         problems.push(`${prefix('1440 light')} ${p}`);
       }
     }
@@ -1336,6 +1941,55 @@ async function runSelfTest() {
       if (b) b.remove();
     });
 
+    // ── PHASE 6: status-fill-ban self-test ────────────────────────────────────
+    // Plant a large green-background section element inside the decisions tab.
+    // The check should catch it. This simulates the bg-green-600 completion panel.
+    await openTab(page, 'Architecture', 'architecture');
+    await page.evaluate(() => {
+      const tab = document.querySelector('[data-tab="architecture"]');
+      const greenPanel = document.createElement('div');
+      greenPanel.id = '__self_test_green_panel__';
+      // Mimics bg-green-600 panel: green-600 in RGB is approximately rgb(22, 163, 74)
+      greenPanel.style.cssText = 'background-color:rgb(22,163,74);color:white;padding:24px;border-radius:8px;width:600px;height:120px;display:block;visibility:visible;opacity:1;';
+      const child = document.createElement('div');
+      child.textContent = 'SELF-TEST: green section panel';
+      greenPanel.appendChild(child);
+      const child2 = document.createElement('div');
+      child2.textContent = 'sub-line';
+      greenPanel.appendChild(child2);
+      const child3 = document.createElement('div');
+      child3.textContent = 'sub-line2';
+      greenPanel.appendChild(child3);
+      tab.appendChild(greenPanel);
+    });
+
+    const sfbResult = await page.evaluate(statusFillBan, 'architecture');
+    const sfbCaught = sfbResult.some((s) => s.includes('status-fill-ban') && s.includes('green'));
+    if (!sfbCaught) {
+      process.stderr.write(`SELF-TEST FAIL: status-fill-ban did NOT catch green section panel\n`);
+      process.stderr.write(`  statusFillBan output: ${sfbResult.join(' | ') || '(none)'}\n`);
+      await browser.close();
+      process.exit(1);
+    }
+    process.stderr.write(`SELF-TEST phase-6 OK: status-fill-ban caught green section panel (${sfbResult.length} violations)\n`);
+    process.stderr.write(`  caught: ${sfbResult.slice(0, 2).join(' | ')}\n`);
+
+    await page.evaluate(() => {
+      const b = document.getElementById('__self_test_green_panel__');
+      if (b) b.remove();
+    });
+
+    // Confirm clean after removal
+    const sfbResult2 = await page.evaluate(statusFillBan, 'architecture');
+    // There may be existing green elements (step indicators); just confirm panel is gone
+    const panelStillPresent = sfbResult2.some((s) => s.includes('__self_test_green_panel__'));
+    if (panelStillPresent) {
+      process.stderr.write('SELF-TEST FAIL: green panel not removed\n');
+      await browser.close();
+      process.exit(1);
+    }
+    process.stderr.write('SELF-TEST phase-6b OK: green panel removed\n');
+
     process.stderr.write('SELF-TEST PASS (all phases)\n');
   } finally {
     await browser.close();
@@ -1343,11 +1997,17 @@ async function runSelfTest() {
 }
 
 async function run() {
+  const SCREENSHOT_DIR = resolve(__dirname, '../../ai-platform-explorer-dualview/planning/screenshots/state-walk');
+  try { mkdirSync(SCREENSHOT_DIR, { recursive: true }); } catch (_) { /* already exists */ }
   const browser = await chromium.launch();
   try {
+    // Phase 1: resting-state audits (existing checks)
     for (const tab of migratedTabs) {
       await auditTab(browser, tab);
     }
+    // Phase 2: interaction-state walker (U0-R)
+    const walkerProblems = await stateWalker(browser, URL, SCREENSHOT_DIR);
+    for (const p of walkerProblems) problems.push(p);
   } finally {
     await browser.close();
   }

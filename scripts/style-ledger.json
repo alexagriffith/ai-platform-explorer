@@ -73,6 +73,12 @@
       "unit-box-width"
     ]
   },
+  "stateWalkerBaseline": {
+    "_note": "Set after first successful state-walk run. notExercisedMax gates coverage regressions. strict=true makes interaction-state violations gate-failing (set true in Commit 2 after harvest fixed).",
+    "statesVisited": 0,
+    "notExercisedMax": 999,
+    "strict": false
+  },
   "_exemptionNotes": {
     "products/card-text-budget": "ProductExplorer (Catalog sub-view) cards combine name, status, category, and description — they are the disclosure level. ProductComparisonView decision recommendation cards render a full recommendation sentence by design. Both are intentional; exemption covers both sub-views.",
     "deployment-impact/card-text-budget": "DeploymentComparisonSelector uses full-sentence comparison titles by design — these are the primary navigational labels, not secondary description text.",
