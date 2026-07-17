@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BookOpen, Search, X } from 'lucide-react';
-import { field, interactive, modal, text } from '../lib/styleTokens';
+import { field, interactive, modal, text, typeScale } from '../lib/styleTokens';
 
 export default function AcronymGlossary() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -132,11 +132,12 @@ export default function AcronymGlossary() {
   if (!isOpen) {
     return (
       <button
+        aria-label="Open Acronym Guide"
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-card bg-accent px-4 py-3 text-on-accent ${interactive.transitionAll} ${interactive.focusRing} ${interactive.microElevate} hover:bg-accent-strong`}
+        className={`fixed bottom-4 right-4 z-50 flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-on-accent ${typeScale.meta} font-medium ${interactive.transitionAll} ${interactive.focusRing} ${interactive.microElevate} hover:bg-accent-strong`}
       >
-        <BookOpen size={20} />
-        <span className="font-medium">Acronym Guide</span>
+        <BookOpen size={14} />
+        <span>Acronym Guide</span>
       </button>
     );
   }
