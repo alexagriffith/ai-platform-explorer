@@ -91,9 +91,6 @@ function CapabilityCard({
   onToggleExpanded,
   onRemove
 }) {
-  const availableCount = capability.options.filter(
-    (o) => !isCapabilityOptionDisabled(capability, o.id, selectedCapabilities)
-  ).length;
   const selectedOptionId = selectedCapabilities[capability.id];
   const isSelected = selectedOptionId !== undefined;
   const selectedOption = capability.options.find(o => o.id === selectedOptionId);
@@ -116,11 +113,6 @@ function CapabilityCard({
               </span>
             )}
           </h4>
-          <div className={`${typeScale.meta} ${text.faint}`}>
-            {availableCount === capability.options.length
-              ? `${capability.options.length} option${capability.options.length !== 1 ? 's' : ''}`
-              : `${availableCount} of ${capability.options.length} options match current pairing`}
-          </div>
         </div>
       </button>
     );
