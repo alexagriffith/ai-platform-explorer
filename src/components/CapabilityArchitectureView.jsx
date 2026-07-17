@@ -36,7 +36,6 @@ import {
   toggle,
   typeScale,
 } from '../lib/styleTokens';
-import { distributingFlexBasis } from '../lib/layout';
 
 /** Map option provider string to a categoricalMark key. */
 function providerMarkKey(option) {
@@ -242,9 +241,9 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('orchestration')}
           />
           {servicesSubOpen.orchestration && (
-            <div className="flex flex-wrap justify-center">
+            <div className="flex flex-wrap justify-center gap-2">
               {orchestration.map((cap) => (
-                <div key={cap.id} className={`${distributingFlexBasis(orchestration.length)} min-w-0 p-1`}>
+                <div key={cap.id} className="flex-none w-max min-w-[120px] max-w-xs">
                   <CapabilityCard capability={cap} layerColor={layerColor} compact {...cardProps} />
                 </div>
               ))}
@@ -266,9 +265,9 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('wrapper')}
           />
           {servicesSubOpen.wrapper && (
-            <div className="flex flex-wrap justify-center">
+            <div className="flex flex-wrap justify-center gap-2">
               {wrapper.map((cap) => (
-                <div key={cap.id} className={`${distributingFlexBasis(wrapper.length)} min-w-0 p-1`}>
+                <div key={cap.id} className="flex-none w-max min-w-[120px] max-w-xs">
                   <CapabilityCard capability={cap} layerColor={layerColor} compact {...cardProps} />
                 </div>
               ))}
@@ -290,9 +289,9 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('core')}
           />
           {servicesSubOpen.core && (
-            <div className="flex flex-wrap justify-center">
+            <div className="flex flex-wrap justify-center gap-2">
               {[...coreBase, ...coreAdjacent].map((cap) => (
-                <div key={cap.id} className={`${distributingFlexBasis(coreBase.length + coreAdjacent.length)} min-w-0 p-1`}>
+                <div key={cap.id} className="flex-none w-max min-w-[120px] max-w-xs">
                   <CapabilityCard capability={cap} layerColor={layerColor} compact {...cardProps} />
                 </div>
               ))}
@@ -551,9 +550,9 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                           cardProps={cardProps}
                         />
                       ) : (
-                        <div className="flex flex-wrap justify-center">
+                        <div className="flex flex-wrap justify-center gap-2">
                           {layerCapabilities.map(capability => (
-                            <div key={capability.id} className={`${distributingFlexBasis(layerCapabilities.length)} min-w-0 p-1`}>
+                            <div key={capability.id} className="flex-none w-max min-w-[120px] max-w-xs">
                               <CapabilityCard
                                 capability={capability}
                                 layerColor={layer.color}
