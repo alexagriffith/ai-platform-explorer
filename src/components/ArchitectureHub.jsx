@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Layers, Hammer, Settings, HelpCircle, ArrowRight } from 'lucide-react';
+import { Layers, Hammer, Settings, HelpCircle, ArrowRight, BookOpen } from 'lucide-react';
 import CapabilityArchitectureView from './CapabilityArchitectureView';
 import InteractiveBuilder from './InteractiveBuilder';
 import CustomerConfig from './CustomerConfig';
+import RAGArchitecture from './RAGArchitecture';
+import TrainingDeepDive from './TrainingDeepDive';
 import { button, interactive, text } from '../lib/styleTokens';
 
 export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities }) {
@@ -41,6 +43,18 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
       description: 'Capture environment signals and copy a draft suggestion list for the workshop',
       component: (
         <CustomerConfig customerEnv={customerEnv} setCustomerEnv={setCustomerEnv} />
+      )
+    },
+    {
+      id: 'blueprints',
+      name: 'Blueprints',
+      icon: BookOpen,
+      description: 'Pre-composed reference architectures — RAG and training patterns (read-only; no stack wiring)',
+      component: (
+        <div className="space-y-6">
+          <RAGArchitecture />
+          <TrainingDeepDive />
+        </div>
       )
     }
   ];
