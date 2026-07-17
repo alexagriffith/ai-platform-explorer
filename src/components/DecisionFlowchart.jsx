@@ -14,9 +14,13 @@ import {
   Zap,
   Target,
   GraduationCap,
-  Server
+  Server,
+  SlidersHorizontal,
+  Shield
 } from 'lucide-react';
 import DecisionTree from './DecisionTree';
+import FineTuningDecisionMatrix from './FineTuningDecisionMatrix';
+import SecurityOverview from './SecurityOverview';
 import { mergeDecisionPatches, getPatchesForRecommendationKey } from '../data/decisionRecommendationApply';
 import { capabilities } from '../data/capabilities';
 import { products } from '../data/products';
@@ -42,7 +46,9 @@ const guideMetadata = {
   servingChoice: { icon: Server, category: 'Serving Platform', group: 'technical' },
   batchVsRealtime: { icon: Zap, category: 'Inference Pattern', group: 'technical' },
   trainingApproach: { icon: GraduationCap, category: 'Training Method', group: 'technical' },
-  evaluationFramework: { icon: Target, category: 'Evaluation Tools', group: 'technical' }
+  evaluationFramework: { icon: Target, category: 'Evaluation Tools', group: 'technical' },
+  fineTuning: { icon: SlidersHorizontal, category: 'Fine-Tuning vs. RAG', group: 'reference' },
+  security: { icon: Shield, category: 'Security', group: 'reference' },
 };
 
 const guideGroups = [
@@ -63,6 +69,12 @@ const guideGroups = [
     title: 'Technical Implementation',
     description: 'Configure serving, training, and evaluation approaches',
     guides: ['servingChoice', 'batchVsRealtime', 'trainingApproach', 'evaluationFramework'],
+  },
+  {
+    id: 'reference',
+    title: 'Reference Guides',
+    description: 'Decision matrices and cross-cutting guidance',
+    guides: ['fineTuning', 'security'],
   }
 ];
 
@@ -1310,6 +1322,19 @@ const decisionFlows = {
         alternatives: ['For advanced LLM features: AI Inference', 'For maturity: KServe']
       }
     }
+  },
+  // Reference guides — rendered as embedded components, not decision trees
+  fineTuning: {
+    title: 'Fine-Tuning vs. Retrieval-Augmented Generation (RAG) vs. Pre-trained',
+    description: 'Decision matrix comparing customization approaches',
+    referenceComponent: 'FineTuningDecisionMatrix',
+    steps: []
+  },
+  security: {
+    title: 'AI Security Overview',
+    description: 'Cross-cutting security guidance for Red Hat AI deployments',
+    referenceComponent: 'SecurityOverview',
+    steps: []
   }
 };
 
@@ -1505,7 +1530,11 @@ export default function DecisionFlowchart({
             </button>
           </div>
 
-          {!treeRecommendation ? (
+          {flow.referenceComponent === 'FineTuningDecisionMatrix' ? (
+            <FineTuningDecisionMatrix />
+          ) : flow.referenceComponent === 'SecurityOverview' ? (
+            <SecurityOverview />
+          ) : !treeRecommendation ? (
             /* Decision Tree */
             <DecisionTree
               flow={flow}
