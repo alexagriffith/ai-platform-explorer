@@ -121,6 +121,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
           </div>
           <div className="flex gap-2 flex-shrink-0">
             <button
+              data-ui="control"
               onClick={goBack}
               disabled={!canGoBack}
               className={`flex items-center gap-1.5 ${button.secondary} disabled:opacity-50 disabled:pointer-events-none`}
@@ -130,6 +131,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
               Back
             </button>
             <button
+              data-ui="control"
               onClick={resetTree}
               className={`flex items-center gap-1.5 ${button.secondary}`}
               aria-label="Reset all choices"
@@ -161,7 +163,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
 
               {/* Question node */}
               <div className="flex flex-col items-center">
-                <div className={`max-w-2xl w-full ${density.sectionPad} rounded-card border ${interactive.transitionAll} ${
+                <div data-ui="card" className={`max-w-2xl w-full ${density.sectionPad} rounded-card border ${interactive.transitionAll} ${
                   isActive
                     ? `border-accent ${surface.tint}`
                     : isCompleted
@@ -196,6 +198,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
                           return (
                             <button
                               key={option.value}
+                              data-ui="control"
                               onClick={() => !disabled && handleNodeClick(stepIndex, option.value, option.next)}
                               disabled={disabled}
                               aria-current={selected ? 'true' : undefined}
