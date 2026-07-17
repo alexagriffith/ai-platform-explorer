@@ -35,13 +35,15 @@ describe('InteractiveBuilder <-> parent blueprint sync', () => {
 
   it('syncs a selection change up to the parent as soon as it is made', () => {
     render(<Harness />);
-    fireEvent.click(screen.getByRole('button', { name: /Existing Kubernetes/ }));
+    // getAllByRole: the card (div[role=button]) and the guide button both match the name pattern;
+    // the card is always first in DOM order.
+    fireEvent.click(screen.getAllByRole('button', { name: /Existing Kubernetes/ })[0]);
     expect(parentState()['container-platform']).toBe('kubernetes');
   });
 
   it('partial progress survives unmounting and remounting the builder (mode switch)', () => {
     render(<Harness />);
-    fireEvent.click(screen.getByRole('button', { name: /Existing Kubernetes/ }));
+    fireEvent.click(screen.getAllByRole('button', { name: /Existing Kubernetes/ })[0]);
     const toggle = screen.getByRole('button', { name: 'toggle-builder-harness' });
     fireEvent.click(toggle); // unmount (switch away from Interactive Builder)
     expect(parentState()['container-platform']).toBe('kubernetes');

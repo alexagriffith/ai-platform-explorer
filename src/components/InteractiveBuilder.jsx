@@ -143,7 +143,7 @@ function CapabilitySelector({
           <button
             type="button"
             onClick={() => onRemove(layerId, capability.id)}
-            className={`text-sm ${text.link} hover:underline ${interactive.focusRing} rounded-card`}
+            className={`text-sm ${text.link} hover:underline ${interactive.focusRing} ${interactive.transition} rounded-card`}
           >
             Remove
           </button>
@@ -159,83 +159,98 @@ function CapabilitySelector({
 
           return (
             <div key={option.id} className="space-y-2">
-              <button
-                data-ui="card"
-                type="button"
-                aria-disabled={disabled}
-                onClick={() => {
-                  if (disabled) return;
-                  onToggle(layerId, capability.id, option.id);
-                }}
-                className={`w-full p-3 rounded-card border ${interactive.transitionAll} ${interactive.focusRing} text-left ${
-                  disabled
-                    ? 'cursor-not-allowed border-edge bg-page opacity-55'
-                    : isOptionSelected
-                      ? 'border-accent bg-tint'
-                      : 'border-edge bg-surface hover:border-accent hover:bg-tint'
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  <div className={`mt-0.5 ${isOptionSelected ? 'text-accent' : text.faint}`}>
-                    {isOptionSelected ? (
-                      <Check size={20} />
-                    ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-current" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`font-bold ${text.ink}`}>
-                          {option.name}
-                        </span>
-                        {disabled && (
-                          <span data-ui="chip" className={`px-2 py-0.5 bg-page ${text.muted} border border-edge text-xs rounded-card`}>
-                            N/A
-                          </span>
-                        )}
-                        {option.isCustomer && (
-                          <span data-ui="chip" className={`px-2 py-0.5 ${providerMark.customer} ${text.ink} text-xs rounded-card`}>
-                            Customer
-                          </span>
-                        )}
-                        {option.recommended && (
-                          <span data-ui="chip" className="px-2 py-0.5 bg-accent text-on-accent text-xs rounded-card">
-                            Recommended
-                          </span>
-                        )}
-                        {option.status && (
-                          <span data-ui="chip" className={`px-2 py-0.5 bg-page ${text.muted} border border-hair text-xs rounded-card`}>
-                            {option.status}
-                          </span>
-                        )}
-                      </div>
-                      {guide && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setExpandedGuide(isGuideExpanded ? null : option.id);
-                          }}
-                          className={`p-1 rounded-card ${interactive.transition} ${interactive.focusRing} ${
-                            isGuideExpanded
-                              ? 'bg-tint text-accent'
-                              : `${interactive.hoverTint} ${text.faint}`
-                          }`}
-                          title="Learn more about this option"
-                        >
-                          <HelpCircle size={16} />
-                        </button>
+              <div className="relative">
+                <div
+                  data-ui="card"
+                  role="button"
+                  tabIndex={disabled ? -1 : 0}
+                  aria-disabled={disabled}
+                  aria-pressed={isOptionSelected}
+                  onClick={() => {
+                    if (disabled) return;
+                    onToggle(layerId, capability.id, option.id);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      if (!disabled) onToggle(layerId, capability.id, option.id);
+                    }
+                  }}
+                  className={`w-full p-3 rounded-card border ${interactive.transitionAll} ${interactive.focusRing} text-left ${
+                    disabled
+                      ? 'cursor-not-allowed border-edge bg-page opacity-55'
+                      : isOptionSelected
+                        ? 'border-accent bg-tint'
+                        : 'border-edge bg-surface hover:border-accent hover:bg-tint'
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`mt-0.5 ${isOptionSelected ? 'text-accent' : text.faint}`}>
+                      {isOptionSelected ? (
+                        <Check size={20} />
+                      ) : (
+                        <div className="w-5 h-5 rounded-full border-2 border-current" />
                       )}
                     </div>
-                    <div className={`text-sm ${text.muted} mb-1`}>
-                      Provider: <span className="font-semibold">{option.provider}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`font-bold ${text.ink}`}>
+                            {option.name}
+                          </span>
+                          {disabled && (
+                            <span data-ui="chip" className={`px-2 py-0.5 bg-page ${text.muted} border border-edge text-xs rounded-card`}>
+                              N/A
+                            </span>
+                          )}
+                          {option.isCustomer && (
+                            <span data-ui="chip" className={`px-2 py-0.5 ${providerMark.customer} ${text.ink} text-xs rounded-card`}>
+                              Customer
+                            </span>
+                          )}
+                          {option.recommended && (
+                            <span data-ui="chip" className="px-2 py-0.5 bg-accent text-on-accent text-xs rounded-card">
+                              Recommended
+                            </span>
+                          )}
+                          {option.status && (
+                            <span data-ui="chip" className={`px-2 py-0.5 bg-page ${text.muted} border border-hair text-xs rounded-card`}>
+                              {option.status}
+                            </span>
+                          )}
+                        </div>
+                        {/* Spacer to preserve layout alignment with the sibling guide button */}
+                        {guide && <div className="w-8 flex-shrink-0" aria-hidden="true" />}
+                      </div>
+                      <div className={`text-sm ${text.muted} mb-1`}>
+                        Provider: <span className="font-semibold">{option.provider}</span>
+                      </div>
+                      <p className={`text-sm ${text.muted}`}>
+                        {option.description}
+                      </p>
                     </div>
-                    <p className={`text-sm ${text.muted}`}>
-                      {option.description}
-                    </p>
                   </div>
                 </div>
-              </button>
+                {guide && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExpandedGuide(isGuideExpanded ? null : option.id);
+                    }}
+                    className={`absolute top-3 right-3 p-1 rounded-card ${interactive.transition} ${interactive.focusRing} ${
+                      isGuideExpanded
+                        ? 'bg-tint text-accent'
+                        : `${interactive.hoverTint} ${text.faint}`
+                    }`}
+                    title="Learn more about this option"
+                    aria-label={`Learn more about ${option.name}`}
+                    aria-expanded={isGuideExpanded}
+                  >
+                    <HelpCircle size={16} />
+                  </button>
+                )}
+              </div>
 
               {/* Expanded Guide */}
               {guide && isGuideExpanded && (
