@@ -88,7 +88,7 @@ export default function DeepDiveModal({ optionId, onClose }) {
         <div className={modal.body}>
           <Section title="What it provides" icon={BookOpen}>
             {caps.length > 0 ? (
-              <ul className="space-y-1">
+              <ul className={`grid ${caps.length >= 4 ? 'grid-cols-2' : 'grid-cols-1'} gap-x-4 gap-y-1`}>
                 {caps.map((c, i) => (
                   <li key={i} className="flex items-start gap-1.5">
                     <span className="text-accent flex-shrink-0 mt-0.5">·</span>
@@ -105,7 +105,7 @@ export default function DeepDiveModal({ optionId, onClose }) {
 
           <Section title="Best for" icon={BookOpen}>
             {useCases.length > 0 ? (
-              <ul className="space-y-1">
+              <ul className={`grid ${useCases.length >= 4 ? 'grid-cols-2' : 'grid-cols-1'} gap-x-4 gap-y-1`}>
                 {useCases.map((u, i) => (
                   <li key={i} className="flex items-start gap-1.5">
                     <span className="text-accent flex-shrink-0 mt-0.5">·</span>

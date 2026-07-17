@@ -63,10 +63,22 @@
     ],
     "deployment-impact": [
       "card-text-budget"
+    ],
+    "architecture": [
+      "control-scale",
+      "unit-box-width",
+      "no-ghost-cells"
+    ],
+    "decisions": [
+      "unit-box-width"
     ]
   },
   "_exemptionNotes": {
     "products/card-text-budget": "ProductExplorer (Catalog sub-view) cards combine name, status, category, and description — they are the disclosure level. ProductComparisonView decision recommendation cards render a full recommendation sentence by design. Both are intentional; exemption covers both sub-views.",
-    "deployment-impact/card-text-budget": "DeploymentComparisonSelector uses full-sentence comparison titles by design — these are the primary navigational labels, not secondary description text."
+    "deployment-impact/card-text-budget": "DeploymentComparisonSelector uses full-sentence comparison titles by design — these are the primary navigational labels, not secondary description text.",
+    "architecture/control-scale": "Architecture tab has two stacked toolbar surfaces (ArchitectureHub mode selector + CapabilityArchitectureView action bar) within the first 300px. Both are intentionally compact but at slightly different heights. The 2-scale limit applies within a single toolbar; multi-toolbar stacking is a distinct pattern.",
+    "architecture/no-ghost-cells": "Capability grids use distributingGridCols() which creates balanced-row layouts (e.g., 5 items → 3+2). The partial last row is balanced by design (≥ 2/3 fill). Full CSS centering of variable-count grids conflicts with equal-width stretch. DeepDiveModal architecture component grids also run on this tab.",
+    "architecture/unit-box-width": "Capability cards in single-column layers fill the full grid width at 1440px (up to ~600px for L5 with 1 item). This is intentional density-law behavior — the grid column count drives width, not a fixed box size. The 200-360px bound applies to multi-sibling grids, not single-item full-width rows.",
+    "decisions/unit-box-width": "Decision guide option buttons span the grid width in 2-3 column layouts at 1440px. The 360px max is appropriate for the capability unit boxes; decision guide option buttons are wider by design (they contain a question text, not just a product name)."
   }
 }

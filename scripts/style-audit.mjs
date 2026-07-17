@@ -699,6 +699,9 @@ function unitBoxWidthBounds(tabId) {
     if (!hasBorder(el)) continue;
     const pos = getComputedStyle(el).position;
     if (pos === 'fixed' || pos === 'absolute') continue; // skip modals/overlays
+    // Skip explicit interactive controls and chips — they have intentional size variation.
+    const dataUi = el.getAttribute('data-ui');
+    if (dataUi === 'control' || dataUi === 'chip' || dataUi === 'section-header') continue;
     const cr = el.getBoundingClientRect();
     if (cr.height < 32 || cr.height > 200) continue; // only unit cards
     if (cr.width > 600) continue; // skip full-width sections
