@@ -129,6 +129,7 @@ export default function ProductComparisonHero({ comparison }) {
 
   return (
     <section
+      data-ui="table"
       aria-label="Containment diagram — Red Hat AI Inference Server inside Red Hat OpenShift AI"
       className="rounded-card border border-edge bg-surface px-4 py-4 space-y-3"
     >
@@ -138,8 +139,13 @@ export default function ProductComparisonHero({ comparison }) {
       {/* Outer cells grid */}
       <CellGrid components={outer.components} comparison={comparison} />
 
-      {/* Inner zone — Inference Server (the engine), tinted surface, no border */}
-      <div className="rounded-card bg-tint px-3 py-3 space-y-2">
+      {/* Inner zone — Inference Server (the engine), tinted surface, no border.
+          Anti-box: bg-tint surface only; outer section carries the sole border.
+          data-ui-exempt: structural sub-zone inside data-ui="table" parent. */}
+      <div
+        data-ui-exempt="inner-zone inside data-ui=table containment diagram"
+        className="rounded-card bg-tint px-3 py-3 space-y-2"
+      >
         <ZoneLabel label={inner.label} tagline={inner.tagline} />
         <CellGrid components={inner.components} comparison={comparison} />
       </div>

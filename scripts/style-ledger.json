@@ -52,11 +52,11 @@
   "legacyViolatingFilesMax": 0,
   "heightBudgets": {
     "_note": "Per-tab scrollHeight/viewport budgets at 1440x900. Set just above post-fix measured values. Regressions fail immediately.",
-    "_measured": "architecture:1.20 deployment-impact:0.17 decisions:0.70 products:1.77 (post-IA-merge with 4 guide groups)",
+    "_measured": "architecture:1.20 deployment-impact:0.17 decisions:0.70 products:2.2 (post-WS-COMPARE-2: hero added above ledger)",
     "architecture": 1.25,
     "deployment-impact": 0.3,
     "decisions": 0.75,
-    "products": 2.0
+    "products": 2.3
   },
   "exemptions": {
     "products": [
