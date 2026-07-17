@@ -220,14 +220,18 @@ function VersionExpandRow({ productLabel, versionTable, isLast }) {
         <ChevronDown
           size={15}
           aria-hidden="true"
-          className={`flex-shrink-0 text-faint transition-transform duration-150 ease-out ${open ? 'rotate-180' : ''}`}
+          className={`flex-shrink-0 text-faint ${interactive.transitionAll} ${open ? 'rotate-180' : ''}`}
         />
       </button>
 
-      {/* Expandable panel — 150ms ease-out open animation via max-h + opacity */}
+      {/* Expandable panel — 150ms ease-out open animation via max-h + opacity.
+          inert when closed: the attribute makes every descendant non-focusable and
+          invisible to AT without removing the node, so the max-h transition still
+          fires on open. When open, inert is absent (omitting the attribute entirely). */}
       <div
         aria-hidden={!open}
-        className={`overflow-hidden transition-all duration-150 ease-out ${open ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'}`}
+        {...(!open ? { inert: '' } : {})}
+        className={`overflow-hidden ${interactive.transitionAll} ${open ? 'max-h-[80vh] overflow-y-auto opacity-100' : 'max-h-0 opacity-0'}`}
       >
         <div className="overflow-x-auto px-3 sm:px-4 pb-3 pt-1">
           <table className="w-max min-w-full border-collapse">
