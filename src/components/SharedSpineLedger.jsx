@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Check, ChevronDown, ExternalLink } from 'lucide-react';
+import { ChevronDown, ExternalLink } from 'lucide-react';
 import { buildLedgerModel, LEDGER_PRODUCTS, sideTitle } from '../lib/ledgerModel';
 import { getComponentVersions } from '../data/componentVersions';
-import { interactive } from '../lib/styleTokens';
+import { interactive, supportMark } from '../lib/styleTokens';
 
 /**
  * SharedSpineLedger — BEAT 3 ("PROVE") of the Product Comparison tab.
@@ -31,37 +31,46 @@ import { interactive } from '../lib/styleTokens';
  * that row-side's validated public source (rel="noopener"); the external-link icon shows on hover only.
  */
 
-// Present marks share ONE accent (single-accent law); confidence changes the treatment only.
-const MARK_SOLID = 'bg-accent text-on-accent';
-const MARK_PENDING = 'border-2 border-dashed border-accent text-accent';
-
 // Identical column geometry for the header AND every row. The two PRODUCT columns are exactly equal
 // width (equal peers); the center name column is wider. Enforced by scripts/gate.py.
 const COLS =
   'grid grid-cols-[56px_minmax(0,1fr)_56px] sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)]';
 
-const MARK_BASE = 'inline-flex items-center justify-center h-6 w-6 rounded-full';
-const LEGEND_SAMPLE = 'inline-flex items-center justify-center h-4 w-4 rounded-full';
 
+/**
+ * PresenceMark — uses the shared supportMark token map (styleTokens) so the ledger
+ * and the capability/BOM provenance tables share the same ✓/✕ vocabulary.
+ *
+ * Mapping from ledger presence model to supportMark keys:
+ *   present + verified   → 'yes'   (solid ✓, full opacity)
+ *   present + unverified → 'yes'   (same symbol, opacity-60 to signal pending)
+ *   not present          → 'no'    (✕)
+ * Partial (~) and confirm (?) are preserved for future ledger data; absent currently.
+ */
 function PresenceMark({ side }) {
   if (!side.present) {
+    const token = supportMark.no;
     return (
-      <>
-        <span aria-hidden="true" className="text-xl leading-none text-faint select-none">
-          –
-        </span>
-        <span className="sr-only">not included</span>
-      </>
+      <span
+        aria-label={`not included — ${token.ariaLabel}`}
+        className={`text-lg leading-none select-none ${token.className}`}
+      >
+        {token.symbol}
+      </span>
     );
   }
-  const cls = side.verified ? MARK_SOLID : MARK_PENDING;
+  const token = supportMark.yes;
+  const pendingClass = side.verified ? '' : 'opacity-60';
+  const ariaText = side.verified
+    ? `included — ${token.ariaLabel}`
+    : `included, pending verification — ${token.ariaLabel}`;
   return (
-    <>
-      <span aria-hidden="true" className={`${MARK_BASE} ${cls}`}>
-        <Check size={14} strokeWidth={3} />
-      </span>
-      <span className="sr-only">{side.verified ? 'included' : 'included, pending verification'}</span>
-    </>
+    <span
+      aria-label={ariaText}
+      className={`text-lg leading-none select-none ${token.className} ${pendingClass}`}
+    >
+      {token.symbol}
+    </span>
   );
 }
 
@@ -132,16 +141,22 @@ function Legend() {
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-faint">
       <span className="inline-flex items-center gap-1.5">
-        <span aria-hidden="true" className={`${LEGEND_SAMPLE} bg-accent text-on-accent`}>
-          <Check size={11} strokeWidth={3} />
+        <span aria-hidden="true" className={`text-base leading-none font-bold ${supportMark.yes.className}`}>
+          {supportMark.yes.symbol}
         </span>
         Verified
       </span>
       <span className="inline-flex items-center gap-1.5">
-        <span aria-hidden="true" className={`${LEGEND_SAMPLE} border-2 border-dashed border-accent text-accent`}>
-          <Check size={11} strokeWidth={3} />
+        <span aria-hidden="true" className={`text-base leading-none font-bold ${supportMark.yes.className} opacity-60`}>
+          {supportMark.yes.symbol}
         </span>
         Pending verification
+      </span>
+      <span className="inline-flex items-center gap-1.5">
+        <span aria-hidden="true" className={`text-base leading-none font-bold ${supportMark.no.className}`}>
+          {supportMark.no.symbol}
+        </span>
+        Not included
       </span>
       <span className="inline-flex items-center gap-1.5">
         <ExternalLink size={12} aria-hidden="true" />
@@ -175,7 +190,7 @@ function StickyHeader() {
  * panel with component-name (left) / version@sha (right) in monospace, one line each,
  * no text wrapping. RHAI rows keep dashed/pending rendering when sourceUrl is null.
  */
-function VersionExpandRow({ productLabel, productId, versionTable, isLast }) {
+function VersionExpandRow({ productLabel, versionTable, isLast }) {
   const [open, setOpen] = useState(false);
 
   if (!versionTable) return null;
@@ -192,7 +207,7 @@ function VersionExpandRow({ productLabel, productId, versionTable, isLast }) {
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className={`w-full flex items-center justify-between gap-3 px-3 sm:px-4 py-2.5 text-left group ${interactive.transition} ${interactive.focusRing} hover:bg-tint`}
+        className={`w-full flex items-center justify-between gap-3 px-3 sm:px-4 py-2 text-left group ${interactive.transition} ${interactive.focusRing} hover:bg-tint`}
       >
         <span className="flex items-center gap-2 min-w-0">
           <span className="text-xs font-semibold text-ink">
@@ -334,7 +349,6 @@ export default function SharedSpineLedger({ comparison }) {
           {versionsA && (
             <VersionExpandRow
               productLabel={productA?.label ?? LEDGER_PRODUCTS.a.label}
-              productId={productA?.productId}
               versionTable={versionsA}
               isLast={!versionsB}
             />
@@ -342,7 +356,6 @@ export default function SharedSpineLedger({ comparison }) {
           {versionsB && (
             <VersionExpandRow
               productLabel={productB?.label ?? LEDGER_PRODUCTS.b.label}
-              productId={productB?.productId}
               versionTable={versionsB}
               isLast
             />
