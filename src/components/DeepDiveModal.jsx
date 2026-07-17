@@ -56,10 +56,12 @@ export default function DeepDiveModal({ optionId, onClose }) {
 
   return (
     <div
+      data-ui="overlay"
       className={modal.overlay}
       onClick={onClose}
     >
       <div
+        data-ui="card"
         role="dialog"
         aria-modal="true"
         aria-label={details.name}

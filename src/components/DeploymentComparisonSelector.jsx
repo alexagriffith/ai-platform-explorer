@@ -38,6 +38,7 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
 
           return (
             <button
+              data-ui="card"
               key={comparison.id}
               onClick={() => onSelectComparison(comparison.id)}
               className={`

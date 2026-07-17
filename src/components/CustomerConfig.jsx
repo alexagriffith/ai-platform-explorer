@@ -97,7 +97,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-surface rounded-card p-6 border border-edge">
+      <div data-ui="card" className="bg-surface rounded-card p-6 border border-edge">
         <h2 className={`font-display text-2xl font-bold ${text.ink} mb-2`}>
           Configure Customer Environment
         </h2>
@@ -109,7 +109,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Existing Infrastructure */}
-        <div className="bg-surface rounded-card p-6 border border-edge">
+        <div data-ui="card" className="bg-surface rounded-card p-6 border border-edge">
           <h3 className={`text-lg font-semibold ${text.ink} mb-4 flex items-center gap-2`}>
             <Server size={20} className="text-faint" />
             Existing Infrastructure
@@ -196,7 +196,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
         </div>
 
         {/* Requirements */}
-        <div className="bg-surface rounded-card p-6 border border-edge">
+        <div data-ui="card" className="bg-surface rounded-card p-6 border border-edge">
           <h3 className={`text-lg font-semibold ${text.ink} mb-4 flex items-center gap-2`}>
             <Settings size={20} className="text-faint" />
             Requirements & Goals
@@ -353,7 +353,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
         </div>
 
         {/* Integration & Data */}
-        <div className="bg-surface rounded-card p-6 border border-edge">
+        <div data-ui="card" className="bg-surface rounded-card p-6 border border-edge">
           <h3 className={`text-lg font-semibold ${text.ink} mb-4`}>
             Integration & Data
           </h3>
@@ -473,6 +473,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
 
       {showSuggestionModal && (
         <div
+          data-ui="overlay"
           className={modal.overlay}
           role="dialog"
           aria-modal="true"
@@ -480,6 +481,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
           onClick={() => setShowSuggestionModal(false)}
         >
           <div
+            data-ui="card"
             className="bg-surface rounded-card max-w-lg w-full max-h-[90vh] overflow-y-auto border border-edge"
             onClick={(e) => e.stopPropagation()}
           >

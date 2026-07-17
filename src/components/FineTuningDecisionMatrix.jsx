@@ -6,7 +6,7 @@ export default function FineTuningDecisionMatrix() {
   const approaches = fineTuningApproaches;
 
   return (
-    <div className="rounded-card bg-surface px-4 py-3">
+    <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
       <h3 className={`${typeScale.componentName} text-ink mb-0.5`}>
         Fine-Tuning vs. Retrieval-Augmented Generation (RAG) vs. Pre-trained: Decision Matrix
       </h3>
@@ -22,6 +22,7 @@ export default function FineTuningDecisionMatrix() {
           return (
             <div
               key={approach.name}
+              data-ui="card"
               className="rounded-card bg-tint overflow-hidden"
             >
               {/* Header */}
@@ -100,7 +101,7 @@ export default function FineTuningDecisionMatrix() {
       </div>
 
       {/* Decision Helper — tint background, no border */}
-      <div className="rounded-card bg-tint px-3 py-2">
+      <div data-ui="card" className="rounded-card bg-tint px-3 py-2">
         <h4 className={`${typeScale.secondary} font-semibold text-ink mb-1`}>Which approach fits?</h4>
         <div className="grid md:grid-cols-3 gap-2">
           <div className="flex items-start gap-1.5">

@@ -73,6 +73,7 @@ export default function ProductExplorer() {
           return (
             <div
               key={product.id}
+              data-ui="card"
               className={`rounded-card border ${border.hair} ${surface.raised} hover:-translate-y-0.5 ${interactive.transitionAll}`}
             >
               <div className={density.sectionPad}>

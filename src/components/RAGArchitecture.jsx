@@ -10,7 +10,7 @@ export default function RAGArchitecture() {
   return (
     <div className={density.stackGap}>
       {/* RAG Pipeline Flow — no border on outer panel, no border on stage cards */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <h3 className={`${typeScale.componentName} text-ink mb-0.5`}>RAG Architecture Pipeline</h3>
         <p className={`${typeScale.meta} text-muted mb-2`}>
           API Gateway → Retrieval → Model Serving → Response
@@ -28,7 +28,7 @@ export default function RAGArchitecture() {
                   </div>
                 )}
 
-                <div className="rounded-card bg-tint px-2 py-1.5 relative z-20">
+                <div data-ui="card" className="rounded-card bg-tint px-2 py-1.5 relative z-20">
                   <div className="flex items-center gap-1.5 mb-1">
                     <Icon size={13} className="text-muted flex-shrink-0" />
                     <h4 className={`${typeScale.secondary} font-bold text-ink`}>{stage.stage}</h4>
@@ -50,7 +50,7 @@ export default function RAGArchitecture() {
       </div>
 
       {/* Document Processing + RAG Config Tuning side-by-side */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <div className="grid md:grid-cols-2 gap-4">
           {/* Document Processing */}
           <div>
@@ -85,7 +85,7 @@ export default function RAGArchitecture() {
             </p>
             <div className={`grid grid-cols-2 ${density.rowGap} mb-2`}>
               {autoRAGOptimizations.map((opt, index) => (
-                <div key={index} className="rounded-card bg-tint px-2 py-1.5">
+                <div key={index} data-ui="card" className="rounded-card bg-tint px-2 py-1.5">
                   <h4 className={`${typeScale.secondary} font-semibold text-ink mb-0.5`}>{opt.name}</h4>
                   <p className={`${typeScale.meta} text-muted mb-0.5`}>{opt.description}</p>
                   <div className={`${typeScale.meta} text-faint`}>Optimizes: {opt.optimizes}</div>

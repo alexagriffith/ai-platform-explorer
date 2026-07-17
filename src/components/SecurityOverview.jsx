@@ -4,7 +4,7 @@ import { securityLayers } from '../data/securityLayers';
 
 export default function SecurityOverview() {
   return (
-    <div className="rounded-card bg-surface px-4 py-3">
+    <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
       <div className="flex items-center gap-2 mb-2">
         <Shield className="text-muted flex-shrink-0" size={15} />
         <h3 className={`${typeScale.componentName} text-ink`}>Enterprise Security & Governance</h3>
@@ -17,7 +17,7 @@ export default function SecurityOverview() {
           const Icon = layer.icon;
 
           return (
-            <div key={index} className="rounded-card bg-tint overflow-hidden">
+            <div key={index} data-ui="card" className="rounded-card bg-tint overflow-hidden">
               {/* Header — hairline separator, no full border */}
               <div className="border-b border-hair px-3 py-1.5">
                 <div className="flex items-center gap-1.5 mb-0.5">
@@ -47,7 +47,7 @@ export default function SecurityOverview() {
       </div>
 
       {/* Summary — tint strip, no border */}
-      <div className="rounded-card bg-tint px-3 py-2">
+      <div data-ui="card" className="rounded-card bg-tint px-3 py-2">
         <h4 className={`${typeScale.secondary} font-semibold text-ink mb-0.5`}>Defense-in-Depth Strategy</h4>
         <p className={`${typeScale.secondary} text-muted`}>
           Red Hat AI provides multiple layers of security from authentication at the gateway, through role-based access

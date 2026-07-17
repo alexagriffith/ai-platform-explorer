@@ -8,7 +8,7 @@ export default function TrainingDeepDive() {
   return (
     <div className={density.stackGap}>
       {/* Header — no border */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <div className="flex items-center gap-3">
           <h2 className={`${typeScale.componentName} text-ink`}>Model Training & Fine-Tuning</h2>
           <p className={`${typeScale.secondary} text-muted`}>Build, train, and fine-tune AI models at enterprise scale</p>
@@ -16,7 +16,7 @@ export default function TrainingDeepDive() {
       </div>
 
       {/* Training vs Inference + Training vs Fine-Tuning side-by-side */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <h3 className={`${typeScale.componentName} text-ink mb-2 flex items-center gap-1.5`}>
           <GitBranch className="text-muted" size={14} />
           Training vs. Inference
@@ -44,7 +44,7 @@ export default function TrainingDeepDive() {
       </div>
 
       {/* Training Workflow — no border on outer, no border on step cards */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <h3 className={`${typeScale.componentName} text-ink mb-2`}>Typical Training Workflow</h3>
         <div className={`grid md:grid-cols-5 ${density.rowGap}`}>
           {trainingWorkflow.map((stage, index) => (
@@ -54,7 +54,7 @@ export default function TrainingDeepDive() {
                   <ArrowRight className="text-muted" size={14} />
                 </div>
               )}
-              <div className="rounded-card bg-tint px-2 py-1.5 relative z-20">
+              <div data-ui="card" className="rounded-card bg-tint px-2 py-1.5 relative z-20">
                 <div className={`${typeScale.meta} text-faint mb-0.5`}>STEP {index + 1}</div>
                 <h4 className={`${typeScale.secondary} font-bold text-ink mb-0.5`}>{stage.step}</h4>
                 <p className={`${typeScale.meta} text-muted mb-1`}>{stage.description}</p>
@@ -73,7 +73,7 @@ export default function TrainingDeepDive() {
       </div>
 
       {/* Decision Matrix — no border on outer panel */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <h3 className={`${typeScale.componentName} text-ink mb-2`}>Product Decision Matrix</h3>
         <div className="divide-y divide-hair">
           {decisionMatrix.map((option, index) => (
@@ -96,7 +96,7 @@ export default function TrainingDeepDive() {
       </div>
 
       {/* Hardware Comparison — no border on outer */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <h3 className={`${typeScale.componentName} text-ink mb-0.5 flex items-center gap-1.5`}>
           <Cpu className="text-muted" size={14} />
           GPU Hardware for Training
@@ -135,7 +135,7 @@ export default function TrainingDeepDive() {
       </div>
 
       {/* Training vs Fine-Tuning — no border, two columns separated by hairline */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <h3 className={`${typeScale.componentName} text-ink mb-2`}>Training vs. Fine-Tuning</h3>
         <div className="grid md:grid-cols-2 divide-y divide-hair md:divide-y-0 md:divide-x">
           <div className="pb-2 md:pb-0 md:pr-4">

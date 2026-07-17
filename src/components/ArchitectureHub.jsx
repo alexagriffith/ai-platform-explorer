@@ -50,7 +50,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
   return (
     <div data-tab="architecture" className="space-y-3">
       {/* Header — one surface, hairline separators, no nested boxes */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <Layers className="text-accent shrink-0" size={20} />

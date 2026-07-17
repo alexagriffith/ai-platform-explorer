@@ -63,6 +63,7 @@ function getCapabilitiesBySubLayer(layerId, subLayer) {
 function CollapsibleDividerHeader({ title, isOpen, onToggle }) {
   return (
     <button
+      data-ui="section-header"
       type="button"
       onClick={onToggle}
       aria-expanded={isOpen}
@@ -103,6 +104,7 @@ function CapabilityCard({
   if (!isSelected) {
     return (
       <button
+        data-ui="card"
         onClick={() => onConfigure(capability)}
         className={`${card.unselected} group px-2 py-2 w-full h-full`}
       >
@@ -130,6 +132,7 @@ function CapabilityCard({
 
   return (
     <div
+      data-ui="card"
       className={`rounded-card bg-surface h-full ${interactive.transitionAll} ${markClass} ${
         hasDeepDive ? `${card.selectedClickable} ${interactive.focusRing}` : ''
       }`}
@@ -523,9 +526,10 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
 
             return (
               <div key={layer.id} className="relative">
-                <div className="rounded-card bg-surface">
+                <div data-ui="card" className="rounded-card bg-surface">
                   {/* Layer Header (collapsible) */}
                   <button
+                    data-ui="section-header"
                     type="button"
                     onClick={() => toggleLayerExpanded(layer.id)}
                     aria-expanded={layerExpanded[layer.id]}

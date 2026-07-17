@@ -52,8 +52,8 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
   const selectedCount = Object.keys(selectedCaps).length;
 
   return (
-    <div className={`rounded-card bg-surface ${interactive.transitionAll}`}>
-      <div className={`px-4 py-3 flex items-center justify-between rounded-t-card border-b border-hair ${layerStripeClass}`}>
+    <div data-ui="card" className={`rounded-card bg-surface ${interactive.transitionAll}`}>
+      <div data-ui="section-header" className={`px-4 py-3 flex items-center justify-between rounded-t-card border-b border-hair ${layerStripeClass}`}>
         <div className="flex items-center gap-2">
           <div className={`w-1 h-6 rounded-full ${layerAccentClass}`} />
           <div>
@@ -79,21 +79,22 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
 
             const canDeepDive = option.provider === 'Red Hat';
 
-            return (
-              <button
-                key={capId}
-                onClick={() => canDeepDive && onDeepDive(optionId)}
-                className={`px-2 py-1 rounded-card text-xs font-medium border ${interactive.transitionAll} ${
-                  canDeepDive ? 'cursor-pointer hover:-translate-y-0.5 motion-reduce:hover:translate-y-0' : ''
-                } ${
-                  option.isCustomer
-                    ? `${providerMark.customer} ${text.ink}`
-                    : option.provider === 'Red Hat'
-                    ? `${providerMark.redHat} text-white`
-                    : `${providerMark.partner} ${text.ink}`
-                }`}
-                title={canDeepDive ? 'Click for deep dive' : ''}
-              >
+          return (
+            <button
+              data-ui="chip"
+              key={capId}
+              onClick={() => canDeepDive && onDeepDive(optionId)}
+              className={`px-2 py-1 rounded-card text-xs font-medium border ${interactive.transitionAll} ${
+                canDeepDive ? 'cursor-pointer hover:-translate-y-0.5 motion-reduce:hover:translate-y-0' : ''
+              } ${
+                option.isCustomer
+                  ? `${providerMark.customer} ${text.ink}`
+                  : option.provider === 'Red Hat'
+                  ? `${providerMark.redHat} text-white`
+                  : `${providerMark.partner} ${text.ink}`
+              }`}
+              title={canDeepDive ? 'Click for deep dive' : ''}
+            >
                 {capability.name}
                 {option.isCustomer && (
                   <Building2 size={10} className="inline ml-1 mb-0.5" />
@@ -157,6 +158,7 @@ function CapabilitySelector({
           return (
             <div key={option.id} className="space-y-2">
               <button
+                data-ui="card"
                 type="button"
                 aria-disabled={disabled}
                 onClick={() => {

@@ -193,7 +193,7 @@ export default function UseCaseView() {
   return (
     <div data-tab="use-cases" className="space-y-3">
       {/* Header */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <div className="flex items-center gap-3 mb-2">
           <h2 className={`${typeScale.componentName} text-ink`}>Use Cases</h2>
           <p className={`${typeScale.secondary} text-muted`}>
@@ -235,6 +235,7 @@ export default function UseCaseView() {
           .map(useCase => (
           <div
             key={useCase.id}
+            data-ui="card"
             ref={(el) => (useCaseRefs.current[useCase.id] = el)}
             className="rounded-card bg-surface overflow-hidden scroll-mt-4"
           >

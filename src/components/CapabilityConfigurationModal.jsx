@@ -40,10 +40,12 @@ export default function CapabilityConfigurationModal({
 
   return (
     <div
+      data-ui="overlay"
       className={modal.overlay}
       onClick={onBackdropClose}
     >
       <div
+        data-ui="card"
         role="dialog"
         aria-modal="true"
         aria-label={`Configure: ${capability.name}`}

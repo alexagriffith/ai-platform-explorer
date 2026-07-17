@@ -43,7 +43,7 @@ export default function CapabilityDeltaTable({ comparison }) {
 
       {/* Impact Summary — status-semantic badge colors */}
       <div className="flex flex-wrap gap-2 text-sm">
-        <div className="flex items-center gap-2 px-3 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-card">
+        <div data-ui="chip" className="flex items-center gap-2 px-3 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-card">
           <TrendingUp size={14} className="text-green-600 dark:text-green-400" />
           <span className="text-ink text-xs">
             <strong className="text-green-700 dark:text-green-300">{impactCounts.positive}</strong> {isAlternativeComparison ? 'Advantages' : 'Improvements'}
@@ -51,7 +51,7 @@ export default function CapabilityDeltaTable({ comparison }) {
         </div>
 
         {impactCounts.tradeoff > 0 && (
-          <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-card">
+          <div data-ui="chip" className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-card">
             <AlertTriangle size={14} className="text-amber-600 dark:text-amber-400" />
             <span className="text-ink text-xs">
               <strong className="text-amber-700 dark:text-amber-300">{impactCounts.tradeoff}</strong> Tradeoffs
@@ -60,7 +60,7 @@ export default function CapabilityDeltaTable({ comparison }) {
         )}
 
         {impactCounts.neutral > 0 && (
-          <div className="flex items-center gap-2 px-3 py-2 bg-tint border border-hair rounded-card">
+          <div data-ui="chip" className="flex items-center gap-2 px-3 py-2 bg-tint border border-hair rounded-card">
             <Minus size={14} className="text-muted" />
             <span className="text-ink text-xs">
               <strong>{impactCounts.neutral}</strong> Neutral
@@ -70,7 +70,7 @@ export default function CapabilityDeltaTable({ comparison }) {
       </div>
 
       {/* Comparison Table */}
-      <div className="overflow-x-auto border border-edge rounded-card -mx-4 sm:mx-0">
+      <div data-ui="table" className="overflow-x-auto border border-edge rounded-card -mx-4 sm:mx-0">
         <div className="inline-block min-w-full align-middle">
           <table className="min-w-full">
             <thead className="bg-tint">

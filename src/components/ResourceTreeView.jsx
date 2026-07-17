@@ -285,12 +285,14 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
     <>
       {/* Backdrop */}
       <div
+        data-ui="overlay"
         className={`${modal.overlayScrim} z-40`}
         onClick={onClose}
       />
 
       {/* Panel */}
       <div
+        data-ui="card"
         role="dialog"
         aria-modal="true"
         aria-label={resourceKind}

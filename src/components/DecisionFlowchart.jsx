@@ -1456,6 +1456,7 @@ export default function DecisionFlowchart({
 
                     return (
                       <button
+                        data-ui="card"
                         key={guideKey}
                         onClick={() => {
                           setApplyNotice(null);
@@ -1516,7 +1517,7 @@ export default function DecisionFlowchart({
           ) : (
             /* Recommendation */
             <div className={density.stackGap}>
-              <div className={`${density.sectionPad} rounded-card border ${border.hair} ${surface.raised}`}>
+              <div data-ui="card" className={`${density.sectionPad} rounded-card border ${border.hair} ${surface.raised}`}>
                 {(() => {
                   const catalogStatus = productStatusFromCatalog(treeRecommendation.productId);
                   return (

@@ -130,6 +130,15 @@ no hedge-free absolutes.
   content width.
 - Row text alignment: titles, badges, and controls in one row share a vertical center.
 
+## Component contract (added 2026-07-17 — closed-world auditing)
+
+Every rendered surface declares its archetype via `data-ui`:
+`card | chip | chip-row | section-header | label-row | prose-list | table | control | overlay`.
+The audit fails any bordered, surfaced, or interactive element without an archetype. Exemptions
+exist only as per-instance `data-ui-exempt="reason"` annotations — visible in the markup,
+counted in the gate output. All instances of one archetype on a page must share computed
+alignment, type size, and padding (the uniformity invariant).
+
 ## Enforcement
 
 `scripts/gate.py` enforces this law two ways:

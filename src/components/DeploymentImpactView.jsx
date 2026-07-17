@@ -52,7 +52,7 @@ export default function DeploymentImpactView() {
       {comparison && (
         <div key={comparison.id} className="space-y-3">
           {/* Comparison Header */}
-          <div className="rounded-card border border-edge bg-surface px-4 py-3">
+          <div data-ui="card" className="rounded-card border border-edge bg-surface px-4 py-3">
             <h3 className="text-base font-bold text-ink leading-tight mb-1">
               {comparison.title}
             </h3>
@@ -62,7 +62,7 @@ export default function DeploymentImpactView() {
           </div>
 
           {/* View Tabs */}
-          <div className="rounded-card border border-edge bg-surface">
+          <div data-ui="card" className="rounded-card border border-edge bg-surface">
             <div className="border-b border-hair">
               <nav className="flex gap-0.5 px-3">
                 {tabs.map((tab) => {
@@ -95,8 +95,9 @@ export default function DeploymentImpactView() {
 
           {/* Migration Notes */}
           {comparison.migrationNotes && comparison.migrationNotes.length > 0 && (
-            <div className="rounded-card border border-edge bg-surface">
+            <div data-ui="card" className="rounded-card border border-edge bg-surface">
               <button
+                data-ui="section-header"
                 onClick={() => setMigrationNotesExpanded(!migrationNotesExpanded)}
                 aria-expanded={migrationNotesExpanded}
                 className={`w-full px-4 py-2 flex items-center justify-between ${interactive.hoverTint} ${interactive.transition}`}

@@ -149,8 +149,8 @@ export default function AcronymGlossary() {
   }
 
   return (
-    <div className={modal.overlay}>
-      <div className={`${modal.panel} ${modal.panelWide} overflow-hidden flex flex-col`}>
+    <div data-ui="overlay" className={modal.overlay}>
+      <div data-ui="card" className={`${modal.panel} ${modal.panelWide} overflow-hidden flex flex-col`}>
         {/* Header */}
         <div className={modal.header}>
           <div className="flex items-center justify-between mb-4">

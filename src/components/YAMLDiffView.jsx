@@ -113,9 +113,10 @@ function YAMLResource({ resource, state }) {
   const stateColor = stateColorMap[state] || stateColorMap['before'];
 
   return (
-    <div className={`border-2 ${stateColor} rounded-card overflow-hidden bg-surface`}>
+    <div data-ui="card" className={`border-2 ${stateColor} rounded-card overflow-hidden bg-surface`}>
       {/* Header - clickable to expand/collapse */}
       <div
+        data-ui="section-header"
         role="button"
         tabIndex={0}
         onClick={() => setIsExpanded(!isExpanded)}

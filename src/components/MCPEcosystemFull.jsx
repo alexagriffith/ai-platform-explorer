@@ -21,7 +21,7 @@ export default function MCPEcosystemFull() {
   return (
     <div className={density.stackGap}>
       {/* Header */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <div className="flex items-start justify-between flex-wrap gap-2 mb-1">
           <div>
             <h2 className={`${typeScale.componentName} text-ink mb-0.5`}>
@@ -47,7 +47,7 @@ export default function MCPEcosystemFull() {
       </div>
 
       {/* Ingestion Pipeline + Core Components combined */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <div className="grid md:grid-cols-2 gap-4">
           {/* Ingestion Pipeline */}
           <div>
@@ -71,7 +71,7 @@ export default function MCPEcosystemFull() {
           <div>
             <h3 className={`${typeScale.componentName} text-ink mb-2`}>Core Platform Components</h3>
             {/* Registry */}
-            <div className="rounded-card bg-tint px-3 py-1.5 flex items-center gap-2 mb-2">
+            <div data-ui="card" className="rounded-card bg-tint px-3 py-1.5 flex items-center gap-2 mb-2">
               <Database className="text-green-600 flex-shrink-0" size={14} />
               <div className="flex-1 min-w-0">
                 <h4 className={`${typeScale.secondary} font-bold text-ink`}>MCP Registry</h4>
@@ -82,7 +82,7 @@ export default function MCPEcosystemFull() {
               {components.map((component) => {
                 const Icon = component.icon;
                 return (
-                  <div key={component.id} className="rounded-card bg-tint px-2 py-1.5 text-center">
+                  <div key={component.id} data-ui="card" className="rounded-card bg-tint px-2 py-1.5 text-center">
                     <div className="flex flex-col items-center gap-0.5 mb-0.5">
                       <Icon size={12} className="text-muted flex-shrink-0" />
                       <h4 className={`${typeScale.meta} font-bold text-ink`}>{component.name}</h4>
@@ -101,7 +101,7 @@ export default function MCPEcosystemFull() {
       </div>
 
       {/* AI assets + Curated MCP Servers */}
-      <div className="rounded-card bg-surface px-4 py-3">
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <div className="flex items-center gap-2 mb-2">
           <h3 className={`${typeScale.componentName} text-ink`}>Curated MCP servers</h3>
           <p className={`${typeScale.meta} text-muted`}>
@@ -132,6 +132,7 @@ export default function MCPEcosystemFull() {
             return (
               <div key={key}>
                 <button
+                  data-ui="section-header"
                   onClick={() => setExpandedCategory(isExpanded ? null : key)}
                   className={`w-full rounded-card bg-tint px-3 py-2 flex items-center justify-between hover:bg-page transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page ${categoricalMark[markKey]}`}
                 >
