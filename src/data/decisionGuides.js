@@ -1181,7 +1181,7 @@ export const decisionFlows = {
         tradeoffs: [
           { pro: 'Scales across many GPUs', con: 'More complex infrastructure' },
           { pro: 'Tensor + data parallelism', con: 'Higher cost' },
-          { pro: 'Ray and Kubeflow Training Operator support', con: 'Steeper learning curve' }
+          { pro: 'Ray and Kubeflow Trainer v2 support', con: 'Steeper learning curve' }
         ],
         alternatives: ['For simplicity: InstructLab', 'For automation: Data Science Pipelines']
       },

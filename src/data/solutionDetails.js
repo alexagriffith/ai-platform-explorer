@@ -183,7 +183,7 @@ export const solutionDetails = {
   },
   'instructlab': {
     name: 'InstructLab',
-    description: 'Model alignment and fine-tuning using synthetic data generation and the LAB method',
+    description: 'Model alignment and fine-tuning using synthetic data generation and the LAB method. Early-stage capability — availability and scope not confirmed; check with your Red Hat account team.',
     architecture: {
       components: [
         { name: 'LAB Method', role: 'Training Algorithm', description: 'Large-scale Alignment for chatBots - multi-phase training approach' },
@@ -206,7 +206,7 @@ export const solutionDetails = {
     useCases: [
       'Adding domain knowledge to foundation models',
       'Fine-tuning with limited training data',
-      'Subject matter expert-driven model improvement',
+      'Subject-matter-expert-driven model improvement',
       'Alignment for specific use cases or industries'
     ],
     documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/customize_models_for_gen_ai_and_agentic_ai_applications',
@@ -449,7 +449,7 @@ export const solutionDetails = {
       'Browsing available tools before commitment',
       'Governance-focused deployments'
     ],
-    documentation: 'https://docs.redhat.com/mcp',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_ogx',
     contacts: ['Ask your Red Hat account team.']
   },
   'rh-mcp-registry': {
@@ -477,7 +477,7 @@ export const solutionDetails = {
       'Integration with existing tools',
       'Advanced users with custom workflows'
     ],
-    documentation: 'https://docs.redhat.com/mcp',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_ogx',
     contacts: ['Ask your Red Hat account team.']
   },
   'odf': {

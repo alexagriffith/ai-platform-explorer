@@ -12,7 +12,7 @@ export const trainingWorkflow = [
   {
     step: 'Training Execution',
     description: 'Run distributed training jobs',
-    tools: ['Ray (distributed compute)', 'Kubeflow Training Operator']
+    tools: ['Ray (distributed compute)', 'Kubeflow Trainer v2']
   },
   {
     step: 'Evaluation',
@@ -57,8 +57,8 @@ export const trainingVsInference = [
 export const trainingDecisionMatrix = [
   {
     choose: 'RHEL AI',
-    when: 'Single-server, out-of-the-box environment for serving and light fine-tuning of foundation models on one machine',
-    bestFor: 'Edge deployments, getting started, simple fine-tuning'
+    when: 'Single-server, out-of-the-box environment for inference serving of foundation models on bare metal or cloud',
+    bestFor: 'Edge deployments, getting started, inference on a single server'
   },
   {
     choose: 'Red Hat OpenShift AI (RHOAI) Distributed Workloads',
