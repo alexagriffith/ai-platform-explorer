@@ -182,7 +182,7 @@ function CapabilityCard({
             {selectedOption?.name}
           </div>
         </div>
-        <div className="flex gap-0.5 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+        <div className="flex gap-2 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
           {hasSubComponents && (
             <button
               type="button"
@@ -190,7 +190,7 @@ function CapabilityCard({
                 e.stopPropagation();
                 onToggleExpanded(selectedOptionId);
               }}
-              className={`p-0.5 rounded-card ${interactive.hoverTint} flex-shrink-0 ${interactive.transition} ${interactive.focusRing}`}
+              className={`p-1.5 rounded-card ${interactive.hoverTint} flex-shrink-0 ${interactive.transition} ${interactive.focusRing}`}
               title={isExpanded ? 'Collapse components' : 'Expand components'}
               aria-expanded={isExpanded}
             >
@@ -204,7 +204,7 @@ function CapabilityCard({
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onConfigure(capability); }}
-            className={`p-0.5 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
+            className={`p-1.5 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
             title={capability.required ? 'Change (required)' : 'Change'}
             aria-label="Change"
           >
@@ -214,7 +214,7 @@ function CapabilityCard({
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onRemove(capability.id); }}
-              className={`p-0.5 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
+              className={`p-1.5 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
               title="Remove"
               aria-label="Remove"
             >

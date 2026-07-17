@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Lightbulb, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { getCatalogDisplayName, getCatalogEntry } from '../data/catalogResolve';
 import { typeScale, density, badge } from '../lib/styleTokens';
 import MCPEcosystemFull from './MCPEcosystemFull';
@@ -189,13 +189,6 @@ export default function UseCaseView() {
     scrollToUseCase(useCaseId);
   };
 
-  const selectAllUseCases = () => {
-    setSelectedUseCases(useCases.map(uc => uc.id));
-  };
-
-  const clearUseCases = () => {
-    setSelectedUseCases([]);
-  };
 
   return (
     <div data-tab="use-cases" className="space-y-3">
@@ -211,25 +204,21 @@ export default function UseCaseView() {
         {/* Quick Jump */}
         <div className="flex items-center gap-2 flex-wrap">
           <span className={`${typeScale.groupLabel} text-ink`}>Jump:</span>
-          <button
-            onClick={selectAllUseCases}
-            className="px-2.5 py-0.5 rounded-card bg-accent text-on-accent text-xs font-medium hover:bg-accent-strong transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
-          >
-            Select All
-          </button>
-          <button
-            onClick={clearUseCases}
-            className="px-2.5 py-0.5 rounded-card bg-tint text-muted text-xs font-medium hover:text-ink transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
-          >
-            Clear
-          </button>
+          {selectedUseCases.length > 0 && (
+            <button
+              onClick={() => setSelectedUseCases([])}
+              className="px-2.5 py-0.5 rounded-card bg-tint text-muted text-xs font-medium hover:text-ink transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+            >
+              Show all
+            </button>
+          )}
           {useCases.map(useCase => (
             <button
               key={useCase.id}
               onClick={() => toggleUseCase(useCase.id)}
               className={`px-2.5 py-0.5 rounded-card text-xs font-medium transition-all duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page ${
                 selectedUseCases.includes(useCase.id)
-                  ? 'bg-accent text-on-accent'
+                  ? 'border border-accent text-link bg-tint'
                   : 'bg-tint text-muted hover:text-ink'
               }`}
             >
@@ -250,7 +239,6 @@ export default function UseCaseView() {
             className="rounded-card bg-surface overflow-hidden scroll-mt-4"
           >
             <div className="border-b border-hair px-4 py-2 flex flex-col items-center text-center gap-0.5">
-              <Lightbulb className="text-accent flex-shrink-0" size={14} />
               <h3 className={`${typeScale.componentName} text-ink`}>{useCase.title}</h3>
               <span className={`${typeScale.secondary} text-muted`}>{useCase.description}</span>
             </div>
@@ -263,7 +251,7 @@ export default function UseCaseView() {
                     <CheckCircle2 size={11} className="text-green-600" />
                     Recommended Products
                   </h4>
-                  <div className="flex flex-wrap justify-center gap-1">
+                  <div className="flex flex-wrap gap-1">
                     {useCase.recommendedProducts.map(productId => {
                       const entry = getCatalogEntry(productId);
                       const name = entry ? entry.name : getCatalogDisplayName(productId);

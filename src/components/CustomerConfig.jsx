@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle2, AlertCircle, Sparkles, Copy, X } from 'lucide-react';
+import { Server, Settings, Sparkles, Copy, X } from 'lucide-react';
 import { products, thirdPartyOptions } from '../data/products';
 import { border, button, interactive, modal, text } from '../lib/styleTokens';
 
@@ -111,7 +111,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
         {/* Existing Infrastructure */}
         <div className="bg-surface rounded-card p-6 border border-edge">
           <h3 className={`text-lg font-semibold ${text.ink} mb-4 flex items-center gap-2`}>
-            <CheckCircle2 size={20} className="text-green-600" />
+            <Server size={20} className="text-faint" />
             Existing Infrastructure
           </h3>
 
@@ -198,7 +198,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
         {/* Requirements */}
         <div className="bg-surface rounded-card p-6 border border-edge">
           <h3 className={`text-lg font-semibold ${text.ink} mb-4 flex items-center gap-2`}>
-            <AlertCircle size={20} className="text-accent" />
+            <Settings size={20} className="text-faint" />
             Requirements & Goals
           </h3>
 

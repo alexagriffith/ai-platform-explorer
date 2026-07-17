@@ -182,11 +182,12 @@ function App() {
                     }
                     setCurrentView(view.id);
                   }}
-                  className={`flex items-center justify-center sm:justify-start gap-2 px-2 sm:px-4 py-3 font-medium text-xs sm:text-sm transition-colors border-b-2 whitespace-nowrap ${
+                  className={`flex items-center justify-center sm:justify-start gap-2 min-w-[44px] px-2 sm:px-4 py-3 font-medium text-xs sm:text-sm transition-colors border-b-2 whitespace-nowrap ${
                     active
                       ? 'border-accent text-link'
                       : 'border-transparent text-muted hover:text-ink'
                   }`}
+                  aria-label={view.name}
                   title={view.name}
                 >
                   <Icon size={18} className="flex-shrink-0" />

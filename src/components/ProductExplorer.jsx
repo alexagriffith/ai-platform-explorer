@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Filter, ExternalLink } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
 import { products } from '../data/products';
 import { text, surface, border, interactive, field, productStatus, density, typeScale } from '../lib/styleTokens';
 
@@ -127,7 +127,6 @@ export default function ProductExplorer() {
                     rel="noopener noreferrer"
                     className={`inline-flex items-center gap-1 ${typeScale.secondary} text-link hover:underline ${interactive.transition} ${interactive.focusRing} mt-1`}
                   >
-                    <ExternalLink size={12} />
                     Documentation
                   </a>
                 )}
@@ -141,6 +140,13 @@ export default function ProductExplorer() {
         <div className="text-center py-8">
           <Filter size={36} className={`mx-auto ${text.faint} mb-2`} />
           <p className={`${typeScale.secondary} ${text.muted}`}>No products match your filters</p>
+          <button
+            type="button"
+            onClick={() => { setSearchTerm(''); setFilterStatus('all'); setFilterLayer('all'); }}
+            className={`mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-card border border-edge text-sm font-medium ${text.ink} hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page transition-colors duration-150 ease-out motion-reduce:transition-none`}
+          >
+            Clear filters
+          </button>
         </div>
       )}
     </div>

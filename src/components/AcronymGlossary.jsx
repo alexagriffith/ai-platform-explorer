@@ -140,7 +140,7 @@ export default function AcronymGlossary() {
       <button
         aria-label="Open Acronym Guide"
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-4 right-4 z-50 flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-on-accent ${typeScale.meta} font-medium ${interactive.transitionAll} ${interactive.focusRing} ${interactive.microElevate} hover:bg-accent-strong`}
+        className={`fixed bottom-4 right-4 z-50 hidden sm:flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-on-accent ${typeScale.meta} font-medium ${interactive.transitionAll} ${interactive.focusRing} ${interactive.microElevate} hover:bg-accent-strong`}
       >
         <BookOpen size={14} />
         <span>Acronym Guide</span>

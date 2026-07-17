@@ -84,7 +84,7 @@ const guideGroups = [
 const decisionFlows = {
   product: {
     title: 'Which Red Hat AI Product Should I Use?',
-    description: 'Find the right Red Hat AI product for your needs',
+    description: null,
     steps: [
       {
         question: 'What is your primary deployment target?',
@@ -231,7 +231,7 @@ const decisionFlows = {
   },
   deployment: {
     title: 'Where Should I Deploy My AI Workloads?',
-    description: 'Choose the right deployment model',
+    description: null,
     steps: [
       {
         question: 'What are your data residency requirements?',
@@ -409,7 +409,7 @@ const decisionFlows = {
   },
   architecture: {
     title: 'How Should I Architect My AI Solution?',
-    description: 'Design your technical architecture',
+    description: null,
     steps: [
       {
         question: 'What is your primary use case?',
@@ -576,7 +576,7 @@ const decisionFlows = {
   },
   gpu: {
     title: 'Which GPU Hardware Should I Use?',
-    description: 'Choose the right accelerator for your AI workloads',
+    description: null,
     steps: [
       {
         question: 'What is your primary workload?',
@@ -712,7 +712,7 @@ const decisionFlows = {
   },
   vectordb: {
     title: 'Which Vector Database for RAG?',
-    description: 'Choose the right vector database for your RAG application',
+    description: null,
     steps: [
       {
         question: 'What is your deployment preference?',
@@ -940,7 +940,7 @@ const decisionFlows = {
   },
   batchVsRealtime: {
     title: 'Batch vs Real-time Inference',
-    description: 'Choose the right inference pattern for your workload',
+    description: null,
     steps: [
       {
         question: 'What is your latency requirement?',
@@ -1036,7 +1036,7 @@ const decisionFlows = {
   },
   evaluationFramework: {
     title: 'Which Evaluation Framework?',
-    description: 'Choose the right evaluation tool for your use case',
+    description: null,
     steps: [
       {
         question: 'What are you evaluating?',
@@ -1249,7 +1249,7 @@ const decisionFlows = {
   },
   servingChoice: {
     title: 'KServe or AI Inference Server?',
-    description: 'Choose the right serving platform for your models',
+    description: null,
     steps: [
       {
         question: 'What type of models are you serving?',
@@ -1488,9 +1488,11 @@ export default function DecisionFlowchart({
                             </h4>
                           </div>
                         </div>
-                        <p className={`${typeScale.secondary} ${text.muted}`}>
-                          {flowData.description}
-                        </p>
+                        {flowData.description && (
+                          <p className={`${typeScale.secondary} ${text.muted}`}>
+                            {flowData.description}
+                          </p>
+                        )}
                       </button>
                     );
                   })}
