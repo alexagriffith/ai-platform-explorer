@@ -12,7 +12,8 @@ import {
   Workflow,
   RotateCcw,
   CheckCircle2,
-  Image
+  Image,
+  Check
 } from 'lucide-react';
 import { capabilities, capabilityLayers } from '../data/capabilities';
 import { solutionDetails } from '../data/solutionDetails';
@@ -332,6 +333,7 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
 export default function CapabilityArchitectureView({ selectedCapabilities, setSelectedCapabilities }) {
   // selectedCapabilities passed as props now
   const [exportMessage, setExportMessage] = useState('');
+  const [exportDone, setExportDone] = useState(false);
   const [configuringCapability, setConfiguringCapability] = useState(null);
   const [deepDiveOption, setDeepDiveOption] = useState(null);
   const [detailLevel, setDetailLevel] = useState(2); // 1: basic, 2: technical
@@ -448,6 +450,8 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
       a.click();
       a.remove();
       setExportMessage('');
+      setExportDone(true);
+      setTimeout(() => setExportDone(false), 2000);
     } catch (err) {
       console.error('PNG export failed:', err);
       setExportMessage('Export failed. Try again.');
@@ -479,10 +483,12 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
               onClick={handleDownloadStackPng}
               disabled={stackImageBusy}
               className={button.secondary}
-              title="Export as PNG"
+              title="Export PNG"
             >
-              <Image size={14} />
-              {stackImageBusy ? 'Working…' : 'Export Stack'}
+              {exportDone
+                ? <><Check size={14} className="motion-reduce:hidden" />Exported</>
+                : <><Image size={14} />{stackImageBusy ? 'Working…' : 'Export PNG'}</>
+              }
             </button>
             {totalSelected > 0 && (
               <button

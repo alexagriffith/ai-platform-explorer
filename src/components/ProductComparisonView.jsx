@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { AlertCircle, Download, Copy, Check, ExternalLink } from 'lucide-react';
-import { productComparisons, isComparisonDraft } from '../data/productComparisons';
+import { productComparisons, isComparisonDraft, decisionBeatFacts } from '../data/productComparisons';
 import SharedSpineLedger from './SharedSpineLedger';
 import { buildLedgerModel } from '../lib/ledgerModel';
 import { interactive } from '../lib/styleTokens';
@@ -147,13 +147,13 @@ function DecisionBeat() {
       <DecisionColumn
         need="You just need to serve models, fast"
         product="Red Hat AI Inference Server"
-        facts={['One container · vLLM engine', 'Runs anywhere — any Kubernetes, plain Linux']}
+        facts={decisionBeatFacts.a.map((f) => f.text)}
         className="pb-4 md:pb-0 md:pr-8"
       />
       <DecisionColumn
         need="You need the whole machine-learning lifecycle"
         product="Red Hat OpenShift AI"
-        facts={['Notebooks → pipelines → serving · includes the Inference Server', 'Requires OpenShift']}
+        facts={decisionBeatFacts.b.map((f) => f.text)}
         className="pt-4 md:pt-0 md:pl-8"
       />
     </div>

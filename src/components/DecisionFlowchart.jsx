@@ -19,8 +19,17 @@ import {
 import DecisionTree from './DecisionTree';
 import { mergeDecisionPatches, getPatchesForRecommendationKey } from '../data/decisionRecommendationApply';
 import { capabilities } from '../data/capabilities';
+import { products } from '../data/products';
 import { reconcileContainerAiPlatform } from '../lib/platformAiConstraints';
-import { button, text, interactive, modal, surface, border, density, typeScale } from '../lib/styleTokens';
+import { button, text, interactive, modal, surface, border, density, typeScale, productStatus } from '../lib/styleTokens';
+
+/** Look up status from products catalog by id. Returns null when no match. */
+const productStatusFromCatalog = (productId) => {
+  if (!productId) return null;
+  return products.find((p) => p.id === productId)?.status ?? null;
+};
+
+const HEDGE_LINE = 'Early-stage capability — availability and scope not confirmed; check with your Red Hat account team.';
 
 const guideMetadata = {
   product: { icon: Package, category: 'Product Selection', group: 'getting-started' },
@@ -140,6 +149,7 @@ const decisionFlows = {
     recommendations: {
       'RHEL AI': {
         product: 'Red Hat Enterprise Linux AI',
+        productId: 'rhel-ai',
         icon: '🖥️',
         why: 'Optimized for single-server deployments with built-in model serving and fine-tuning',
         bestFor: ['Small teams', 'Getting started', 'Edge deployments', 'Fine-tuning workloads'],
@@ -152,6 +162,8 @@ const decisionFlows = {
       },
       'RHOAI': {
         product: 'Red Hat OpenShift AI',
+        productId: 'rhoai',
+        platformRequirement: 'Requires OpenShift',
         icon: '☸️',
         why: 'Full ML lifecycle platform for teams that need distributed workloads and production MLOps',
         bestFor: ['Large teams', 'Production ML', 'Distributed training', 'Multi-model serving'],
@@ -164,6 +176,7 @@ const decisionFlows = {
       },
       'RHAIE': {
         product: 'Red Hat AI Enterprise',
+        productId: 'rhaie',
         icon: '🎁',
         why: 'Complete integrated platform: OpenShift + OpenShift AI + InstructLab in one SKU',
         bestFor: ['Enterprise initiatives', 'Simplified procurement', 'Complete platform'],
@@ -176,6 +189,7 @@ const decisionFlows = {
       },
       'AI-Inference': {
         product: 'Red Hat AI Inference Server',
+        productId: 'ai-inference',
         icon: '⚡',
         why: 'High-performance vLLM-based serving optimized for LLMs',
         bestFor: ['Inference-only', 'High throughput', 'LLM serving', 'Production APIs'],
@@ -625,7 +639,7 @@ const decisionFlows = {
         why: 'Cost-effective inference and light training, excellent for production serving',
         bestFor: ['LLM inference', 'Model serving APIs', 'Cost-sensitive workloads'],
         tradeoffs: [
-          { pro: 'Best price/performance for inference', con: 'Not ideal for large model training' },
+          { pro: 'Cost-effective for inference workloads', con: 'Not ideal for large model training' },
           { pro: '24GB memory', con: 'Memory limited for 70B+ models' },
           { pro: 'Widely available in cloud', con: 'Lower FP64 performance' }
         ],
@@ -1258,6 +1272,7 @@ const decisionFlows = {
     recommendations: {
       'AI-Inference': {
         product: 'Red Hat AI Inference Server',
+        productId: 'ai-inference',
         icon: '🚀',
         why: 'LLM-optimized serving with (llm-d) token-aware scheduling and KV cache routing',
         bestFor: ['LLM-only workloads', 'Low-latency requirements (<200ms TTFT)', 'GPU optimization', 'SLO-based routing'],
@@ -1270,6 +1285,8 @@ const decisionFlows = {
       },
       'KServe': {
         product: 'KServe (via RHOAI)',
+        productId: 'kserve',
+        platformRequirement: 'Requires OpenShift',
         icon: '🎯',
         why: 'Multi-framework serving with InferenceGraph support for complex pipelines',
         bestFor: ['Multiple ML frameworks', 'InferenceGraph DAGs', 'TrainedModel multi-model serving', 'Mature production needs'],
@@ -1497,14 +1514,34 @@ export default function DecisionFlowchart({
             /* Recommendation */
             <div className={density.stackGap}>
               <div className={`${density.sectionPad} rounded-card border ${border.hair} ${surface.raised}`}>
+                {(() => {
+                  const catalogStatus = productStatusFromCatalog(treeRecommendation.productId);
+                  return (
                 <div className="flex items-start gap-3 mb-3">
                   <div className={`flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-card border ${border.edge} ${surface.tint}`}>
                     <CheckCircle size={16} className="text-green-600" />
                   </div>
                   <div className="flex-1">
-                    <h4 className={`${typeScale.componentName} ${text.ink} mb-1`}>
-                      {treeRecommendation.product}
-                    </h4>
+                    <div className="flex flex-wrap items-baseline gap-2 mb-1">
+                      <h4 className={`${typeScale.componentName} ${text.ink}`}>
+                        {treeRecommendation.product}
+                      </h4>
+                      {catalogStatus && (
+                        <span className={`${typeScale.meta} font-medium ${productStatus[catalogStatus] ?? text.muted}`}>
+                          {catalogStatus}
+                        </span>
+                      )}
+                      {treeRecommendation.platformRequirement && (
+                        <span className={`${typeScale.meta} ${text.faint}`}>
+                          · {treeRecommendation.platformRequirement}
+                        </span>
+                      )}
+                    </div>
+                    {catalogStatus === 'Check with Red Hat' && (
+                      <p className={`${typeScale.secondary} ${text.muted} mb-1`}>
+                        {HEDGE_LINE}
+                      </p>
+                    )}
                     <p className={`${typeScale.secondary} ${text.muted} mb-2`}>
                       <strong>Why:</strong> {treeRecommendation.why}
                     </p>
@@ -1534,6 +1571,8 @@ export default function DecisionFlowchart({
                     )}
                   </div>
                 </div>
+                  );
+                })()}
 
                 {/* Tradeoffs — side by side */}
                 {treeRecommendation.tradeoffs && (

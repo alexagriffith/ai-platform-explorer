@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Shield, Database, Package, Workflow, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
-import { typeScale, density, categoricalMark, legendChip } from '../lib/styleTokens';
+import { typeScale, density, categoricalMark, categoricalDot, legendChip } from '../lib/styleTokens';
 
 /**
  * Category → categoricalMark key mapping.
@@ -202,7 +202,7 @@ export default function MCPEcosystemFull() {
                   <div className="mt-1 pl-3 divide-y divide-hair">
                     {category.servers.map((server, index) => (
                       <div key={index} className="py-1.5 flex items-start gap-2">
-                        <div className="w-1 h-1 rounded-full bg-accent mt-1.5 flex-shrink-0"></div>
+                        <div className={`w-1 h-1 rounded-full mt-1.5 flex-shrink-0 ${categoricalDot[markKey] ?? categoricalDot.customer}`}></div>
                         <div className="flex-1">
                           <h5 className={`${typeScale.secondary} font-semibold text-ink`}>{server.name}</h5>
                           <p className={`${typeScale.meta} text-muted`}>{server.description}</p>

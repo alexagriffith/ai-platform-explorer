@@ -10,7 +10,7 @@ import { interactive, modal, button } from '../lib/styleTokens';
  * Displays parent-child relationships (e.g., Deployment → ReplicaSet → Pod).
  * Click on any resource kind to see detailed information in a side panel.
  *
- * Plane colors: control=accent-tinted (primary identity), data=neutral-tinted.
+ * Plane colors: workload-management=accent-tinted (primary identity), runtime=neutral-tinted.
  * NEW/REMOVED diff badges use green/amber status tokens.
  */
 export default function ResourceTreeView({ comparison }) {
@@ -128,13 +128,13 @@ export default function ResourceTreeView({ comparison }) {
             <div className="flex items-center gap-2">
               <Workflow size={16} className="text-link" />
               <span className="text-ink">
-                <strong>Control Plane:</strong> Configuration &amp; management
+                <strong>Workload management:</strong> define and manage what runs
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Server size={16} className="text-muted" />
               <span className="text-ink">
-                <strong>Data Plane:</strong> Runtime workloads
+                <strong>Runtime resources:</strong> what actually runs and serves traffic
               </span>
             </div>
           </div>
@@ -175,7 +175,7 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
   const [isExpanded, setIsExpanded] = useState(depth <= 1);
   const hasChildren = node.children && node.children.length > 0;
 
-  // Control plane = accent-tinted; data plane = page-tinted (structural, not status)
+  // Workload-management resources (Deployment, ReplicaSet) = accent-tinted; runtime resources (Pod) = page-tinted
   const planeConfig = {
     control: { icon: Workflow, iconClass: 'text-link', bgClass: 'bg-tint' },
     data:    { icon: Server,   iconClass: 'text-muted', bgClass: 'bg-page' }

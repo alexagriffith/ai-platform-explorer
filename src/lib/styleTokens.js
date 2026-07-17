@@ -187,6 +187,17 @@ export const hwBadge = {
 };
 
 /**
+ * Small bullet-dot classes matching categoricalMark colors (for list item markers).
+ * Use instead of a hardcoded `bg-accent` whenever a dot must follow its group's mark.
+ */
+export const categoricalDot = {
+  redHat:     'bg-red-600',
+  openSource: 'bg-blue-500',
+  partner:    'bg-teal-500',
+  customer:   'bg-edge',
+};
+
+/**
  * Legend chip classes matching categoricalMark colors.
  * Pair each chip with the categoricalMark key of the same name.
  */
