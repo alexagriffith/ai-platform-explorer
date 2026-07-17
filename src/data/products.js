@@ -9,7 +9,7 @@ export const products = [
     required: true,
     connections: ['rhoai', 'openshift'],
     resources: {
-      docs: 'https://docs.redhat.com'
+      docs: 'https://docs.redhat.com/en/documentation/red_hat_ai_enterprise'
     }
   },
   {
@@ -25,7 +25,7 @@ export const products = [
     customerProfile: ['MLOps teams', 'Data scientists', 'Enterprise dev teams with OpenShift'],
     deploymentPattern: 'OpenShift (self-managed or ROSA/ARO)',
     resources: {
-      docs: 'https://docs.redhat.com'
+      docs: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed'
     }
   },
   {
@@ -57,7 +57,7 @@ export const products = [
     customerProfile: ['Edge deployments', 'Developers', 'Small teams', 'Single-node use cases'],
     deploymentPattern: 'Single RHEL server (not distributed)',
     resources: {
-      docs: 'https://docs.redhat.com'
+      docs: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai'
     }
   },
   {
@@ -73,7 +73,7 @@ export const products = [
     customerProfile: ['Infrastructure teams', 'Platform engineers'],
     deploymentPattern: 'Scalable GPU-optimized nodes',
     resources: {
-      docs: 'https://docs.redhat.com'
+      docs: 'https://docs.redhat.com/en/documentation/red_hat_ai_inference_server'
     }
   },
   {
@@ -254,7 +254,7 @@ export const products = [
     required: true,
     connections: [],
     resources: {
-      docs: 'https://docs.redhat.com'
+      docs: 'https://docs.redhat.com/en/documentation/openshift_container_platform'
     }
   }
 ];
