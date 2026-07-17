@@ -36,7 +36,7 @@ import {
   toggle,
   typeScale,
 } from '../lib/styleTokens';
-import { distributingGridCols } from '../lib/layout';
+import { distributingFlexBasis } from '../lib/layout';
 
 /** Map option provider string to a categoricalMark key. */
 function providerMarkKey(option) {
@@ -250,9 +250,11 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('orchestration')}
           />
           {servicesSubOpen.orchestration && (
-            <div className={`grid ${distributingGridCols(orchestration.length)} items-stretch ${density.rowGap}`}>
+            <div className="flex flex-wrap justify-center">
               {orchestration.map((cap) => (
-                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
+                <div key={cap.id} className={`${distributingFlexBasis(orchestration.length)} min-w-0 p-1`}>
+                  <CapabilityCard capability={cap} layerColor={layerColor} compact {...cardProps} />
+                </div>
               ))}
             </div>
           )}
@@ -272,9 +274,11 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('wrapper')}
           />
           {servicesSubOpen.wrapper && (
-            <div className={`grid ${distributingGridCols(wrapper.length)} items-stretch ${density.rowGap}`}>
+            <div className="flex flex-wrap justify-center">
               {wrapper.map((cap) => (
-                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
+                <div key={cap.id} className={`${distributingFlexBasis(wrapper.length)} min-w-0 p-1`}>
+                  <CapabilityCard capability={cap} layerColor={layerColor} compact {...cardProps} />
+                </div>
               ))}
             </div>
           )}
@@ -294,12 +298,11 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('core')}
           />
           {servicesSubOpen.core && (
-            <div className={`grid ${distributingGridCols(coreBase.length + coreAdjacent.length)} items-stretch ${density.rowGap}`}>
-              {coreBase.map((cap) => (
-                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
-              ))}
-              {coreAdjacent.map((cap) => (
-                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
+            <div className="flex flex-wrap justify-center">
+              {[...coreBase, ...coreAdjacent].map((cap) => (
+                <div key={cap.id} className={`${distributingFlexBasis(coreBase.length + coreAdjacent.length)} min-w-0 p-1`}>
+                  <CapabilityCard capability={cap} layerColor={layerColor} compact {...cardProps} />
+                </div>
               ))}
             </div>
           )}
@@ -441,7 +444,16 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
           <div className="flex-1 min-w-0">
             <h2 className={`font-display text-base font-bold ${text.ink}`}>Build Your AI Stack</h2>
           </div>
-          <div className="flex flex-wrap gap-2 shrink-0">
+          <div className="flex flex-wrap gap-2 shrink-0 items-center">
+            <button
+              data-ui="chip"
+              type="button"
+              onClick={() => setViewOrder(viewOrder === 'bottom-up' ? 'top-down' : 'bottom-up')}
+              className={`flex items-center gap-1 ${toggle.base} ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
+            >
+              {viewOrder === 'bottom-up' ? <ArrowUp size={11} /> : <ArrowDown size={11} />}
+              {viewOrder === 'bottom-up' ? 'Infra at bottom' : 'Infra at top'}
+            </button>
             <button
               data-ui="control"
               type="button"
@@ -493,17 +505,6 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
         {exportMessage && (
           <p className={`text-xs ${text.muted}`}>{exportMessage}</p>
         )}
-        <div className="pt-2 mt-1 border-t border-hair flex items-center gap-3 flex-wrap">
-          <button
-            data-ui="chip"
-            type="button"
-            onClick={() => setViewOrder(viewOrder === 'bottom-up' ? 'top-down' : 'bottom-up')}
-            className={`flex items-center gap-1 ${toggle.base} ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
-          >
-            {viewOrder === 'bottom-up' ? <ArrowUp size={11} /> : <ArrowDown size={11} />}
-            {viewOrder === 'bottom-up' ? 'Infra at bottom' : 'Infra at top'}
-          </button>
-        </div>
       </div>
 
       {/* Stack — #stack-capture-root is the PNG capture region (layers + legend) */}
@@ -558,15 +559,16 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                           cardProps={cardProps}
                         />
                       ) : (
-                        <div className={`grid ${distributingGridCols(layerCapabilities.length)} items-stretch ${density.rowGap}`}>
+                        <div className="flex flex-wrap justify-center">
                           {layerCapabilities.map(capability => (
-                            <CapabilityCard
-                              key={capability.id}
-                              capability={capability}
-                              layerColor={layer.color}
-                              compact
-                              {...cardProps}
-                            />
+                            <div key={capability.id} className={`${distributingFlexBasis(layerCapabilities.length)} min-w-0 p-1`}>
+                              <CapabilityCard
+                                capability={capability}
+                                layerColor={layer.color}
+                                compact
+                                {...cardProps}
+                              />
+                            </div>
                           ))}
                         </div>
                       )}
