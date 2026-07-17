@@ -157,6 +157,7 @@ export const solutionDetails = {
         { name: 'Kubeflow Trainer v2', role: 'Resource Management', description: 'Kubernetes-native orchestration for distributed training jobs on OpenShift' }
       ],
       integrations: [
+
         { name: 'Workbenches', purpose: 'Notebook development environment for training code' },
         { name: 'Model Registry', purpose: 'Register and version trained models' },
         { name: 'S3-compatible storage', purpose: 'Store datasets and checkpoints' },
@@ -178,7 +179,7 @@ export const solutionDetails = {
       'Multi-GPU and multi-node training jobs',
       'Enterprise-scale model development'
     ],
-    documentation: 'https://docs.redhat.com/rhoai',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_distributed_workloads',
     contacts: ['Ask your Red Hat account team.']
   },
   'instructlab': {
@@ -637,7 +638,7 @@ export const solutionDetails = {
       'Continuous evaluation in InstructLab workflows',
       'Domain-specific model quality assessment'
     ],
-    documentation: 'https://docs.redhat.com/instructlab',
+    documentation: null,
     contacts: ['Ask your Red Hat account team.']
   },
   'project-navigator': {
@@ -698,7 +699,7 @@ export const solutionDetails = {
       'Prototyping AI applications before production',
       'Managing prompt libraries across projects'
     ],
-    documentation: 'https://docs.redhat.com/rhoai',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5',
     contacts: ['Ask your Red Hat account team.']
   },
   'rhaie': {
@@ -735,7 +736,7 @@ export const solutionDetails = {
       'Turnkey AI infrastructure and platform',
       'Enterprise AI with comprehensive support'
     ],
-    documentation: 'https://docs.redhat.com/rhoai',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5',
     contacts: ['Ask your Red Hat account team.']
   },
   'rhel-ai': {
