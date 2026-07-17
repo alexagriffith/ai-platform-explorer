@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { AlertCircle, Download, Copy, Check, ExternalLink } from 'lucide-react';
 import { productComparisons, isComparisonDraft, decisionBeatFacts } from '../data/productComparisons';
-import { getComponentVersions } from '../data/componentVersions';
 import SharedSpineLedger from './SharedSpineLedger';
 import ProductComparisonHero from './ProductComparisonHero';
 import { buildLedgerModel } from '../lib/ledgerModel';
@@ -295,97 +294,6 @@ function buildProductComparisonCopyText(comparison) {
   return lines.join('\n');
 }
 
-/* ── Component versions disclosure ───────────────────────────────────────────────────────────── */
-/** One product's expandable component-versions table (collapsed by default). */
-function ComponentVersionsPanel({ productId, productLabel }) {
-  const table = getComponentVersions(productId);
-  if (!table) return null;
-  return (
-    <details className="border-t border-hair pt-2" data-ui="table">
-      <summary
-        className={`cursor-pointer select-none list-none px-1 py-2 flex items-center justify-between gap-2 text-sm font-semibold text-ink hover:text-link ${interactive.transition} ${interactive.focusRing} rounded-sm`}
-      >
-        <span>Component versions — {productLabel}</span>
-        <span className="text-xs font-normal text-faint">{table.components.length} components · {table.release}</span>
-      </summary>
-      <div className="pt-2 space-y-2">
-        <div className="overflow-x-auto">
-          <table className="min-w-full">
-            <thead>
-              <tr className="border-b border-edge">
-                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider min-w-[10rem]">Component</th>
-                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider min-w-[8rem]">Version</th>
-                <th className="px-2 py-1.5 text-left text-xs font-semibold text-faint uppercase tracking-wider min-w-[8rem]">Source</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-hair">
-              {table.components.map((entry) => (
-                <tr key={entry.component}>
-                  <td className="px-2 py-1.5 text-xs text-ink align-middle break-words">{entry.component}</td>
-                  <td className="px-2 py-1.5 align-middle">
-                    <span className="font-mono text-xs text-ink break-all">
-                      {entry.version}{entry.sha ? <span className="text-faint"> @{entry.sha}</span> : null}
-                    </span>
-                  </td>
-                  <td className="px-2 py-1.5 align-middle max-w-[16rem]">
-                    {entry.sourceUrl ? (
-                      <a
-                        href={entry.sourceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title={entry.sourceLabel}
-                        className={`inline-flex items-start gap-1 text-xs text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
-                      >
-                        <ExternalLink size={11} className="flex-shrink-0 mt-0.5" />
-                        <span className="break-words">{entry.sourceLabel || 'Source'}</span>
-                      </a>
-                    ) : (
-                      <span className="text-xs text-faint border-b border-dashed border-faint break-words">
-                        {entry.sourceLabel || 'Pending verification'}
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="flex items-center gap-1 text-xs text-faint pb-1">
-          {table.sourceUrl ? (
-            <>
-              <ExternalLink size={11} className="flex-shrink-0" />
-              <a
-                href={table.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
-              >
-                {table.sourceLabel}
-              </a>
-            </>
-          ) : (
-            <span className="border-b border-dashed border-faint">{table.sourceLabel || 'Pending verification'}</span>
-          )}
-          <span className="ml-1">— extracted {table.extractionDate}</span>
-        </div>
-      </div>
-    </details>
-  );
-}
-
-/** Side-by-side component-versions disclosures, one column per product. */
-function ComponentVersionsBeat({ comparison }) {
-  const { a, b } = comparison.products;
-  const hasA = !!getComponentVersions(a.productId);
-  const hasB = !!getComponentVersions(b.productId);
-  if (!hasA && !hasB) return null;
-  return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <div>{hasA && <ComponentVersionsPanel productId={a.productId} productLabel={a.label} />}</div>
-      <div>{hasB && <ComponentVersionsPanel productId={b.productId} productLabel={b.label} />}</div>
-    </div>
-  );
-}
 
 export default function ProductComparisonView() {
   const comparison = productComparisons[0] ?? null;
@@ -469,7 +377,6 @@ export default function ProductComparisonView() {
         <DecisionBeat />
         <ProductComparisonHero comparison={comparison} />
         <SharedSpineLedger comparison={comparison} />
-        <ComponentVersionsBeat comparison={comparison} />
       </div>
 
       {/* Detailed provenance (collapsed) — single grouped table; no toggle. */}

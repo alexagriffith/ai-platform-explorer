@@ -1,5 +1,7 @@
-import { Check, ExternalLink } from 'lucide-react';
+import { useState } from 'react';
+import { Check, ChevronDown, ExternalLink } from 'lucide-react';
 import { buildLedgerModel, LEDGER_PRODUCTS, sideTitle } from '../lib/ledgerModel';
+import { getComponentVersions } from '../data/componentVersions';
 import { interactive } from '../lib/styleTokens';
 
 /**
@@ -167,14 +169,135 @@ function StickyHeader() {
   );
 }
 
+/**
+ * One expandable version-detail row for a single product's component version table.
+ * Default: fully hidden (no version content visible). Expand reveals a scrollable-x
+ * panel with component-name (left) / version@sha (right) in monospace, one line each,
+ * no text wrapping. RHAI rows keep dashed/pending rendering when sourceUrl is null.
+ */
+function VersionExpandRow({ productLabel, productId, versionTable, isLast }) {
+  const [open, setOpen] = useState(false);
+
+  if (!versionTable) return null;
+
+  const { components, release, sourceUrl, sourceLabel, extractionDate } = versionTable;
+
+  return (
+    <div
+      data-ui-exempt="version-expand-row inside data-ui=table"
+      className={`border-t border-hair bg-surface ${isLast ? 'rounded-b-card' : ''}`}
+    >
+      {/* Trigger row — full width, clearly clickable */}
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className={`w-full flex items-center justify-between gap-3 px-3 sm:px-4 py-2.5 text-left group ${interactive.transition} ${interactive.focusRing} hover:bg-tint`}
+      >
+        <span className="flex items-center gap-2 min-w-0">
+          <span className="text-xs font-semibold text-ink">
+            Component versions — {productLabel}
+          </span>
+          <span className="text-xs text-faint font-normal hidden sm:inline">
+            {components.length} components · release {release}
+          </span>
+        </span>
+        <ChevronDown
+          size={15}
+          aria-hidden="true"
+          className={`flex-shrink-0 text-faint transition-transform duration-150 ease-out ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {/* Expandable panel — 150ms ease-out open animation via max-h + opacity */}
+      <div
+        aria-hidden={!open}
+        className={`overflow-hidden transition-all duration-150 ease-out ${open ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'}`}
+      >
+        <div className="overflow-x-auto px-3 sm:px-4 pb-3 pt-1">
+          <table className="w-max min-w-full border-collapse">
+            <tbody>
+              {components.map((entry) => (
+                <tr key={entry.component} className="border-b border-hair last:border-b-0">
+                  {/* Component name — left, normal weight */}
+                  <td className="pr-6 py-1 text-xs text-ink whitespace-nowrap align-middle">
+                    {entry.component}
+                  </td>
+                  {/* Version — right, monospace, no wrap */}
+                  <td className="py-1 text-xs align-middle whitespace-nowrap">
+                    <span className="font-mono text-ink">
+                      {entry.version}
+                      {entry.sha && (
+                        <span className="text-faint"> @{entry.sha}</span>
+                      )}
+                    </span>
+                  </td>
+                  {/* Source link — or dashed pending (RHAI null-source pattern) */}
+                  <td className="pl-4 py-1 text-xs align-middle whitespace-nowrap">
+                    {entry.sourceUrl ? (
+                      <a
+                        href={entry.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={entry.sourceLabel}
+                        className={`inline-flex items-center gap-1 text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+                      >
+                        <ExternalLink size={10} className="flex-shrink-0" aria-hidden="true" />
+                        <span>{entry.sourceLabel || 'Source'}</span>
+                      </a>
+                    ) : (
+                      <span className="text-faint border-b border-dashed border-faint">
+                        {entry.sourceLabel || 'Pending verification'}
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Table-level source footer */}
+        <div className="flex items-center gap-1 px-3 sm:px-4 pb-3 text-xs text-faint">
+          {sourceUrl ? (
+            <>
+              <ExternalLink size={10} className="flex-shrink-0" aria-hidden="true" />
+              <a
+                href={sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+              >
+                {sourceLabel}
+              </a>
+              <span className="ml-1">— extracted {extractionDate}</span>
+            </>
+          ) : (
+            <>
+              <span className="border-b border-dashed border-faint">{sourceLabel || 'Pending verification'}</span>
+              <span className="ml-1">— extracted {extractionDate}</span>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function SharedSpineLedger({ comparison }) {
   const groups = buildLedgerModel(comparison);
   if (groups.length === 0) return null;
 
-  // Id of the final row so it can round the ledger's bottom corners (no overflow-hidden wrapper is
-  // used — that would break the viewport-sticky header).
+  const { a: productA, b: productB } = comparison?.products ?? {};
+  const versionsA = productA?.productId ? getComponentVersions(productA.productId) : null;
+  const versionsB = productB?.productId ? getComponentVersions(productB.productId) : null;
+  const hasAnyVersions = !!(versionsA || versionsB);
+
+  // When version expand rows are present they become the bottom corners; otherwise the
+  // last data row rounds the ledger. No overflow-hidden wrapper needed (would break sticky).
   const lastGroup = groups[groups.length - 1];
   const lastRowId = lastGroup.rows[lastGroup.rows.length - 1]?.id;
+  const lastDataRow = !hasAnyVersions;
 
   return (
     <section
@@ -199,11 +322,33 @@ export default function SharedSpineLedger({ comparison }) {
           <div key={group.id}>
             <GroupHeader title={group.title} />
             {group.rows.map((row) => (
-              <LedgerRow key={row.id} row={row} last={row.id === lastRowId} />
+              <LedgerRow key={row.id} row={row} last={lastDataRow && row.id === lastRowId} />
             ))}
           </div>
         ))}
       </div>
+
+      {/* Version expand rows — fully hidden by default; one per product with version data */}
+      {hasAnyVersions && (
+        <>
+          {versionsA && (
+            <VersionExpandRow
+              productLabel={productA?.label ?? LEDGER_PRODUCTS.a.label}
+              productId={productA?.productId}
+              versionTable={versionsA}
+              isLast={!versionsB}
+            />
+          )}
+          {versionsB && (
+            <VersionExpandRow
+              productLabel={productB?.label ?? LEDGER_PRODUCTS.b.label}
+              productId={productB?.productId}
+              versionTable={versionsB}
+              isLast
+            />
+          )}
+        </>
+      )}
     </section>
   );
 }
