@@ -7,7 +7,6 @@ import ResourceTreeView from './ResourceTreeView';
 import QuickComparisonTable from './QuickComparisonTable';
 import { getComparisonById } from '../data/deploymentComparisons';
 import { interactive, text } from '../lib/styleTokens';
-import { distributingGridCols } from '../lib/layout';
 
 /**
  * DeploymentImpactView
@@ -141,7 +140,7 @@ export default function DeploymentImpactView() {
               <h3 data-ui="section-header" className={`text-sm font-bold ${text.ink} mb-2`}>
                 Additional Resources
               </h3>
-              <div className={`grid ${distributingGridCols(comparison.docsLinks.length)} gap-2`}>
+              <div className="flex flex-wrap justify-center gap-2">
                 {comparison.docsLinks.map((link, idx) => (
                   <a
                     data-ui="control"
@@ -149,7 +148,7 @@ export default function DeploymentImpactView() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`flex items-center gap-2 px-3 py-2 text-link underline-offset-2 hover:underline ${interactive.transition} ${interactive.focusRing} rounded-card`}
+                    className={`flex-none flex items-center gap-2 px-3 py-2 text-link underline-offset-2 hover:underline ${interactive.transition} ${interactive.focusRing} rounded-card`}
                   >
                     <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

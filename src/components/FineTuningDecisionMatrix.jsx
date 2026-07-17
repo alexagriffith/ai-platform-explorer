@@ -1,11 +1,9 @@
 import { CheckCircle, XCircle, AlertCircle, Zap, Database, Sparkles } from 'lucide-react';
 import { typeScale, density, status, border, surface, text } from '../lib/styleTokens';
-import { distributingFlexBasis } from '../lib/layout';
 import { fineTuningApproaches } from '../data/fineTuningApproaches';
 
 export default function FineTuningDecisionMatrix() {
   const approaches = fineTuningApproaches;
-  const basisClass = distributingFlexBasis(approaches.length);
 
   return (
     <div>
@@ -18,7 +16,7 @@ export default function FineTuningDecisionMatrix() {
         </p>
       </div>
 
-      {/* Approach cards — flex-wrap + distributingFlexBasis so partial rows center */}
+      {/* Approach cards — fit-first: flex-none children, centered partial rows */}
       <div className={`flex flex-wrap justify-center ${density.rowGap} mb-3`}>
         {approaches.map((approach) => {
           const Icon = approach.icon;
@@ -26,7 +24,7 @@ export default function FineTuningDecisionMatrix() {
             <div
               key={approach.name}
               data-ui="card"
-              className={`${basisClass} rounded-card ${surface.tint} overflow-hidden`}
+              className={`flex-none w-full md:w-96 rounded-card ${surface.tint} overflow-hidden`}
             >
               {/* Header */}
               <div className={`border-b ${border.hair} px-3 py-2`}>
@@ -102,20 +100,20 @@ export default function FineTuningDecisionMatrix() {
       {/* Decision helper — section, not a nested card */}
       <div data-ui="prose-list" className={`border-t ${border.hair} pt-3`}>
         <h4 className={`${typeScale.secondary} font-semibold ${text.ink} mb-2`}>Which approach fits?</h4>
-        <div className={`flex flex-wrap ${density.rowGap}`}>
-          <div className={`${distributingFlexBasis(3)} flex items-start gap-1.5`}>
+        <div className={`flex flex-wrap justify-center ${density.rowGap}`}>
+          <div className={`flex-none w-full md:w-96 flex items-start gap-1.5`}>
             <Sparkles className={`${text.muted} mt-0.5 flex-shrink-0`} size={12} />
             <p className={`${typeScale.secondary} ${text.ink}`}>
               <strong>Choose Fine-Tuning</strong> if you need the model to deeply understand complex domain knowledge and can invest in training infrastructure
             </p>
           </div>
-          <div className={`${distributingFlexBasis(3)} flex items-start gap-1.5`}>
+          <div className={`flex-none w-full md:w-96 flex items-start gap-1.5`}>
             <Database className={`${text.muted} mt-0.5 flex-shrink-0`} size={12} />
             <p className={`${typeScale.secondary} ${text.ink}`}>
               <strong>Choose RAG</strong> if your data changes frequently, you need citations, or you want to avoid model training
             </p>
           </div>
-          <div className={`${distributingFlexBasis(3)} flex items-start gap-1.5`}>
+          <div className={`flex-none w-full md:w-96 flex items-start gap-1.5`}>
             <Zap className={`${text.muted} mt-0.5 flex-shrink-0`} size={12} />
             <p className={`${typeScale.secondary} ${text.ink}`}>
               <strong>Choose Pre-trained</strong> if you need fast deployment for general tasks without specialized knowledge requirements
