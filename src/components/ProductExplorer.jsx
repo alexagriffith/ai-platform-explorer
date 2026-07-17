@@ -125,7 +125,7 @@ export default function ProductExplorer() {
                     href={product.resources.docs}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-1 ${typeScale.secondary} text-link hover:underline ${interactive.transition} mt-1`}
+                    className={`inline-flex items-center gap-1 ${typeScale.secondary} text-link hover:underline ${interactive.transition} ${interactive.focusRing} mt-1`}
                   >
                     <ExternalLink size={12} />
                     Documentation

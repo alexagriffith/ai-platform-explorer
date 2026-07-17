@@ -1,5 +1,6 @@
 import { Check, ExternalLink } from 'lucide-react';
 import { buildLedgerModel, LEDGER_PRODUCTS, sideTitle } from '../lib/ledgerModel';
+import { interactive } from '../lib/styleTokens';
 
 /**
  * SharedSpineLedger — BEAT 3 ("PROVE") of the Product Comparison tab.
@@ -75,7 +76,7 @@ function NameLink({ row }) {
       rel="noopener"
       title={row.link.label || 'Open source'}
       aria-label={row.link.label ? `${row.name} — source: ${row.link.label}` : `${row.name} — open source`}
-      className="group inline-flex items-center justify-center gap-1 text-sm font-medium leading-tight text-ink hover:text-link hover:underline transition-colors"
+      className={`group inline-flex items-center justify-center gap-1 text-sm font-medium leading-tight text-ink hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
     >
       <span className="line-clamp-2">{row.name}</span>
       <ExternalLink

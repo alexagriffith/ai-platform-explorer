@@ -158,8 +158,152 @@ function draftBannerState() {
   return { ok: vis && !transparent && s.backgroundColor !== bodyBg, visible: vis, transparent, bg: s.backgroundColor, bodyBg };
 }
 
+// ─── New measured checks (D4b) ──────────────────────────────────────────────
+
+// HEIGHT BUDGET: tab's scrollHeight must not exceed 2.0× viewport height (1440×900).
+// Returns { ratio, ok } — ratio logged for future tightening.
+function heightBudget(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return { ratio: null, ok: false, reason: 'tab not found' };
+  const vph = window.innerHeight; // 900
+  const sh = tab.scrollHeight;
+  const ratio = sh / vph;
+  return { ratio: Math.round(ratio * 100) / 100, ok: ratio <= 2.0 };
+}
+
+// GRID EQUALITY: for each row of visually-sibling cards (same explicit-grid or non-wrapping
+// flex parent, 3+ same-size children), assert equal widths (±1px) and vertical centre
+// alignment (±2px).
+// Intentionally skips:
+//   - flex-wrap containers (chip/badge/tag groups — variable-width inline content)
+//   - CSS grid with named/fractional column templates (asymmetric by design)
+//   - containers whose children height < 24px (likely inline chips, not cards)
+//   - containers where max-width/min-width ratio > 1.5 (non-uniform-card layouts)
+function gridEquality(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  for (const container of tab.querySelectorAll('*')) {
+    const cs = getComputedStyle(container);
+    const display = cs.display;
+    if (display !== 'grid' && display !== 'flex' && display !== 'inline-flex') continue;
+    // Skip flex-wrap containers — chip/badge groups are intentionally variable-width.
+    if (cs.flexWrap === 'wrap' || cs.flexWrap === 'wrap-reverse') continue;
+    // Skip CSS grid containers with non-uniform column templates (named columns, fractional
+    // columns of different sizes, or fixed+auto mixes). Uniform grids use repeat(N, 1fr).
+    if (display === 'grid') {
+      const tmpl = cs.gridTemplateColumns || '';
+      // If the template has different values (not all the same px), it's asymmetric — skip.
+      const parts = tmpl.trim().split(/\s+/);
+      if (parts.length >= 2) {
+        const first = parts[0];
+        if (!parts.every((p) => Math.abs(parseFloat(p) - parseFloat(first)) <= 1)) continue;
+      }
+    }
+    const children = [...container.children].filter(visible);
+    if (children.length < 3) continue;
+    const rects = children.map((c) => c.getBoundingClientRect());
+    // Skip rows of short elements (chip/icon height < 24px — not card rows).
+    if (Math.max(...rects.map((r) => r.height)) < 24) continue;
+    // Only check true rows: all children share roughly the same top (within 4px).
+    const firstTop = rects[0].top;
+    if (!rects.every((r) => Math.abs(r.top - firstTop) <= 4)) continue;
+    // Skip intentionally asymmetric layouts (max/min width ratio > 1.5).
+    const widths = rects.map((r) => r.width);
+    const minW = Math.min(...widths), maxW = Math.max(...widths);
+    if (minW < 2 || maxW / minW > 1.5) continue;
+    // Width equality ±1px
+    for (const r of rects) {
+      if (Math.abs(r.width - rects[0].width) > 1) {
+        const cls = (container.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+        out.push(`grid-equality width: <${container.tagName.toLowerCase()}.${cls}> children widths differ: ${r2(r.width)} vs ${r2(rects[0].width)}`);
+        break;
+      }
+    }
+    // Vertical centre alignment ±2px
+    const centres = rects.map((r) => r.top + r.height / 2);
+    for (const c of centres) {
+      if (Math.abs(c - centres[0]) > 2) {
+        const cls = (container.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+        out.push(`grid-equality centre: <${container.tagName.toLowerCase()}.${cls}> row centres misaligned: ${r2(c)} vs ${r2(centres[0])}`);
+        break;
+      }
+    }
+  }
+  return out;
+}
+
+// LEGEND LAW: if any element carries a categoricalMark class fragment (border-l-red-600,
+// border-l-blue-500, border-l-teal-500), assert a legend element with legendChip classes exists.
+// legendChip fragments: (bg-red-600 OR bg-blue-500 OR bg-teal-500) + (w-3 h-3)
+function legendLaw(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return null;
+  const markFragments = ['border-l-red-600', 'border-l-blue-500', 'border-l-teal-500'];
+  const chipColors = ['bg-red-600', 'bg-blue-500', 'bg-teal-500'];
+  const hasMark = [...tab.querySelectorAll('*')].some((el) => {
+    const cn = (el.className || '').toString();
+    return markFragments.some((f) => cn.includes(f));
+  });
+  if (!hasMark) return null; // no categorical marks — no legend required
+  const hasLegend = [...tab.querySelectorAll('*')].some((el) => {
+    const cn = (el.className || '').toString();
+    return cn.includes('w-3') && cn.includes('h-3') && chipColors.some((c) => cn.includes(c));
+  });
+  return hasLegend ? null : 'legend law: tab has categoricalMark elements but no legendChip found';
+}
+
+// MOTION LAW: sample up to 30 interactive elements. Each must have:
+//   - a focus-visible ring class in its className
+//   - a computed transition-duration between 100ms and 300ms (or motion-reduce handling)
+function motionLaw(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const RING_FRAGMENTS = ['focus-visible:ring', 'focus-visible:outline-none'];
+  const candidates = [...tab.querySelectorAll('button, a, [role="button"]')]
+    .filter((el) => {
+      const r = el.getBoundingClientRect();
+      const s = getComputedStyle(el);
+      return r.width > 1 && r.height > 1 && s.display !== 'none' && s.visibility !== 'hidden';
+    })
+    .slice(0, 30);
+  for (const el of candidates) {
+    const cn = (el.className || '').toString();
+    const hasFocusRing = RING_FRAGMENTS.some((f) => cn.includes(f));
+    // Parse transition-duration: '0.15s' → 150ms
+    const tdRaw = getComputedStyle(el).transitionDuration || '';
+    const tdMs = tdRaw.split(',').map((s) => {
+      s = s.trim();
+      if (s.endsWith('ms')) return parseFloat(s);
+      if (s.endsWith('s')) return parseFloat(s) * 1000;
+      return 0;
+    });
+    // motion-reduce collapse to 0ms is allowed (check motion-reduce class or duration=0)
+    const hasReduceClass = cn.includes('motion-reduce:transition-none') || cn.includes('motion-reduce:');
+    const maxDur = Math.max(...tdMs);
+    const transitionOk = (maxDur >= 100 && maxDur <= 300) || (maxDur === 0 && hasReduceClass) || hasReduceClass;
+    if (!hasFocusRing || !transitionOk) {
+      const sel = `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${cn ? '.' + cn.split(' ').filter(Boolean).slice(0, 2).join('.') : ''}`;
+      const reasons = [];
+      if (!hasFocusRing) reasons.push('no focus-visible ring');
+      if (!transitionOk) reasons.push(`transition-duration ${tdRaw || '0s'} (need 100-300ms or motion-reduce)`);
+      out.push(`motion law: ${sel} — ${reasons.join('; ')}`);
+    }
+  }
+  return out;
+}
+
 async function auditTab(browser, tab) {
   const { id: tabId, navLabel } = tab;
+  const exemptions = (ledger.exemptions || {})[tabId] || [];
   const prefix = (label) => `[${tabId} ${label}]`;
 
   // --- 1440px, light: geometry + boxes + radii + horizontal scroll (+ PC extras) ---
@@ -174,6 +318,34 @@ async function auditTab(browser, tab) {
       const banner = await page.evaluate(draftBannerState);
       if (!banner.ok) problems.push(`${prefix('1440 light')} draft banner not visibly distinct: ${JSON.stringify(banner)}`);
     }
+
+    // D4b: HEIGHT BUDGET (light, 1440×900)
+    if (!exemptions.includes('height-budget')) {
+      const hb = await page.evaluate(heightBudget, tabId);
+      // Log ratio in a comment-style (goes to stderr/devnull unless failing).
+      if (hb.ratio !== null && !hb.ok) {
+        problems.push(`${prefix('1440 light')} height budget: scrollHeight ratio ${hb.ratio} > 2.0`);
+      }
+      // Always capture ratio for report (write to process.stderr so stdout stays clean on PASS)
+      if (hb.ratio !== null) process.stderr.write(`height-ratio: [${tabId}] ${hb.ratio}\n`);
+    }
+
+    // D4b: GRID EQUALITY (light, 1440px)
+    if (!exemptions.includes('grid-equality')) {
+      for (const p of await page.evaluate(gridEquality, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
+    // D4b: LEGEND LAW (light)
+    if (!exemptions.includes('legend-law')) {
+      const ll = await page.evaluate(legendLaw, tabId);
+      if (ll) problems.push(`${prefix('1440 light')} ${ll}`);
+    }
+
+    // D4b: MOTION LAW (light)
+    if (!exemptions.includes('motion-law')) {
+      for (const p of await page.evaluate(motionLaw, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
     await ctx.close();
   }
   // --- 1440px, dark: boxes + radii (+ PC banner) ---

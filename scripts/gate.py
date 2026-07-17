@@ -170,6 +170,15 @@ DESIGN_BANNED = [
         r"(?:(?:[\w-]+:)*)?(?:text|bg|border|from|via|to|ring)"
         r"-(?:purple|pink|indigo|violet|fuchsia)-\d"
     )),
+    # Blue/brown-tinted "gray" families banned at ALL shades (50–950) in migrated files.
+    # Neutral surfaces must come from tokens, not Tailwind's chromatic-gray scales.
+    ("blue-tinted-neutral (slate/zinc/stone)", re.compile(
+        r"(?:[\w-]*:)*(?:bg|from|via|to|border|text|ring)-(?:slate|zinc|stone)-\d{2,3}"
+    )),
+    # Raw gray surface classes banned in migrated files — use token bg-page/bg-surface/bg-tint.
+    ("gray-surface (use tokens)", re.compile(
+        r"(?:[\w-]*:)*(?:bg|from|via|to)-gray-\d{2,3}"
+    )),
     ("legacy-surface (bg-white + dark:bg-gray-800)", re.compile(
         r"bg-white\b.*\bdark:bg-gray-800\b|\bdark:bg-gray-800\b.*\bbg-white\b"
     )),

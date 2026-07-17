@@ -3,6 +3,7 @@ import { AlertCircle, Download, Copy, Check, ExternalLink } from 'lucide-react';
 import { productComparisons, isComparisonDraft } from '../data/productComparisons';
 import SharedSpineLedger from './SharedSpineLedger';
 import { buildLedgerModel } from '../lib/ledgerModel';
+import { interactive } from '../lib/styleTokens';
 
 /**
  * ProductComparisonView — the Product Comparison tab, structured as THREE BEATS top to bottom so a
@@ -69,7 +70,7 @@ function ProductCell({ cell, kind }) {
           target="_blank"
           rel="noopener"
           title={cell.sourceLabel || 'Open source'}
-          className="inline-flex items-start gap-1 text-xs font-medium text-link hover:underline"
+          className={`inline-flex items-start gap-1 text-xs font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
         >
           <ExternalLink size={12} className="mt-0.5 flex-shrink-0" />
           <span>{cell.sourceLabel || 'Source'}</span>
@@ -328,14 +329,14 @@ export default function ProductComparisonView() {
           <button
             onClick={handleDownloadPng}
             disabled={pngBusy}
-            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-card border border-edge text-ink hover:bg-tint transition-colors disabled:opacity-60"
+            className={`inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-card border border-edge text-ink hover:bg-tint ${interactive.transition} ${interactive.focusRing} disabled:opacity-60`}
           >
             <Download size={16} />
             {pngBusy ? 'Exporting…' : 'Export PNG'}
           </button>
           <button
             onClick={handleCopy}
-            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-card border border-edge text-ink hover:bg-tint transition-colors"
+            className={`inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-card border border-edge text-ink hover:bg-tint ${interactive.transition} ${interactive.focusRing}`}
           >
             {copyDone ? <Check size={16} /> : <Copy size={16} />}
             {copyDone ? 'Copied' : 'Copy summary'}
@@ -364,7 +365,7 @@ export default function ProductComparisonView() {
               <button
                 key={toggle.id}
                 onClick={() => setView(toggle.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 font-medium text-sm transition-colors border-b-2 ${
+                className={`flex items-center gap-2 px-4 py-2.5 font-medium text-sm border-b-2 ${interactive.transition} ${interactive.focusRing} ${
                   view === toggle.id
                     ? 'border-accent text-link'
                     : 'border-transparent text-muted hover:text-ink'
@@ -391,7 +392,7 @@ export default function ProductComparisonView() {
                   href={link.url}
                   target="_blank"
                   rel="noopener"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-link hover:underline"
+                  className={`inline-flex items-center gap-2 text-sm font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
                 >
                   <ExternalLink size={14} className="flex-shrink-0" />
                   <span>{link.label}</span>
