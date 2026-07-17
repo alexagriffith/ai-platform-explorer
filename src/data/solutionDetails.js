@@ -78,7 +78,7 @@ export const solutionDetails = {
   },
   'rhoai': {
     name: 'Red Hat OpenShift AI (RHOAI)',
-    description: 'Comprehensive AI/ML platform for the full machine learning lifecycle, including model development, training, serving, and fine-tuning with InstructLab',
+    description: 'Comprehensive AI/ML platform for the full machine learning lifecycle, including model development, training, serving, and model fine-tuning.',
     requirements:
       'Requires a supported Red Hat OpenShift footprint. Confirm version compatibility, GPU scheduling, and storage classes with your platform team.',
     architecture: {
@@ -86,8 +86,7 @@ export const solutionDetails = {
         { name: 'Workbenches', role: 'Development', description: 'Multi-user notebook environments (managed by the Kubeflow notebook controller) with GPU support and custom images' },
         { name: 'Data Science Pipelines', role: 'MLOps', description: 'Kubeflow Pipelines (KFP) for workflow orchestration' },
         { name: 'Model Serving (KServe)', role: 'Inference', description: 'Multi-framework serving with auto-scaling' },
-        { name: 'Distributed Workloads', role: 'Training', description: 'CodeFlare/Ray for distributed training' },
-        { name: 'InstructLab', role: 'Fine-Tuning', description: 'LAB-based synthetic data generation and model fine-tuning' },
+        { name: 'Distributed Workloads', role: 'Training', description: 'Kubeflow Trainer v2, CodeFlare, and Ray for distributed training' },
         { name: 'Dashboard', role: 'Management', description: 'Unified UI for projects and resources' }
       ],
       integrations: [
@@ -102,8 +101,7 @@ export const solutionDetails = {
       'Jupyter notebooks with GPU scheduling',
       'Pipeline-based ML workflows (KFP)',
       'Multi-framework model serving (TensorFlow, PyTorch, ONNX, etc.)',
-      'Distributed training across multiple GPUs/nodes',
-      'InstructLab integration: LAB-based fine-tuning with synthetic data generation',
+      'Distributed training across multiple GPUs/nodes (Kubeflow Trainer v2)',
       'Document processing: PDF, docx, pptx, md, html, plain text',
       'Optical character recognition (OCR) for image-based text and automatic speech recognition (ASR) for audio conversion',
       'Experiment tracking and versioning',
@@ -116,7 +114,7 @@ export const solutionDetails = {
       'Production model deployment and serving',
       'Distributed training of large models',
       'Retrieval-augmented generation (RAG) applications',
-      'Fine-tuning with InstructLab',
+      'Model fine-tuning and distributed training',
       'MLOps automation and governance'
     ],
     documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5',
@@ -193,8 +191,6 @@ export const solutionDetails = {
         { name: 'Taxonomy System', role: 'Knowledge Organization', description: 'Structured approach to defining skills and knowledge' }
       ],
       integrations: [
-        { name: 'RHEL AI', purpose: 'Bundled for single-server fine-tuning' },
-        { name: 'OpenShift AI', purpose: 'Distributed multi-phase training pipelines' },
         { name: 'Model Registry', purpose: 'Version fine-tuned models' }
       ]
     },
@@ -744,41 +740,36 @@ export const solutionDetails = {
   },
   'rhel-ai': {
     name: 'Red Hat Enterprise Linux AI',
-    description: 'Granite foundation models and InstructLab on individual RHEL servers for single-node inference and fine-tuning. Single-server only - not for distributed training or production-scale deployments (use OpenShift AI or the Red Hat AI path for standard Kubernetes instead).',
+    description: 'A generative AI inference platform for Linux environments, delivered as a portable bootc image built on Red Hat Enterprise Linux (RHEL). Uses the vLLM engine for LLM inference and the Red Hat AI Model Optimization Toolkit (llm-compressor) for model quantization and compression. Runs on bare metal or virtual machines — no Kubernetes required.',
     architecture: {
       components: [
-        { name: 'Granite Models', role: 'Foundation Models', description: 'Pre-trained IBM Granite LLMs optimized for enterprise use' },
-        { name: 'InstructLab Runtime', role: 'Fine-Tuning', description: 'LAB-based model alignment on single RHEL server' },
-        { name: 'vLLM Server', role: 'Inference', description: 'High-performance LLM serving on RHEL' },
-        { name: 'Model Manager', role: 'Lifecycle', description: 'Manage models and runtime configurations on RHEL' }
+        { name: 'Red Hat AI Inference (vLLM)', role: 'Inference', description: 'High-throughput LLM serving via the vLLM engine, exposed as an OpenAI-compatible API via a systemd Quadlet service' },
+        { name: 'Red Hat AI Model Optimization Toolkit', role: 'Model Compression', description: 'llm-compressor for model quantization, sparsity, and compression (CUDA image available; check with Red Hat for other accelerators)' },
+        { name: 'Bootc Image', role: 'Delivery', description: 'Portable RHEL-based bootc container image for bare metal and VM deployment' }
       ],
       integrations: [
         { name: 'RHEL Subscription', purpose: 'Base operating system and support' },
         { name: 'Podman', purpose: 'Container runtime for model serving' },
-        { name: 'systemd', purpose: 'Service management for inference endpoints' }
+        { name: 'systemd', purpose: 'Service management for inference endpoints (rhaiis Quadlet service)' }
       ]
     },
     capabilities: [
-      'Granite family foundation models in a range of sizes',
-      'InstructLab for single-server fine-tuning with LAB method',
-      'vLLM-based inference serving on RHEL',
-      'No Kubernetes/OpenShift required',
-      'Optimized for edge and single-server deployments',
-      'Single-node only - not for distributed training or production-scale serving',
+      'LLM inference via vLLM with OpenAI-compatible API (/v1/completions)',
+      'Model quantization, sparsity, and compression via Red Hat AI Model Optimization Toolkit (llm-compressor)',
+      'Pre-optimized validated models',
+      'Model loading from Hugging Face models, ModelCar container images, or OCI artifact images',
+      'No Kubernetes or OpenShift required — runs on bare metal or VMs',
       'RHEL security and compliance features',
-      'Support for NVIDIA GPUs on RHEL',
-      'Synthetic data generation with InstructLab',
-      'Model quantization for reduced resource usage'
+      'NVIDIA GPU support (CUDA); AMD GPU support (ROCm) for inference only'
     ],
     useCases: [
-      'Edge AI deployments without Kubernetes',
-      'Single-server LLM inference',
-      'Department-level AI without platform overhead',
-      'Fine-tuning on individual workstations or servers',
-      'Air-gapped environments on RHEL',
-      'Development and testing before scaling to RHOAI'
+      'LLM inference on bare metal or virtual machines without Kubernetes',
+      'Edge and air-gapped deployments on RHEL',
+      'Model quantization and compression before deployment',
+      'Linux-native AI serving for teams without an OpenShift footprint',
+      'Development and testing before scaling to Red Hat OpenShift AI'
     ],
-    documentation: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai/1.5',
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai/3.2',
     contacts: ['Ask your Red Hat account team.']
   },
   'batch-gateway': {

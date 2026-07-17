@@ -124,7 +124,7 @@ export default function AcronymGlossary() {
     {
       acronym: 'llm-d',
       fullName: 'llm-d (a project name, not an acronym — the "d" stands for distributed)',
-      explanation: 'A distributed-inference serving layer that adds key-value cache (KV-cache)-aware routing, prefill/decode disaggregation, and SLO-aware autoscaling on top of model servers such as vLLM.',
+      explanation: 'A distributed-inference serving layer that adds key-value cache (KV-cache)-aware routing, prefill/decode disaggregation, and service-level-objective (SLO)-aware autoscaling on top of model servers such as vLLM.',
       whenToUse: 'When the routing story or inference-server bill of materials mentions distributed inference, KV-cache-aware scheduling, or prefill/decode split.'
     }
   ];

@@ -47,17 +47,17 @@ export const products = [
   {
     id: 'rhel-ai',
     name: 'Red Hat Enterprise Linux AI (RHEL AI)',
-    description: 'Foundation model platform for running large language models (LLMs) on individual RHEL servers. Single-node only. InstructLab-focused fine-tuning and serving. Not for distributed training or production-scale deployments (use OpenShift AI or the Red Hat AI path for standard Kubernetes instead).',
+    description: 'A generative AI inference platform for Linux environments. Delivered as a portable bootc image built on Red Hat Enterprise Linux (RHEL). Uses the vLLM engine for LLM inference and includes the Red Hat AI Model Optimization Toolkit (llm-compressor) for model quantization and compression. Runs on bare metal or virtual machines — no Kubernetes required.',
     category: 'Model Platform',
     status: 'GA',
     layer: 'platform',
     required: false,
-    connections: ['llama-stack-distribution', 'instructlab'],
-    useCases: ['InstructLab fine-tuning', 'Edge deployments', 'Development environments', 'Single-server serving'],
-    customerProfile: ['Edge deployments', 'Developers', 'Small teams', 'Single-node use cases'],
-    deploymentPattern: 'Single RHEL server (not distributed)',
+    connections: ['llama-stack-distribution'],
+    useCases: ['LLM inference on bare metal or VMs', 'Edge and air-gapped deployments', 'Model quantization and compression', 'Linux-native AI serving without Kubernetes'],
+    customerProfile: ['Edge deployments', 'Developers', 'Small teams', 'Linux infrastructure teams'],
+    deploymentPattern: 'Bare metal or VM (RHEL, no container orchestration required)',
     resources: {
-      docs: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai'
+      docs: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_ai/3.2'
     }
   },
   {
@@ -134,12 +134,12 @@ export const products = [
   {
     id: 'instructlab',
     name: 'InstructLab',
-    description: 'Alignment and fine-tuning using synthetic data and the LAB method (often paired with RHEL AI or OpenShift AI).',
+    description: 'An open source framework for model alignment and fine-tuning using synthetic data generation and the LAB method. Confirm availability and supported integration path with your Red Hat account team.',
     category: 'Training / Alignment',
     status: 'GA',
     layer: 'services',
     required: false,
-    connections: ['rhel-ai', 'rhoai'],
+    connections: ['rhoai'],
     resources: {
       docs: 'https://docs.redhat.com'
     }

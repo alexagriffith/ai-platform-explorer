@@ -46,7 +46,6 @@ const PENDING = 'Pending curation — confirm with your Red Hat account team';
 const ODH = 'https://github.com/opendatahub-io/opendatahub-operator/blob/2e3c4206e9a35fb9cbe5eaacf257695560520e83';
 const gam = (line) => `${ODH}/get_all_manifests.sh${line ? `#L${line}` : ''}`;
 const dsc = (line) => `${ODH}/api/datasciencecluster/v2/datasciencecluster_types.go${line ? `#L${line}` : ''}`;
-const cpe = (line) => `${ODH}/component-params-env.yaml${line ? `#L${line}` : ''}`;
 const vllm = (line) => `https://github.com/vllm-project/vllm/blob/ee0da84ab9e04ac7610e28580af62c365e898389/README.md${line ? `#L${line}` : ''}`;
 
 const SRC = {
@@ -346,7 +345,7 @@ export const aiInferenceVsRhoai = {
       },
       b: {
         support: 'yes',
-        detail: 'Via KServe — Horizontal Pod Autoscaler (HPA), KEDA, or Knative',
+        detail: 'Via KServe (RawDeployment mode) — Horizontal Pod Autoscaler (HPA) or KEDA',
         tier: 'clear',
         sourceUrl: dsc(43),
         sourceLabel: 'opendatahub-operator DataScienceCluster v2 API — "Only RawDeployment mode is supported" (HPA/KEDA; not Knative)'
@@ -367,9 +366,9 @@ export const aiInferenceVsRhoai = {
       b: {
         support: 'confirm',
         detail: 'Red Hat AI Gateway integration — confirm availability and scope with your Red Hat account team',
-        tier: 'clear',
+        tier: 'inferred',
         sourceUrl: gam(54),
-        sourceLabel: 'opendatahub-operator get_all_manifests.sh — maas (Models-as-a-Service; RHCL/Kuadrant-backed)'
+        sourceLabel: 'opendatahub-operator get_all_manifests.sh — maas-billing operator present (billing/metering component; user-facing MaaS gateway scope unconfirmed)'
       },
       overlap: true,
       illustrative: true,
@@ -438,8 +437,8 @@ export const aiInferenceVsRhoai = {
     {
       capability: 'Model registry integration',
       a: {
-        support: 'yes',
-        detail: 'Integrates with Model Registry',
+        support: 'no',
+        detail: 'Model Registry is not part of the Red Hat AI Inference Server bill of materials; model-registry images ship under rhoai/ only',
         status: 'Tech Preview',
         tier: 'inferred',
         sourceUrl: SRC.rhoaiCatalog,
@@ -469,10 +468,10 @@ export const aiInferenceVsRhoai = {
       },
       b: {
         support: 'yes',
-        detail: 'InstructLab — alignment and fine-tuning using synthetic data and the LAB method',
-        tier: 'clear',
-        sourceUrl: cpe(20),
-        sourceLabel: 'opendatahub-operator component-params-env.yaml — "Removed with InstrutLab pipeline removal since RHOAI 3.0" (now Kubeflow Trainer v2)'
+        detail: 'Distributed fine-tuning via Kubeflow Trainer v2 (included in Red Hat OpenShift AI). InstructLab fine-tuning pipelines removed since Red Hat OpenShift AI 3.0; current fine-tuning path is Kubeflow Trainer v2. Confirm current options with your Red Hat account team.',
+        tier: 'inferred',
+        sourceUrl: gam(53),
+        sourceLabel: 'opendatahub-operator get_all_manifests.sh — trainer (Kubeflow Trainer v2, included in RHOAI)'
       },
       overlap: false,
       illustrative: true,
