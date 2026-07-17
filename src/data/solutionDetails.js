@@ -401,7 +401,8 @@ export const solutionDetails = {
         { name: 'Ingestion Pipeline', role: 'Validation', description: 'MCP server ingestion workflow' }
       ],
       integrations: [
-        { name: 'Partner MCP Servers', purpose: 'Confluent, MongoDB, Elastic, Azure, AWS, Google Cloud' },
+        { name: 'Technology Partner MCP Servers', purpose: 'Confluent Cloud, EDB Postgres AI, HashiCorp (Terraform), Microsoft Azure, Dynatrace, Elastic' },
+        { name: 'Community MCP Servers', purpose: 'MongoDB, MariaDB, PostgreSQL, GitHub, GitLab' },
         { name: 'Model Serving', purpose: 'Connect models to external tools' },
         { name: 'AI Gateway', purpose: 'Authentication and policy enforcement' }
       ]
