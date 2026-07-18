@@ -320,7 +320,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
                 onChange={(e) => updateEnv('requiresCompliance', e.target.checked)}
                 className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className={`${typeScale.secondary} ${text.ink}`}>Regulatory Compliance (HIPAA, SOC2)</span>
+              <span className={`${typeScale.secondary} ${text.ink}`}>Regulatory Compliance (HIPAA — Health Insurance Portability and Accountability Act; SOC 2 — System and Organization Controls 2)</span>
             </label>
             <label className={`flex items-center gap-2 cursor-pointer pt-2 ${interactive.transition}`}>
               <input
