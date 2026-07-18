@@ -107,7 +107,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-4 items-start">
         {/* Existing Infrastructure */}
         <div data-ui="card" className={`bg-surface rounded-card border ${border.hair} ${density.panelPad}`}>
           <h3 className={`${typeScale.componentName} ${text.ink} mb-3 flex items-center gap-2`}>

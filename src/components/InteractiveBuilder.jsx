@@ -199,7 +199,11 @@ function CapabilitySelector({
                             {option.name}
                           </span>
                           {disabled && (
-                            <span data-ui="chip" className={`px-2 py-0.5 bg-page ${text.muted} border border-edge text-xs rounded-card`}>
+                            <span
+                              data-ui-exempt="disabled-constraint-indicator"
+                              className={`px-2 py-0.5 bg-page text-faint border border-dashed border-edge text-xs rounded-card italic`}
+                              title="Not available with the current platform selection"
+                            >
                               N/A
                             </span>
                           )}
@@ -222,7 +226,9 @@ function CapabilitySelector({
                         {/* Spacer to preserve layout alignment with the sibling guide button */}
                         {guide && <div className="w-8 flex-shrink-0" aria-hidden="true" />}
                       </div>
-                      {!option.name.includes(option.provider) && (
+                      {/* Redundancy law: suppress Provider line when a badge already says it
+                          (Customer badge shown, or option name already contains the provider name). */}
+                      {!option.isCustomer && !option.name.includes(option.provider) && (
                         <div className={`text-sm ${text.muted} mb-1`}>
                           Provider: <span className="font-semibold">{option.provider}</span>
                         </div>
@@ -399,6 +405,10 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
       (sum, layer) => sum + Object.keys(layer).length,
       0
     );
+    // Count only layers with at least one selection (matches what is rendered below).
+    const nonEmptyLayerCount = Object.values(builtLayers).filter(
+      (layer) => Object.keys(layer).length > 0
+    ).length;
 
     return (
       <div className="space-y-6">
@@ -417,7 +427,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
           </div>
           <div className="flex gap-4 mb-4">
             <div className="rounded-card bg-tint px-4 py-2 text-center">
-              <div className={`text-2xl font-bold ${text.ink}`}>{buildOrder.length}</div>
+              <div className={`text-2xl font-bold ${text.ink}`}>{nonEmptyLayerCount}</div>
               <div className={`text-sm ${text.muted}`}>Layers configured</div>
             </div>
             <div className="rounded-card bg-tint px-4 py-2 text-center">
