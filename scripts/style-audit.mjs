@@ -1632,6 +1632,47 @@ const STATES_TABLE = [
     },
   },
 
+  {
+    // GATE-BLIND FIX: walk the AcronymGlossary modal (App-level, header button).
+    // The modal renders outside any [data-tab] scope; the opener is documented here so
+    // MODAL_COVERAGE knows it has an associated walker state. Tab-scoped geometry checks
+    // do not reach the overlay DOM — this opener exists for coverage completeness.
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'acronym-glossary-modal', label: 'architecture / AcronymGlossary modal',
+    screenshotName: 'architecture--acronym-glossary-modal',
+    themes: ['light'],
+    assertTarget: '[data-ui="overlay"]',
+    open: async (page) => {
+      // Click the "Acronym Guide" button in the app header (always visible, not tab-scoped)
+      const glossaryBtn = page.locator('button[aria-label="Open Acronym Guide"]').first();
+      if (await glossaryBtn.count() > 0) {
+        await glossaryBtn.click();
+        await page.waitForTimeout(400);
+      }
+    },
+  },
+  {
+    // GATE-BLIND FIX (M-1 new): walk the CustomerConfig 'Preview workshop suggestions' modal
+    // so nested-box + card-text checks run on its overlay DOM.
+    // Coverage: architecture/Generate from Environment → click 'Preview workshop suggestions'.
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'customer-config-preview-modal', label: 'architecture / CustomerConfig preview-suggestions modal',
+    screenshotName: 'architecture--customer-config-preview-modal',
+    themes: ['light'],
+    assertTarget: '[data-ui="overlay"]',
+    open: async (page) => {
+      // Switch to Generate from Environment mode
+      await page.locator('[data-tab="architecture"] button').filter({ hasText: /generate from environment/i }).first().click();
+      await page.waitForTimeout(400);
+      // Click 'Preview workshop suggestions' button to open the modal
+      const previewBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /preview workshop suggestions/i }).first();
+      if (await previewBtn.count() > 0) {
+        await previewBtn.click();
+        await page.waitForTimeout(400);
+      }
+    },
+  },
+
   // ── DECISIONS ─────────────────────────────────────────────────────────────
   {
     tab: 'decisions', navLabel: 'Decision Guides',
@@ -1838,6 +1879,29 @@ const STATES_TABLE = [
     },
   },
   {
+    // GATE-BLIND FIX: walk the ResourceTreeView detail panel overlay so nested-box checks run on it.
+    // Coverage: deployment-impact / Resource Tree sub-view → click a resource kind to open the detail panel.
+    tab: 'deployment-impact', navLabel: 'Deployment Impact',
+    state: 'resource-detail-panel', label: 'deployment-impact / ResourceTreeView detail panel',
+    screenshotName: 'deployment-impact--resource-detail-panel',
+    themes: ['light'],
+    assertTarget: '[data-ui="overlay"]',
+    open: async (page) => {
+      const firstCard = page.locator('[data-tab="deployment-impact"] [data-ui="card"]').first();
+      if (await firstCard.count() > 0) await firstCard.click();
+      await page.waitForTimeout(400);
+      const resourceTab = page.locator('[data-tab="deployment-impact"] button').filter({ hasText: /resource tree/i }).first();
+      if (await resourceTab.count() > 0) await resourceTab.click();
+      await page.waitForTimeout(400);
+      // Click the first resource kind button (font-mono underline-dotted) to open the detail panel
+      const resourceKindBtn = page.locator('[data-tab="deployment-impact"] button.font-mono, [data-tab="deployment-impact"] [data-ui="control"].font-mono').first();
+      if (await resourceKindBtn.count() > 0) {
+        await resourceKindBtn.click();
+        await page.waitForTimeout(400);
+      }
+    },
+  },
+  {
     tab: 'deployment-impact', navLabel: 'Deployment Impact',
     state: 'comparison-capabilities', label: 'deployment-impact / Capability Delta sub-view',
     screenshotName: 'deployment-impact--comparison-capabilities',
@@ -1879,6 +1943,78 @@ const STATES_TABLE = [
     },
   },
 ];
+
+// ─── MODAL_COVERAGE registry ──────────────────────────────────────────────────
+//
+// Explicit map: overlay-rendering component → the STATES_TABLE state key(s) that
+// open its overlay. Every component that renders <div data-ui="overlay"> or an
+// equivalent modal/dialog must appear here. If a component has no entry, the check
+// below FAILS loudly naming the uncovered component — this is how "modal exists but
+// is never walked" becomes a red gate, closing the gate-blind-modal class.
+//
+// Maintenance: when a new overlay-rendering component is added, add its entry here
+// AND a corresponding entry in STATES_TABLE with assertTarget: '[data-ui="overlay"]'.
+// Run with --self-test to verify the check fires on a deliberately removed entry.
+//
+const MODAL_COVERAGE = [
+  {
+    component: 'AcronymGlossary',
+    stateKeys: ['acronym-glossary-modal'],
+    note: 'App-level header button; overlay outside tab scope — opener documents coverage',
+  },
+  {
+    component: 'CapabilityConfigurationModal',
+    stateKeys: ['configure-modal', 'configure-modal-reliable'],
+    note: 'Build Your Stack — click capability card then Configure/Change',
+  },
+  {
+    component: 'CustomerConfig (preview-suggestions modal)',
+    stateKeys: ['customer-config-preview-modal'],
+    note: 'Architecture / Generate from Environment → Preview workshop suggestions',
+  },
+  {
+    component: 'DeepDiveModal',
+    stateKeys: ['deep-dive-modal'],
+    note: 'Interactive Builder completion → click Red Hat chip',
+  },
+  {
+    component: 'FlowVisualization',
+    stateKeys: ['flow-viz-modal'],
+    note: 'Interactive Builder completion → See Data Flow button',
+  },
+  {
+    component: 'ResourceTreeView (detail panel)',
+    stateKeys: ['resource-detail-panel'],
+    note: 'Deployment Impact / Resource Tree → click resource kind button',
+  },
+];
+
+// Static check: every MODAL_COVERAGE entry must have at least one STATES_TABLE entry
+// whose state key matches. Run at script startup — no browser needed.
+// Returns array of failure strings; caller decides whether to exit.
+function checkModalCoverage(table) {
+  const stateKeySet = new Set(table.map((s) => s.state));
+  const failures = [];
+  for (const entry of MODAL_COVERAGE) {
+    const missing = entry.stateKeys.filter((k) => !stateKeySet.has(k));
+    if (missing.length > 0) {
+      failures.push(
+        `modal-coverage: ${entry.component} has no walker opener — ` +
+        `state key(s) [${missing.join(', ')}] not found in STATES_TABLE`
+      );
+    }
+  }
+  return failures;
+}
+
+function assertModalCoverage() {
+  const failures = checkModalCoverage(STATES_TABLE);
+  if (failures.length > 0) {
+    for (const f of failures) console.log(f);
+    process.exit(1);
+  }
+}
+assertModalCoverage();
 
 // ─── runChecksOnPage — shared check runner (resting or interaction state) ─────
 //
@@ -2628,6 +2764,33 @@ async function runSelfTest() {
     process.stderr.write('SELF-TEST phase-9 OK: orphan-row 834px plant removed\n');
 
     await ctx834.close();
+
+    // ── PHASE 10: modal-coverage self-test ────────────────────────────────────
+    // Remove one MODAL_COVERAGE entry from a temporary copy of STATES_TABLE,
+    // confirm checkModalCoverage reports the missing entry, then verify the real
+    // table passes clean.
+    const truncatedTable = STATES_TABLE.filter((s) => s.state !== 'customer-config-preview-modal');
+    const mcFail = checkModalCoverage(truncatedTable);
+    const mcCaught = mcFail.some((s) => s.includes('CustomerConfig') && s.includes('customer-config-preview-modal'));
+    if (!mcCaught) {
+      process.stderr.write(`SELF-TEST FAIL: modal-coverage did NOT catch removed customer-config-preview-modal entry\n`);
+      process.stderr.write(`  checkModalCoverage output: ${mcFail.join(' | ') || '(none)'}\n`);
+      await browser.close();
+      process.exit(1);
+    }
+    const mcFailureLine = mcFail.find((s) => s.includes('CustomerConfig'));
+    process.stdout.write(`SELF-TEST modal-coverage failure line: ${mcFailureLine}\n`);
+    process.stderr.write(`SELF-TEST phase-10 OK: modal-coverage caught missing opener (${mcFail.length} failure(s))\n`);
+
+    // Confirm real table passes
+    const mcClean = checkModalCoverage(STATES_TABLE);
+    if (mcClean.length > 0) {
+      process.stderr.write(`SELF-TEST FAIL: modal-coverage reports failures on live STATES_TABLE: ${mcClean.join(' | ')}\n`);
+      await browser.close();
+      process.exit(1);
+    }
+    process.stderr.write('SELF-TEST phase-10b OK: modal-coverage clean on live STATES_TABLE\n');
+
     process.stderr.write('SELF-TEST PASS (all phases)\n');
   } finally {
     await browser.close();

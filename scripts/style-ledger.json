@@ -75,8 +75,8 @@
     ]
   },
   "stateWalkerBaseline": {
-    "_note": "Updated design-fixes: 5 new gap states added (CapabilityConfigurationModal reliable, IB step-3, deep-dive modal, catalog Details disclosure, FlowViz modal). 31 total theme-runs. notExercisedMax=0 means any new skip fails the gate.",
-    "statesVisited": 31,
+    "_note": "modal-coverage: 3 new openers added (AcronymGlossary, CustomerConfig preview-suggestions, ResourceTreeView detail panel). 34 total theme-runs. notExercisedMax=0 means any new skip fails the gate.",
+    "statesVisited": 34,
     "notExercisedMax": 0,
     "strict": true
   },

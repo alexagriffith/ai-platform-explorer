@@ -493,7 +493,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
                   Suggestion preview
                 </h3>
                 <p className={`text-sm ${text.muted} mt-1`}>
-                  Draft only — for facilitator notes. Does not update Build Your Stack or the Products tab.
+                  Draft only — for facilitator notes. Heuristics are intentionally simple; treat this as a conversation starter. Does not update Build Your Stack or the Products tab.
                 </p>
               </div>
               <button
@@ -507,10 +507,6 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
             </div>
 
             <div className="p-4 space-y-4">
-              <div className="rounded-card bg-draft-bg border border-draft-border p-3 text-sm text-draft-fg">
-                Work in progress: heuristics are intentionally simple. Treat this as a conversation starter, not an
-                automated design.
-              </div>
 
               <div>
                 <p className={`text-sm font-semibold ${text.ink} mb-2`}>Suggested products to discuss</p>
