@@ -1573,6 +1573,40 @@ const STATES_TABLE = [
       }
     },
   },
+  {
+    // GATE-BLIND FIX: walk the FlowVisualization modal so nested-box + card-text checks run there.
+    // Coverage: architecture/Interactive Builder completion → "See Data Flow" button → modal open.
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'flow-viz-modal', label: 'architecture / FlowVisualization modal (See Data Flow)',
+    screenshotName: 'architecture--flow-viz-modal',
+    themes: ['light'],
+    open: async (page) => {
+      // Switch to Interactive Builder and complete all steps
+      await page.locator('[data-tab="architecture"] button').filter({ hasText: /interactive builder/i }).first().click();
+      await page.waitForTimeout(400);
+      for (let step = 0; step < 10; step++) {
+        const continueBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /continue to next layer|complete stack/i }).first();
+        if (await continueBtn.count() === 0) break;
+        const optionBtn = page.locator('[data-tab="architecture"] [data-ui="card"][role="button"]').first();
+        if (await optionBtn.count() > 0) {
+          await optionBtn.click();
+          await page.waitForTimeout(150);
+        }
+        if (await continueBtn.isEnabled()) {
+          await continueBtn.click();
+          await page.waitForTimeout(200);
+        }
+        if (await page.locator('[data-tab="architecture"]').filter({ hasText: /guided steps complete/i }).count() > 0) break;
+      }
+      await page.waitForTimeout(300);
+      // Open the FlowVisualization modal via the "See Data Flow" button
+      const flowBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /see data flow/i }).first();
+      if (await flowBtn.count() > 0) {
+        await flowBtn.click();
+        await page.waitForTimeout(500);
+      }
+    },
+  },
 
   // ── DECISIONS ─────────────────────────────────────────────────────────────
   {

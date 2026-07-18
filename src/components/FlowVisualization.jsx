@@ -107,7 +107,7 @@ function ComponentBox({
               e.stopPropagation();
               onToggleExpand(isExpanded ? null : component.id);
             }}
-            className={`absolute top-1.5 right-1.5 p-0.5 rounded-card ${interactive.hoverTint} ${interactive.focusRing} z-[1]`}
+            className={`absolute top-1.5 right-1.5 p-0.5 rounded-card ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing} z-[1]`}
             aria-label={isExpanded ? 'Collapse internal view' : 'Expand internal components'}
           >
             {isExpanded ? (
@@ -122,10 +122,17 @@ function ComponentBox({
             <Icon size={14} className="text-accent flex-shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
               <div className={`${typeScale.componentName} ${text.ink} mb-0.5`}>{component.name}</div>
-              {isSuggested && component.suggestionHint && (
-                <p className={`${typeScale.meta} ${text.muted} mb-0.5`}>{component.suggestionHint}</p>
+              {isSuggested ? (
+                component.suggestionHint && (
+                  <p className={`${typeScale.meta} ${text.muted}`}>{component.suggestionHint}</p>
+                )
+              ) : (
+                component.description && (
+                  <div data-disclosure className="hidden" aria-hidden="true">
+                    <p className={`${typeScale.secondary} ${text.muted}`}>{component.description}</p>
+                  </div>
+                )
               )}
-              <div className={`${typeScale.secondary} ${text.muted}`}>{component.description}</div>
               {component.operationsStewardLabel && (
                 <div className={`${typeScale.meta} ${text.faint} border-t border-hair pt-1 mt-1`}>
                   {component.operationsStewardLabel}
@@ -254,6 +261,7 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-label="Architecture flow"
+        data-ui="overlay"
         className="bg-surface rounded-panel border border-edge max-w-6xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
@@ -270,6 +278,7 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 type="button"
+                data-ui="control"
                 onClick={handleExportPng}
                 disabled={exportingPng}
                 className={button.secondary}
@@ -293,8 +302,8 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
           <div className="space-y-0">
             {flow.map((layer, idx) => (
               <div key={layer.layerId}>
-                <div className="rounded-card border border-edge bg-surface px-3 py-2">
-                  <div className="flex items-center gap-2 mb-2">
+                <div className="bg-tint px-3 py-2">
+                  <div className="flex items-center gap-2 mb-2 border-t border-hair pt-2">
                     <div className="w-0.5 h-5 rounded-full bg-accent shrink-0" />
                     <h3 className={`${typeScale.groupLabel} ${text.ink}`}>{layer.layer}</h3>
                     <div className="flex-1 h-px bg-hair" />
@@ -389,7 +398,7 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
               <Crosshair size={13} className={`${text.faint} shrink-0`} />
               <span>
                 Click a box to <strong className={text.ink}>focus</strong> it and its linked neighbors; press{' '}
-                <kbd className={`px-1 py-0.5 rounded-card border border-hair bg-tint ${text.muted} ${typeScale.meta}`}>Esc</kbd> to clear.
+                <kbd data-ui-exempt="keyboard-label" className={`px-1 py-0.5 rounded-card border border-hair bg-tint ${text.muted} ${typeScale.meta}`}>Esc</kbd> to clear.
               </span>
               {focusActive && (
                 <button

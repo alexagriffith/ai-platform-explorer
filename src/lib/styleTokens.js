@@ -172,14 +172,14 @@ export const typeScale = {
  *           partner = hardware / partner / third-party, customer = your organization.
  */
 export const categoricalMark = {
-  /** Red Hat — red left hairline + subtle red tint outline. */
-  redHat: 'border-l-2 border-l-red-600 border border-red-200 dark:border-red-900',
-  /** Open Source — blue left hairline + subtle blue tint outline. */
-  openSource: 'border-l-2 border-l-blue-500 border border-blue-200 dark:border-blue-900',
-  /** Partner / Hardware / Third-party — teal left hairline + subtle teal tint outline. */
-  partner: 'border-l-2 border-l-teal-500 border border-teal-200 dark:border-teal-900',
-  /** Customer / Your organization — neutral outline only (no hue). */
-  customer: 'border border-dashed border-edge',
+  /** Red Hat — red left hairline accent only (1-sided, not a structural box). */
+  redHat: 'border-l-2 border-l-red-600',
+  /** Open Source — blue left hairline accent only (1-sided, not a structural box). */
+  openSource: 'border-l-2 border-l-blue-500',
+  /** Partner / Hardware / Third-party — teal left hairline accent only (1-sided, not a structural box). */
+  partner: 'border-l-2 border-l-teal-500',
+  /** Customer / Your organization — neutral dashed left hairline only (1-sided, not a structural box). */
+  customer: 'border-l-2 border-l-edge border-dashed',
 };
 
 /**
