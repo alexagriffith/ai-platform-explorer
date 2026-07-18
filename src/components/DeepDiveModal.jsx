@@ -125,7 +125,7 @@ export default function DeepDiveModal({ optionId, onClose }) {
                   <div className={`mb-2 ${typeScale.groupLabel} ${text.faint}`}>Core components</div>
                   <div className="flex flex-wrap justify-center gap-2">
                     {components.map((component, idx) => (
-                      <div key={idx} className="rounded-card bg-surface px-2 py-1.5 flex-1 basis-32 min-w-0">
+                      <div key={idx} data-ui="chip" className="rounded-card bg-surface px-2 py-1.5 flex-none">
                         <div className={`${typeScale.secondary} font-bold ${text.ink} mb-0.5`}>
                           {component.name}
                         </div>
@@ -140,7 +140,7 @@ export default function DeepDiveModal({ optionId, onClose }) {
                     <div className={`mb-2 ${typeScale.groupLabel} ${text.faint}`}>External integrations</div>
                     <div className="flex flex-wrap justify-center gap-2">
                       {integrations.map((integration, idx) => (
-                        <div key={idx} className="rounded-card bg-page px-2 py-1.5 flex-1 basis-40 min-w-0">
+                        <div key={idx} data-ui="chip" className="rounded-card bg-page px-2 py-1.5 flex-none">
                           <div className={`${typeScale.secondary} font-semibold ${text.ink} mb-0.5`}>
                             {integration.name}
                           </div>
