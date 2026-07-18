@@ -300,7 +300,7 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
                     <div className="flex-1 h-px bg-hair" />
                   </div>
 
-                  <div className="flex items-start justify-center gap-2 flex-wrap">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 justify-items-center">
                     {layer.components.map((component, cidx) => (
                       <ComponentBox
                         key={`${component.id}-${cidx}`}

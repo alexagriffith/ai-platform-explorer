@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Layers, Package, GitBranch, AlertCircle, GitCompare, Sun, Moon } from 'lucide-react';
+import { Layers, Package, GitBranch, AlertCircle, GitCompare, Sun, Moon, BookOpen } from 'lucide-react';
 import ArchitectureHub from './components/ArchitectureHub';
 import ProductsHub from './components/ProductsHub';
 import DecisionFlowchart from './components/DecisionFlowchart';
@@ -60,6 +60,7 @@ function useTheme() {
 function App() {
   const [currentView, setCurrentView] = useState('architecture');
   const { isDark, toggleTheme } = useTheme();
+  const [acronymOpen, setAcronymOpen] = useState(false);
   const [customerEnv, setCustomerEnv] = useState({
     hasKubernetes: false,
     hasOpenShift: false,
@@ -166,6 +167,15 @@ function App() {
             </span>
             <button
               type="button"
+              onClick={() => setAcronymOpen(true)}
+              aria-label="Open Acronym Guide"
+              className={`flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-card text-muted text-xs font-medium ${interactive.hoverTint} ${interactive.focusRing} ${interactive.transition}`}
+            >
+              <BookOpen size={16} aria-hidden="true" />
+              <span className="hidden sm:inline">Acronym Guide</span>
+            </button>
+            <button
+              type="button"
               onClick={toggleTheme}
               aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
               className={`flex-shrink-0 p-2 rounded-card text-muted ${interactive.hoverTint} ${interactive.focusRing} ${interactive.transition}`}
@@ -222,8 +232,7 @@ function App() {
         </div>
       </nav>
 
-      {/* Main Content — sm:pb-16 reserves space below the fixed Acronym Guide FAB */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:pb-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {renderView()}
       </main>
 
@@ -234,7 +243,7 @@ function App() {
         </div>
       </footer>
 
-      <AcronymGlossary />
+      <AcronymGlossary isOpen={acronymOpen} onClose={() => setAcronymOpen(false)} />
     </div>
   );
 }

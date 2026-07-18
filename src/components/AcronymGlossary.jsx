@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { BookOpen, Search, X } from 'lucide-react';
-import { field, interactive, modal, text, typeScale } from '../lib/styleTokens';
+import { field, interactive, modal, text } from '../lib/styleTokens';
 
-export default function AcronymGlossary() {
+/**
+ * AcronymGlossary modal. Controlled by the caller:
+ *   isOpen   — whether the modal is visible
+ *   onClose  — called when the user dismisses the modal
+ */
+export default function AcronymGlossary({ isOpen, onClose }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
 
   const glossary = [
     {
@@ -136,16 +140,7 @@ export default function AcronymGlossary() {
   );
 
   if (!isOpen) {
-    return (
-      <button
-        aria-label="Open Acronym Guide"
-        onClick={() => setIsOpen(true)}
-        className={`fixed bottom-4 right-4 z-50 hidden sm:flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-on-accent ${typeScale.meta} font-medium ${interactive.transitionAll} ${interactive.focusRing} ${interactive.microElevate} hover:bg-accent-strong`}
-      >
-        <BookOpen size={14} />
-        <span>Acronym Guide</span>
-      </button>
-    );
+    return null;
   }
 
   return (
@@ -159,7 +154,7 @@ export default function AcronymGlossary() {
               <h2 className={`text-2xl font-bold ${text.ink}`}>Acronym Glossary</h2>
             </div>
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={onClose}
               className={`rounded-card p-2 ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
             >
               <X size={24} />

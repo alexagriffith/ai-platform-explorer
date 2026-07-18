@@ -126,7 +126,7 @@ export default function CapabilityDeltaTable({ comparison }) {
         <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted">
           {impactCounts.positive > 0 && (
             <div>
-              <span className="font-medium text-green-600 dark:text-green-400">Positive:</span>{' '}
+              <span className="font-medium text-green-600 dark:text-green-400">{isAlternativeComparison ? 'Advantage:' : 'Improvement:'}</span>{' '}
               {isAlternativeComparison
                 ? `Advantage of ${comparison.after.label}`
                 : 'Clear improvement or new capability'
