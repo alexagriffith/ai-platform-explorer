@@ -775,7 +775,7 @@ export const decisionFlows = {
   },
   storage: {
     title: 'Where Should I Store AI Data?',
-    description: 'Choose the right storage strategy for datasets and models',
+    description: null,
     steps: [
       {
         question: 'Where is your AI platform deployed?',
@@ -1125,7 +1125,7 @@ export const decisionFlows = {
   },
   trainingApproach: {
     title: 'Which Training Approach?',
-    description: 'Choose between fine-tuning options, Distributed Workloads, or Pipelines',
+    description: null,
     steps: [
       {
         question: 'What is your training goal?',
@@ -1302,13 +1302,13 @@ export const decisionFlows = {
   // Reference guides — rendered as embedded components, not decision trees
   fineTuning: {
     title: 'Fine-Tuning vs. Retrieval-Augmented Generation (RAG) vs. Pre-trained',
-    description: 'Decision matrix comparing customization approaches',
+    description: null,
     referenceComponent: 'FineTuningDecisionMatrix',
     steps: []
   },
   security: {
     title: 'AI Security Overview',
-    description: 'Cross-cutting security guidance for Red Hat AI deployments',
+    description: null,
     referenceComponent: 'SecurityOverview',
     steps: []
   }

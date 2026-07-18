@@ -161,7 +161,7 @@ export default function DecisionFlowchart({
 
                 {/* Group Guides — responsive grid: all-on-one-row or all-stacked, never N+1 orphan */}
                 {(() => {
-                  const gridColsMap = { 2: 'grid-cols-1 md:grid-cols-2', 3: 'grid-cols-1 md:grid-cols-3', 4: 'grid-cols-1 md:grid-cols-4' };
+                  const gridColsMap = { 2: 'grid-cols-1 md:grid-cols-2', 3: 'grid-cols-1 md:grid-cols-3', 4: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' };
                   const gridCols = gridColsMap[group.guides.length] || 'grid-cols-1';
                   return (
                     <div className={`grid ${gridCols} gap-2`}>
