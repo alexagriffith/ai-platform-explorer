@@ -128,8 +128,13 @@ export default function ProductExplorer() {
                 </div>
 
                 {/* Progressive disclosure — description, use cases + typical users */}
-                {isExpanded && (
-                  <div data-disclosure="true" className="mt-2 pt-2 border-t border-hair space-y-1.5">
+                <div
+                  data-disclosure="true"
+                  className={`overflow-hidden transition-[max-height,opacity] duration-150 ease-out motion-reduce:transition-none ${
+                    isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  <div className="mt-2 pt-2 border-t border-hair space-y-1.5">
                     <p className={`${typeScale.secondary} ${text.muted}`}>
                       {product.description}
                     </p>
@@ -156,7 +161,7 @@ export default function ProductExplorer() {
                       </div>
                     )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
           );

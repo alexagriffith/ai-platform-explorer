@@ -42,6 +42,18 @@ export default function YAMLDiffView({ comparison }) {
             ? 'Compare the YAML specifications for each platform approach.'
             : 'See how the YAML you write changes when adopting this platform component.'}
         </p>
+        {!isAlternative && (
+          <div className="flex items-center gap-4 mt-1.5" aria-label="Color legend">
+            <span className="flex items-center gap-1.5 text-xs text-muted">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 flex-shrink-0" aria-hidden="true" />
+              Before (existing)
+            </span>
+            <span className="flex items-center gap-1.5 text-xs text-muted">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-green-600 flex-shrink-0" aria-hidden="true" />
+              After (with platform)
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">

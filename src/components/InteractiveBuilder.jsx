@@ -8,7 +8,7 @@ import {
   capabilityMapToFlowShape
 } from '../lib/capabilityBlueprint';
 import { reconcileContainerAiPlatform, isCapabilityOptionDisabled } from '../lib/platformAiConstraints';
-import { badge, button, interactive, productStatus, providerMark, status, text, toggle } from '../lib/styleTokens';
+import { badge, button, categoricalMark, interactive, legendChip, productStatus, providerMark, status, text, toggle, typeScale } from '../lib/styleTokens';
 import DeepDiveModal from './DeepDiveModal';
 import FlowVisualization from './FlowVisualization';
 
@@ -85,15 +85,15 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
               data-ui="chip"
               key={capId}
               onClick={() => canDeepDive && onDeepDive(optionId)}
-              className={`px-2 py-1 rounded-card text-xs font-medium border ${interactive.transitionAll} ${interactive.focusRing} ${
+              className={`px-2 py-1 rounded-card text-xs font-medium bg-surface ${interactive.transitionAll} ${interactive.focusRing} ${
                 canDeepDive ? 'cursor-pointer hover:-translate-y-0.5 motion-reduce:hover:translate-y-0' : ''
               } ${
                 option.isCustomer
-                  ? `${providerMark.customer} ${text.ink}`
+                  ? categoricalMark.customer
                   : option.provider === 'Red Hat'
-                  ? `${providerMark.redHat} text-white`
-                  : `${providerMark.partner} ${text.ink}`
-              }`}
+                  ? categoricalMark.redHat
+                  : categoricalMark.partner
+              } ${text.ink}`}
               title={canDeepDive ? 'Click for deep dive' : ''}
             >
                 {capability.name}
@@ -222,9 +222,11 @@ function CapabilitySelector({
                         {/* Spacer to preserve layout alignment with the sibling guide button */}
                         {guide && <div className="w-8 flex-shrink-0" aria-hidden="true" />}
                       </div>
-                      <div className={`text-sm ${text.muted} mb-1`}>
-                        Provider: <span className="font-semibold">{option.provider}</span>
-                      </div>
+                      {!option.name.includes(option.provider) && (
+                        <div className={`text-sm ${text.muted} mb-1`}>
+                          Provider: <span className="font-semibold">{option.provider}</span>
+                        </div>
+                      )}
                       <p className={`text-sm ${text.muted}`}>
                         {option.description}
                       </p>
@@ -448,6 +450,21 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <div>
               <h3 className={`text-xl font-bold ${text.ink}`}>Your Complete Stack</h3>
+              {/* Categorical legend — required by legend law whenever categoricalMark tokens appear */}
+              <div className="flex items-center gap-3 mt-1 flex-wrap">
+                <div className="flex items-center gap-1.5">
+                  <span className={legendChip.redHat} />
+                  <span className={`${typeScale.meta} ${text.muted}`}>Red Hat</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className={legendChip.partner} />
+                  <span className={`${typeScale.meta} ${text.muted}`}>Partner</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className={legendChip.customer} />
+                  <span className={`${typeScale.meta} ${text.muted}`}>Customer</span>
+                </div>
+              </div>
             </div>
             <div className="flex gap-2">
               {/* View Order Toggle */}
@@ -471,10 +488,15 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
             </div>
           </div>
           <div className="space-y-2">
-            {/* Render based on viewOrder */}
-            {(viewOrder === 'bottom-up' ? [...buildOrder].reverse() : buildOrder).map((layer, index) => {
-              const originalIndex = viewOrder === 'bottom-up' ? buildOrder.length - 1 - index : index;
-              return (
+            {/* Render based on viewOrder — skip layers with zero configured components */}
+            {(viewOrder === 'bottom-up' ? [...buildOrder].reverse() : buildOrder)
+              .map((layer, index) => {
+                const originalIndex = viewOrder === 'bottom-up' ? buildOrder.length - 1 - index : index;
+                const selectedCaps = builtLayers[layer.id] || {};
+                return Object.keys(selectedCaps).length > 0 ? { layer, originalIndex } : null;
+              })
+              .filter(Boolean)
+              .map(({ layer, originalIndex }, displayIndex, visibleLayers) => (
                 <div key={layer.id}>
                   <BuiltLayerCard
                     layer={layer}
@@ -483,14 +505,13 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
                     onEdit={goBackToLayer}
                     onDeepDive={setDeepDiveOption}
                   />
-                  {index < buildOrder.length - 1 && (
+                  {displayIndex < visibleLayers.length - 1 && (
                     <div className="flex justify-center py-1">
                       <ArrowDown size={16} className={text.faint} />
                     </div>
                   )}
                 </div>
-              );
-            })}
+              ))}
           </div>
         </div>
 
