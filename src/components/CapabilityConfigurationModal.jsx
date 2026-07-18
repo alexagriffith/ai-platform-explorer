@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { X, Check, Microscope } from 'lucide-react';
 import { isCapabilityOptionDisabled, MCP_CAPABILITY_ID, LLAMA_STACK_CAPABILITY_ID } from '../lib/platformAiConstraints';
-import { badge, card, interactive, modal, productStatus, redHatFirst, text } from '../lib/styleTokens';
+import { badge, interactive, modal, productStatus, redHatFirst, text } from '../lib/styleTokens';
 import { solutionDetails } from '../data/solutionDetails';
 
 /**
@@ -77,7 +77,7 @@ export default function CapabilityConfigurationModal({
         </div>
 
         <div className={modal.body}>
-          <div className="space-y-3">
+          <div className="divide-y divide-hair">
             {capability.options.slice().sort(redHatFirst).map((option) => {
               const isSelected = getSelectedOption(capability.id) === option.id;
               const disabled = isCapabilityOptionDisabled(capability, option.id, selectedCapabilities);
@@ -85,7 +85,7 @@ export default function CapabilityConfigurationModal({
               return (
                 <div
                   key={option.id}
-                  className={`${card.selected} ${disabled ? 'bg-page opacity-70' : 'bg-surface'} p-4`}
+                  className={`${disabled ? 'bg-page opacity-70' : isSelected ? 'bg-tint' : ''} p-4`}
                 >
                   <button
                     type="button"
@@ -120,7 +120,7 @@ export default function CapabilityConfigurationModal({
                             </span>
                           )}
                           {option.status && (
-                            <span className={`rounded-card px-2 py-0.5 text-xs bg-page border border-hair ${productStatus[option.status] ?? 'text-muted'}`}>
+                            <span data-ui="chip" className={`rounded-card px-2 py-0.5 text-xs bg-page border border-hair ${productStatus[option.status] ?? 'text-muted'}`}>
                               {option.status}
                             </span>
                           )}

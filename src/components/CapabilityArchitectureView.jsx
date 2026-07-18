@@ -46,7 +46,7 @@ function capGridClass(count) {
   // wrap: centering container enforcing max card width ≤ 360px; w-full ensures block sizing.
   // Budget: N cols × 354px + (N-1) × 8px gap; stay well under 360px ceiling.
   // grid: 2 cols on mobile keeps cells ≥ 150px at 375px viewport.
-  if (count <= 2) return { wrap: 'w-full max-w-[716px] mx-auto', grid: 'grid grid-cols-2 gap-2' };
+  if (count <= 2) return { wrap: 'w-full', grid: 'grid grid-cols-2 gap-2' };
   if (count === 3) return { wrap: 'w-full max-w-[1078px] mx-auto', grid: 'grid grid-cols-2 sm:grid-cols-3 gap-2' };
   if (count === 4) return { wrap: 'w-full max-w-[1440px] mx-auto', grid: 'grid grid-cols-2 sm:grid-cols-4 gap-2' };
   // 5+: 2 cols on mobile, 3 default, 5 at lg
@@ -113,7 +113,8 @@ function CapabilityCard({
   onConfigure,
   onDeepDive,
   onToggleExpanded,
-  onRemove
+  onRemove,
+  uiExempt,
 }) {
   const selectedOptionId = selectedCapabilities[capability.id];
   const isSelected = selectedOptionId !== undefined;
@@ -125,6 +126,8 @@ function CapabilityCard({
     return (
       <button
         data-ui="card"
+        data-capability={capability.id}
+        data-ui-exempt={uiExempt || undefined}
         onClick={() => onConfigure(capability)}
         className={`${card.unselected} group px-2 py-2 w-full h-full`}
       >
@@ -148,6 +151,8 @@ function CapabilityCard({
   return (
     <div
       data-ui="card"
+      data-capability={capability.id}
+      data-ui-exempt={uiExempt || undefined}
       className={`rounded-card bg-surface h-full ${interactive.transitionAll} ${markClass}`}
     >
       {/* Card header — click = configure/change */}
@@ -573,6 +578,7 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                               capability={capability}
                               layerColor={layer.color}
                               compact
+                              uiExempt={layerCapabilities.length <= 2 ? 'full-row' : undefined}
                               {...cardProps}
                             />
                           ))}
