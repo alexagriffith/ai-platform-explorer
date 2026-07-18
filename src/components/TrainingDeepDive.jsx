@@ -101,9 +101,34 @@ export default function TrainingDeepDive() {
           <Cpu className="text-muted" size={14} />
           GPU Hardware for Training
         </h3>
-        <p className={`${typeScale.meta} text-muted mb-2`}>
+        <p className={`${typeScale.meta} text-muted mb-1`}>
           Representative examples — GPU availability and pricing change quickly; confirm current options with your hardware vendor.
         </p>
+        {/* Legend — categorical marks for cost/perf scale */}
+        <div className="flex flex-wrap gap-x-4 gap-y-1 mb-2">
+          <div className="flex items-center gap-3">
+            <span className={`${typeScale.meta} text-muted font-semibold uppercase tracking-wide`}>Cost:</span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-300 dark:bg-amber-700" aria-hidden="true" />
+              <span className={`${typeScale.meta} text-muted`}>High/Very High/Highest</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-2.5 h-2.5 rounded-sm bg-tint border border-hair" aria-hidden="true" />
+              <span className={`${typeScale.meta} text-muted`}>Moderate</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className={`${typeScale.meta} text-muted font-semibold uppercase tracking-wide`}>Performance:</span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-2.5 h-2.5 rounded-sm bg-green-300 dark:bg-green-700" aria-hidden="true" />
+              <span className={`${typeScale.meta} text-muted`}>Maximum/Excellent/Very Good</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-2.5 h-2.5 rounded-sm bg-tint border border-hair" aria-hidden="true" />
+              <span className={`${typeScale.meta} text-muted`}>Good</span>
+            </span>
+          </div>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-tint">

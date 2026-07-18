@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Filter } from 'lucide-react';
+import { ChevronDown, ChevronUp, Search, Filter } from 'lucide-react';
 import { products } from '../data/products';
 import { text, surface, border, interactive, field, productStatus, density, typeScale } from '../lib/styleTokens';
 
@@ -11,6 +11,13 @@ export default function ProductExplorer() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterLayer, setFilterLayer] = useState('all');
+  const [expandedCards, setExpandedCards] = useState(new Set());
+
+  const toggleCard = (id) => setExpandedCards(prev => {
+    const next = new Set(prev);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    return next;
+  });
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -73,6 +80,8 @@ export default function ProductExplorer() {
       {/* Product Grid */}
       <div className={`grid md:grid-cols-2 lg:grid-cols-3 ${density.rowGap}`}>
         {filteredProducts.map(product => {
+          const isExpanded = expandedCards.has(product.id);
+          const hasDetails = product.useCases?.length > 0 || product.customerProfile?.length > 0;
           return (
             <div
               key={product.id}
@@ -100,39 +109,57 @@ export default function ProductExplorer() {
                   {product.description}
                 </p>
 
-                {product.useCases && (
-                  <div className="mb-2">
-                    <h4 className={`${typeScale.meta} font-semibold ${text.faint} uppercase tracking-wide mb-1`}>
-                      Use Cases
-                    </h4>
-                    <ul className={`${typeScale.secondary} ${text.muted} space-y-0.5`}>
-                      {product.useCases.slice(0, 2).map((useCase, i) => (
-                        <li key={i}>• {useCase}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                <div className="flex items-center justify-between gap-2 mt-1">
+                  {product.resources?.docs && (
+                    <a
+                      href={product.resources.docs}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center gap-1 ${typeScale.secondary} text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+                    >
+                      Documentation
+                    </a>
+                  )}
+                  {hasDetails && (
+                    <button
+                      type="button"
+                      data-ui="control"
+                      onClick={() => toggleCard(product.id)}
+                      aria-expanded={isExpanded}
+                      className={`inline-flex items-center gap-1 ${typeScale.secondary} ${text.muted} hover:${text.ink} ${interactive.transition} ${interactive.focusRing} rounded-card ml-auto`}
+                    >
+                      Details
+                      {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                    </button>
+                  )}
+                </div>
 
-                {product.customerProfile && (
-                  <div className="mb-2">
-                    <h4 className={`${typeScale.meta} font-semibold ${text.faint} uppercase tracking-wide mb-1`}>
-                      Typical Users
-                    </h4>
-                    <p className={`${typeScale.secondary} ${text.muted}`}>
-                      {product.customerProfile.slice(0, 2).join(' · ')}
-                    </p>
+                {/* Progressive disclosure — use cases + typical users */}
+                {isExpanded && hasDetails && (
+                  <div className="mt-2 pt-2 border-t border-hair space-y-1.5">
+                    {product.useCases && (
+                      <div>
+                        <h4 className={`${typeScale.meta} font-semibold ${text.faint} uppercase tracking-wide mb-0.5`}>
+                          Use Cases
+                        </h4>
+                        <ul className={`${typeScale.secondary} ${text.muted} space-y-0.5`}>
+                          {product.useCases.slice(0, 3).map((useCase, i) => (
+                            <li key={i}>• {useCase}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {product.customerProfile && (
+                      <div>
+                        <h4 className={`${typeScale.meta} font-semibold ${text.faint} uppercase tracking-wide mb-0.5`}>
+                          Typical Users
+                        </h4>
+                        <p className={`${typeScale.secondary} ${text.muted}`}>
+                          {product.customerProfile.slice(0, 2).join(' · ')}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                )}
-
-                {product.resources?.docs && (
-                  <a
-                    href={product.resources.docs}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-1 ${typeScale.secondary} text-link hover:underline ${interactive.transition} ${interactive.focusRing} mt-1`}
-                  >
-                    Documentation
-                  </a>
                 )}
               </div>
             </div>
