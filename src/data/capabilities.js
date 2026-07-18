@@ -482,7 +482,7 @@ export const capabilities = {
           id: 'kubernetes',
           provider: 'Customer',
           name: 'Existing Kubernetes',
-          description: 'Non-OpenShift Kubernetes (EKS, AKS, GKE, self-managed). Pairs with Red Hat AI (RHAI).',
+          description: 'Non-OpenShift Kubernetes (EKS, AKS, GKE, self-managed). Works with the Red Hat AI portfolio.',
           isCustomer: true
         },
         {
