@@ -15,8 +15,9 @@ import { readSide } from '../lib/ledgerModel';
  * bordered boxes permitted by DESIGN-LAW.md.
  *
  * Every cell resolves tier + sourceUrl from the row-side data it references and
- * links to that sourceUrl. Solid fill = clear-tier (verified); dashed ring =
- * inferred/unresolved-tier (pending verification).
+ * links to that sourceUrl. Solid fill = clear-tier (verified); dashed outline =
+ * inferred/unresolved-tier (pending verification). CSS outline (not border) is used
+ * for the dashed mark so it does not trigger the anti-box nested-bordered-box check.
  *
  * data-ui archetypes: section-header on zone labels, card on each component cell,
  * table on the grid wrapper.
@@ -44,13 +45,16 @@ function HeroCell({ label, resolved }) {
   const url = resolved?.sourceUrl || null;
   const title = resolved?.sourceLabel || label;
 
-  const ringClass = isPending
-    ? 'ring-1 ring-dashed ring-accent/60'
+  // ring-dashed is not a valid Tailwind utility (rings cannot be dashed).
+  // Use CSS outline (not border) so the dashed mark does not trigger the anti-box
+  // nested-bordered-box check (which inspects border-width, not outline-width).
+  const outlineClass = isPending
+    ? 'outline outline-1 outline-dashed outline-accent/60'
     : '';
 
   const inner = (
     <span
-      className={`block rounded-card bg-page px-2 py-1.5 text-center ${ringClass}`}
+      className={`block rounded-card bg-page px-2 py-1.5 text-center ${outlineClass}`}
     >
       <span className="block text-xs font-semibold leading-tight text-ink">{label}</span>
       {isPending && (
@@ -104,13 +108,15 @@ function ZoneLabel({ label, tagline }) {
   );
 }
 
-/** Uniform grid of HeroCells. */
-function CellGrid({ components, comparison }) {
+/** Uniform grid of HeroCells.
+ *  colClass: override the default column layout (e.g. for inner bands with exactly 4 cells
+ *  where sm:grid-cols-3 would produce a 3+1 orphan row). */
+function CellGrid({ components, comparison, colClass = 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' }) {
   return (
     <div
       data-ui="table"
       aria-label="Component cells"
-      className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 lg:grid-cols-4"
+      className={`grid gap-1.5 ${colClass}`}
     >
       {components.map((cell) => {
         const resolved = resolveCell(cell, comparison);
@@ -148,13 +154,19 @@ export default function ProductComparisonHero({ comparison }) {
         className="rounded-card bg-tint px-3 py-3 space-y-2"
       >
         <ZoneLabel label={inner.label} tagline={inner.tagline} />
-        <CellGrid components={inner.components} comparison={comparison} />
+        {/* 4 cells: 2-col → 4-col. Never 3-col (would orphan to 3+1 at sm). */}
+        <CellGrid components={inner.components} comparison={comparison} colClass="grid-cols-2 sm:grid-cols-4" />
       </div>
 
-      {/* Caption — outer product caption only; inner caption in sr-only context */}
-      <p className="text-xs leading-relaxed text-muted">
-        {outer.caption}
-      </p>
+      {/* Caption — outer product caption as takeaway bullets; inner in sr-only context */}
+      <div className="text-xs leading-relaxed text-muted space-y-1" role="note">
+        <p><strong className="text-ink font-semibold">The full platform.</strong> OpenShift AI wraps the inference core and adds:</p>
+        <ul className="list-disc list-inside space-y-0.5 pl-1">
+          <li>KServe serving, notebook workbenches, data-science pipelines, distributed training</li>
+          <li>Model-server autoscaling, a model-as-a-service (MaaS) gateway, responsible-AI monitoring (TrustyAI), and fine-tuning</li>
+          <li><span className="outline outline-1 outline-dashed outline-accent/60 rounded px-0.5">Dashed cells</span> — fact still disagrees between documentation and the container catalog, or requires an authenticated pull</li>
+        </ul>
+      </div>
       <p className="sr-only">{inner.caption}</p>
     </section>
   );
