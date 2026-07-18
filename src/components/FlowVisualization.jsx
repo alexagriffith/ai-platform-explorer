@@ -149,7 +149,7 @@ function ComponentBox({
       </div>
 
       {isExpanded && hasSubComponents && (
-        <div className="mt-1.5 border border-hair rounded-card bg-tint" onClick={(e) => e.stopPropagation()}>
+        <div className="mt-1.5 rounded-card bg-tint" onClick={(e) => e.stopPropagation()}>
           <div className={`${typeScale.groupLabel} ${text.faint} px-2 py-1 border-b border-hair`}>Internal components</div>
           <div className="divide-y divide-hair">
             {subComponents[component.optionId].components.map((sub, idx) => (

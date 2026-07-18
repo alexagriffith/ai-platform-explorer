@@ -19,7 +19,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
     {
       id: 'build',
       name: 'Build Your Stack',
-      description: 'Layer-by-layer architecture builder with flexible component selection',
+      description: '',
       component: (
         <CapabilityArchitectureView
           onSwitchToGenerate={() => handleModeChange('generate')}
@@ -114,9 +114,11 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
               );
             })}
           </div>
-          <p className={`mt-1 text-xs ${text.faint}`}>
-            {currentMode.description}
-          </p>
+          {currentMode.description && (
+            <p className={`mt-1 text-xs ${text.faint}`}>
+              {currentMode.description}
+            </p>
+          )}
         </div>
       </div>
 

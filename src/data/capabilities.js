@@ -131,7 +131,7 @@ export const capabilities = {
           id: 'kserve',
           provider: 'Red Hat',
           name: 'KServe',
-          description: 'Model serving platform built into RHOAI. Supports multiple runtimes (vLLM, TorchServe, TensorFlow, etc.) with autoscaling (Horizontal Pod Autoscaler, KEDA event-driven scaling, or Knative serverless scaling) and advanced deployment patterns.',
+          description: 'Model serving platform built into Red Hat OpenShift AI (RHOAI). Supports multiple runtimes (vLLM, TorchServe, TensorFlow, etc.) with autoscaling (Horizontal Pod Autoscaler, KEDA event-driven scaling, or Knative serverless scaling) and advanced deployment patterns.',
           status: 'GA'
         },
         {
@@ -427,7 +427,7 @@ export const capabilities = {
           id: 'rhel-ai',
           provider: 'Red Hat',
           name: 'Red Hat Enterprise Linux AI',
-          description: 'LLM inference on individual RHEL servers via the vLLM engine (bootc image, bare metal or VM). Single-node only. Best for edge deployments, development environments, and single-server use cases. For distributed training or production-scale serving, use RHOAI or RHAI.',
+          description: 'LLM inference on individual RHEL servers via the vLLM engine (bootc image, bare metal or VM). Single-node only. Best for edge deployments, development environments, and single-server use cases. For distributed training or production-scale serving, use Red Hat OpenShift AI (RHOAI) or Red Hat AI (RHAI).',
           status: 'GA'
         }
       ]
