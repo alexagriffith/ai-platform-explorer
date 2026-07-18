@@ -1,5 +1,5 @@
 import { ExternalLink } from 'lucide-react';
-import { interactive, surface } from '../lib/styleTokens';
+import { interactive } from '../lib/styleTokens';
 import { readSide } from '../lib/ledgerModel';
 
 /**
@@ -37,7 +37,7 @@ function resolveCell(cell, comparison) {
   };
 }
 
-/** One component cell — tinted surface, no border, links to source. */
+/** One component cell — page-surface background for equal contrast in both the outer (bg-surface) and inner (bg-tint) zones. */
 function HeroCell({ label, resolved }) {
   const isVerified = resolved && resolved.verified;
   const isPending = resolved && resolved.present && !resolved.verified;
@@ -50,7 +50,7 @@ function HeroCell({ label, resolved }) {
 
   const inner = (
     <span
-      className={`block rounded-card ${surface.tint} px-2 py-1.5 text-center ${ringClass}`}
+      className={`block rounded-card bg-page px-2 py-1.5 text-center ${ringClass}`}
     >
       <span className="block text-xs font-semibold leading-tight text-ink">{label}</span>
       {isPending && (
