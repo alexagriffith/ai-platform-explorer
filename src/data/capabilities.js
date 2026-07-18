@@ -123,7 +123,7 @@ export const capabilities = {
           id: 'ai-inference',
           provider: 'Red Hat',
           name: 'Red Hat AI Inference Server',
-          description: 'vLLM-based high-performance LLM serving with advanced scheduling. Can be deployed via KServe or standalone.',
+          description: 'vLLM-based high-performance large language model (LLM) serving with advanced scheduling. Can be deployed via KServe or standalone.',
           status: 'GA',
           recommended: true
         },

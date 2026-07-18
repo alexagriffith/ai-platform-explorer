@@ -56,7 +56,7 @@ export const trainingVsInference = [
 
 export const trainingDecisionMatrix = [
   {
-    choose: 'RHEL AI',
+    choose: 'Red Hat Enterprise Linux AI (RHEL AI)',
     when: 'Single-server, out-of-the-box environment for inference serving of foundation models on bare metal or cloud',
     bestFor: 'Edge deployments, getting started, inference on a single server'
   },
