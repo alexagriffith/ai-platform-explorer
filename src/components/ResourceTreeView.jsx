@@ -305,7 +305,7 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
         <div className={`${modal.header} flex items-start justify-between`}>
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-3 py-1 text-xs font-semibold bg-tint border border-edge text-muted rounded-card">
+              <span data-ui="chip" className="px-3 py-1 text-xs font-semibold bg-tint border border-edge text-muted rounded-card">
                 {resource.category}
               </span>
             </div>
@@ -320,7 +320,8 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
           </div>
           <button
             onClick={onClose}
-            className={`p-2 hover:bg-tint rounded-card ${interactive.transition}`}
+            aria-label="Close"
+            className={`p-2 hover:bg-tint rounded-card ${interactive.transition} ${interactive.focusRing}`}
           >
             <X size={20} className="text-muted" />
           </button>
@@ -366,6 +367,7 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
                 Documentation
               </h3>
               <a
+                data-ui="control"
                 href={resource.docsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
