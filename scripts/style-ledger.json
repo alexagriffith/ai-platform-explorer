@@ -75,8 +75,8 @@
     ]
   },
   "stateWalkerBaseline": {
-    "_note": "Updated Commit 2: harvest fixed, strict mode enabled. 26/26 states visited (all Catalog skips resolved). notExercisedMax=0 means any new skip fails the gate.",
-    "statesVisited": 26,
+    "_note": "Updated design-fixes: 4 new gap states added (CapabilityConfigurationModal reliable, IB step-3, deep-dive modal, catalog Details disclosure). 30 total theme-runs. notExercisedMax=0 means any new skip fails the gate.",
+    "statesVisited": 30,
     "notExercisedMax": 0,
     "strict": true
   },

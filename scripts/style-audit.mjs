@@ -1286,6 +1286,62 @@ function statusFillBan(tabId) {
   return out.slice(0, 10); // cap to avoid flooding
 }
 
+// ─── BADGE COLOR CONSISTENCY (U0-R new check) ────────────────────────────────
+//
+// For every distinct visible badge/chip label text (case-insensitive, trimmed), the
+// computed text color must be identical across all instances within the tab.
+// Also checks that the same label text never appears with two different background
+// colors. This catches regressions where one component hardcodes a badge color that
+// diverges from the shared token used elsewhere.
+//
+// Returns an array of problem strings.
+//
+function badgeColorConsistency(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+
+  const out = [];
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+
+  // Collect all badge/chip elements — data-ui="chip" or elements with badge-like text + size.
+  const chips = [...tab.querySelectorAll('[data-ui="chip"]')].filter(visible);
+
+  // Map label → { textColors: Set<string>, bgColors: Set<string> }
+  const byLabel = new Map();
+  for (const chip of chips) {
+    const label = (chip.innerText || chip.textContent || '').trim().toLowerCase();
+    if (!label || label.length > 40) continue; // skip empty or long prose
+    const s = getComputedStyle(chip);
+    const textColor = s.color || '';
+    const bgColor = s.backgroundColor || '';
+    if (!byLabel.has(label)) byLabel.set(label, { textColors: new Set(), bgColors: new Set() });
+    const entry = byLabel.get(label);
+    // Normalize rgba(0,0,0,0) as transparent
+    const normBg = (bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent') ? 'transparent' : bgColor;
+    entry.textColors.add(textColor);
+    entry.bgColors.add(normBg);
+  }
+
+  for (const [label, { textColors, bgColors }] of byLabel) {
+    if (textColors.size > 1) {
+      out.push(`badge-color-consistency: label "${label}" has ${textColors.size} different text colors: ${[...textColors].join(' | ')}`);
+    }
+    if (bgColors.size > 1) {
+      const nonTransparent = [...bgColors].filter(c => c !== 'transparent');
+      if (nonTransparent.length > 1) {
+        out.push(`badge-color-consistency: label "${label}" has ${nonTransparent.length} different backgrounds: ${nonTransparent.join(' | ')}`);
+      }
+    }
+  }
+
+  return out;
+}
+
 // ─── STATES TABLE (U0-R) — declarative interaction openers per tab ────────────
 //
 // Each entry: { tab, state, label, open: async (page) => Promise<void>, themes: ['light'] | ['light','dark'] }
@@ -1401,6 +1457,90 @@ const STATES_TABLE = [
     open: async (page) => {
       await page.locator('[data-tab="architecture"] button').filter({ hasText: /blueprints/i }).first().click();
       await page.waitForTimeout(400);
+    },
+  },
+  {
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'configure-modal-reliable', label: 'architecture / CapabilityConfigurationModal (container-platform)',
+    screenshotName: 'architecture--configure-modal-reliable',
+    themes: ['light'],
+    open: async (page) => {
+      // Ensure Build Your Stack mode is active
+      const bysBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /build your stack/i }).first();
+      if (await bysBtn.count() > 0) await bysBtn.click();
+      await page.waitForTimeout(300);
+      // Click a capability card that is in the selected (not empty) state to open its configure modal.
+      // Unselected cards open the modal immediately; selected cards show a "Change" control.
+      const capCard = page.locator('[data-tab="architecture"] [data-ui="card"]').filter({ hasText: /container platform|openshift|kubernetes/i }).first();
+      if (await capCard.count() > 0) {
+        await capCard.click();
+        await page.waitForTimeout(400);
+      }
+      // If overlay still not visible, try clicking a "Configure" button
+      if (await page.locator('[data-ui="overlay"]').count() === 0) {
+        const configBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /configure|change/i }).first();
+        if (await configBtn.count() > 0) {
+          await configBtn.click();
+          await page.waitForTimeout(300);
+        }
+      }
+    },
+  },
+  {
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'interactive-step-3', label: 'architecture / Interactive Builder step 3',
+    screenshotName: 'architecture--interactive-step-3',
+    themes: ['light'],
+    open: async (page) => {
+      await page.locator('[data-tab="architecture"] button').filter({ hasText: /interactive builder/i }).first().click();
+      await page.waitForTimeout(400);
+      // Walk through 2 steps
+      for (let step = 0; step < 2; step++) {
+        const optionBtn = page.locator('[data-tab="architecture"] [data-ui="card"][role="button"]').first();
+        if (await optionBtn.count() > 0) {
+          await optionBtn.click();
+          await page.waitForTimeout(150);
+        }
+        const continueBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /continue to next layer/i }).first();
+        if (await continueBtn.count() > 0 && await continueBtn.isEnabled()) {
+          await continueBtn.click();
+          await page.waitForTimeout(300);
+        }
+      }
+    },
+  },
+  {
+    tab: 'architecture', navLabel: 'Architecture',
+    state: 'deep-dive-modal', label: 'architecture / DeepDiveModal',
+    screenshotName: 'architecture--deep-dive-modal',
+    themes: ['light'],
+    open: async (page) => {
+      // Switch to Interactive Builder and complete enough steps to see chips in the summary,
+      // then click a Red Hat chip to open the deep-dive modal.
+      await page.locator('[data-tab="architecture"] button').filter({ hasText: /interactive builder/i }).first().click();
+      await page.waitForTimeout(400);
+      // Walk all steps quickly
+      for (let step = 0; step < 8; step++) {
+        const continueBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /continue to next layer|complete stack/i }).first();
+        if (await continueBtn.count() === 0) break;
+        const optionBtn = page.locator('[data-tab="architecture"] [data-ui="card"][role="button"]').first();
+        if (await optionBtn.count() > 0) {
+          await optionBtn.click();
+          await page.waitForTimeout(100);
+        }
+        if (await continueBtn.isEnabled()) {
+          await continueBtn.click();
+          await page.waitForTimeout(200);
+        }
+        if (await page.locator('[data-tab="architecture"]').filter({ hasText: /guided steps complete/i }).count() > 0) break;
+      }
+      await page.waitForTimeout(300);
+      // Click a chip that has a microscope icon (Red Hat deep-dive eligible)
+      const chip = page.locator('[data-tab="architecture"] [data-ui="chip"]').first();
+      if (await chip.count() > 0) {
+        await chip.click();
+        await page.waitForTimeout(400);
+      }
     },
   },
 
@@ -1529,6 +1669,22 @@ const STATES_TABLE = [
       const searchInput = page.locator('[data-tab="products"] input[type="text"], [data-tab="products"] input[placeholder]').first();
       if (await searchInput.count() > 0) {
         await searchInput.fill('inference');
+        await page.waitForTimeout(300);
+      }
+    },
+  },
+  {
+    tab: 'products', navLabel: 'Products',
+    state: 'catalog-details-open', label: 'products / Catalog — card Details disclosure open',
+    screenshotName: 'products--catalog-details-open',
+    themes: ['light'],
+    open: async (page) => {
+      await page.locator('[data-tab="products"] button').filter({ hasText: /catalog/i }).first().click();
+      await page.waitForTimeout(300);
+      // Click the first "Details" disclosure button on a catalog card
+      const detailsBtn = page.locator('[data-tab="products"] button').filter({ hasText: /details/i }).first();
+      if (await detailsBtn.count() > 0) {
+        await detailsBtn.click();
         await page.waitForTimeout(300);
       }
     },
@@ -1714,6 +1870,11 @@ async function runChecksOnPage(page, tabId, stateLabel, exemptions, viewport, th
     // U0-R: Status-fill ban
     if (!exemptions.includes('status-fill-ban')) {
       addProblems(await page.evaluate(statusFillBan, tabId));
+    }
+
+    // U0-R: Badge color consistency
+    if (!exemptions.includes('badge-color-consistency')) {
+      addProblems(await page.evaluate(badgeColorConsistency, tabId));
     }
 
     // T-2b: Minimum-rows
@@ -1932,6 +2093,13 @@ async function auditTab(browser, tab) {
     // U0-R: STATUS-FILL BAN (light, 1440px — resting state)
     if (!exemptions.includes('status-fill-ban')) {
       for (const p of await page.evaluate(statusFillBan, tabId)) {
+        problems.push(`${prefix('1440 light')} ${p}`);
+      }
+    }
+
+    // U0-R: BADGE COLOR CONSISTENCY (light, 1440px)
+    if (!exemptions.includes('badge-color-consistency')) {
+      for (const p of await page.evaluate(badgeColorConsistency, tabId)) {
         problems.push(`${prefix('1440 light')} ${p}`);
       }
     }
