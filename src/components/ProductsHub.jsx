@@ -52,7 +52,7 @@ const USE_CASE_INDEX = [
     action: 'products-mcp',
   },
   {
-    title: 'Retrieval Augmented Generation (RAG)',
+    title: 'RAG (Retrieval-Augmented Generation)',
     action: 'architecture-blueprints',
   },
   {

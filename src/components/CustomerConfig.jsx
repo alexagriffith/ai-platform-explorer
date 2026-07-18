@@ -102,8 +102,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
           Configure Customer Environment
         </h2>
         <p className={`${typeScale.secondary} ${text.muted}`}>
-          Capture the customer&apos;s existing footprint and constraints. Use the preview to copy a draft checklist for
-          the workshop — nothing here updates the architecture canvas automatically.
+          Capture the customer&apos;s setup for the workshop checklist — it doesn&apos;t change your stack.
         </p>
       </div>
 
@@ -320,7 +319,10 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
                 onChange={(e) => updateEnv('requiresCompliance', e.target.checked)}
                 className={`w-4 h-4 rounded border-edge text-accent ${interactive.focusRing}`}
               />
-              <span className={`${typeScale.secondary} ${text.ink}`}>Regulatory Compliance (HIPAA — Health Insurance Portability and Accountability Act; SOC 2 — System and Organization Controls 2)</span>
+              <span
+                className={`${typeScale.secondary} ${text.ink}`}
+                title="HIPAA — Health Insurance Portability and Accountability Act; SOC 2 — System and Organization Controls 2"
+              >Regulatory compliance (HIPAA, SOC 2)</span>
             </label>
             <label className={`flex items-center gap-2 cursor-pointer pt-2 ${interactive.transition}`}>
               <input
