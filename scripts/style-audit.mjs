@@ -753,9 +753,10 @@ function unitBoxWidthBounds(tabId) {
     if (!hasBorder(el)) continue;
     const pos = getComputedStyle(el).position;
     if (pos === 'fixed' || pos === 'absolute') continue; // skip modals/overlays
-    // Skip explicit interactive controls and chips — they have intentional size variation.
+    // Skip explicit interactive controls, chips, and elements with data-ui-exempt.
     const dataUi = el.getAttribute('data-ui');
     if (dataUi === 'control' || dataUi === 'chip' || dataUi === 'section-header') continue;
+    if (el.dataset.uiExempt) continue;
     const cr = el.getBoundingClientRect();
     if (cr.height < 32 || cr.height > 200) continue; // only unit cards
     if (cr.width > 600) continue; // skip full-width sections
@@ -1377,6 +1378,10 @@ function badgeColorConsistency(tabId) {
 // Each entry: { tab, state, label, open: async (page) => Promise<void>, themes: ['light'] | ['light','dark'] }
 // `open` navigates to the state after the tab is already open.
 // `screenshotName` is used as the file name stem.
+// `assertTarget` (optional CSS selector): if provided, stateWalker asserts this element is
+//   visible in the DOM after open() runs. A missing assertTarget means the opener ran but
+//   the target state was never reached — a stale locator silent no-op becomes a hard FAIL
+//   naming the broken opener. Resting states (open: async()=>{}) omit assertTarget.
 //
 // Exemptions per state override the tab-level ledger exemptions.
 //
@@ -1394,18 +1399,22 @@ const STATES_TABLE = [
     state: 'configure-modal', label: 'architecture / configure modal (first capability)',
     screenshotName: 'architecture--configure-modal',
     themes: ['light'],
+    assertTarget: '[data-ui="overlay"]',
     open: async (page) => {
-      // Click the first clickable capability card (any layer header to expand first, then card)
-      const cardBtn = page.locator('[data-tab="architecture"] [data-ui="card"]').first();
-      if (await cardBtn.count() > 0) await cardBtn.click();
-      await page.waitForTimeout(300);
-      // Look for the configure modal
-      const modal = page.locator('[data-ui="overlay"]').first();
-      if (await modal.count() === 0) {
-        // Try clicking any button labeled Configure or Change inside the tab
+      // Click the first capability card using its stable data-capability attribute.
+      // Avoids display-name regex (stale locator when capability is renamed).
+      const capCard = page.locator('[data-tab="architecture"] [data-capability]').first();
+      if (await capCard.count() > 0) {
+        await capCard.click();
+        await page.waitForTimeout(400);
+      }
+      // If card was selected, it shows a Configure/Change button instead of opening directly.
+      if (await page.locator('[data-ui="overlay"]').count() === 0) {
         const configBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /configure|change/i }).first();
-        if (await configBtn.count() > 0) await configBtn.click();
-        await page.waitForTimeout(300);
+        if (await configBtn.count() > 0) {
+          await configBtn.click();
+          await page.waitForTimeout(300);
+        }
       }
     },
   },
@@ -1414,6 +1423,7 @@ const STATES_TABLE = [
     state: 'interactive-mid-wizard', label: 'architecture / Interactive Builder mid-wizard',
     screenshotName: 'architecture--interactive-mid-wizard',
     themes: ['light'],
+    assertTarget: '[data-tab="architecture"] [data-ui="card"][role="button"]',
     open: async (page) => {
       // Switch to Interactive Builder mode
       await page.locator('[data-tab="architecture"] button').filter({ hasText: /interactive builder/i }).first().click();
@@ -1438,6 +1448,7 @@ const STATES_TABLE = [
     themes: ['light'],
     // NOTE: this state is expected to FAIL status-fill-ban before Commit 2 fixes it.
     // After the fix, bg-green-600 panel becomes neutral surface.
+    assertTarget: '[data-tab="architecture"]',
     open: async (page) => {
       // Switch to Interactive Builder
       await page.locator('[data-tab="architecture"] button').filter({ hasText: /interactive builder/i }).first().click();
@@ -1474,6 +1485,7 @@ const STATES_TABLE = [
     state: 'generate-mode', label: 'architecture / Generate from Environment',
     screenshotName: 'architecture--generate-mode',
     themes: ['light'],
+    assertTarget: '[data-tab="architecture"]',
     open: async (page) => {
       await page.locator('[data-tab="architecture"] button').filter({ hasText: /generate from environment/i }).first().click();
       await page.waitForTimeout(400);
@@ -1484,6 +1496,7 @@ const STATES_TABLE = [
     state: 'blueprints-mode', label: 'architecture / Blueprints',
     screenshotName: 'architecture--blueprints-mode',
     themes: ['light'],
+    assertTarget: '[data-tab="architecture"]',
     open: async (page) => {
       await page.locator('[data-tab="architecture"] button').filter({ hasText: /blueprints/i }).first().click();
       await page.waitForTimeout(400);
@@ -1494,19 +1507,20 @@ const STATES_TABLE = [
     state: 'configure-modal-reliable', label: 'architecture / CapabilityConfigurationModal (container-platform)',
     screenshotName: 'architecture--configure-modal-reliable',
     themes: ['light'],
+    assertTarget: '[data-ui="overlay"]',
     open: async (page) => {
       // Ensure Build Your Stack mode is active
       const bysBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /build your stack/i }).first();
       if (await bysBtn.count() > 0) await bysBtn.click();
       await page.waitForTimeout(300);
-      // Click a capability card that is in the selected (not empty) state to open its configure modal.
-      // Unselected cards open the modal immediately; selected cards show a "Change" control.
-      const capCard = page.locator('[data-tab="architecture"] [data-ui="card"]').filter({ hasText: /container platform|openshift|kubernetes/i }).first();
+      // Open the modal for the container-platform capability using its stable data attribute.
+      // data-capability="container-platform" is set on every capability card — does not depend on display name.
+      const capCard = page.locator('[data-tab="architecture"] [data-capability="container-platform"]').first();
       if (await capCard.count() > 0) {
         await capCard.click();
         await page.waitForTimeout(400);
       }
-      // If overlay still not visible, try clicking a "Configure" button
+      // If the card was in "selected" state, it shows a Configure/Change button instead of opening directly.
       if (await page.locator('[data-ui="overlay"]').count() === 0) {
         const configBtn = page.locator('[data-tab="architecture"] button').filter({ hasText: /configure|change/i }).first();
         if (await configBtn.count() > 0) {
@@ -1521,6 +1535,7 @@ const STATES_TABLE = [
     state: 'interactive-step-3', label: 'architecture / Interactive Builder step 3',
     screenshotName: 'architecture--interactive-step-3',
     themes: ['light'],
+    assertTarget: '[data-tab="architecture"] [data-ui="card"][role="button"]',
     open: async (page) => {
       await page.locator('[data-tab="architecture"] button').filter({ hasText: /interactive builder/i }).first().click();
       await page.waitForTimeout(400);
@@ -1544,6 +1559,7 @@ const STATES_TABLE = [
     state: 'deep-dive-modal', label: 'architecture / DeepDiveModal',
     screenshotName: 'architecture--deep-dive-modal',
     themes: ['light'],
+    assertTarget: '[data-ui="overlay"]',
     open: async (page) => {
       // Switch to Interactive Builder and complete enough steps to see chips in the summary,
       // then click a Red Hat chip to open the deep-dive modal.
@@ -1580,6 +1596,7 @@ const STATES_TABLE = [
     state: 'flow-viz-modal', label: 'architecture / FlowVisualization modal (See Data Flow)',
     screenshotName: 'architecture--flow-viz-modal',
     themes: ['light'],
+    assertTarget: '[data-ui="overlay"]',
     open: async (page) => {
       // Switch to Interactive Builder and complete all steps
       await page.locator('[data-tab="architecture"] button').filter({ hasText: /interactive builder/i }).first().click();
@@ -1605,6 +1622,13 @@ const STATES_TABLE = [
         await flowBtn.click();
         await page.waitForTimeout(500);
       }
+      // Expand the first component that has a sub-components toggle (Maximize2 icon button)
+      // so the "Internal components" section is in the DOM and exercised by nested-box checks.
+      const expandToggle = page.locator('[data-ui="overlay"] button[data-expand-toggle]').first();
+      if (await expandToggle.count() > 0) {
+        await expandToggle.click();
+        await page.waitForTimeout(300);
+      }
     },
   },
 
@@ -1621,6 +1645,7 @@ const STATES_TABLE = [
     state: 'product-guide-q1', label: 'decisions / product guide — Question 1',
     screenshotName: 'decisions--product-guide-q1',
     themes: ['light'],
+    assertTarget: '[data-tab="decisions"] button',
     open: async (page) => {
       // Click the product selection guide
       await page.locator('[data-tab="decisions"] button, [data-tab="decisions"] [role="button"]')
@@ -1633,6 +1658,7 @@ const STATES_TABLE = [
     state: 'product-guide-q2', label: 'decisions / product guide — Question 2 (after first answer)',
     screenshotName: 'decisions--product-guide-q2',
     themes: ['light'],
+    assertTarget: '[data-tab="decisions"] button',
     open: async (page) => {
       // Open the product guide
       await page.locator('[data-tab="decisions"] button, [data-tab="decisions"] [role="button"]')
@@ -1649,6 +1675,7 @@ const STATES_TABLE = [
     state: 'product-guide-recommendation', label: 'decisions / product guide — recommendation',
     screenshotName: 'decisions--product-guide-recommendation',
     themes: ['light'],
+    assertTarget: '[data-tab="decisions"]',
     open: async (page) => {
       // Open the product guide and walk to recommendation by always clicking first option
       await page.locator('[data-tab="decisions"] button, [data-tab="decisions"] [role="button"]')
@@ -1674,6 +1701,7 @@ const STATES_TABLE = [
     state: 'deployment-guide-q1', label: 'decisions / deployment guide — Question 1',
     screenshotName: 'decisions--deployment-guide-q1',
     themes: ['light'],
+    assertTarget: '[data-tab="decisions"] button',
     open: async (page) => {
       await page.locator('[data-tab="decisions"] button, [data-tab="decisions"] [role="button"]')
         .filter({ hasText: /deployment/i }).first().click();
@@ -1685,6 +1713,7 @@ const STATES_TABLE = [
     state: 'finetune-matrix', label: 'decisions / fine-tuning matrix',
     screenshotName: 'decisions--finetune-matrix',
     themes: ['light'],
+    assertTarget: '[data-tab="decisions"]',
     open: async (page) => {
       // Switch to Reference Guides group if needed, then open fine-tuning matrix
       const ftBtn = page.locator('[data-tab="decisions"] button').filter({ hasText: /fine.tun/i }).first();
@@ -1697,6 +1726,7 @@ const STATES_TABLE = [
     state: 'security-overview', label: 'decisions / security overview',
     screenshotName: 'decisions--security-overview',
     themes: ['light'],
+    assertTarget: '[data-tab="decisions"]',
     open: async (page) => {
       const secBtn = page.locator('[data-tab="decisions"] button').filter({ hasText: /security/i }).first();
       if (await secBtn.count() > 0) await secBtn.click();
@@ -1717,6 +1747,7 @@ const STATES_TABLE = [
     state: 'catalog-resting', label: 'products / Catalog sub-view',
     screenshotName: 'products--catalog-resting',
     themes: ['light'],
+    assertTarget: '[data-tab="products"]',
     open: async (page) => {
       await page.locator('[data-tab="products"] button').filter({ hasText: /catalog/i }).first().click();
       await page.waitForTimeout(400);
@@ -1727,6 +1758,7 @@ const STATES_TABLE = [
     state: 'catalog-filtered', label: 'products / Catalog — search filtered',
     screenshotName: 'products--catalog-filtered',
     themes: ['light'],
+    assertTarget: '[data-tab="products"]',
     open: async (page) => {
       await page.locator('[data-tab="products"] button').filter({ hasText: /catalog/i }).first().click();
       await page.waitForTimeout(300);
@@ -1742,6 +1774,7 @@ const STATES_TABLE = [
     state: 'catalog-details-open', label: 'products / Catalog — card Details disclosure open',
     screenshotName: 'products--catalog-details-open',
     themes: ['light'],
+    assertTarget: '[data-tab="products"]',
     open: async (page) => {
       await page.locator('[data-tab="products"] button').filter({ hasText: /catalog/i }).first().click();
       await page.waitForTimeout(300);
@@ -1758,6 +1791,7 @@ const STATES_TABLE = [
     state: 'mcp-ecosystem', label: 'products / MCP Ecosystem sub-view',
     screenshotName: 'products--mcp-ecosystem',
     themes: ['light'],
+    assertTarget: '[data-tab="products"]',
     open: async (page) => {
       await page.locator('[data-tab="products"] button').filter({ hasText: /mcp ecosystem/i }).first().click();
       await page.waitForTimeout(400);
@@ -1777,6 +1811,7 @@ const STATES_TABLE = [
     state: 'comparison-yaml', label: 'deployment-impact / first comparison YAML Diff',
     screenshotName: 'deployment-impact--comparison-yaml',
     themes: ['light'],
+    assertTarget: '[data-tab="deployment-impact"]',
     open: async (page) => {
       const firstCard = page.locator('[data-tab="deployment-impact"] [data-ui="card"]').first();
       if (await firstCard.count() > 0) await firstCard.click();
@@ -1792,6 +1827,7 @@ const STATES_TABLE = [
     state: 'comparison-resources', label: 'deployment-impact / Resource Tree sub-view',
     screenshotName: 'deployment-impact--comparison-resources',
     themes: ['light'],
+    assertTarget: '[data-tab="deployment-impact"]',
     open: async (page) => {
       const firstCard = page.locator('[data-tab="deployment-impact"] [data-ui="card"]').first();
       if (await firstCard.count() > 0) await firstCard.click();
@@ -1806,6 +1842,7 @@ const STATES_TABLE = [
     state: 'comparison-capabilities', label: 'deployment-impact / Capability Delta sub-view',
     screenshotName: 'deployment-impact--comparison-capabilities',
     themes: ['light'],
+    assertTarget: '[data-tab="deployment-impact"]',
     open: async (page) => {
       const firstCard = page.locator('[data-tab="deployment-impact"] [data-ui="card"]').first();
       if (await firstCard.count() > 0) await firstCard.click();
@@ -1820,6 +1857,7 @@ const STATES_TABLE = [
     state: 'yaml-expanded', label: 'deployment-impact / YAML Diff — expanded first file',
     screenshotName: 'deployment-impact--yaml-expanded',
     themes: ['light'],
+    assertTarget: '[data-tab="deployment-impact"]',
     open: async (page) => {
       const firstCard = page.locator('[data-tab="deployment-impact"] [data-ui="card"]').first();
       if (await firstCard.count() > 0) await firstCard.click();
@@ -1995,6 +2033,22 @@ async function stateWalker(browser, url, screenshotDir) {
           process.stderr.write(`state-walker SKIP [${label}] [${theme}]: ${e.message}\n`);
           await ctx.close();
           continue;
+        }
+
+        // Assert target: verify the opener actually reached its target state.
+        // A stale locator that finds nothing silently no-ops — the checks then run on the
+        // wrong state and vacuously pass. assertTarget converts that to a hard FAIL.
+        if (stateEntry.assertTarget) {
+          const targetCount = await page.locator(stateEntry.assertTarget).count();
+          if (targetCount === 0) {
+            const msg = `opener-assert FAIL [${label}] [${theme}]: assertTarget "${stateEntry.assertTarget}" not found after opener ran — opener is a stale no-op`;
+            walkerProblems.push(msg);
+            process.stderr.write(msg + '\n');
+            notExercised.push(`${label} [${theme}]: opener reached no target (stale locator)`);
+            await ctx.close();
+            continue;
+          }
+          process.stderr.write(`opener-assert OK [${label}] [${theme}]: assertTarget found (${targetCount} element(s))\n`);
         }
 
         // Take screenshot
