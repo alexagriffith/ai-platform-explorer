@@ -123,9 +123,9 @@ export default function DeepDiveModal({ optionId, onClose }) {
               <div className="space-y-3 rounded-card bg-tint px-3 py-2">
                 <div>
                   <div className={`mb-2 ${typeScale.groupLabel} ${text.faint}`}>Core components</div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  <div className="flex flex-wrap justify-center gap-2">
                     {components.map((component, idx) => (
-                      <div key={idx} className="rounded-card bg-surface px-2 py-1.5">
+                      <div key={idx} className="rounded-card bg-surface px-2 py-1.5 flex-1 basis-32 min-w-0">
                         <div className={`${typeScale.secondary} font-bold ${text.ink} mb-0.5`}>
                           {component.name}
                         </div>
@@ -138,9 +138,9 @@ export default function DeepDiveModal({ optionId, onClose }) {
                 {integrations.length > 0 && (
                   <div className="border-t border-hair pt-2">
                     <div className={`mb-2 ${typeScale.groupLabel} ${text.faint}`}>External integrations</div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div className="flex flex-wrap justify-center gap-2">
                       {integrations.map((integration, idx) => (
-                        <div key={idx} className="rounded-card bg-page px-2 py-1.5">
+                        <div key={idx} className="rounded-card bg-page px-2 py-1.5 flex-1 basis-40 min-w-0">
                           <div className={`${typeScale.secondary} font-semibold ${text.ink} mb-0.5`}>
                             {integration.name}
                           </div>
@@ -197,7 +197,7 @@ export default function DeepDiveModal({ optionId, onClose }) {
                   href={details.documentation}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-2 font-medium ${text.link} hover:underline ${interactive.focusRing} rounded-card`}
+                  className={`inline-flex items-center gap-2 font-medium ${text.link} hover:underline ${interactive.transition} ${interactive.focusRing} rounded-card`}
                 >
                   <ExternalLink size={14} />
                   Official documentation

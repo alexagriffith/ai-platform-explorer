@@ -351,6 +351,36 @@ function cardTextBudget(tabId) {
       return w >= 1 && st !== 'none' && st !== 'hidden' && !transparent;
     });
   };
+  // Extract visible face text only — skip collapsed/hidden disclosure subtrees:
+  // display:none, visibility:hidden, [hidden], inert, aria-hidden="true",
+  // and overflow:hidden + max-height:0 (CSS disclosure pattern).
+  const visibleFaceText = (el) => {
+    const parts = [];
+    const walk = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const t = node.textContent || '';
+        if (t.trim()) parts.push(t);
+        return;
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+      // Skip subtrees that are hidden from the rendered face
+      if (node.hidden || node.hasAttribute('hidden') || node.hasAttribute('inert')) return;
+      if (node.getAttribute('aria-hidden') === 'true') return;
+      // Skip progressive disclosure subtrees (open or closed — face budget measures only the at-rest face)
+      if (node.hasAttribute('data-disclosure')) return;
+      const s = getComputedStyle(node);
+      if (s.display === 'none' || s.visibility === 'hidden') return;
+      if (parseFloat(s.opacity || '1') === 0) return;
+      // CSS disclosure: overflow hidden + max-height near 0 (collapsed accordion/details)
+      if (s.overflow === 'hidden' || s.overflowY === 'hidden') {
+        const mh = parseFloat(s.maxHeight);
+        if (!isNaN(mh) && mh < 2) return;
+      }
+      for (const child of node.childNodes) walk(child);
+    };
+    walk(el);
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  };
   for (const container of tab.querySelectorAll('*')) {
     if (!visible(container)) continue;
     const cs = getComputedStyle(container);
@@ -362,10 +392,10 @@ function cardTextBudget(tabId) {
       if (!hasBorder(child)) continue;
       const cr = child.getBoundingClientRect();
       if (cr.height < 24) continue; // skip tiny badges/chips
-      const text = (child.innerText || child.textContent || '').trim().replace(/\s+/g, ' ');
-      if (text.length > 140) {
+      const faceText = visibleFaceText(child);
+      if (faceText.length > 140) {
         const cls = (child.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
-        out.push(`card-text-budget: <${child.tagName.toLowerCase()}.${cls}> text ${text.length} chars > 140: "${text.slice(0, 80)}..."`);
+        out.push(`card-text-budget: <${child.tagName.toLowerCase()}.${cls}> text ${faceText.length} chars > 140: "${faceText.slice(0, 80)}..."`);
       }
     }
   }

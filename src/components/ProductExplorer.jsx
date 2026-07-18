@@ -81,7 +81,6 @@ export default function ProductExplorer() {
       <div className={`grid md:grid-cols-2 lg:grid-cols-3 ${density.rowGap}`}>
         {filteredProducts.map(product => {
           const isExpanded = expandedCards.has(product.id);
-          const hasDetails = product.useCases?.length > 0 || product.customerProfile?.length > 0;
           return (
             <div
               key={product.id}
@@ -105,10 +104,6 @@ export default function ProductExplorer() {
                   </span>
                 </div>
 
-                <p className={`${typeScale.secondary} ${text.muted} mb-2`}>
-                  {product.description}
-                </p>
-
                 <div className="flex items-center justify-between gap-2 mt-1">
                   {product.resources?.docs && (
                     <a
@@ -120,23 +115,24 @@ export default function ProductExplorer() {
                       Documentation
                     </a>
                   )}
-                  {hasDetails && (
-                    <button
-                      type="button"
-                      data-ui="control"
-                      onClick={() => toggleCard(product.id)}
-                      aria-expanded={isExpanded}
-                      className={`inline-flex items-center gap-1 ${typeScale.secondary} ${text.muted} hover:${text.ink} ${interactive.transition} ${interactive.focusRing} rounded-card ml-auto`}
-                    >
-                      Details
-                      {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    data-ui="control"
+                    onClick={() => toggleCard(product.id)}
+                    aria-expanded={isExpanded}
+                    className={`inline-flex items-center gap-1 ${typeScale.secondary} ${text.muted} hover:${text.ink} ${interactive.transition} ${interactive.focusRing} rounded-card ml-auto`}
+                  >
+                    Details
+                    {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                  </button>
                 </div>
 
-                {/* Progressive disclosure — use cases + typical users */}
-                {isExpanded && hasDetails && (
-                  <div className="mt-2 pt-2 border-t border-hair space-y-1.5">
+                {/* Progressive disclosure — description, use cases + typical users */}
+                {isExpanded && (
+                  <div data-disclosure="true" className="mt-2 pt-2 border-t border-hair space-y-1.5">
+                    <p className={`${typeScale.secondary} ${text.muted}`}>
+                      {product.description}
+                    </p>
                     {product.useCases && (
                       <div>
                         <h4 className={`${typeScale.meta} font-semibold ${text.faint} uppercase tracking-wide mb-0.5`}>
