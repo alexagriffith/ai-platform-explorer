@@ -199,7 +199,11 @@ function CapabilitySelector({
                             {option.name}
                           </span>
                           {disabled && (
-                            <span data-ui="chip" className={`px-2 py-0.5 bg-page ${text.muted} border border-edge text-xs rounded-card`}>
+                            <span
+                              data-ui-exempt="disabled-constraint-indicator"
+                              className={`px-2 py-0.5 bg-page text-faint border border-dashed border-edge text-xs rounded-card italic`}
+                              title="Not available with the current platform selection"
+                            >
                               N/A
                             </span>
                           )}

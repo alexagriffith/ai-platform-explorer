@@ -69,7 +69,7 @@ export const toggle = {
 export const status = {
   completeBanner: 'bg-green-600 text-white',
   completeCard: 'rounded-card border border-edge bg-surface',
-  requiredBadge: 'bg-draft-bg text-draft-fg',
+  requiredBadge: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
   /** Amber = warning/attention (DESIGN-LAW: status-only, never decorative). */
   attention: {
     text: 'text-amber-700 dark:text-amber-400',
@@ -111,10 +111,10 @@ export const badge = {
   customer: 'rounded-card px-2 py-0.5 text-xs bg-tint border border-edge text-ink',
   positive: 'rounded-card px-2 py-0.5 text-xs bg-green-600 text-white',
   /**
-   * 'Recommended' badge — accent ring on tinted surface. NOT status-green (DESIGN-LAW:
-   * status colors are status-only; recommended is a UI affordance, not a completion state).
+   * 'Recommended' badge — amber attention hue (DESIGN-LAW: red = brand/action only;
+   * Recommended is an attention marker, not a brand or action element).
    */
-  recommended: 'rounded-card px-2 py-0.5 text-xs ring-1 ring-accent bg-tint text-accent font-medium',
+  recommended: 'rounded-card px-2 py-0.5 text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 font-medium',
 };
 
 export const modal = {
