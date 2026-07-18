@@ -334,7 +334,7 @@ def _collect_doc_href_urls():
     return results
 
 
-def _http_status(url, timeout=10, retries=3):
+def _http_status(url, timeout=8, retries=2):
     """Return the final HTTP status code after following redirects, or 0 on error.
     Uses curl (subprocess) because Python's urllib is blocked by bot-protection on
     docs.redhat.com. No custom User-Agent is set — docs.redhat.com returns 403 for
@@ -362,7 +362,7 @@ def _http_status(url, timeout=10, retries=3):
         if last in (404, 410):
             return last  # conclusively gone — retrying won't change it
         if attempt < retries - 1:
-            time.sleep(2 * (attempt + 1))  # backoff for transient 401/403/429/5xx/0
+            time.sleep(1)  # brief backoff for transient 401/403/429/5xx/0
     return last
 
 
