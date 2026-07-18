@@ -15,9 +15,9 @@ export const optionGuides = {
   },
   'rhel-hosts': {
     whatItIs: 'Dedicated Red Hat Enterprise Linux systems without OpenShift as the AI runtime',
-    whyChoose: 'RHEL AI and edge-style LLM footprints that are not scheduled on a shared Kubernetes control plane',
+    whyChoose: 'Red Hat Enterprise Linux AI (RHEL AI) and edge-style large language model (LLM) footprints that are not scheduled on a shared Kubernetes control plane',
     whenToUse: 'Single-server inference, air-gapped Linux hosts, department-scale AI before cluster rollout',
-    bestFor: 'Teams standardizing on RHEL for model hosts and wanting a clear split from cluster-based RHOAI/RHAIE'
+    bestFor: 'Teams standardizing on Red Hat Enterprise Linux (RHEL) for model hosts and wanting a clear split from cluster-based Red Hat OpenShift AI (RHOAI) or Red Hat AI Enterprise (RHAIE)'
   },
   'nvidia-gpu': {
     whatItIs: 'NVIDIA GPUs (A100, H100, etc.) with CUDA support',
@@ -65,10 +65,10 @@ export const optionGuides = {
   },
   'rhel-ai': {
     whatItIs:
-      'Foundation models and InstructLab fine-tuning on individual RHEL servers - single-node only',
+      'Foundation models and InstructLab fine-tuning on individual Red Hat Enterprise Linux (RHEL) servers — single-node only',
     whyChoose: 'Simple single-server deployment for edge use cases, development, or single-node serving',
     whenToUse:
-      'Edge deployments, development environments, single-server use cases. NOT for distributed training or production-scale serving (use RHOAI or RHAI instead). Red Hat MCP SKUs in this app require OpenShift selected as runtime; use hybrid (OpenShift + RHEL AI) or self-hosted MCP if you need both.',
+      'Edge deployments, development environments, single-server use cases. NOT for distributed training or production-scale serving (use Red Hat OpenShift AI (RHOAI) or Red Hat AI (RHAI) instead). Red Hat MCP SKUs in this app require OpenShift selected as runtime; use hybrid (OpenShift + RHEL AI) or self-hosted MCP if you need both.',
     bestFor: 'Edge deployments, small teams, single-node environments, InstructLab fine-tuning'
   },
   'odf': {
@@ -118,7 +118,7 @@ export const optionGuides = {
     bestFor: 'LLM-only serving workloads demanding maximum performance and advanced scheduling features'
   },
   'kserve': {
-    whatItIs: 'Model serving platform built into RHOAI - provides abstraction layer for multiple runtimes',
+    whatItIs: 'Model serving platform built into Red Hat OpenShift AI (RHOAI) — provides an abstraction layer for multiple runtimes',
     whyChoose: 'Platform layer supporting vLLM, TorchServe, TensorFlow, ONNX, etc. with autoscaling and deployment patterns',
     whenToUse: 'Multiple frameworks needed, InferenceGraph pipelines, canary/A/B deployments, non-LLM models',
     bestFor: 'Teams serving diverse model types or needing advanced deployment workflows'

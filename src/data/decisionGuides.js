@@ -77,7 +77,7 @@ export const decisionFlows = {
         ],
         recommendation: {
           product: 'Red Hat Enterprise Linux AI',
-          why: 'RHEL AI is optimized for single-server deployments — a portable bootc image with vLLM inference built in',
+          why: 'Red Hat Enterprise Linux AI (RHEL AI) is optimized for single-server deployments — a portable bootc image with vLLM inference built in',
           tradeoffs: [
             { pro: 'Simple setup on individual servers', con: 'Limited to single-node scaling' },
             { pro: 'Includes vLLM inference engine', con: 'Not ideal for distributed workloads' }
@@ -161,7 +161,7 @@ export const decisionFlows = {
           { pro: 'Distributed workloads', con: 'More complex setup' },
           { pro: 'Production-grade', con: 'Higher resource requirements' }
         ],
-        alternatives: ['For single-server: RHEL AI', 'For bundled: RHAIE']
+        alternatives: ['For single-server: Red Hat Enterprise Linux AI (RHEL AI)', 'For bundled: Red Hat AI Enterprise (RHAIE)']
       },
       'RHAIE': {
         product: 'Red Hat AI Enterprise',
@@ -187,7 +187,7 @@ export const decisionFlows = {
           { pro: 'High performance', con: 'Specialized use case' },
           { pro: 'vLLM integration', con: 'Limited to serving workloads' }
         ],
-        alternatives: ['For full lifecycle: OpenShift AI', 'For training: RHOAI']
+        alternatives: ['For full lifecycle: OpenShift AI', 'For training: Red Hat OpenShift AI (RHOAI)']
       },
       'RHOAI+OpenShift': {
         product: 'OpenShift + OpenShift AI (Separate)',
@@ -199,7 +199,7 @@ export const decisionFlows = {
           { pro: 'Pay for what you use', con: 'More complex licensing' },
           { pro: 'Incremental adoption', con: 'Requires integration knowledge' }
         ],
-        alternatives: ['For simplicity: RHAIE bundled']
+        alternatives: ['For simplicity: Red Hat AI Enterprise (RHAIE) bundled']
       }
     }
   },
@@ -262,7 +262,7 @@ export const decisionFlows = {
       'on-prem-small': {
         product: 'On-Premises (Small Scale)',
         icon: '🏢',
-        why: 'RHEL AI on individual servers or small OpenShift cluster',
+        why: 'Red Hat Enterprise Linux AI (RHEL AI) on individual servers or small OpenShift cluster',
         bestFor: ['Compliance requirements', 'Air-gapped environments', 'Edge deployments'],
         tradeoffs: [
           { pro: 'Full data control', con: 'Limited scalability' },
@@ -286,7 +286,7 @@ export const decisionFlows = {
       'cloud-openshift-inference': {
         product: 'Managed OpenShift on Cloud (Inference)',
         icon: '☁️',
-        why: 'Managed OpenShift (ROSA/ARO) with RHOAI and AI Inference Server',
+        why: 'Managed OpenShift (ROSA/ARO) with Red Hat OpenShift AI (RHOAI) and AI Inference Server',
         bestFor: ['Production APIs', 'OpenShift expertise', 'Enterprise support'],
         tradeoffs: [
           { pro: 'Red Hat support', con: 'Higher cost than native Kubernetes' },
@@ -1273,7 +1273,7 @@ export const decisionFlows = {
         alternatives: ['For multi-framework: KServe', 'For pipelines: KServe InferenceGraph']
       },
       'KServe': {
-        product: 'KServe (via RHOAI)',
+        product: 'KServe (via OpenShift AI)',
         productId: 'kserve',
         platformRequirement: 'Requires OpenShift',
         icon: '🎯',

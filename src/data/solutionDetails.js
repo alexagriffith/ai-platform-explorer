@@ -148,7 +148,7 @@ export const solutionDetails = {
     contacts: ['Ask your Red Hat account team.']
   },
   'rhoai-distributed': {
-    name: 'RHOAI Distributed Workloads',
+    name: 'OpenShift AI Distributed Workloads',
     description: 'Enterprise-scale distributed training across multi-node GPU clusters',
     architecture: {
       components: [
@@ -299,7 +299,7 @@ export const solutionDetails = {
         { name: 'Registry API', role: 'Interface', description: 'REST API for registration and discovery' }
       ],
       integrations: [
-        { name: 'RHOAI Pipelines', purpose: 'Automated model registration' },
+        { name: 'OpenShift AI Pipelines', purpose: 'Automated model registration' },
         { name: 'Model Serving', purpose: 'Deployment from registry' },
         { name: 'TrustyAI', purpose: 'Model lineage and governance' }
       ]
@@ -493,7 +493,7 @@ export const solutionDetails = {
         { name: 'Rook Operator', role: 'Management', description: 'Kubernetes-native Ceph orchestration' }
       ],
       integrations: [
-        { name: 'RHOAI', purpose: 'Dataset and model storage' },
+        { name: 'Red Hat OpenShift AI (RHOAI)', purpose: 'Dataset and model storage' },
         { name: 'Model Registry', purpose: 'Model artifact storage' },
         { name: 'Backup/DR', purpose: 'OADP integration' }
       ]
@@ -517,7 +517,7 @@ export const solutionDetails = {
     contacts: ['Ask your Red Hat account team.']
   },
   'kserve': {
-    name: 'KServe (via RHOAI)',
+    name: 'KServe (via OpenShift AI)',
     description: 'Kubernetes-native multi-framework model serving with HTTPRoute-based ingress and advanced LLM capabilities',
     architecture: {
       components: [
@@ -563,7 +563,7 @@ export const solutionDetails = {
     contacts: ['Ask your Red Hat account team.']
   },
   'rh-evaluation': {
-    name: 'EvalHub (RHOAI Model Evaluation)',
+    name: 'EvalHub (OpenShift AI Model Evaluation)',
     description: 'Technology Preview — Kubernetes-native evaluation orchestration routing to multiple benchmark frameworks with MLflow integration; confirm scope with your Red Hat account team',
     architecture: {
       components: [
@@ -619,7 +619,7 @@ export const solutionDetails = {
       ],
       integrations: [
         { name: 'InstructLab', purpose: 'Evaluate fine-tuned models and synthetic data quality' },
-        { name: 'RHOAI Pipelines', purpose: 'Automated evaluation in training workflows' },
+        { name: 'OpenShift AI Pipelines', purpose: 'Automated evaluation in training workflows' },
         { name: 'Model Registry', purpose: 'Track evaluation metrics with model versions' }
       ]
     },
@@ -680,7 +680,7 @@ export const solutionDetails = {
       integrations: [
         { name: 'Model Serving', purpose: 'Test prompts against deployed models' },
         { name: 'Model Registry', purpose: 'Link prompts to specific model versions' },
-        { name: 'RHOAI Dashboard', purpose: 'Unified UI integration' }
+        { name: 'OpenShift AI Dashboard', purpose: 'Unified UI integration' }
       ]
     },
     capabilities: [
@@ -853,7 +853,7 @@ export const solutionDetails = {
         { name: 'Safety Providers', role: 'Guardrails', description: 'TrustyAI FMS integration for content safety' },
         { name: 'Eval Providers', role: 'Evaluation', description: 'LM Eval, RAGAS, Garak for model assessment' },
         { name: 'Agent Runtime', role: 'Orchestration', description: 'Agent creation, session management, and tool use' },
-        { name: 'PostgreSQL Backend', role: 'Persistence', description: 'KV store, inference logs, agent state, file metadata' }
+        { name: 'PostgreSQL Backend', role: 'Persistence', description: 'Key-value (KV) store, inference logs, agent state, file metadata' }
       ],
       integrations: [
         { name: 'vLLM', purpose: 'Primary inference and embedding backend' },

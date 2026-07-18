@@ -65,7 +65,7 @@ export const subComponents = {
     ]
   },
   'rhoai-distributed': {
-    name: 'RHOAI Distributed Workloads',
+    name: 'OpenShift AI Distributed Workloads',
     components: [
       {
         id: 'ray-framework',
