@@ -37,6 +37,31 @@ import {
   typeScale,
 } from '../lib/styleTokens';
 
+/**
+ * Returns Tailwind class strings for equal-width capability card grids.
+ * grid: applied to the grid container; wrap: optional centering wrapper class.
+ * All strings are complete literals so Tailwind JIT includes them.
+ */
+function capGridClass(count) {
+  // wrap: centering container enforcing max card width ≤ 360px; w-full ensures block sizing.
+  // Budget: N cols × 354px + (N-1) × 8px gap; stay well under 360px ceiling.
+  // grid: 2 cols on mobile keeps cells ≥ 150px at 375px viewport.
+  if (count <= 2) return { wrap: 'w-full max-w-[716px] mx-auto', grid: 'grid grid-cols-2 gap-2' };
+  if (count === 3) return { wrap: 'w-full max-w-[1078px] mx-auto', grid: 'grid grid-cols-2 sm:grid-cols-3 gap-2' };
+  if (count === 4) return { wrap: 'w-full max-w-[1440px] mx-auto', grid: 'grid grid-cols-2 sm:grid-cols-4 gap-2' };
+  // 5+: 2 cols on mobile, 3 default, 5 at lg
+  return { wrap: 'w-full max-w-[1078px] mx-auto', grid: 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2' };
+}
+
+/** Renders a responsive equal-width grid of CapabilityCard elements. */
+function CapGrid({ count, indent, children }) {
+  const { wrap, grid } = capGridClass(count);
+  const inner = <div className={grid}>{children}</div>;
+  // Indent collapses at narrow viewports to prevent card width falling below 150px minimum.
+  const indented = indent ? <div className="sm:pl-4">{inner}</div> : inner;
+  return wrap ? <div className={wrap}>{indented}</div> : indented;
+}
+
 /** Map option provider string to a categoricalMark key. */
 function providerMarkKey(option) {
   if (!option) return 'customer';
@@ -65,12 +90,12 @@ function CollapsibleDividerHeader({ title, isOpen, onToggle }) {
       type="button"
       onClick={onToggle}
       aria-expanded={isOpen}
-      className={`flex w-full items-center gap-2 px-2 py-2 rounded-card text-left ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
+      className={`flex w-full items-center gap-2 pl-4 pr-2 py-1.5 rounded-card text-left ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
     >
       <span className={`${text.faint} shrink-0 flex items-center`} aria-hidden>
-        {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+        {isOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
       </span>
-      <span className={`text-xs font-bold ${text.muted} uppercase tracking-wide shrink-0`}>
+      <span className={`text-[11px] font-semibold ${text.faint} uppercase tracking-wide shrink-0`}>
         {title}
       </span>
       <span className="flex-1 h-px bg-hair min-w-[1rem]" />
@@ -241,13 +266,11 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('orchestration')}
           />
           {servicesSubOpen.orchestration && (
-            <div className="flex flex-wrap justify-center gap-2">
+            <CapGrid count={orchestration.length} indent>
               {orchestration.map((cap) => (
-                <div key={cap.id} className="flex-none w-max min-w-[120px] max-w-xs">
-                  <CapabilityCard capability={cap} layerColor={layerColor} compact {...cardProps} />
-                </div>
+                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
-            </div>
+            </CapGrid>
           )}
           {hasWrapper && servicesSubOpen.orchestration && (
             <div className="flex justify-center">
@@ -265,13 +288,11 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('wrapper')}
           />
           {servicesSubOpen.wrapper && (
-            <div className="flex flex-wrap justify-center gap-2">
+            <CapGrid count={wrapper.length} indent>
               {wrapper.map((cap) => (
-                <div key={cap.id} className="flex-none w-max min-w-[120px] max-w-xs">
-                  <CapabilityCard capability={cap} layerColor={layerColor} compact {...cardProps} />
-                </div>
+                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
-            </div>
+            </CapGrid>
           )}
           {hasCore && servicesSubOpen.wrapper && (
             <div className="flex justify-center">
@@ -289,13 +310,11 @@ function ServicesLayerContent({ layerId, layerColor, servicesSubOpen, onToggleSu
             onToggle={() => onToggleSub('core')}
           />
           {servicesSubOpen.core && (
-            <div className="flex flex-wrap justify-center gap-2">
+            <CapGrid count={coreBase.length + coreAdjacent.length} indent>
               {[...coreBase, ...coreAdjacent].map((cap) => (
-                <div key={cap.id} className="flex-none w-max min-w-[120px] max-w-xs">
-                  <CapabilityCard capability={cap} layerColor={layerColor} compact {...cardProps} />
-                </div>
+                <CapabilityCard key={cap.id} capability={cap} layerColor={layerColor} compact {...cardProps} />
               ))}
-            </div>
+            </CapGrid>
           )}
         </div>
       )}
@@ -529,9 +548,6 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                       <div className="w-0.5 h-5 rounded-card shrink-0 bg-accent" />
                       <div className="min-w-0">
                         <h3 className={`font-bold text-sm ${text.ink} leading-tight`}>{layer.name}</h3>
-                        {isServicesLayer && (
-                          <p className={`${typeScale.meta} ${text.muted}`}>sub-layers</p>
-                        )}
                       </div>
                     </div>
                     <div data-ui="chip" className={`px-2 py-0.5 rounded-card ${typeScale.meta} font-bold shrink-0 bg-tint ${text.faint}`}>
@@ -550,18 +566,17 @@ export default function CapabilityArchitectureView({ selectedCapabilities, setSe
                           cardProps={cardProps}
                         />
                       ) : (
-                        <div className="flex flex-wrap justify-center gap-2">
+                        <CapGrid count={layerCapabilities.length}>
                           {layerCapabilities.map(capability => (
-                            <div key={capability.id} className="flex-none w-max min-w-[120px] max-w-xs">
-                              <CapabilityCard
-                                capability={capability}
-                                layerColor={layer.color}
-                                compact
-                                {...cardProps}
-                              />
-                            </div>
+                            <CapabilityCard
+                              key={capability.id}
+                              capability={capability}
+                              layerColor={layer.color}
+                              compact
+                              {...cardProps}
+                            />
                           ))}
-                        </div>
+                        </CapGrid>
                       )}
                     </div>
                   )}
