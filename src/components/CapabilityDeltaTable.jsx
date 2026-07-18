@@ -120,28 +120,37 @@ export default function CapabilityDeltaTable({ comparison }) {
         </div>
       </div>
 
-      {/* Legend */}
+      {/* Legend — only entries whose impact value appears in the table */}
       <div data-ui-exempt="legend-section" className="px-3 py-2 bg-tint border border-hair rounded-card">
         <h4 className="text-xs font-semibold text-ink mb-1.5">Understanding Impact</h4>
-        <div className="grid md:grid-cols-3 gap-3 text-xs text-muted">
-          <div>
-            <span className="font-medium text-green-600 dark:text-green-400">Positive:</span> {isAlternativeComparison
-              ? `Advantage of ${comparison.after.label}`
-              : 'Clear improvement or new capability'
-            }
-          </div>
-          <div>
-            <span className="font-medium text-amber-600 dark:text-amber-400">Tradeoff:</span> {isAlternativeComparison
-              ? 'Different strengths and weaknesses between options'
-              : 'Gain something, but accept added complexity or constraint'
-            }
-          </div>
-          <div>
-            <span className="font-medium text-muted">Neutral:</span> {isAlternativeComparison
-              ? 'Similar capabilities between options'
-              : 'Different approach, similar outcome'
-            }
-          </div>
+        <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted">
+          {impactCounts.positive > 0 && (
+            <div>
+              <span className="font-medium text-green-600 dark:text-green-400">Positive:</span>{' '}
+              {isAlternativeComparison
+                ? `Advantage of ${comparison.after.label}`
+                : 'Clear improvement or new capability'
+              }
+            </div>
+          )}
+          {impactCounts.tradeoff > 0 && (
+            <div>
+              <span className="font-medium text-amber-600 dark:text-amber-400">Tradeoff:</span>{' '}
+              {isAlternativeComparison
+                ? 'Different strengths and weaknesses between options'
+                : 'Gain something, but accept added complexity or constraint'
+              }
+            </div>
+          )}
+          {impactCounts.neutral > 0 && (
+            <div>
+              <span className="font-medium text-muted">Neutral:</span>{' '}
+              {isAlternativeComparison
+                ? 'Similar capabilities between options'
+                : 'Different approach, similar outcome'
+              }
+            </div>
+          )}
         </div>
       </div>
     </div>

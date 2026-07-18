@@ -222,8 +222,8 @@ function App() {
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Content — sm:pb-16 reserves space below the fixed Acronym Guide FAB */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:pb-16">
         {renderView()}
       </main>
 
