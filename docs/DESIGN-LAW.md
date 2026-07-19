@@ -15,6 +15,29 @@
   No component re-implements a color map. Tailwind class strings are complete literals,
   never template-built.
 
+## Type scale roles (added ws/typescale-foundation)
+
+All type hierarchy lives in `typeScale` in `src/lib/styleTokens.js`.
+Components use semantic role tokens; raw `text-xs/sm/base/lg/xl` literals
+in component JSX are counted by the `rawTextSizeMax` ratchet in `scripts/gate.py`
+(ceiling: never increases; decrements as components migrate).
+
+| Role | Size | Weight | Leading | Use |
+|---|---|---|---|---|
+| `pageTitle` | `text-2xl` | bold | tight | Tab / page H1 |
+| `sectionTitle` | `text-xl` | semibold | tight | Major section heading |
+| `primaryHeading` | `text-xl` | bold | tight | Decision-guide question / recommendation |
+| `cardTitle` | `text-base` | semibold | snug | Card or panel heading |
+| `componentName` | `text-sm` | bold | tight | Product/capability name (the point of every unit box) |
+| `body` | `text-sm` | normal | snug | Primary readable body text |
+| `bodyStrong` | `text-sm` | medium | snug | Emphasized inline body text |
+| `label` | `text-xs` | medium | normal | Form label / field label |
+| `groupLabel` | `text-xs` | semibold | wide (uppercase + tracking) | Section/group label |
+| `caption` | `text-xs` | normal | snug | Supporting description under a name |
+| `meta` | `text-[11px]` | normal | snug | Faint tertiary metadata |
+
+Legacy aliases still exported (do not remove): `secondary` → `caption`, `recommendationHeading` → `primaryHeading`.
+
 ## Accent law (revised 2026-07-16 — Alexa: "we can't just be black, gray, red, and white")
 
 Color is welcome; *meaningless* color is not. Every hue on the page must answer "what does

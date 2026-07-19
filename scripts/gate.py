@@ -354,7 +354,54 @@ def section_design_static():
         )
 
 
-# ── (d2) duplicate-logic scan ─────────────────────────────────────────────────
+# ── (d2) raw-text-size ratchet ────────────────────────────────────────────────
+# Counts raw text-size Tailwind utility class matches in src/components/**/*.jsx
+# (text-xs|sm|base|lg|xl|2xl|3xl, including variant-prefixed forms such as
+# sm:text-lg or dark:text-sm). The ceiling is stored in style-ledger.json as
+# rawTextSizeMax. The count must never INCREASE — each migration lane drives it
+# toward zero. Fail immediately if count exceeds ceiling, naming this ratchet.
+#
+# Exclusion: src/lib/styleTokens.js is the token-definition file and is
+# intentionally full of these literals; it is excluded from the count.
+_RAW_TEXT_SIZE_RX = re.compile(
+    r"\b(?:[a-z][a-z0-9-]*:)*text-(?:xs|sm|base|lg|xl|2xl|3xl)\b"
+)
+
+
+def section_raw_text_size():
+    ledger = _load_ledger()
+    max_count = ledger.get("rawTextSizeMax")
+    if not isinstance(max_count, int):
+        fail(
+            "raw-text-size ratchet (ledger)",
+            "rawTextSizeMax must be an integer in scripts/style-ledger.json",
+        )
+
+    components_dir = os.path.join(REPO, "src", "components")
+    count = 0
+    for dp, _, fns in os.walk(components_dir):
+        for fn in fns:
+            if not fn.endswith(".jsx"):
+                continue
+            path = os.path.join(dp, fn)
+            try:
+                with open(path, "r", encoding="utf-8", errors="ignore") as fh:
+                    content = fh.read()
+            except OSError:
+                continue
+            count += len(_RAW_TEXT_SIZE_RX.findall(content))
+
+    if count > max_count:
+        fail(
+            "raw-text-size ratchet exceeded",
+            "raw text-size class count: %d (max %d)\n"
+            "Reduce raw text-size classes in src/components/**/*.jsx "
+            "and lower rawTextSizeMax in scripts/style-ledger.json, "
+            "or ensure no new raw sizes were introduced." % (count, max_count),
+        )
+
+
+
 # Fails if the same function declaration name appears in 2+ files under src/components/.
 # Catches copy-paste helpers (the distributingGridCols duplication F11 fixed is the
 # canonical example). An allowlist entry may be added here if a legitimate collision
@@ -562,6 +609,7 @@ def main():
     section_leaks()
     section_bare_acronym()
     section_design_static()
+    section_raw_text_size()
     section_duplicate_logic()
     section_doc_href_status()
     section_style()

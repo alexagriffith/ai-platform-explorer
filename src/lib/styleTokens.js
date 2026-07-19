@@ -151,25 +151,74 @@ export const density = {
 };
 
 /**
- * Type scale for the density law.
- * component-name > group-label > body-secondary (one step each).
+ * Type scale — semantic role tokens (docs/DESIGN-LAW.md §"Type scale roles").
+ *
+ * Hierarchy (size + weight):
+ *   pageTitle > sectionTitle > cardTitle > primaryHeading
+ *   > componentName > body > bodyStrong > label > caption > meta
+ *
+ * Every token is a COMPLETE Tailwind literal (size + weight + leading).
+ * Components must import from here; raw text-size classes in component
+ * JSX are counted by the rawTextSizeMax ratchet in scripts/gate.py.
+ *
+ * Role→size table (canonical reference, matches docs/DESIGN-LAW.md):
+ *   pageTitle          text-2xl  bold     tight   — tab / page-level H1
+ *   sectionTitle       text-xl   semibold tight   — major section heading
+ *   cardTitle          text-base semibold snug    — card or panel heading
+ *   primaryHeading     text-xl   bold     tight   — decision-guide question / recommendation
+ *   componentName      text-sm   bold     tight   — product/capability name (the point of every box)
+ *   body               text-sm   normal   snug    — readable surface body text
+ *   bodyStrong         text-sm   medium   snug    — emphasized body (inline strong)
+ *   label              text-xs   medium   normal  — form label / field label
+ *   groupLabel         text-xs   semibold wide    — section/group heading (uppercase tracking)
+ *   caption            text-xs   normal   snug    — supporting description under a card name
+ *   meta               text-[11px] normal snug    — faint tertiary metadata
+ *
+ * Legacy aliases (kept so existing callers compile; alias to the canonical role):
+ *   secondary          → caption
+ *   recommendationHeading → primaryHeading
  */
 export const typeScale = {
-  /** Component / product name — the point of every box. */
-  componentName: 'text-sm font-bold leading-tight',
+  // ── Page / section headings ─────────────────────────────────────────────────
+  /** Tab or page-level H1 — largest structural heading. */
+  pageTitle: 'text-2xl font-bold leading-tight',
+  /** Major section heading within a tab — anchors a content region. */
+  sectionTitle: 'text-xl font-semibold leading-tight',
+  /** Card or panel heading — names a discrete content unit. */
+  cardTitle: 'text-base font-semibold leading-snug',
+
+  // ── Primary outcome surface ──────────────────────────────────────────────────
   /**
-   * Recommendation / result heading — primary surface outcome, one scale above componentName.
-   * Used on the decision-guide recommendation card product-name heading.
+   * Decision-guide question/recommendation — primary outcome heading.
+   * One step above componentName; used for the recommendation card product-name heading.
    */
-  recommendationHeading: 'text-xl font-bold leading-tight',
-  /** Group / section label — visible, not shouting. */
-  groupLabel: 'text-xs font-semibold uppercase tracking-wide',
-  /** Secondary / supporting text — one step below component name. */
-  secondary: 'text-xs leading-snug',
-  /** Body text — readable at primary surface scale (used on recommendation body). */
+  primaryHeading: 'text-xl font-bold leading-tight',
+
+  // ── Component / product identity ────────────────────────────────────────────
+  /** Component / product name — the point of every unit box. */
+  componentName: 'text-sm font-bold leading-tight',
+
+  // ── Body ────────────────────────────────────────────────────────────────────
+  /** Primary readable body text — used on recommendation bodies and detail paragraphs. */
   body: 'text-sm leading-snug',
-  /** Faint / tertiary metadata. */
+  /** Emphasized body text — inline strong without size change. */
+  bodyStrong: 'text-sm font-medium leading-snug',
+
+  // ── Labels / meta ────────────────────────────────────────────────────────────
+  /** Form label or short field label. */
+  label: 'text-xs font-medium leading-normal',
+  /** Group / section label — visible, not shouting; uppercase tracking. */
+  groupLabel: 'text-xs font-semibold uppercase tracking-wide',
+  /** Supporting description / caption under a card or chip name. */
+  caption: 'text-xs leading-snug',
+  /** Faint tertiary metadata — timestamps, counts, footnotes. */
   meta: 'text-[11px] leading-snug',
+
+  // ── Legacy aliases (do NOT remove — existing callers depend on these) ────────
+  /** @deprecated Use typeScale.caption — kept for back-compat. */
+  secondary: 'text-xs leading-snug',
+  /** @deprecated Use typeScale.primaryHeading — kept for back-compat. */
+  recommendationHeading: 'text-xl font-bold leading-tight',
 };
 
 /**
