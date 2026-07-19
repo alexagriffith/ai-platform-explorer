@@ -153,26 +153,26 @@ function CapabilityCard({
       data-ui="card"
       data-capability={capability.id}
       data-ui-exempt={uiExempt || undefined}
-      className={`rounded-card bg-surface h-full ${interactive.transitionAll} ${markClass}`}
+      className={`rounded-card bg-surface h-full flex flex-col ${interactive.transitionAll} ${markClass}`}
     >
-      {/* Card header — click = configure/change */}
-      <div className="flex items-center gap-1 border-b border-hair">
+      {/* Identity — click = configure/change. Left-aligned block: icon · name · chosen option. */}
+      <div className="flex items-start gap-1">
         <button
           type="button"
           onClick={() => onConfigure(capability)}
-          className={`flex-1 flex items-center gap-2 px-2 py-1 rounded-tl-card text-left ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
+          className={`flex-1 min-w-0 flex items-start gap-2 px-2 py-1.5 rounded-tl-card text-left ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
           title={`Change ${capability.name}`}
           aria-label={`Change: ${capability.name} — currently ${selectedOption?.name || ''}`}
         >
-          <CheckCircle2 size={12} className="text-green-600 shrink-0" aria-hidden />
-          <div className="min-w-0 flex-1 text-center">
+          <CheckCircle2 size={12} className="text-green-600 shrink-0 mt-0.5" aria-hidden />
+          <div className="min-w-0 flex-1">
             <div className={`${typeScale.componentName} ${text.ink}`}>
               {capability.name}
               {selectedOption?.isCustomer && (
                 <Building2 size={10} className={`inline ml-1 mb-0.5 ${text.muted}`} title="Customer-provided" />
               )}
             </div>
-            <div className={`${typeScale.meta} ${text.muted}`}>
+            <div className={`${typeScale.caption} ${text.muted} truncate`}>
               {selectedOption?.name}
             </div>
           </div>
@@ -193,32 +193,34 @@ function CapabilityCard({
           </button>
         )}
       </div>
-      {selectedOption?.status && (
-        <div className={`px-2 py-0.5 ${typeScale.meta} ${text.faint}`}>
-          {selectedOption.status}
-        </div>
-      )}
-      {/* Remove — all cards including Required */}
-      <div className="px-2 pb-1.5 pt-0.5 flex gap-2">
-        {hasDeepDive && (
+      {/* Footer — status (left) and actions (right) on one line, pinned to the bottom edge. */}
+      <div className="mt-auto px-2 py-1 flex items-center gap-2 border-t border-hair">
+        {selectedOption?.status && (
+          <span className={`${typeScale.caption} ${text.faint}`}>
+            {selectedOption.status}
+          </span>
+        )}
+        <div className="ml-auto flex items-center gap-3">
+          {hasDeepDive && (
+            <button
+              type="button"
+              onClick={() => onDeepDive(selectedOptionId)}
+              className={`${typeScale.caption} font-medium ${text.link} underline underline-offset-2 hover:no-underline ${interactive.transition} ${interactive.focusRing} rounded-sm`}
+            >
+              Details
+            </button>
+          )}
           <button
             type="button"
-            onClick={() => onDeepDive(selectedOptionId)}
-            className={`text-[10px] font-medium ${text.link} underline underline-offset-2 hover:no-underline ${interactive.transition} ${interactive.focusRing} rounded-sm`}
+            onClick={(e) => { e.stopPropagation(); onRemove(capability.id); }}
+            className={`flex items-center gap-1 ${typeScale.caption} font-medium text-faint hover:text-ink ${interactive.transition} ${interactive.focusRing} rounded-sm`}
+            title="Remove from stack"
+            aria-label={`Remove ${capability.name} from stack`}
           >
-            Details
+            <X size={10} aria-hidden />
+            Remove
           </button>
-        )}
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onRemove(capability.id); }}
-          className={`ml-auto flex items-center gap-1 text-[10px] font-medium text-faint hover:text-ink ${interactive.transition} ${interactive.focusRing} rounded-sm px-1`}
-          title="Remove from stack"
-          aria-label={`Remove ${capability.name} from stack`}
-        >
-          <X size={10} aria-hidden />
-          Remove
-        </button>
+        </div>
       </div>
 
       {/* Sub-components (expanded) — hairline list */}
