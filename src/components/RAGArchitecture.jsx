@@ -9,43 +9,42 @@ export default function RAGArchitecture() {
 
   return (
     <div className={density.stackGap}>
-      {/* RAG Pipeline Flow — no border on outer panel, no border on stage cards */}
-      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
-        <h3 className={`${typeScale.componentName} text-ink mb-0.5`}>RAG Architecture Pipeline</h3>
-        <p className={`${typeScale.caption} text-muted mb-2`}>
-          API Gateway → Retrieval → Model Serving → Response
+      {/* RAG Pipeline — numbered flow on one surface (no nested boxes); red step-nodes are the accent */}
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-4">
+        <h3 className={`${typeScale.componentName} text-ink`}>RAG Architecture Pipeline</h3>
+        <p className={`${typeScale.caption} text-muted`}>
+          How a query flows from request to a grounded answer
         </p>
 
-        <div className={`grid md:grid-cols-4 ${density.rowGap}`}>
-          {pipeline.map((stage, index) => {
-            const Icon = stage.icon;
-
-            return (
-              <div key={index} className="relative">
-                {index < pipeline.length - 1 && (
-                  <div className="hidden md:block absolute top-6 -right-1.5 z-10">
-                    <ArrowRight className="text-muted" size={14} />
-                  </div>
-                )}
-
-                <div data-ui="card" className="rounded-card bg-tint px-2 py-1.5 relative z-20">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <Icon size={13} className="text-muted flex-shrink-0" />
-                    <h4 className={`${typeScale.componentName} text-ink`}>{stage.stage}</h4>
-                  </div>
-                  <p className={`${typeScale.caption} text-muted mb-1`}>{stage.description}</p>
-                  <ul className="space-y-0.5">
-                    {stage.details.map((detail, i) => (
-                      <li key={i} className="flex items-start gap-1">
-                        <span className={`text-accent flex-shrink-0 ${typeScale.caption}`}>•</span>
-                        <span className={`${typeScale.caption} text-ink`}>{detail}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+        <div className="mt-4 grid gap-x-6 gap-y-5 md:grid-cols-4">
+          {pipeline.map((stage, index) => (
+            <div key={index} className="relative">
+              {index < pipeline.length - 1 && (
+                <ArrowRight
+                  size={16}
+                  className="text-faint hidden md:block absolute top-1 -right-4 z-10"
+                  aria-hidden
+                />
+              )}
+              <div className="flex items-center gap-2 mb-1.5">
+                <span
+                  className={`flex items-center justify-center w-6 h-6 rounded-full bg-accent text-on-accent shrink-0 ${typeScale.caption} font-bold`}
+                >
+                  {index + 1}
+                </span>
+                <h4 className={`${typeScale.componentName} text-ink`}>{stage.stage}</h4>
               </div>
-            );
-          })}
+              <p className={`${typeScale.caption} text-muted mb-1.5`}>{stage.description}</p>
+              <ul className="space-y-1">
+                {stage.details.map((detail, i) => (
+                  <li key={i} className="flex items-start gap-1.5">
+                    <span className={`text-muted flex-shrink-0 ${typeScale.caption}`}>•</span>
+                    <span className={`${typeScale.caption} text-ink`}>{detail}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
 
