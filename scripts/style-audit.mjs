@@ -1533,6 +1533,60 @@ function primaryViewScale() {
   return out;
 }
 
+// ─── PRIMARY-VIEW-SCALE-RECOMMENDATION (decision-guide recommendation state) ──
+//
+// Mirrors primaryViewScale() for the recommendation result screen.
+// When [data-decision-recommendation="active"] is present, asserts:
+//   1. The h4 inside it has computed font-size >= 18px.
+//   2. The container width >= 55% of its block ancestor OR >= 45% of viewport.
+//
+// Runs on the decisions tab only (called from stateWalker for recommendation states).
+//
+function primaryViewScaleRecommendation() {
+  const card = document.querySelector('[data-decision-recommendation="active"]');
+  if (!card) return ['primary-view-scale-rec: no active recommendation card found ([data-decision-recommendation="active"] missing)'];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+
+  // 1. Heading font-size floor
+  const heading = card.querySelector('h4');
+  if (!heading) {
+    out.push('primary-view-scale-rec: recommendation card has no h4 heading');
+  } else {
+    const fs = parseFloat(getComputedStyle(heading).fontSize) || 0;
+    if (fs < 18) {
+      out.push(`primary-view-scale-rec: recommendation heading font-size ${r2(fs)}px < 18px floor (text too small for primary result surface)`);
+    }
+  }
+
+  // 2. Container width (not a tiny island)
+  const cardRect = card.getBoundingClientRect();
+  const vpWidth = window.innerWidth;
+  const vpFloor = vpWidth * 0.45;
+
+  let ancestor = card.parentElement;
+  let containerWidth = 0;
+  while (ancestor && ancestor !== document.body) {
+    const cs = getComputedStyle(ancestor);
+    if (cs.display === 'block' || cs.display === 'flex' || cs.display === 'grid') {
+      const ar = ancestor.getBoundingClientRect();
+      if (ar.width > cardRect.width + 4) {
+        containerWidth = ar.width;
+        break;
+      }
+    }
+    ancestor = ancestor.parentElement;
+  }
+  if (!containerWidth) containerWidth = vpWidth;
+
+  const containerRatio = cardRect.width / containerWidth;
+  if (containerRatio < 0.55 && cardRect.width < vpFloor) {
+    out.push(`primary-view-scale-rec: recommendation card width=${r2(cardRect.width)}px is only ${r2(containerRatio * 100)}% of container (${r2(containerWidth)}px) and < 45% of viewport (${r2(vpWidth)}px) — card is too narrow for primary result surface`);
+  }
+
+  return out;
+}
+
 // ─── STATES TABLE (U0-R) — declarative interaction openers per tab ────────────
 //
 // Each entry: { tab, state, label, open: async (page) => Promise<void>, themes: ['light'] | ['light','dark'] }
@@ -2353,6 +2407,17 @@ async function runChecksOnPage(page, tabId, stateLabel, exemptions, viewport, th
       );
       if (hasActiveQuestion) {
         addProblems(await page.evaluate(primaryViewScale));
+      }
+    }
+
+    // PRIMARY-VIEW-SCALE-REC: decisions tab only, recommendation state.
+    // Targeted: only runs when [data-decision-recommendation="active"] is in the DOM.
+    if (tabId === 'decisions' && !exemptions.includes('primary-view-scale-rec')) {
+      const hasRec = await page.evaluate(() =>
+        document.querySelector('[data-decision-recommendation="active"]') !== null
+      );
+      if (hasRec) {
+        addProblems(await page.evaluate(primaryViewScaleRecommendation));
       }
     }
   }
@@ -3228,6 +3293,88 @@ async function runSelfTest() {
       process.stderr.write('SELF-TEST phase-13 OK: primary-view-scale font-size floor plant caught and reverted\n');
     }
     await ctx13.close();
+
+    // ── PHASE 14: primary-view-scale-recommendation self-test ────────────────
+    // Navigate to the decisions tab, walk a guide to its recommendation screen
+    // (which sets data-decision-recommendation="active"), confirm
+    // primaryViewScaleRecommendation PASSES. Then: shrink the recommendation h4
+    // below 18px floor, confirm the check catches it by name, revert and confirm clean.
+    const ctx14 = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: 'light' });
+    const page14 = await ctx14.newPage();
+    await openTab(page14, 'Decision Guides', 'decisions');
+
+    // Walk a guide to recommendation (always click first available option button)
+    const guideBtn14 = page14.locator('[data-tab="decisions"] button').filter({ hasText: /product|platform|deployment|serving/i }).first();
+    if (await guideBtn14.count() > 0) {
+      await guideBtn14.click();
+      await page14.waitForTimeout(400);
+      for (let step = 0; step < 8; step++) {
+        const hasRec14 = await page14.evaluate(() =>
+          document.querySelector('[data-decision-recommendation="active"]') !== null
+        );
+        if (hasRec14) break;
+        const optBtn14 = page14.locator('[data-tab="decisions"] button').filter({ hasText: /openshift|kubernetes|cloud|managed|yes|no|inference|training/i }).first();
+        if (await optBtn14.count() === 0) break;
+        await optBtn14.click();
+        await page14.waitForTimeout(300);
+      }
+    }
+    const hasRec14 = await page14.evaluate(() =>
+      document.querySelector('[data-decision-recommendation="active"]') !== null
+    );
+    if (!hasRec14) {
+      process.stderr.write('SELF-TEST WARN phase-14: could not reach recommendation screen — primary-view-scale-rec self-test skipped\n');
+    } else {
+      // 14a: confirm current state PASSES (no false positive)
+      const pvsrPre = await page14.evaluate(primaryViewScaleRecommendation);
+      if (pvsrPre.length > 0) {
+        process.stderr.write(`SELF-TEST FAIL phase-14: primaryViewScaleRecommendation fails on real rec state before plant — ${pvsrPre.join(' | ')}\n`);
+        await browser.close();
+        process.exit(1);
+      }
+      process.stderr.write('SELF-TEST phase-14a OK: primary-view-scale-rec clean on real recommendation state\n');
+
+      // 14b: shrink the h4 below 18px floor, confirm catch
+      await page14.evaluate(() => {
+        const card = document.querySelector('[data-decision-recommendation="active"]');
+        const h4 = card && card.querySelector('h4');
+        if (h4) {
+          h4.setAttribute('data-pvsrec-orig-style', h4.getAttribute('style') || '');
+          h4.style.fontSize = '12px';
+        }
+      });
+      const pvsrFail = await page14.evaluate(primaryViewScaleRecommendation);
+      const pvsrCaught = pvsrFail.some((s) => s.includes('primary-view-scale-rec') && s.includes('12'));
+      process.stderr.write(`SELF-TEST primary-view-scale-rec phase-14b: ${pvsrCaught ? 'OK (font-size floor caught)' : 'UNEXPECTED: not caught'}\n`);
+      if (!pvsrCaught) {
+        process.stderr.write(`SELF-TEST FAIL: primaryViewScaleRecommendation did NOT catch 12px heading (below 18px floor)\n`);
+        process.stderr.write(`  output: ${pvsrFail.length > 0 ? pvsrFail.join(' | ') : '(none)'}\n`);
+        await browser.close();
+        process.exit(1);
+      }
+      const pvsrFailLine = pvsrFail.find((s) => s.includes('primary-view-scale-rec'));
+      process.stdout.write(`SELF-TEST primary-view-scale-rec failure line: ${pvsrFailLine}\n`);
+
+      // 14c: revert and confirm clean
+      await page14.evaluate(() => {
+        const card = document.querySelector('[data-decision-recommendation="active"]');
+        const h4 = card && card.querySelector('h4');
+        if (h4) {
+          const orig = h4.getAttribute('data-pvsrec-orig-style');
+          if (orig) h4.setAttribute('style', orig);
+          else h4.removeAttribute('style');
+          h4.removeAttribute('data-pvsrec-orig-style');
+        }
+      });
+      const pvsrClean = await page14.evaluate(primaryViewScaleRecommendation);
+      if (pvsrClean.length > 0) {
+        process.stderr.write(`SELF-TEST FAIL: primary-view-scale-rec still fires after revert: ${pvsrClean.join(' | ')}\n`);
+        await browser.close();
+        process.exit(1);
+      }
+      process.stderr.write('SELF-TEST phase-14 OK: primary-view-scale-rec font-size floor plant caught and reverted\n');
+    }
+    await ctx14.close();
 
     process.stderr.write('SELF-TEST PASS (all phases)\n');
   } finally {
