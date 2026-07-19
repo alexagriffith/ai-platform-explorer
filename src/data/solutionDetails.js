@@ -243,7 +243,9 @@ export const solutionDetails = {
       'Hyperparameter tuning automation',
       'Multi-step workflow orchestration',
       'Experiment versioning and comparison',
-      'Integration with MLflow (Tech Preview)',
+      // MLflow GA since RHOAI 3.4 (managed DataScienceCluster component); "no longer a Technology Preview
+      // feature" per 3.5 release notes: docs.redhat.com/.../red_hat_openshift_ai_self-managed/3.5/html/release_notes
+      'Integration with MLflow',
       'CI/CD for ML models'
     ],
     useCases: [
@@ -580,8 +582,9 @@ export const solutionDetails = {
   },
   'rh-evaluation': {
     // SOURCE: https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/evaluating_ai_systems (200, 2026-07-19)
-    // Official page title: "Evaluating AI systems with LM-Eval" — "EvalHub" does not appear in RHOAI 3.5 doc titles.
-    name: 'LM-Eval (OpenShift AI Model Evaluation)',
+    // Ch.2 "Evaluate LLMs with EvalHub" is the orchestration component this entry describes (~20 section headings);
+    // LM-Eval (Ch.4) is a separate single benchmark harness. Name stays EvalHub to match the described architecture.
+    name: 'EvalHub (OpenShift AI Model Evaluation)',
     description: 'Technology Preview — Kubernetes-native evaluation orchestration routing to multiple benchmark frameworks with MLflow integration; confirm scope with your Red Hat account team',
     architecture: {
       components: [
