@@ -121,7 +121,7 @@ export const solutionDetails = {
     contacts: ['Ask your Red Hat account team.']
   },
   'rhai': {
-    name: 'Red Hat AI (portfolio name)',
+    name: 'Red Hat AI portfolio',
     description: 'Red Hat AI is the umbrella name for the Red Hat AI portfolio. This explorer uses it for the Red Hat AI path on standard Kubernetes clusters where OpenShift is not the container platform.',
     requirements:
       'Requires a supported non-OpenShift Kubernetes distribution and validated integrations for networking, storage, and observability. Confirm the supported offering and scope with your Red Hat account team.',

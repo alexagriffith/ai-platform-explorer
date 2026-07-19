@@ -93,6 +93,9 @@ SECRET_PATTERNS = [
 # Banned product-acronym, assembled from fragments so this tracked file does not itself contain
 # the forbidden literal. Case-sensitive whole-word match — a lowercase registry namespace is NOT a hit.
 BANNED_ACRONYM = re.compile(r"\b" + "RHA" + "II" + r"\b")
+# Placeholder sentinel: '(portfolio name)' must never appear in src/data/**
+# (was a copy-paste placeholder that slipped into solutionDetails.js; scan prevents recurrence).
+BANNED_PLACEHOLDER = re.compile(r"\(portfolio name\)")
 
 
 def _customer_terms():
@@ -149,12 +152,15 @@ def section_leaks():
                 lines = fh.readlines()
         except OSError:
             continue
+        is_data_file = rel.startswith(os.path.join("src", "data") + os.sep) or rel.startswith("src/data/")
         for i, line in enumerate(lines, 1):
             for rx in customer_terms:
                 if rx.search(line):
                     hits.append("%s:%d customer-name leak: %s" % (rel, i, line.strip()[:160]))
             if BANNED_ACRONYM.search(line):
                 hits.append("%s:%d banned product acronym (use full product names): %s" % (rel, i, line.strip()[:160]))
+            if is_data_file and BANNED_PLACEHOLDER.search(line):
+                hits.append("%s:%d banned placeholder '(portfolio name)' in src/data/**; use a real product name: %s" % (rel, i, line.strip()[:160]))
             for label, rx in SECRET_PATTERNS:
                 if rx.search(line):
                     hits.append("%s:%d %s pattern: %s" % (rel, i, label, line.strip()[:80]))
