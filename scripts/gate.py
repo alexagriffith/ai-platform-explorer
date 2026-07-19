@@ -400,8 +400,14 @@ def section_one_sided_accent():
 #
 # Exclusion: src/lib/styleTokens.js is the token-definition file and is
 # intentionally full of these literals; it is excluded from the count.
+# Counts named sizes AND arbitrary bracket sizes (text-[11px], text-[0.8rem]).
+# The arbitrary form previously slipped through entirely — two raw sizes were living
+# in components while the ratchet reported zero. Note typeScale.meta IS text-[11px],
+# so a zero count never meant "nothing renders at 11px"; styleTokens.js (the token
+# definition file) stays excluded from the count.
 _RAW_TEXT_SIZE_RX = re.compile(
-    r"\b(?:[a-z][a-z0-9-]*:)*text-(?:xs|sm|base|lg|xl|2xl|3xl)\b"
+    r"\b(?:[a-z][a-z0-9-]*:)*text-(?:(?:xs|sm|base|lg|xl|2xl|3xl)\b"
+    r"|\[[0-9.]+(?:px|rem|em)\])"
 )
 
 

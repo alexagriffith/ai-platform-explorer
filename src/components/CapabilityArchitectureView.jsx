@@ -96,7 +96,7 @@ function CollapsibleDividerHeader({ title, isOpen, onToggle }) {
       <span className={`${text.faint} shrink-0 flex items-center`} aria-hidden>
         {isOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
       </span>
-      <span className={`text-[11px] font-semibold ${text.faint} uppercase tracking-wide shrink-0`}>
+      <span className={`${typeScale.groupLabel} ${text.faint} shrink-0`}>
         {title}
       </span>
       <span className="flex-1 h-px bg-hair min-w-[1rem]" />
@@ -137,7 +137,7 @@ function CapabilityCard({
           <h4 className={`${typeScale.componentName} ${text.ink}`}>
             {capability.name}
             {capability.required && (
-              <span className={`ml-1 px-1 py-0.5 text-[10px] ${status.requiredBadge} rounded-card`}>
+              <span className={`ml-1 px-1 py-0.5 ${typeScale.microFaint} ${status.requiredBadge} rounded-card`}>
                 Req
               </span>
             )}
