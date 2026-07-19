@@ -57,8 +57,8 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
         <div className="flex items-center gap-2">
           <div className={`w-1 h-6 rounded-full ${layerAccentClass}`} />
           <div>
-            <h4 className={`font-bold text-sm ${text.ink}`}>{layer.name}</h4>
-            <p className={`text-xs ${text.muted}`}>
+            <h4 className={`${typeScale.componentName} ${text.ink}`}>{layer.name}</h4>
+            <p className={`${typeScale.caption} ${text.muted}`}>
               {selectedCount} component{selectedCount !== 1 ? 's' : ''} configured
             </p>
           </div>
@@ -66,7 +66,7 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
         <button
           onClick={() => onEdit(index)}
           data-ui="control"
-          className={`text-xs font-medium ${text.link} hover:underline ${interactive.focusRing} ${interactive.transition} rounded-card`}
+          className={`${typeScale.label} ${text.link} hover:underline ${interactive.focusRing} ${interactive.transition} rounded-card`}
         >
           Edit
         </button>
@@ -85,7 +85,7 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
               data-ui="chip"
               key={capId}
               onClick={() => canDeepDive && onDeepDive(optionId)}
-              className={`px-2 py-1 rounded-card text-xs font-medium bg-surface ${interactive.transitionAll} ${interactive.focusRing} ${
+              className={`px-2 py-1 rounded-card ${typeScale.label} bg-surface ${interactive.transitionAll} ${interactive.focusRing} ${
                 canDeepDive ? 'cursor-pointer hover:-translate-y-0.5 motion-reduce:hover:translate-y-0' : ''
               } ${
                 option.isCustomer
@@ -132,18 +132,18 @@ function CapabilitySelector({
           <h4 className={`font-bold ${text.ink} flex items-center gap-2`}>
             {capability.name}
             {capability.required && (
-              <span data-ui="chip" className={`px-2 py-0.5 ${status.requiredBadge} text-xs rounded-card`}>
+              <span data-ui="chip" className={`px-2 py-0.5 ${status.requiredBadge} ${typeScale.caption} rounded-card`}>
                 Required
               </span>
             )}
           </h4>
-          <p className={`text-sm ${text.muted}`}>{capability.description}</p>
+          <p className={`${typeScale.body} ${text.muted}`}>{capability.description}</p>
         </div>
         {isSelected && (
           <button
             type="button"
             onClick={() => onRemove(layerId, capability.id)}
-            className={`text-sm ${text.link} hover:underline ${interactive.focusRing} ${interactive.transition} rounded-card`}
+            className={`${typeScale.body} ${text.link} hover:underline ${interactive.focusRing} ${interactive.transition} rounded-card`}
           >
             Remove
           </button>
@@ -201,14 +201,14 @@ function CapabilitySelector({
                           {disabled && (
                             <span
                               data-ui-exempt="disabled-constraint-indicator"
-                              className={`px-2 py-0.5 bg-page text-faint border border-dashed border-edge text-xs rounded-card italic`}
+                              className={`px-2 py-0.5 bg-page text-faint border border-dashed border-edge ${typeScale.caption} rounded-card italic`}
                               title="Not available with the current platform selection"
                             >
                               N/A
                             </span>
                           )}
                           {option.isCustomer && (
-                            <span data-ui="chip" className={`px-2 py-0.5 ${providerMark.customer} ${text.ink} text-xs rounded-card`}>
+                            <span data-ui="chip" className={`px-2 py-0.5 ${providerMark.customer} ${text.ink} ${typeScale.caption} rounded-card`}>
                               Customer
                             </span>
                           )}
@@ -218,7 +218,7 @@ function CapabilitySelector({
                             </span>
                           )}
                           {option.status && (
-                            <span data-ui="chip" className={`rounded-card px-2 py-0.5 bg-page border border-hair text-xs ${productStatus[option.status] ?? text.muted}`}>
+                            <span data-ui="chip" className={`rounded-card px-2 py-0.5 bg-page border border-hair ${typeScale.caption} ${productStatus[option.status] ?? text.muted}`}>
                               {option.status}
                             </span>
                           )}
@@ -229,11 +229,11 @@ function CapabilitySelector({
                       {/* Redundancy law: suppress Provider line when a badge already says it
                           (Customer badge shown, or option name already contains the provider name). */}
                       {!option.isCustomer && !option.name.includes(option.provider) && (
-                        <div className={`text-sm ${text.muted} mb-1`}>
+                        <div className={`${typeScale.body} ${text.muted} mb-1`}>
                           Provider: <span className="font-semibold">{option.provider}</span>
                         </div>
                       )}
-                      <p className={`text-sm ${text.muted}`}>
+                      <p className={`${typeScale.body} ${text.muted}`}>
                         {option.description}
                       </p>
                     </div>
@@ -263,7 +263,7 @@ function CapabilitySelector({
               {/* Expanded Guide */}
               {guide && isGuideExpanded && (
                 <div className="ml-8 p-4 bg-tint rounded-card border border-edge">
-                  <div className="grid gap-3 text-sm">
+                  <div className={`grid gap-3 ${typeScale.body}`}>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <Info size={14} className="text-accent" />
@@ -419,20 +419,20 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
               <Check size={16} className="text-white" />
             </div>
             <div>
-              <h2 className={`text-xl font-bold ${text.ink}`}>Guided steps complete</h2>
-              <p className={`text-sm ${text.muted} mt-0.5`}>
+              <h2 className={`${typeScale.primaryHeading} ${text.ink}`}>Guided steps complete</h2>
+              <p className={`${typeScale.body} ${text.muted} mt-0.5`}>
                 Selections are saved to Build Your Stack — switch to that mode above to review or fine-tune by layer.
               </p>
             </div>
           </div>
           <div className="flex gap-4 mb-4">
             <div className="rounded-card bg-tint px-4 py-2 text-center">
-              <div className={`text-2xl font-bold ${text.ink}`}>{nonEmptyLayerCount}</div>
-              <div className={`text-sm ${text.muted}`}>Layers configured</div>
+              <div className={`${typeScale.pageTitle} ${text.ink}`}>{nonEmptyLayerCount}</div>
+              <div className={`${typeScale.body} ${text.muted}`}>Layers configured</div>
             </div>
             <div className="rounded-card bg-tint px-4 py-2 text-center">
-              <div className={`text-2xl font-bold ${text.ink}`}>{totalComponents}</div>
-              <div className={`text-sm ${text.muted}`}>Total components</div>
+              <div className={`${typeScale.pageTitle} ${text.ink}`}>{totalComponents}</div>
+              <div className={`${typeScale.body} ${text.muted}`}>Total components</div>
             </div>
           </div>
           <div className="flex gap-3">
@@ -459,7 +459,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
         <div data-ui="card" className="bg-tint rounded-card p-6">
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <div>
-              <h3 className={`text-xl font-bold ${text.ink}`}>Your Complete Stack</h3>
+              <h3 className={`${typeScale.primaryHeading} ${text.ink}`}>Your Complete Stack</h3>
               {/* Categorical legend — required by legend law whenever categoricalMark tokens appear */}
               <div className="flex items-center gap-3 mt-1 flex-wrap">
                 <div className="flex items-center gap-1.5">
@@ -481,7 +481,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
               <button
                 data-ui="control"
                 onClick={() => setViewOrder(viewOrder === 'bottom-up' ? 'top-down' : 'bottom-up')}
-                className={`flex items-center gap-2 px-3 py-2 rounded-card text-xs font-medium border border-edge ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
+                className={`flex items-center gap-2 px-3 py-2 rounded-card ${typeScale.label} border border-edge ${toggle.inactive} ${interactive.transition} ${interactive.focusRing}`}
               >
                 {viewOrder === 'bottom-up' ? (
                   <>
@@ -553,17 +553,17 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
       <div data-ui="section-header" className="bg-surface rounded-card p-4">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className={`text-xl font-bold ${text.ink}`}>
+            <h2 className={`${typeScale.primaryHeading} ${text.ink}`}>
               Interactive Stack Builder
             </h2>
-            <p className={`text-sm ${text.muted}`}>
+            <p className={`${typeScale.body} ${text.muted}`}>
               Step {currentLayerIndex + 1} of {buildOrder.length}
             </p>
           </div>
           <button
             onClick={resetBuilder}
             data-ui="control"
-            className={`text-sm ${text.muted} hover:text-ink flex items-center gap-1 ${interactive.transition} ${interactive.focusRing} rounded-card`}
+            className={`${typeScale.body} ${text.muted} hover:text-ink flex items-center gap-1 ${interactive.transition} ${interactive.focusRing} rounded-card`}
           >
             <RotateCcw size={14} />
             Reset
@@ -584,7 +584,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
             <div key={layer.id} className="flex items-center">
               <div
                 data-ui-exempt="step-indicator-circle"
-                className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${interactive.transitionAll} ${
+                className={`flex items-center justify-center w-8 h-8 rounded-full ${typeScale.caption} font-bold ${interactive.transitionAll} ${
                   idx < currentLayerIndex
                     ? 'bg-green-600 text-white'
                     : idx === currentLayerIndex
@@ -609,7 +609,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
             <div className="flex items-center gap-3 mb-6">
               <div className={`w-2 h-12 rounded-full ${layerAccentClass}`} />
               <div>
-                <h3 className={`text-2xl font-bold ${text.ink}`}>
+                <h3 className={`${typeScale.pageTitle} ${text.ink}`}>
                   {currentLayer?.name}
                 </h3>
               </div>
@@ -703,7 +703,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
                         ) : (
                           <div className="w-4 h-4 rounded-full border-2 border-edge" />
                         )}
-                        <span className={`font-semibold text-sm ${text.ink}`}>
+                        <span className={`${typeScale.bodyStrong} font-semibold ${text.ink}`}>
                           {layer.name}
                         </span>
                       </div>

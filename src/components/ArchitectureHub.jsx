@@ -5,7 +5,7 @@ import InteractiveBuilder from './InteractiveBuilder';
 import CustomerConfig from './CustomerConfig';
 import RAGArchitecture from './RAGArchitecture';
 import TrainingDeepDive from './TrainingDeepDive';
-import { interactive, text } from '../lib/styleTokens';
+import { interactive, text, typeScale } from '../lib/styleTokens';
 
 export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities, initialMode = 'build', onModeChange }) {
   const [mode, setMode] = useState(initialMode); // 'build', 'interactive', 'generate', 'blueprints'
@@ -69,7 +69,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <Layers className="text-accent shrink-0" size={20} />
-            <h2 className={`font-display text-base font-bold ${text.ink}`}>
+            <h2 className={`font-display ${typeScale.cardTitle} ${text.ink}`}>
               Architecture Builder
             </h2>
           </div>
@@ -77,11 +77,11 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
           {/* Help — quiet text link */}
           <div className="flex flex-wrap items-center gap-1.5 sm:flex-shrink-0">
             <HelpCircle size={13} className={`${text.faint} flex-shrink-0`} aria-hidden="true" />
-            <span className={`text-xs ${text.muted}`}>Not sure what to choose?</span>
+            <span className={`${typeScale.caption} ${text.muted}`}>Not sure what to choose?</span>
             <button
               type="button"
               onClick={onSwitchToDecisions}
-              className={`text-xs ${text.link} underline underline-offset-2 hover:no-underline ${interactive.transition} ${interactive.focusRing} rounded-sm`}
+              className={`${typeScale.caption} ${text.link} underline underline-offset-2 hover:no-underline ${interactive.transition} ${interactive.focusRing} rounded-sm`}
             >
               Decision Guides
             </button>
@@ -103,7 +103,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
                   role="tab"
                   aria-selected={active}
                   onClick={() => handleModeChange(modeOption.id)}
-                  className={`text-xs font-medium pb-0.5 border-b-2 whitespace-nowrap ${interactive.transition} ${interactive.focusRing} rounded-none ${
+                  className={`${typeScale.label} pb-0.5 border-b-2 whitespace-nowrap ${interactive.transition} ${interactive.focusRing} rounded-none ${
                     active
                       ? 'border-accent text-link'
                       : 'border-transparent text-muted hover:text-ink'
@@ -115,7 +115,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
             })}
           </div>
           {currentMode.description && (
-            <p className={`mt-1 text-xs ${text.faint}`}>
+            <p className={`mt-1 ${typeScale.caption} ${text.faint}`}>
               {currentMode.description}
             </p>
           )}

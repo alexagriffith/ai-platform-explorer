@@ -71,7 +71,7 @@ export default function DeepDiveModal({ optionId, onClose }) {
         <div className={modal.header}>
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h2 className={`text-xl font-bold leading-tight ${text.ink}`}>{details.name}</h2>
+              <h2 className={`${typeScale.primaryHeading} ${text.ink}`}>{details.name}</h2>
               <p className={`mt-1 ${typeScale.secondary} ${text.muted}`}>{details.description}</p>
             </div>
             <button
