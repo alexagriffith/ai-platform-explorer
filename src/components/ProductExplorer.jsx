@@ -175,7 +175,7 @@ export default function ProductExplorer() {
           <button
             type="button"
             onClick={() => { setSearchTerm(''); setFilterStatus('all'); setFilterLayer('all'); }}
-            className={`mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-card border border-edge text-sm font-medium ${text.ink} hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page transition-colors duration-150 ease-out motion-reduce:transition-none`}
+            className={`mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-card border border-edge ${typeScale.navTab} ${text.ink} hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page transition-colors duration-150 ease-out motion-reduce:transition-none`}
           >
             Clear filters
           </button>

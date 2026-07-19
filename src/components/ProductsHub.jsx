@@ -3,7 +3,7 @@ import { Package, Scale, Network } from 'lucide-react';
 import ProductComparisonView from './ProductComparisonView';
 import ProductExplorer from './ProductExplorer';
 import MCPEcosystemFull from './MCPEcosystemFull';
-import { interactive, text } from '../lib/styleTokens';
+import { interactive, text, typeScale } from '../lib/styleTokens';
 
 const SUB_VIEWS = [
   {
@@ -114,7 +114,7 @@ export default function ProductsHub({ onNavigate }) {
               data-ui="control"
               onClick={() => setSubView(sv.id)}
               aria-current={active ? 'page' : undefined}
-              className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 ${interactive.transition} ${interactive.focusRing} whitespace-nowrap ${
+              className={`flex items-center gap-1.5 px-3 py-2 ${typeScale.navTab} border-b-2 ${interactive.transition} ${interactive.focusRing} whitespace-nowrap ${
                 active
                   ? 'border-accent text-link'
                   : 'border-transparent text-muted hover:text-ink'
@@ -135,8 +135,8 @@ export default function ProductsHub({ onNavigate }) {
           {/* Browse by use case — catalog-only index; Compare opens unobstructed */}
           <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
             <div className="flex items-baseline gap-2 mb-2">
-              <h3 className={`text-sm font-semibold ${text.ink}`}>Browse by use case</h3>
-              <span className={`text-xs ${text.muted}`}>Each use case links to its guide in this app</span>
+              <h3 className={`${typeScale.subSectionTitle} ${text.ink}`}>Browse by use case</h3>
+              <span className={`${typeScale.caption} ${text.muted}`}>Each use case links to its guide in this app</span>
             </div>
             <div className="flex flex-wrap items-center gap-y-1">
               {USE_CASE_INDEX.map((uc, idx) => (
@@ -147,7 +147,7 @@ export default function ProductsHub({ onNavigate }) {
                   <button
                     data-ui="control"
                     onClick={() => handleUseCaseLink(uc.action)}
-                    className={`text-xs ${text.muted} hover:text-link hover:underline underline-offset-2 ${interactive.transition} ${interactive.focusRing} rounded-sm`}
+                    className={`${typeScale.caption} ${text.muted} hover:text-link hover:underline underline-offset-2 ${interactive.transition} ${interactive.focusRing} rounded-sm`}
                   >
                     {uc.title}
                   </button>

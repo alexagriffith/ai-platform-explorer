@@ -6,7 +6,7 @@ import CapabilityDeltaTable from './CapabilityDeltaTable';
 import ResourceTreeView from './ResourceTreeView';
 import QuickComparisonTable from './QuickComparisonTable';
 import { getComparisonById } from '../data/deploymentComparisons';
-import { interactive, text } from '../lib/styleTokens';
+import { interactive, text, typeScale } from '../lib/styleTokens';
 
 /**
  * DeploymentImpactView
@@ -53,10 +53,10 @@ export default function DeploymentImpactView() {
         <div key={comparison.id} className="space-y-3">
           {/* Comparison Header */}
           <div data-ui="card" className="rounded-card border border-edge bg-surface px-4 py-3">
-            <h3 className="text-base font-bold text-ink leading-tight mb-1">
+            <h3 className={`${typeScale.panelTitle} text-ink mb-1`}>
               {comparison.title}
             </h3>
-            <p className="text-sm text-muted">
+            <p className={`${typeScale.body} text-muted`}>
               {comparison.description}
             </p>
           </div>
@@ -72,7 +72,7 @@ export default function DeploymentImpactView() {
                       data-ui="control"
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-1.5 px-3 py-2 font-medium text-sm ${interactive.transition} ${interactive.focusRing} border-b-2 ${
+                      className={`flex items-center gap-1.5 px-3 py-2 ${typeScale.navTab} ${interactive.transition} ${interactive.focusRing} border-b-2 ${
                         activeTab === tab.id
                           ? 'border-accent text-link'
                           : 'border-transparent text-muted hover:text-ink'
@@ -103,14 +103,14 @@ export default function DeploymentImpactView() {
                 aria-expanded={migrationNotesExpanded}
                 className={`w-full px-4 py-2 flex items-center justify-between ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
               >
-                <h3 className="text-sm font-bold text-ink flex items-center gap-2">
+                <h3 className={`${typeScale.subPanelTitle} text-ink flex items-center gap-2`}>
                   {migrationNotesExpanded ? (
                     <ChevronDown size={16} className="text-faint" />
                   ) : (
                     <ChevronRight size={16} className="text-faint" />
                   )}
                   Migration Notes
-                  <span className="ml-1 text-xs font-normal text-muted">
+                  <span className={`ml-1 ${typeScale.caption} font-normal text-muted`}>
                     ({comparison.migrationNotes.length} tips)
                   </span>
                 </h3>
@@ -120,10 +120,10 @@ export default function DeploymentImpactView() {
                   <ul className="space-y-2">
                     {comparison.migrationNotes.map((note, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <span className="flex-shrink-0 w-5 h-5 bg-tint border border-edge text-muted rounded-full flex items-center justify-center text-xs font-semibold mt-0.5">
+                        <span className={`flex-shrink-0 w-5 h-5 bg-tint border border-edge text-muted rounded-full flex items-center justify-center ${typeScale.label} font-semibold mt-0.5`}>
                           {idx + 1}
                         </span>
-                        <span className="text-sm text-ink leading-snug">
+                        <span className={`${typeScale.body} text-ink`}>
                           {note}
                         </span>
                       </li>
@@ -137,7 +137,7 @@ export default function DeploymentImpactView() {
           {/* Documentation Links */}
           {comparison.docsLinks && comparison.docsLinks.length > 0 && (
             <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
-              <h3 data-ui="section-header" className={`text-sm font-bold ${text.ink} mb-2`}>
+              <h3 data-ui="section-header" className={`${typeScale.subPanelTitle} ${text.ink} mb-2`}>
                 Additional Resources
               </h3>
               <div className="flex flex-wrap justify-center gap-2">
@@ -153,7 +153,7 @@ export default function DeploymentImpactView() {
                     <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
-                    <span className="text-sm font-medium">
+                    <span className={typeScale.bodyStrong}>
                       {link.label}
                     </span>
                   </a>

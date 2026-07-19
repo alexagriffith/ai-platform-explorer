@@ -35,7 +35,7 @@ export default function MCPEcosystemFull() {
             href="https://modelcontextprotocol.io"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs text-link hover:text-accent transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page flex-shrink-0"
+            className={`inline-flex items-center gap-1.5 ${typeScale.caption} text-link hover:text-accent transition-colors duration-150 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page flex-shrink-0`}
           >
             <ExternalLink size={11} />
             <span>MCP specification (modelcontextprotocol.io)</span>
@@ -54,10 +54,10 @@ export default function MCPEcosystemFull() {
           <div className="flex items-center gap-1.5 flex-wrap mb-1.5">
             {['Validate', 'Scan', 'Sign', 'Certify', 'Publish'].map((stage, index) => (
               <div key={stage} className="flex items-center gap-1.5">
-                <div className="px-2 py-0.5 rounded-card bg-tint text-ink font-medium text-xs">
+                <div className={`px-2 py-0.5 rounded-card bg-tint text-ink font-medium ${typeScale.caption}`}>
                   {stage}
                 </div>
-                {index < 4 && <span className="text-muted text-xs">→</span>}
+                {index < 4 && <span className={`text-muted ${typeScale.caption}`}>→</span>}
               </div>
             ))}
           </div>

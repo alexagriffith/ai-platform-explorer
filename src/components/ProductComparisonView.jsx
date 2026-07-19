@@ -4,7 +4,7 @@ import { productComparisons, isComparisonDraft } from '../data/productComparison
 import SharedSpineLedger from './SharedSpineLedger';
 import ProductComparisonHero from './ProductComparisonHero';
 import { buildLedgerModel } from '../lib/ledgerModel';
-import { interactive, supportMark as SUPPORT_MARK } from '../lib/styleTokens';
+import { interactive, supportMark as SUPPORT_MARK, typeScale } from '../lib/styleTokens';
 
 /**
  * ProductComparisonView — the Product Comparison tab, structured as THREE BEATS top to bottom so a
@@ -44,30 +44,30 @@ function inclusionLabel(value) {
 
 /** Capability presence cell: check/X mark (✓/✕) + source link. Never Yes/No text. */
 function CapabilityPresenceCell({ cell }) {
-  if (!cell) return <span className="text-xs text-faint" aria-label="no data">—</span>;
+  if (!cell) return <span className={`${typeScale.caption} text-faint`} aria-label="no data">—</span>;
   const mark = SUPPORT_MARK[cell.support] || { symbol: '?', ariaLabel: cell.support || 'unknown', className: 'text-faint' };
   const pending = cell.tier && cell.tier !== 'clear';
   const detail = cell.status ? `${cell.detail} — ${cell.status}` : cell.detail;
   return (
     <div className="space-y-1">
-      <span className={`text-base ${mark.className}`} aria-label={mark.ariaLabel}>
+      <span className={`${typeScale.symbolDisplay} ${mark.className}`} aria-label={mark.ariaLabel}>
         {mark.symbol}
       </span>
-      <div className="text-xs sm:text-sm text-muted">{detail}</div>
+      <div className={`${typeScale.captionSm} text-muted`}>{detail}</div>
       {cell.sourceUrl && (
         <a
           href={cell.sourceUrl}
           target="_blank"
           rel="noopener noreferrer"
           title={cell.sourceLabel || 'Open source'}
-          className={`inline-flex items-start gap-1 text-xs font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+          className={`inline-flex items-start gap-1 ${typeScale.label} font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
         >
           <ExternalLink size={12} className="mt-0.5 flex-shrink-0" />
           <span>{cell.sourceLabel || 'Source'}</span>
         </a>
       )}
       {pending && (
-        <div className="text-[10px] font-semibold uppercase tracking-wide text-accent">
+        <div className={`${typeScale.microLabel} tracking-wide text-accent`}>
           Pending verification
         </div>
       )}
@@ -78,29 +78,29 @@ function CapabilityPresenceCell({ cell }) {
 /** One product cell in the BOM rows: inclusion label above detail + source link. */
 function BomCell({ cell }) {
   if (!cell) {
-    return <span className="text-xs text-faint">—</span>;
+    return <span className={`${typeScale.caption} text-faint`}>—</span>;
   }
   const label = inclusionLabel(cell.included);
   const detail = cell.status ? `${cell.detail} — ${cell.status}` : cell.detail;
   const pending = cell.tier && cell.tier !== 'clear';
   return (
     <div className="space-y-1">
-      <div className="text-sm font-semibold text-ink">{label}</div>
-      <div className="text-xs sm:text-sm text-muted">{detail}</div>
+      <div className={`${typeScale.bodyStrong} text-ink`}>{label}</div>
+      <div className={`${typeScale.captionSm} text-muted`}>{detail}</div>
       {cell.sourceUrl && (
         <a
           href={cell.sourceUrl}
           target="_blank"
           rel="noopener noreferrer"
           title={cell.sourceLabel || 'Open source'}
-          className={`inline-flex items-start gap-1 text-xs font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+          className={`inline-flex items-start gap-1 ${typeScale.label} font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
         >
           <ExternalLink size={12} className="mt-0.5 flex-shrink-0" />
           <span>{cell.sourceLabel || 'Source'}</span>
         </a>
       )}
       {pending && (
-        <div className="text-[10px] font-semibold uppercase tracking-wide text-accent">
+        <div className={`${typeScale.microLabel} tracking-wide text-accent`}>
           Pending verification
         </div>
       )}
@@ -115,7 +115,7 @@ function DraftBanner() {
     <div data-draft-banner className="rounded-card bg-draft-bg px-4 sm:px-6 py-3">
       <div className="flex items-start gap-2 text-draft-fg">
         <AlertCircle size={18} className="flex-shrink-0 mt-0.5 text-accent" />
-        <p className="text-xs sm:text-sm font-medium leading-relaxed">{DRAFT_BANNER_TEXT}</p>
+        <p className={`${typeScale.captionSm} font-medium leading-relaxed`}>{DRAFT_BANNER_TEXT}</p>
       </div>
     </div>
   );
@@ -126,10 +126,10 @@ function DraftBanner() {
 function OrientBeat() {
   return (
     <div className="max-w-3xl">
-      <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-ink">
+      <h2 className={`font-display ${typeScale.heroTitle} sm:text-4xl text-ink`}>
         Which Red Hat AI product do you need?
       </h2>
-      <p className="mt-2 text-base sm:text-lg leading-relaxed text-muted">
+      <p className={`mt-2 ${typeScale.heroSubtitleSm} text-muted`}>
         The Inference Server is the engine. OpenShift AI is the platform built around it — and the
         engine is also sold on its own.
       </p>
@@ -146,10 +146,10 @@ function DecisionCard({ tag, name, className = '' }) {
       data-ui="card"
       className={`flex h-full flex-col justify-center ${className}`}
     >
-      <div className="text-[10px] font-semibold uppercase tracking-widest text-accent mb-1">
+      <div className={`${typeScale.microLabel} tracking-widest text-accent mb-1`}>
         {tag}
       </div>
-      <div className="text-lg font-semibold leading-snug text-ink">{name}</div>
+      <div className={`${typeScale.decideName} text-ink`}>{name}</div>
     </div>
   );
 }
@@ -183,7 +183,7 @@ function ComparisonTableShell({ columns, children }) {
             {columns.map((col) => (
               <th
                 key={col}
-                className="px-3 sm:px-4 py-2 text-left text-xs font-semibold text-faint uppercase tracking-wider min-w-[140px]"
+                className={`px-3 sm:px-4 py-2 text-left ${typeScale.tableHeader} text-faint min-w-[140px]`}
               >
                 {col}
               </th>
@@ -210,7 +210,7 @@ function GroupHeaderRow({ label, colSpan }) {
         data-ui="section-header"
         className="px-3 sm:px-4 py-1.5 bg-tint border-b border-edge"
       >
-        <span className="text-xs font-semibold uppercase tracking-wider text-faint">{label}</span>
+        <span className={`${typeScale.tableHeader} text-faint`}>{label}</span>
       </td>
     </tr>
   );
@@ -225,7 +225,7 @@ function ProvenanceTable({ comparison }) {
       {comparison.bomRows.map((row) => (
         <tr key={row.area}>
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
-            <div className="font-medium text-sm text-ink">{row.area}</div>
+            <div className={`${typeScale.bodyStrong} text-ink`}>{row.area}</div>
           </td>
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
             <BomCell cell={row.a} />
@@ -239,7 +239,7 @@ function ProvenanceTable({ comparison }) {
       {comparison.capabilityRows.map((row) => (
         <tr key={row.capability}>
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
-            <div className="font-medium text-sm text-ink">{row.capability}</div>
+            <div className={`${typeScale.bodyStrong} text-ink`}>{row.capability}</div>
           </td>
           <td className="px-3 sm:px-4 py-3 sm:py-4 align-top">
             <CapabilityPresenceCell cell={row.a} />
@@ -349,7 +349,7 @@ export default function ProductComparisonView() {
             data-ui="control"
             onClick={handleDownloadPng}
             disabled={pngBusy}
-            className={`inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-card border border-edge text-ink hover:bg-tint ${interactive.transition} ${interactive.focusRing} disabled:opacity-60`}
+            className={`inline-flex items-center gap-2 px-3 py-2 ${typeScale.navTab} rounded-card border border-edge text-ink hover:bg-tint ${interactive.transition} ${interactive.focusRing} disabled:opacity-60`}
           >
             <Download size={16} />
             {pngBusy ? 'Exporting…' : 'Export PNG'}
@@ -357,14 +357,14 @@ export default function ProductComparisonView() {
           <button
             data-ui="control"
             onClick={handleCopy}
-            className={`inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-card border border-edge text-ink hover:bg-tint ${interactive.transition} ${interactive.focusRing}`}
+            className={`inline-flex items-center gap-2 px-3 py-2 ${typeScale.navTab} rounded-card border border-edge text-ink hover:bg-tint ${interactive.transition} ${interactive.focusRing}`}
           >
             {copyDone ? <Check size={16} /> : <Copy size={16} />}
             {copyDone ? 'Copied' : 'Copy summary'}
           </button>
         </div>
       </div>
-      {pngError && <p className="text-right text-xs text-accent">{pngError}</p>}
+      {pngError && <p className={`text-right ${typeScale.caption} text-accent`}>{pngError}</p>}
 
       {/* CAPTURE ROOT — the three beats (+ draft banner) are what the PNG export captures. */}
       <div id={CAPTURE_ROOT_ID} className="space-y-6">
@@ -377,9 +377,9 @@ export default function ProductComparisonView() {
 
       {/* Detailed provenance (collapsed) — single grouped table; no toggle. */}
       <details className="border-t border-hair pt-2">
-        <summary className="cursor-pointer select-none px-1 py-3 flex flex-wrap items-center justify-between gap-2 text-sm font-semibold text-ink hover:text-link">
+        <summary className={`cursor-pointer select-none px-1 py-3 flex flex-wrap items-center justify-between gap-2 ${typeScale.bodyStrong} text-ink hover:text-link`}>
           <span>Detailed provenance (bill of materials + capabilities)</span>
-          <span className="text-xs font-normal text-faint">every cell links to its source</span>
+          <span className={`${typeScale.caption} font-normal text-faint`}>every cell links to its source</span>
         </summary>
         <div className="pt-4">
           <ProvenanceTable comparison={comparison} />
@@ -389,7 +389,7 @@ export default function ProductComparisonView() {
       {/* Documentation links (outside the capture root) — box-free, separated by a top hairline. */}
       {comparison.docsLinks && comparison.docsLinks.length > 0 && (
         <div className="border-t border-hair pt-4">
-          <h3 className="text-sm font-semibold text-ink mb-2">Additional resources</h3>
+          <h3 className={`${typeScale.subSectionTitle} text-ink mb-2`}>Additional resources</h3>
           <ul className="space-y-2">
             {comparison.docsLinks.map((link) => (
               <li key={link.url}>
@@ -397,7 +397,7 @@ export default function ProductComparisonView() {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-2 text-sm font-medium text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+                  className={`inline-flex items-center gap-2 ${typeScale.navTab} text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
                 >
                   <ExternalLink size={14} className="flex-shrink-0" />
                   <span>{link.label}</span>

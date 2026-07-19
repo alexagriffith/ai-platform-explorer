@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronDown, ExternalLink } from 'lucide-react';
 import { buildLedgerModel, LEDGER_PRODUCTS, sideTitle } from '../lib/ledgerModel';
 import { getComponentVersions } from '../data/componentVersions';
-import { interactive, supportMark } from '../lib/styleTokens';
+import { interactive, supportMark, typeScale } from '../lib/styleTokens';
 
 /**
  * SharedSpineLedger — BEAT 3 ("PROVE") of the Product Comparison tab.
@@ -53,7 +53,7 @@ function PresenceMark({ side }) {
     return (
       <span
         aria-label={`not included — ${token.ariaLabel}`}
-        className={`text-lg leading-none select-none ${token.className}`}
+        className={`${typeScale.symbolDisplay} select-none ${token.className}`}
       >
         {token.symbol}
       </span>
@@ -67,7 +67,7 @@ function PresenceMark({ side }) {
   return (
     <span
       aria-label={ariaText}
-      className={`text-lg leading-none select-none ${token.className} ${pendingClass}`}
+      className={`${typeScale.symbolDisplay} select-none ${token.className} ${pendingClass}`}
     >
       {token.symbol}
     </span>
@@ -77,7 +77,7 @@ function PresenceMark({ side }) {
 function NameLink({ row }) {
   if (!row.link) {
     return (
-      <span className="text-sm font-medium leading-snug text-ink break-words hyphens-auto">{row.name}</span>
+      <span className={`${typeScale.bodyStrong} text-ink break-words hyphens-auto`}>{row.name}</span>
     );
   }
   return (
@@ -87,7 +87,7 @@ function NameLink({ row }) {
       rel="noopener"
       title={row.link.label || 'Open source'}
       aria-label={row.link.label ? `${row.name} — source: ${row.link.label}` : `${row.name} — open source`}
-      className={`group flex items-center justify-center gap-1 min-w-0 max-w-full text-sm font-medium leading-snug text-ink hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+      className={`group flex items-center justify-center gap-1 min-w-0 max-w-full ${typeScale.bodyStrong} text-ink hover:text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
     >
       <span className="break-words hyphens-auto min-w-0">{row.name}</span>
       <ExternalLink
@@ -132,28 +132,28 @@ function LedgerRow({ row, last }) {
 function GroupHeader({ title }) {
   return (
     <div data-ui="section-header" className="border-b border-hair bg-tint px-3 py-2 sm:px-4">
-      <span className="text-xs font-semibold uppercase tracking-wider text-faint">{title}</span>
+      <span className={`${typeScale.microLabel} text-faint`}>{title}</span>
     </div>
   );
 }
 
 function Legend() {
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-faint">
+    <div className={`flex flex-wrap items-center gap-x-4 gap-y-1.5 ${typeScale.caption} text-faint`}>
       <span className="inline-flex items-center gap-1.5">
-        <span aria-hidden="true" className={`text-base leading-none font-bold ${supportMark.yes.className}`}>
+        <span aria-hidden="true" className={`${typeScale.symbolDisplay} font-bold ${supportMark.yes.className}`}>
           {supportMark.yes.symbol}
         </span>
         Verified
       </span>
       <span className="inline-flex items-center gap-1.5">
-        <span aria-hidden="true" className={`text-base leading-none font-bold ${supportMark.yes.className} opacity-60`}>
+        <span aria-hidden="true" className={`${typeScale.symbolDisplay} font-bold ${supportMark.yes.className} opacity-60`}>
           {supportMark.yes.symbol}
         </span>
         Pending verification
       </span>
       <span className="inline-flex items-center gap-1.5">
-        <span aria-hidden="true" className={`text-base leading-none font-bold ${supportMark.no.className}`}>
+        <span aria-hidden="true" className={`${typeScale.symbolDisplay} font-bold ${supportMark.no.className}`}>
           {supportMark.no.symbol}
         </span>
         Not included
@@ -170,15 +170,15 @@ function StickyHeader() {
   return (
     <div data-ui="section-header" className={`${COLS} sticky top-0 z-10 border-b border-edge bg-surface`}>
       <div className="flex flex-col items-center justify-center px-2 py-2 text-center">
-        <span className="text-xs font-bold leading-snug text-ink break-words sm:text-sm">{LEDGER_PRODUCTS.a.label}</span>
-        <span className="mt-0.5 text-[10px] text-faint break-words sm:text-xs">{LEDGER_PRODUCTS.a.descriptor}</span>
+        <span className={`${typeScale.columnLabelBoldSm} text-ink break-words`}>{LEDGER_PRODUCTS.a.label}</span>
+        <span className={`mt-0.5 ${typeScale.microFaintSm} text-faint break-words`}>{LEDGER_PRODUCTS.a.descriptor}</span>
       </div>
       <div className="flex items-center justify-center px-2 py-2">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-faint sm:text-xs">Component</span>
+        <span className={`${typeScale.microLabelSm} text-faint`}>Component</span>
       </div>
       <div className="flex flex-col items-center justify-center px-2 py-2 text-center">
-        <span className="text-xs font-bold leading-snug text-ink break-words sm:text-sm">{LEDGER_PRODUCTS.b.label}</span>
-        <span className="mt-0.5 text-[10px] text-faint break-words sm:text-xs">{LEDGER_PRODUCTS.b.descriptor}</span>
+        <span className={`${typeScale.columnLabelBoldSm} text-ink break-words`}>{LEDGER_PRODUCTS.b.label}</span>
+        <span className={`mt-0.5 ${typeScale.microFaintSm} text-faint break-words`}>{LEDGER_PRODUCTS.b.descriptor}</span>
       </div>
     </div>
   );
@@ -210,10 +210,10 @@ function VersionExpandRow({ productLabel, versionTable, isLast }) {
         className={`w-full flex items-center justify-between gap-3 px-3 sm:px-4 py-2 text-left group ${interactive.transition} ${interactive.focusRing} hover:bg-tint`}
       >
         <span className="flex items-center gap-2 min-w-0">
-          <span className="text-xs font-semibold text-ink">
+          <span className={`${typeScale.label} font-semibold text-ink`}>
             Component versions — {productLabel}
           </span>
-          <span className="text-xs text-faint font-normal hidden sm:inline">
+          <span className={`${typeScale.caption} text-faint font-normal hidden sm:inline`}>
             {components.length} components · release {release}
           </span>
         </span>
@@ -239,11 +239,11 @@ function VersionExpandRow({ productLabel, versionTable, isLast }) {
               {components.map((entry) => (
                 <tr key={entry.component} className="border-b border-hair last:border-b-0">
                   {/* Component name — left, normal weight */}
-                  <td className="pr-6 py-1 text-xs text-ink whitespace-nowrap align-middle">
+                  <td className={`pr-6 py-1 ${typeScale.tableCell} text-ink whitespace-nowrap align-middle`}>
                     {entry.component}
                   </td>
                   {/* Version — right, monospace, no wrap */}
-                  <td className="py-1 text-xs align-middle whitespace-nowrap">
+                  <td className={`py-1 ${typeScale.tableCell} align-middle whitespace-nowrap`}>
                     <span className="font-mono text-ink">
                       {entry.version}
                       {entry.sha && (
@@ -252,7 +252,7 @@ function VersionExpandRow({ productLabel, versionTable, isLast }) {
                     </span>
                   </td>
                   {/* Source link — or dashed pending (RHAI null-source pattern) */}
-                  <td className="pl-4 py-1 text-xs align-middle whitespace-nowrap">
+                  <td className={`pl-4 py-1 ${typeScale.tableCell} align-middle whitespace-nowrap`}>
                     {entry.sourceUrl ? (
                       <a
                         href={entry.sourceUrl}
@@ -277,7 +277,7 @@ function VersionExpandRow({ productLabel, versionTable, isLast }) {
         </div>
 
         {/* Table-level source footer */}
-        <div className="flex items-center gap-1 px-3 sm:px-4 pb-3 text-xs text-faint">
+        <div className={`flex items-center gap-1 px-3 sm:px-4 pb-3 ${typeScale.caption} text-faint`}>
           {sourceUrl ? (
             <>
               <ExternalLink size={10} className="flex-shrink-0" aria-hidden="true" />
@@ -326,8 +326,8 @@ export default function SharedSpineLedger({ comparison }) {
       className="rounded-card border border-edge bg-surface"
     >
       <div className="border-b border-hair p-3 sm:p-4">
-        <h3 className="mb-1 font-display text-base font-bold text-ink">What ships in each product</h3>
-        <p className="mb-2 text-xs leading-relaxed text-muted">
+        <h3 className={`mb-1 font-display ${typeScale.panelTitle} text-ink`}>What ships in each product</h3>
+        <p className={`mb-2 ${typeScale.caption} leading-relaxed text-muted`}>
           One component per row, both products side by side. The shaded band is the core they share;
           below it, only the platform keeps going.
         </p>

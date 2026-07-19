@@ -214,6 +214,112 @@ export const typeScale = {
   /** Faint tertiary metadata — timestamps, counts, footnotes. */
   meta: 'text-[11px] leading-snug',
 
+  // ── Panel / sub-panel headings ───────────────────────────────────────────────
+  /**
+   * Panel or section heading — base size, bold (stronger than cardTitle's semibold).
+   * Used for deployment-tab section headers, comparison panel titles.
+   */
+  panelTitle: 'text-base font-bold leading-tight',
+  /**
+   * Sub-panel heading — sm size, bold.
+   * Used for migration notes, docs-link section headers within a card.
+   */
+  subPanelTitle: 'text-sm font-bold leading-tight',
+  /**
+   * Sub-panel heading — sm size, semibold.
+   * Used for YAML column headers, resource tree column headers.
+   */
+  subSectionTitle: 'text-sm font-semibold leading-tight',
+  /**
+   * Detail panel section title — lg size, semibold.
+   * Used for side-panel / drawer section headers (What it does, Key Fields).
+   */
+  detailSectionTitle: 'text-lg font-semibold leading-tight',
+  /**
+   * Hero / orient question — 3xl–4xl, extrabold, responsive.
+   * Used for the ProductComparisonView BEAT 1 orient question.
+   */
+  heroTitle: 'text-3xl font-extrabold tracking-tight leading-tight',
+  /**
+   * Hero subtitle — base size, leading-relaxed.
+   * Used for the ProductComparisonView orient framing sentence.
+   */
+  heroSubtitle: 'text-base leading-relaxed',
+  /**
+   * Product / decision name in the DECIDE beat — lg, semibold, snug.
+   * Distinct from cardTitle (base) and sectionTitle (xl).
+   */
+  decideName: 'text-lg font-semibold leading-snug',
+  /**
+   * Monospace display heading — 2xl, bold. Used for resource-kind panel H1.
+   */
+  monoTitle: 'text-2xl font-bold leading-tight',
+  /**
+   * Monospace body line — sm, mono. Used for resource kind clickable labels, YAML kind labels.
+   */
+  monoBody: 'text-sm font-mono font-semibold leading-snug',
+  /**
+   * Monospace code / pre block — xs, mono, relaxed. Used for YAML <pre> blocks.
+   */
+  monoCode: 'text-xs font-mono leading-relaxed',
+  /**
+   * Micro label — 10px/[10px], semibold, uppercase, tracking-wider.
+   * Used for the StickyHeader "Component" label, DecisionCard tag, pending-verification labels.
+   */
+  microLabel: 'text-[10px] font-semibold uppercase tracking-wider',
+  /**
+   * Micro faint — 10px/[10px], normal weight.
+   * Used for descriptor lines in StickyHeader, tagline in ZoneLabel.
+   */
+  microFaint: 'text-[10px] leading-snug',
+  /**
+   * Table cell content — xs, normal. Used for data cells in comparison tables.
+   */
+  tableCell: 'text-xs leading-snug',
+  /**
+   * Table cell content, emphasized — xs, medium. Used for after-state cells in delta table.
+   */
+  tableCellStrong: 'text-xs font-medium leading-snug',
+  /**
+   * Table column header — xs, semibold, uppercase, tracking-wide.
+   * Used for thead <th> labels in comparison tables.
+   */
+  tableHeader: 'text-xs font-semibold uppercase tracking-wider',
+  /**
+   * Inline nav tab — sm, medium. Used for tab strip buttons.
+   */
+  navTab: 'text-sm font-medium leading-normal',
+  /**
+   * Support mark / presence symbol display — lg, leading-none.
+   * Used for ✓/✕/~ Unicode symbols in BOM ledger and capability tables.
+   */
+  symbolDisplay: 'text-lg leading-none',
+  /**
+   * Column label bold — xs, bold, tight. Used for ledger product column name labels.
+   * Distinct from label (medium) and groupLabel (semibold + tracking).
+   */
+  columnLabelBold: 'text-xs font-bold leading-snug',
+  /**
+   * Column label bold, responsive — xs→sm at sm breakpoint. Used in StickyHeader product labels.
+   */
+  columnLabelBoldSm: 'text-xs font-bold leading-snug sm:text-sm',
+  /**
+   * Micro faint, responsive — [10px]→xs at sm breakpoint. Used in StickyHeader descriptor + ZoneLabel tagline.
+   */
+  microFaintSm: 'text-[10px] leading-snug sm:text-xs',
+  /**
+   * Micro label, responsive — [10px]→xs at sm breakpoint. Used for StickyHeader "Component" center label.
+   */
+  microLabelSm: 'text-[10px] font-semibold uppercase tracking-wider sm:text-xs',
+  /**
+   * Caption, responsive — xs→sm at sm breakpoint. Used for detail/description cells in comparison tables.
+   */
+  captionSm: 'text-xs leading-snug sm:text-sm',
+  /**
+   * Hero subtitle, responsive — base→lg at sm breakpoint.
+   */
+  heroSubtitleSm: 'text-base leading-relaxed sm:text-lg',
+
   // ── Legacy aliases (do NOT remove — existing callers depend on these) ────────
   /** @deprecated Use typeScale.caption — kept for back-compat. */
   secondary: 'text-xs leading-snug',

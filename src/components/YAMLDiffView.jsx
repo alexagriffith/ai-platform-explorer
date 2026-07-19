@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Copy, Check, ChevronDown, ChevronRight } from 'lucide-react';
-import { interactive, button } from '../lib/styleTokens';
+import { interactive, button, typeScale } from '../lib/styleTokens';
 
 /**
  * YAMLDiffView
@@ -34,21 +34,21 @@ export default function YAMLDiffView({ comparison }) {
   return (
     <div className="space-y-3">
       <div>
-        <h3 className="text-base font-bold text-ink mb-1">
+        <h3 className={`${typeScale.panelTitle} text-ink mb-1`}>
           {isAlternative ? 'What You Submit: Side-by-Side' : 'What You Submit: Before vs After'}
         </h3>
-        <p className="text-sm text-muted">
+        <p className={`${typeScale.body} text-muted`}>
           {isAlternative
             ? 'Compare the YAML specifications for each platform approach.'
             : 'See how the YAML you write changes when adopting this platform component.'}
         </p>
         {!isAlternative && (
           <div className="flex items-center gap-4 mt-1.5" aria-label="Color legend">
-            <span className="flex items-center gap-1.5 text-xs text-muted">
+            <span className={`flex items-center gap-1.5 ${typeScale.caption} text-muted`}>
               <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 flex-shrink-0" aria-hidden="true" />
               Before (existing)
             </span>
-            <span className="flex items-center gap-1.5 text-xs text-muted">
+            <span className={`flex items-center gap-1.5 ${typeScale.caption} text-muted`}>
               <span className="inline-block w-2.5 h-2.5 rounded-full bg-green-600 flex-shrink-0" aria-hidden="true" />
               After (with platform)
             </span>
@@ -60,7 +60,7 @@ export default function YAMLDiffView({ comparison }) {
         {/* Left State */}
         <div className="space-y-2">
           <div className="sticky top-0 bg-surface py-2 border-b border-hair">
-            <h4 className="text-sm font-semibold text-ink flex items-center">
+            <h4 className={`${typeScale.subSectionTitle} text-ink flex items-center`}>
               <span className={`inline-block w-2.5 h-2.5 ${leftConfig.dotClass} rounded-full mr-2`}></span>
               {leftConfig.prefix}{leftConfig.label}
             </h4>
@@ -74,7 +74,7 @@ export default function YAMLDiffView({ comparison }) {
         {/* Right State */}
         <div className="space-y-2">
           <div className="sticky top-0 bg-surface py-2 border-b border-hair">
-            <h4 className="text-sm font-semibold text-ink flex items-center">
+            <h4 className={`${typeScale.subSectionTitle} text-ink flex items-center`}>
               <span className={`inline-block w-2.5 h-2.5 ${rightConfig.dotClass} rounded-full mr-2`}></span>
               {rightConfig.prefix}{rightConfig.label}
             </h4>
@@ -150,14 +150,14 @@ function YAMLResource({ resource, state }) {
             )}
             <div className="flex-1">
               <div className="flex items-baseline gap-2">
-                <span className="font-mono text-sm font-semibold text-ink">
+                <span className={`${typeScale.monoBody} text-ink`}>
                   {resource.kind}
                 </span>
-                <span className="text-xs text-muted">
+                <span className={`${typeScale.caption} text-muted`}>
                   {resource.apiVersion}
                 </span>
               </div>
-              <p className="text-xs text-muted">
+              <p className={`${typeScale.caption} text-muted`}>
                 {resource.description}
               </p>
             </div>
@@ -195,7 +195,7 @@ function YAMLResource({ resource, state }) {
       {/* YAML Content - collapsible */}
       {isExpanded && (
         <div className="overflow-x-auto border-t border-hair max-h-96 overflow-y-auto">
-          <pre className="p-4 text-xs font-mono leading-relaxed text-ink bg-page">
+          <pre className={`p-4 ${typeScale.monoCode} text-ink bg-page`}>
             <code>{resource.yamlSnippet}</code>
           </pre>
         </div>

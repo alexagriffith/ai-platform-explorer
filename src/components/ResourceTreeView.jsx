@@ -1,7 +1,7 @@
 import { ChevronRight, ChevronDown, Server, Workflow, X, ExternalLink, Info } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getResourceDefinition } from '../data/resourceDefinitions';
-import { interactive, modal, button } from '../lib/styleTokens';
+import { interactive, modal, button, typeScale } from '../lib/styleTokens';
 
 /**
  * ResourceTreeView
@@ -55,15 +55,15 @@ export default function ResourceTreeView({ comparison }) {
   return (
     <div className="space-y-3 relative">
       <div>
-        <h3 className="text-base font-bold text-ink mb-1">
+        <h3 className={`${typeScale.panelTitle} text-ink mb-1`}>
           Kubernetes Resource Tree
         </h3>
-        <p className="text-sm text-muted">
+        <p className={`${typeScale.body} text-muted`}>
           {isAlternative
             ? 'Compare what Kubernetes resources each platform creates from similar user inputs.'
             : 'See how the resource structure changes when adopting this platform component.'}
           {' '}
-          <span className="inline-flex items-center gap-1 text-xs text-link">
+          <span className={`inline-flex items-center gap-1 ${typeScale.caption} text-link`}>
             <Info size={13} />
             Click any resource type to learn more
           </span>
@@ -74,7 +74,7 @@ export default function ResourceTreeView({ comparison }) {
         {/* Left State */}
         <div>
           <div className="mb-2 pb-1.5 border-b border-hair">
-            <h4 className="text-sm font-semibold text-ink flex items-center">
+            <h4 className={`${typeScale.subSectionTitle} text-ink flex items-center`}>
               <span className={`inline-block w-2.5 h-2.5 ${leftConfig.dotClass} rounded-full mr-2`}></span>
               {leftConfig.prefix}{leftConfig.label}
             </h4>
@@ -98,7 +98,7 @@ export default function ResourceTreeView({ comparison }) {
         {/* Right State */}
         <div>
           <div className="mb-2 pb-1.5 border-b border-hair">
-            <h4 className="text-sm font-semibold text-ink flex items-center">
+            <h4 className={`${typeScale.subSectionTitle} text-ink flex items-center`}>
               <span className={`inline-block w-2.5 h-2.5 ${rightConfig.dotClass} rounded-full mr-2`}></span>
               {rightConfig.prefix}{rightConfig.label}
             </h4>
@@ -122,9 +122,9 @@ export default function ResourceTreeView({ comparison }) {
 
       {/* Legend */}
       <div data-ui-exempt="legend-section" className="px-3 py-2 bg-tint border border-hair rounded-card">
-        <h4 className="text-xs font-semibold text-ink mb-2">Legend</h4>
+        <h4 className={`${typeScale.label} font-semibold text-ink mb-2`}>Legend</h4>
         <div className="space-y-2">
-          <div className="grid md:grid-cols-2 gap-3 text-xs">
+          <div className={`grid md:grid-cols-2 gap-3 ${typeScale.caption}`}>
             <div className="flex items-center gap-2">
               <Workflow size={16} className="text-link" />
               <span className="text-ink">
@@ -139,15 +139,15 @@ export default function ResourceTreeView({ comparison }) {
             </div>
           </div>
           {!isAlternative && (
-            <div className="flex items-center gap-3 text-xs pt-1.5 border-t border-hair">
+            <div className={`flex items-center gap-3 ${typeScale.caption} pt-1.5 border-t border-hair`}>
               <div className="flex items-center gap-1.5">
-                <span className="px-1.5 py-0.5 text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded-card">
+                <span className={`px-1.5 py-0.5 ${typeScale.label} font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded-card`}>
                   NEW
                 </span>
                 <span className="text-ink">Added by platform</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="px-1.5 py-0.5 text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 rounded-card">
+                <span className={`px-1.5 py-0.5 ${typeScale.label} font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 rounded-card`}>
                   REMOVED
                 </span>
                 <span className="text-ink">No longer needed</span>
@@ -232,15 +232,15 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
           <button
             data-ui="control"
             onClick={() => onSelectKind(node.kind)}
-            className={`font-mono text-sm font-semibold text-ink hover:text-link underline decoration-dotted underline-offset-2 cursor-pointer ${interactive.transition} ${interactive.focusRing} rounded-card`}
+            className={`${typeScale.monoBody} text-ink hover:text-link underline decoration-dotted underline-offset-2 cursor-pointer ${interactive.transition} ${interactive.focusRing} rounded-card`}
           >
             {node.kind}
           </button>
-          <span className="text-xs text-muted font-mono">
+          <span className={`${typeScale.caption} text-muted font-mono`}>
             {node.name}
           </span>
           {badge && (
-            <span className={`ml-auto px-2 py-0.5 text-xs font-semibold rounded-card ${badge.className}`}>
+            <span className={`ml-auto px-2 py-0.5 ${typeScale.label} font-semibold rounded-card ${badge.className}`}>
               {badge.text}
             </span>
           )}
@@ -305,15 +305,15 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
         <div className={`${modal.header} flex items-start justify-between`}>
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span data-ui="chip" className="px-3 py-1 text-xs font-semibold bg-tint border border-edge text-muted rounded-card">
-                {resource.category}
-              </span>
+            <span data-ui="chip" className={`px-3 py-1 ${typeScale.label} font-semibold bg-tint border border-edge text-muted rounded-card`}>
+              {resource.category}
+            </span>
             </div>
-            <h2 className="text-2xl font-bold text-ink font-mono">
+            <h2 className={`${typeScale.monoTitle} text-ink font-mono`}>
               {resource.kind}
             </h2>
             {resource.apiVersion && (
-              <p className="text-sm text-muted font-mono mt-1">
+              <p className={`${typeScale.body} text-muted font-mono mt-1`}>
                 {resource.apiVersion}
               </p>
             )}
@@ -331,7 +331,7 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
         <div className="p-6 space-y-6">
           {/* Description */}
           <div>
-            <h3 className="text-lg font-semibold text-ink mb-2">
+            <h3 className={`${typeScale.detailSectionTitle} text-ink mb-2`}>
               What it does
             </h3>
             <p className="text-ink leading-relaxed">
@@ -342,16 +342,16 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
           {/* Key Fields */}
           {resource.keyFields && resource.keyFields.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-ink mb-3">
+              <h3 className={`${typeScale.detailSectionTitle} text-ink mb-3`}>
                 Key Fields
               </h3>
               <div className="space-y-3">
                 {resource.keyFields.map((field, idx) => (
                   <div key={idx} className="border-l-2 border-accent pl-4">
-                    <code className="text-sm font-mono font-semibold text-link">
+                    <code className={`${typeScale.monoBody} text-link`}>
                       {field.name}
                     </code>
-                    <p className="text-sm text-ink mt-1">
+                    <p className={`${typeScale.body} text-ink mt-1`}>
                       {field.description}
                     </p>
                   </div>
@@ -363,7 +363,7 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
           {/* Documentation Link */}
           {resource.docsUrl && (
             <div>
-              <h3 className="text-lg font-semibold text-ink mb-3">
+              <h3 className={`${typeScale.detailSectionTitle} text-ink mb-3`}>
                 Documentation
               </h3>
               <a

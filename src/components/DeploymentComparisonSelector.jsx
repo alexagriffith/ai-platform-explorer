@@ -1,6 +1,6 @@
 import { ArrowRight, Users, GitCompare } from 'lucide-react';
 import { getComparisonList } from '../data/deploymentComparisons';
-import { interactive, border } from '../lib/styleTokens';
+import { interactive, border, typeScale } from '../lib/styleTokens';
 
 /**
  * DeploymentComparisonSelector
@@ -23,10 +23,10 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
   return (
     <div className="space-y-3">
       <div>
-        <h2 className="text-base font-bold text-ink mb-1">
+        <h2 className={`${typeScale.panelTitle} text-ink mb-1`}>
           Deployment Impact Explorer
         </h2>
-        <p className="text-sm text-muted">
+        <p className={`${typeScale.body} text-muted`}>
           Understand the concrete implementation changes when adopting Red Hat AI platform components.
           Compare before and after states for YAML, resource trees, and capabilities.
         </p>
@@ -51,23 +51,23 @@ export default function DeploymentComparisonSelector({ selectedComparisonId, onS
               `}
             >
               <div className="flex flex-col items-center gap-1 mb-2">
-                <h3 className="text-sm font-semibold text-ink">
+                <h3 className={`${typeScale.subSectionTitle} text-ink`}>
                   {comparison.title}
                 </h3>
               </div>
 
-              <p className="text-xs text-muted mb-2 leading-snug">
+              <p className={`${typeScale.caption} text-muted mb-2`}>
                 {comparison.description}
               </p>
 
-              <div className="flex items-center justify-center text-xs text-muted">
+              <div className={`flex items-center justify-center ${typeScale.caption} text-muted`}>
                 <Users size={13} className="mr-1.5" />
                 <span className="italic">For: {comparison.audience || 'Technical teams'}</span>
               </div>
 
               {isSelected && (
                 <div className="mt-2 pt-2 border-t border-hair">
-                  <div className="flex items-center justify-center text-link text-sm font-medium">
+                  <div className={`flex items-center justify-center text-link ${typeScale.navTab}`}>
                     <span>View Comparison</span>
                     <ArrowRight size={14} className="ml-1.5" />
                   </div>

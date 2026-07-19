@@ -1,4 +1,5 @@
 import { TrendingUp, AlertTriangle, Minus } from 'lucide-react';
+import { typeScale } from '../lib/styleTokens';
 
 /**
  * CapabilityDeltaTable
@@ -30,10 +31,10 @@ export default function CapabilityDeltaTable({ comparison }) {
   return (
     <div className="space-y-3">
       <div>
-        <h3 className="text-base font-bold text-ink mb-1">
+        <h3 className={`${typeScale.panelTitle} text-ink mb-1`}>
           {isAlternativeComparison ? 'Feature Comparison' : 'Capability Changes'}
         </h3>
-        <p className="text-sm text-muted">
+        <p className={`${typeScale.body} text-muted`}>
           {isAlternativeComparison
             ? 'How do these two technologies compare across key capabilities and operational characteristics?'
             : 'What features and operational characteristics change when you adopt this platform component?'
@@ -42,10 +43,10 @@ export default function CapabilityDeltaTable({ comparison }) {
       </div>
 
       {/* Impact Summary — status-semantic badge colors */}
-      <div className="flex flex-wrap gap-2 text-sm">
+      <div className="flex flex-wrap gap-2">
         <div data-ui="chip" className="flex items-center gap-2 px-3 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-card">
           <TrendingUp size={14} className="text-green-600 dark:text-green-400" />
-          <span className="text-ink text-xs">
+          <span className={`text-ink ${typeScale.caption}`}>
             <strong className="text-green-700 dark:text-green-300">{impactCounts.positive}</strong> {isAlternativeComparison ? 'Advantages' : 'Improvements'}
           </span>
         </div>
@@ -53,7 +54,7 @@ export default function CapabilityDeltaTable({ comparison }) {
         {impactCounts.tradeoff > 0 && (
           <div data-ui="chip" className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-card">
             <AlertTriangle size={14} className="text-amber-600 dark:text-amber-400" />
-            <span className="text-ink text-xs">
+            <span className={`text-ink ${typeScale.caption}`}>
               <strong className="text-amber-700 dark:text-amber-300">{impactCounts.tradeoff}</strong> Tradeoffs
             </span>
           </div>
@@ -62,7 +63,7 @@ export default function CapabilityDeltaTable({ comparison }) {
         {impactCounts.neutral > 0 && (
           <div data-ui="chip" className="flex items-center gap-2 px-3 py-2 bg-tint border border-hair rounded-card">
             <Minus size={14} className="text-muted" />
-            <span className="text-ink text-xs">
+            <span className={`text-ink ${typeScale.caption}`}>
               <strong>{impactCounts.neutral}</strong> Neutral
             </span>
           </div>
@@ -75,16 +76,16 @@ export default function CapabilityDeltaTable({ comparison }) {
           <table className="min-w-full">
             <thead className="bg-tint">
               <tr>
-                <th className="px-3 py-2 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[140px]">
+                <th className={`px-3 py-2 text-left ${typeScale.tableHeader} text-muted min-w-[140px]`}>
                   Capability
                 </th>
-                <th className="px-3 py-2 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[120px]">
+                <th className={`px-3 py-2 text-left ${typeScale.tableHeader} text-muted min-w-[120px]`}>
                   {isAlternativeComparison ? comparison.before.label : 'Before'}
                 </th>
-                <th className="px-3 py-2 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[120px]">
+                <th className={`px-3 py-2 text-left ${typeScale.tableHeader} text-muted min-w-[120px]`}>
                   {isAlternativeComparison ? comparison.after.label : 'After'}
                 </th>
-                <th className="px-3 py-2 text-left text-xs font-semibold text-muted uppercase tracking-wider min-w-[100px]">
+                <th className={`px-3 py-2 text-left ${typeScale.tableHeader} text-muted min-w-[100px]`}>
                   Impact
                 </th>
               </tr>
@@ -94,20 +95,20 @@ export default function CapabilityDeltaTable({ comparison }) {
                 <tr key={idx} className="hover:bg-tint transition-colors duration-150 ease-out motion-reduce:transition-none">
                   <td className="px-3 py-2">
                     <div>
-                      <div className="font-medium text-sm text-ink">
+                      <div className={`${typeScale.bodyStrong} text-ink`}>
                         {delta.capability}
                       </div>
                       {delta.notes && (
-                        <div className="text-xs text-muted mt-0.5">
+                        <div className={`${typeScale.caption} text-muted mt-0.5`}>
                           {delta.notes}
                         </div>
                       )}
                     </div>
                   </td>
-                  <td className="px-3 py-2 text-xs text-ink">
+                  <td className={`px-3 py-2 ${typeScale.tableCell} text-ink`}>
                     {delta.beforeState}
                   </td>
-                  <td className="px-3 py-2 text-xs text-ink font-medium">
+                  <td className={`px-3 py-2 ${typeScale.tableCellStrong} text-ink`}>
                     {delta.afterState}
                   </td>
                   <td className="px-3 py-2">
@@ -122,8 +123,8 @@ export default function CapabilityDeltaTable({ comparison }) {
 
       {/* Legend — only entries whose impact value appears in the table */}
       <div data-ui-exempt="legend-section" className="px-3 py-2 bg-tint border border-hair rounded-card">
-        <h4 className="text-xs font-semibold text-ink mb-1.5">Understanding Impact</h4>
-        <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted">
+        <h4 className={`${typeScale.label} font-semibold text-ink mb-1.5`}>Understanding Impact</h4>
+        <div className={`flex flex-wrap gap-x-6 gap-y-1 ${typeScale.caption} text-muted`}>
           {impactCounts.positive > 0 && (
             <div>
               <span className="font-medium text-green-600 dark:text-green-400">{isAlternativeComparison ? 'Advantage:' : 'Improvement:'}</span>{' '}
@@ -184,7 +185,7 @@ function ImpactBadge({ impact, isAlternativeComparison }) {
   const Icon = config.icon;
 
   return (
-    <span data-ui="chip" className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium border rounded-card ${config.className}`}>
+    <span data-ui="chip" className={`inline-flex items-center gap-1.5 px-2 py-0.5 ${typeScale.label} font-medium border rounded-card ${config.className}`}>
       <Icon size={12} />
       {config.label}
     </span>

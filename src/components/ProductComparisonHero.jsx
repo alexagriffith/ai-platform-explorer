@@ -1,5 +1,5 @@
 import { ExternalLink } from 'lucide-react';
-import { interactive } from '../lib/styleTokens';
+import { interactive, typeScale } from '../lib/styleTokens';
 import { readSide } from '../lib/ledgerModel';
 
 /**
@@ -58,7 +58,7 @@ function HeroCell({ label, resolved }) {
     <span
       className={`relative block rounded-card bg-page px-2 py-1.5 text-center min-h-[2rem] flex items-center justify-center ${outlineClass}`}
     >
-      <span className="block text-xs font-semibold leading-tight text-ink">{label}</span>
+      <span className={`block ${typeScale.columnLabelBold} text-ink`}>{label}</span>
       {isPending && (
         <span
           aria-label="pending verification"
@@ -103,9 +103,9 @@ function HeroCell({ label, resolved }) {
 function ZoneLabel({ label, tagline }) {
   return (
     <div data-ui="section-header" className="mb-1.5">
-      <span className="text-xs font-semibold text-ink">{label}</span>
+      <span className={`${typeScale.label} font-semibold text-ink`}>{label}</span>
       {tagline && (
-        <span className="ml-1.5 text-[10px] text-faint">{tagline}</span>
+        <span className={`ml-1.5 ${typeScale.microFaint} text-faint`}>{tagline}</span>
       )}
     </div>
   );
@@ -162,7 +162,7 @@ export default function ProductComparisonHero({ comparison }) {
       </div>
 
       {/* Caption — outer product caption as takeaway bullets; inner in sr-only context */}
-      <div className="text-xs leading-relaxed text-muted space-y-1" role="note">
+      <div className={`${typeScale.caption} leading-relaxed text-muted space-y-1`} role="note">
         <p><strong className="text-ink font-semibold">The full platform.</strong> OpenShift AI wraps the inference core and adds:</p>
         <ul className="list-disc list-inside space-y-0.5 pl-1">
           <li>KServe serving, notebook workbenches, data-science pipelines, distributed training</li>
