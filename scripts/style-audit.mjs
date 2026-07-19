@@ -1474,6 +1474,65 @@ function badgeColorConsistency(tabId) {
   return out;
 }
 
+// ─── PRIMARY-VIEW-SCALE (decision-guide question state) ────────────────────
+//
+// Targeted check: when a decision-guide question card is the active primary
+// surface ([data-decision-question="active"]), the heading must be large enough
+// to carry the surface and the card must not be a tiny island.
+//
+// Asserts:
+//   1. The h4 inside [data-decision-question="active"] has computed font-size >= 18px.
+//   2. The active card width >= 55% of its nearest scrollable/block ancestor width,
+//      OR the card width >= 45% of window.innerWidth (floor fallback).
+//
+// Runs on the decisions tab only (called from stateWalker for the question state).
+//
+function primaryViewScale() {
+  const card = document.querySelector('[data-decision-question="active"]');
+  if (!card) return ['primary-view-scale: no active decision-guide question card found ([data-decision-question="active"] missing)'];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+
+  // 1. Heading font-size floor
+  const heading = card.querySelector('h4');
+  if (!heading) {
+    out.push('primary-view-scale: active question card has no h4 heading');
+  } else {
+    const fs = parseFloat(getComputedStyle(heading).fontSize) || 0;
+    if (fs < 18) {
+      out.push(`primary-view-scale: question heading font-size ${r2(fs)}px < 18px floor (text too small for primary surface)`);
+    }
+  }
+
+  // 2. Card width relative to context (not a tiny island)
+  const cardRect = card.getBoundingClientRect();
+  const vpWidth = window.innerWidth;
+  const vpFloor = vpWidth * 0.45;
+
+  // Walk up to find the nearest non-inline ancestor wider than the card itself
+  let ancestor = card.parentElement;
+  let containerWidth = 0;
+  while (ancestor && ancestor !== document.body) {
+    const cs = getComputedStyle(ancestor);
+    if (cs.display === 'block' || cs.display === 'flex' || cs.display === 'grid') {
+      const ar = ancestor.getBoundingClientRect();
+      if (ar.width > cardRect.width + 4) {
+        containerWidth = ar.width;
+        break;
+      }
+    }
+    ancestor = ancestor.parentElement;
+  }
+  if (!containerWidth) containerWidth = vpWidth;
+
+  const containerRatio = cardRect.width / containerWidth;
+  if (containerRatio < 0.55 && cardRect.width < vpFloor) {
+    out.push(`primary-view-scale: active question card width=${r2(cardRect.width)}px is only ${r2(containerRatio * 100)}% of container (${r2(containerWidth)}px) and < 45% of viewport (${r2(vpWidth)}px) — card is too narrow for primary surface`);
+  }
+
+  return out;
+}
+
 // ─── STATES TABLE (U0-R) — declarative interaction openers per tab ────────────
 //
 // Each entry: { tab, state, label, open: async (page) => Promise<void>, themes: ['light'] | ['light','dark'] }
@@ -2285,6 +2344,17 @@ async function runChecksOnPage(page, tabId, stateLabel, exemptions, viewport, th
     if (tabId === 'products' && !exemptions.includes('hero-inner-fill-height')) {
       addProblems(await page.evaluate(heroInnerFillHeight, tabId));
     }
+
+    // PRIMARY-VIEW-SCALE: decisions tab only, question states (active card present)
+    // Targeted: only runs when [data-decision-question="active"] exists in the DOM.
+    if (tabId === 'decisions' && !exemptions.includes('primary-view-scale')) {
+      const hasActiveQuestion = await page.evaluate(() =>
+        document.querySelector('[data-decision-question="active"]') !== null
+      );
+      if (hasActiveQuestion) {
+        addProblems(await page.evaluate(primaryViewScale));
+      }
+    }
   }
 
   return out;
@@ -3086,6 +3156,78 @@ async function runSelfTest() {
       process.stderr.write('SELF-TEST phase-12 OK: bare-acronym-overlay ZZZ plant caught and removed\n');
     }
     await ctx12.close();
+
+    // ── PHASE 13: primary-view-scale self-test ────────────────────────────────
+    // Navigate to the decisions tab, open the first decision guide question
+    // (which sets data-decision-question="active"), confirm primaryViewScale PASSES.
+    // Then: inject an h4 with font-size 12px to force a floor failure, confirm it
+    // catches the violation naming 'primary-view-scale', revert and confirm clean.
+    const ctx13 = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: 'light' });
+    const page13 = await ctx13.newPage();
+    await openTab(page13, 'Decision Guides', 'decisions');
+
+    // Open the first guide to trigger an active question card
+    const guideBtn13 = page13.locator('[data-tab="decisions"] button').filter({ hasText: /product|platform|deployment|serving/i }).first();
+    if (await guideBtn13.count() > 0) {
+      await guideBtn13.click();
+      await page13.waitForTimeout(400);
+    }
+    const hasActiveQ13 = await page13.evaluate(() =>
+      document.querySelector('[data-decision-question="active"]') !== null
+    );
+    if (!hasActiveQ13) {
+      process.stderr.write('SELF-TEST WARN phase-13: could not open a decision guide question — primary-view-scale self-test skipped\n');
+    } else {
+      // 13a: confirm current state PASSES (no false positive)
+      const pvsPre = await page13.evaluate(primaryViewScale);
+      if (pvsPre.length > 0) {
+        process.stderr.write(`SELF-TEST FAIL phase-13: primaryViewScale fails on real question state before plant — ${pvsPre.join(' | ')}\n`);
+        await browser.close();
+        process.exit(1);
+      }
+      process.stderr.write('SELF-TEST phase-13a OK: primary-view-scale clean on real question state\n');
+
+      // 13b: shrink the h4 font-size below floor, confirm catch
+      await page13.evaluate(() => {
+        const card = document.querySelector('[data-decision-question="active"]');
+        const h4 = card && card.querySelector('h4');
+        if (h4) {
+          h4.setAttribute('data-pvs-orig-style', h4.getAttribute('style') || '');
+          h4.style.fontSize = '12px'; // below 18px floor
+        }
+      });
+      const pvsFail = await page13.evaluate(primaryViewScale);
+      const pvsCaught = pvsFail.some((s) => s.includes('primary-view-scale') && s.includes('12'));
+      process.stderr.write(`SELF-TEST primary-view-scale phase-13b: ${pvsCaught ? 'OK (font-size floor caught)' : 'UNEXPECTED: not caught'}\n`);
+      if (!pvsCaught) {
+        process.stderr.write(`SELF-TEST FAIL: primaryViewScale did NOT catch 12px heading (below 18px floor)\n`);
+        process.stderr.write(`  primaryViewScale output: ${pvsFail.length > 0 ? pvsFail.join(' | ') : '(none)'}\n`);
+        await browser.close();
+        process.exit(1);
+      }
+      const pvsFailLine = pvsFail.find((s) => s.includes('primary-view-scale'));
+      process.stdout.write(`SELF-TEST primary-view-scale failure line: ${pvsFailLine}\n`);
+
+      // 13c: revert and confirm clean
+      await page13.evaluate(() => {
+        const card = document.querySelector('[data-decision-question="active"]');
+        const h4 = card && card.querySelector('h4');
+        if (h4) {
+          const orig = h4.getAttribute('data-pvs-orig-style');
+          if (orig) h4.setAttribute('style', orig);
+          else h4.removeAttribute('style');
+          h4.removeAttribute('data-pvs-orig-style');
+        }
+      });
+      const pvsClean = await page13.evaluate(primaryViewScale);
+      if (pvsClean.length > 0) {
+        process.stderr.write(`SELF-TEST FAIL: primary-view-scale still fires after revert: ${pvsClean.join(' | ')}\n`);
+        await browser.close();
+        process.exit(1);
+      }
+      process.stderr.write('SELF-TEST phase-13 OK: primary-view-scale font-size floor plant caught and reverted\n');
+    }
+    await ctx13.close();
 
     process.stderr.write('SELF-TEST PASS (all phases)\n');
   } finally {
