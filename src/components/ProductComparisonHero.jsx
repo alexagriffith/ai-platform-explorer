@@ -52,15 +52,18 @@ function HeroCell({ label, resolved }) {
     ? 'outline outline-1 outline-dashed outline-accent/60'
     : '';
 
+  // The pending indicator is absolutely positioned so it takes zero flow space —
+  // equal inner-fill height for all cells in the row regardless of status.
   const inner = (
     <span
-      className={`block rounded-card bg-page px-2 py-1.5 text-center ${outlineClass}`}
+      className={`relative block rounded-card bg-page px-2 py-1.5 text-center min-h-[2rem] flex items-center justify-center ${outlineClass}`}
     >
       <span className="block text-xs font-semibold leading-tight text-ink">{label}</span>
       {isPending && (
-        <span className="block mt-0.5 text-[10px] text-accent font-medium">
-          pending
-        </span>
+        <span
+          aria-label="pending verification"
+          className="absolute top-0.5 right-0.5 block w-1.5 h-1.5 rounded-full bg-accent/60"
+        />
       )}
       {isVerified && (
         <span className="sr-only"> — verified</span>
@@ -164,7 +167,7 @@ export default function ProductComparisonHero({ comparison }) {
         <ul className="list-disc list-inside space-y-0.5 pl-1">
           <li>KServe serving, notebook workbenches, data-science pipelines, distributed training</li>
           <li>Model-server autoscaling, a model-as-a-service (MaaS) gateway, responsible-AI monitoring (TrustyAI), and fine-tuning</li>
-          <li><span className="outline outline-1 outline-dashed outline-accent/60 rounded px-0.5">Dashed cells</span> — fact still disagrees between documentation and the container catalog, or requires an authenticated pull</li>
+          <li><span className="outline outline-1 outline-dashed outline-accent/60 rounded px-0.5 relative inline-block pr-2.5">Dashed cells<span aria-hidden="true" className="absolute top-0 right-0.5 w-1.5 h-1.5 rounded-full bg-accent/60 inline-block" /></span> — fact still disagrees between documentation and the container catalog, or requires an authenticated pull</li>
         </ul>
       </div>
       <p className="sr-only">{inner.caption}</p>

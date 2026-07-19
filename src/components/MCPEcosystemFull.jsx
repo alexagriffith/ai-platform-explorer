@@ -47,29 +47,28 @@ export default function MCPEcosystemFull() {
       </div>
 
       {/* Ingestion Pipeline + Core Components combined */}
-      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
-        <div className="grid md:grid-cols-2 gap-4">
-          {/* Ingestion Pipeline */}
-          <div>
-            <h3 className={`${typeScale.componentName} text-ink mb-2`}>Ingestion Pipeline</h3>
-            <div className="flex items-center gap-1.5 flex-wrap mb-2">
-              {['Validate', 'Scan', 'Sign', 'Certify', 'Publish'].map((stage, index) => (
-                <div key={stage} className="flex items-center gap-1.5">
-                  <div className="px-2 py-0.5 rounded-card bg-tint text-ink font-medium text-xs">
-                    {stage}
-                  </div>
-                  {index < 4 && <span className="text-muted text-xs">→</span>}
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-3 space-y-3">
+        {/* Ingestion Pipeline — full-width header row above core components */}
+        <div>
+          <h3 className={`${typeScale.componentName} text-ink mb-2`}>Ingestion Pipeline</h3>
+          <div className="flex items-center gap-1.5 flex-wrap mb-1.5">
+            {['Validate', 'Scan', 'Sign', 'Certify', 'Publish'].map((stage, index) => (
+              <div key={stage} className="flex items-center gap-1.5">
+                <div className="px-2 py-0.5 rounded-card bg-tint text-ink font-medium text-xs">
+                  {stage}
                 </div>
-              ))}
-            </div>
-            <p className={`${typeScale.meta} text-muted`}>
-              The planned ingestion workflow validates, scans, and signs MCP servers before publication — confirm certification status in product documentation.
-            </p>
+                {index < 4 && <span className="text-muted text-xs">→</span>}
+              </div>
+            ))}
           </div>
+          <p className={`${typeScale.meta} text-muted`}>
+            The planned ingestion workflow validates, scans, and signs MCP servers before publication — confirm certification status in product documentation.
+          </p>
+        </div>
 
-          {/* Core Components */}
-          <div>
-            <h3 className={`${typeScale.componentName} text-ink mb-2`}>Core Platform Components</h3>
+        {/* Core Components */}
+        <div>
+          <h3 className={`${typeScale.componentName} text-ink mb-2`}>Core Platform Components</h3>
             {/* Registry */}
             <div data-ui="card" className="rounded-card bg-tint px-3 py-1.5 flex items-center gap-2 mb-2">
               <Database className="text-green-600 flex-shrink-0" size={14} />
@@ -97,7 +96,6 @@ export default function MCPEcosystemFull() {
               <strong>Registry role:</strong> The registry supplies metadata to the catalog, lifecycle operator, and gateway so components share one source of truth.
             </p>
           </div>
-        </div>
       </div>
 
       {/* AI assets + Curated MCP Servers */}

@@ -30,7 +30,7 @@ export const products = [
   },
   {
     id: 'rhai',
-    name: 'Red Hat AI (portfolio name)',
+    name: 'Red Hat AI portfolio',
     description: 'Red Hat AI is the umbrella name for the Red Hat AI portfolio, not a separate product. This explorer uses it for the Red Hat AI path on standard Kubernetes clusters (Amazon EKS, Azure AKS, Google GKE, or self-managed) when your container platform is not OpenShift. Confirm the supported offering and scope with your Red Hat account team.',
     category: 'AI/ML Platform',
     status: 'Check with Red Hat',
