@@ -329,11 +329,12 @@ function motionLaw(tabId) {
 // must be <= 140 characters.
 // "Grid card" = element whose parent display is grid or flex (non-wrapping),
 // and the element has a visible border on at least one side (card marker).
+// Also scans open overlay subtrees ([data-ui="overlay"]) so modal option cards
+// are not gate-blind — previously only [data-tab] content was measured.
 function cardTextBudget(tabId) {
   const tab = document.querySelector(`[data-tab="${tabId}"]`);
   if (!tab) return [];
   const out = [];
-  const r2 = (n) => Math.round(n * 100) / 100;
   const visible = (el) => {
     const r = el.getBoundingClientRect();
     if (r.width < 2 || r.height < 2) return false;
@@ -381,12 +382,12 @@ function cardTextBudget(tabId) {
     walk(el);
     return parts.join(' ').replace(/\s+/g, ' ').trim();
   };
-  for (const container of tab.querySelectorAll('*')) {
-    if (!visible(container)) continue;
+  const checkContainer = (container) => {
+    if (!visible(container)) return;
     const cs = getComputedStyle(container);
     const display = cs.display;
-    if (display !== 'grid' && display !== 'flex') continue;
-    if (cs.flexWrap === 'wrap' || cs.flexWrap === 'wrap-reverse') continue;
+    if (display !== 'grid' && display !== 'flex') return;
+    if (cs.flexWrap === 'wrap' || cs.flexWrap === 'wrap-reverse') return;
     for (const child of container.children) {
       if (!visible(child)) continue;
       if (!hasBorder(child)) continue;
@@ -398,6 +399,13 @@ function cardTextBudget(tabId) {
         out.push(`card-text-budget: <${child.tagName.toLowerCase()}.${cls}> text ${faceText.length} chars > 140: "${faceText.slice(0, 80)}..."`);
       }
     }
+  };
+  // Tab content
+  for (const container of tab.querySelectorAll('*')) checkContainer(container);
+  // Open overlay subtrees rendered outside [data-tab] (e.g. CapabilityConfigurationModal option cards)
+  for (const overlay of document.querySelectorAll('[data-ui="overlay"]')) {
+    if (!visible(overlay)) continue;
+    for (const container of overlay.querySelectorAll('*')) checkContainer(container);
   }
   return out;
 }
@@ -2851,6 +2859,69 @@ async function runSelfTest() {
       process.exit(1);
     }
     process.stderr.write('SELF-TEST phase-10b OK: modal-coverage clean on live STATES_TABLE\n');
+
+    // ── PHASE 11: overlay card-text-budget self-test ──────────────────────────
+    // Open the CapabilityConfigurationModal (container-platform), plant a >140-char
+    // card face directly inside the open overlay, confirm cardTextBudget catches it,
+    // then remove the plant and confirm it no longer fires.
+    const ctx11 = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: 'light' });
+    const page11 = await ctx11.newPage();
+    await openTab(page11, 'Architecture', 'architecture');
+    // Open the config modal for container-platform (same as configure-modal-reliable state)
+    const bysBtn11 = page11.locator('[data-tab="architecture"] button').filter({ hasText: /build your stack/i }).first();
+    if (await bysBtn11.count() > 0) await bysBtn11.click();
+    await page11.waitForTimeout(300);
+    const capCard11 = page11.locator('[data-tab="architecture"] [data-capability="container-platform"]').first();
+    if (await capCard11.count() > 0) {
+      await capCard11.click();
+      await page11.waitForTimeout(400);
+    }
+    if (await page11.locator('[data-ui="overlay"]').count() === 0) {
+      const configBtn11 = page11.locator('[data-tab="architecture"] button').filter({ hasText: /configure|change/i }).first();
+      if (await configBtn11.count() > 0) {
+        await configBtn11.click();
+        await page11.waitForTimeout(300);
+      }
+    }
+    const overlayOpen = await page11.locator('[data-ui="overlay"]').count() > 0;
+    if (!overlayOpen) {
+      process.stderr.write('SELF-TEST WARN phase-11: could not open config modal — overlay card-text check skipped\n');
+    } else {
+      // Plant: inject a flex container with a bordered card whose text exceeds 140 chars inside the overlay
+      await page11.evaluate(() => {
+        const overlay = document.querySelector('[data-ui="overlay"]');
+        const plant = document.createElement('div');
+        plant.id = '__self_test_overlay_ctb__';
+        plant.style.cssText = 'display:flex;gap:4px;padding:4px;';
+        const card = document.createElement('div');
+        card.style.cssText = 'border:1px solid #999;padding:8px;min-height:40px;width:300px;';
+        card.textContent = 'A'.repeat(150); // 150 chars — must trigger card-text-budget
+        plant.appendChild(card);
+        overlay.appendChild(plant);
+      });
+      const ctb11 = await page11.evaluate(cardTextBudget, 'architecture');
+      const ctb11Caught = ctb11.some((s) => s.includes('card-text-budget'));
+      process.stderr.write(`SELF-TEST overlay-ctb phase-11: ${ctb11Caught ? 'OK (overlay card face caught)' : 'UNEXPECTED: not caught'}\n`);
+      if (!ctb11Caught) {
+        process.stderr.write('SELF-TEST FAIL: cardTextBudget did NOT catch >140-char face inside open overlay\n');
+        process.stderr.write(`  cardTextBudget output: ${ctb11.length > 0 ? ctb11.join(' | ') : '(none)'}\n`);
+        await browser.close();
+        process.exit(1);
+      }
+      const ctb11Line = ctb11.find((s) => s.includes('card-text-budget'));
+      process.stdout.write(`SELF-TEST overlay-ctb failure line: ${ctb11Line}\n`);
+      // Remove plant and confirm clean
+      await page11.evaluate(() => { const b = document.getElementById('__self_test_overlay_ctb__'); if (b) b.remove(); });
+      const ctb11Clean = await page11.evaluate(cardTextBudget, 'architecture');
+      const ctb11StillFires = ctb11Clean.some((s) => s.includes('__self_test_overlay_ctb__'));
+      if (ctb11StillFires) {
+        process.stderr.write('SELF-TEST FAIL: overlay-ctb plant not removed\n');
+        await browser.close();
+        process.exit(1);
+      }
+      process.stderr.write('SELF-TEST phase-11 OK: overlay card-text-budget plant caught and removed\n');
+    }
+    await ctx11.close();
 
     process.stderr.write('SELF-TEST PASS (all phases)\n');
   } finally {

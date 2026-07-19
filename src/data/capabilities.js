@@ -11,7 +11,7 @@ export const capabilities = {
           id: 'rh-gateway',
           provider: 'Red Hat',
           name: 'Red Hat AI Gateway',
-          description: 'Model-as-a-Service gateway with OpenAI-compatible APIs. Governs access to self-hosted and external models with usage tracking and policy enforcement. Not announced as a standalone generally available product - confirm availability with your Red Hat account team.',
+          description: 'OpenAI-compatible API gateway with usage tracking and policy enforcement. Confirm availability with your Red Hat account team.',
           status: 'Tech Preview',
           recommended: true
         },
@@ -131,7 +131,7 @@ export const capabilities = {
           id: 'kserve',
           provider: 'Red Hat',
           name: 'KServe',
-          description: 'Model serving platform built into Red Hat OpenShift AI (RHOAI). Supports multiple runtimes (vLLM, TorchServe, TensorFlow, etc.) with autoscaling (Horizontal Pod Autoscaler, KEDA event-driven scaling, or Knative serverless scaling) and advanced deployment patterns.',
+          description: 'Model serving built into RHOAI, with multiple runtimes (vLLM, TorchServe, TensorFlow) and autoscaling (HPA, KEDA, Knative).',
           status: 'GA'
         },
         {
@@ -212,7 +212,7 @@ export const capabilities = {
           id: 'rh-observability',
           provider: 'Red Hat',
           name: 'OpenShift Monitoring Stack',
-          description: 'Prometheus + Grafana + OpenShift alerting. AI-specific metrics (GPU utilization, model latency/throughput) require additional exporters (NVIDIA DCGM) and custom ServiceMonitors/dashboards.',
+          description: 'Prometheus + Grafana + OpenShift alerting. AI-specific GPU and latency metrics require additional exporters and custom dashboards.',
           status: 'GA',
           recommended: true
         },
@@ -414,20 +414,20 @@ export const capabilities = {
           id: 'rhoai',
           provider: 'Red Hat',
           name: 'Red Hat OpenShift AI (RHOAI)',
-          description: 'AI/ML platform for OpenShift clusters (self-managed or managed Red Hat OpenShift Service on AWS (ROSA) / Azure Red Hat OpenShift (ARO)). Use this if your container platform is OpenShift.',
+          description: 'AI/ML platform for OpenShift clusters — self-managed, ROSA, or ARO. Use this if your container platform is OpenShift.',
           status: 'GA'
         },
         {
           id: 'rhai',
           provider: 'Red Hat',
           name: 'Red Hat AI (RHAI)',
-          description: 'This explorer\'s name for the Red Hat AI path on standard Kubernetes (Amazon EKS, Azure AKS, Google GKE, self-managed) - not a distinct generally available product SKU. Use this if your container platform is standard Kubernetes, and confirm packaging with your Red Hat account team.'
+          description: 'Red Hat AI path on standard Kubernetes (EKS, AKS, GKE). Not a distinct product SKU — confirm packaging with your Red Hat account team.'
         },
         {
           id: 'rhel-ai',
           provider: 'Red Hat',
           name: 'Red Hat Enterprise Linux AI',
-          description: 'LLM inference on individual RHEL servers via the vLLM engine (bootc image, bare metal or VM). Single-node only. Best for edge deployments, development environments, and single-server use cases. For distributed training or production-scale serving, use Red Hat OpenShift AI (RHOAI) or Red Hat AI (RHAI).',
+          description: 'LLM inference on individual RHEL servers via the vLLM engine (bootc image). Single-node; best for edge and development use cases.',
           status: 'GA'
         }
       ]
