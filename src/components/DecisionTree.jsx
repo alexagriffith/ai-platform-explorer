@@ -95,22 +95,11 @@ export default function DecisionTree({ flow, onRecommendation }) {
 
   const canGoBack = stepHistory.length > 0;
 
-  // Calculate visible question number (not array index)
-  const getVisibleQuestionNumber = (targetStepIndex) => {
-    let visibleCount = 0;
-    for (let i = 0; i <= targetStepIndex; i++) {
-      if (shouldShowStep(flow.steps[i], i)) {
-        visibleCount++;
-      }
-    }
-    return visibleCount;
-  };
-
   return (
     <div className={density.stackGap}>
       {/* Breadcrumb and controls — centered column matching question node width */}
       <div className="flex flex-col items-center gap-2">
-        <div className="max-w-2xl w-full flex items-center justify-between gap-3">
+        <div className="max-w-4xl w-full flex items-center justify-between gap-3">
           <div className="flex-1 min-w-0">
             {canGoBack && (
               <div className={`${typeScale.secondary} ${text.muted}`}>
@@ -150,7 +139,13 @@ export default function DecisionTree({ flow, onRecommendation }) {
 
           const isActive = isNodeActive(stepIndex);
           const isCompleted = isNodeCompleted(stepIndex);
-          const visibleNumber = getVisibleQuestionNumber(stepIndex);
+          const optionCount = step.options.length;
+          // Grid cols: 1 on mobile, up to N at md (one col per option, all equal-width)
+          const gridCols =
+            optionCount === 2 ? 'grid-cols-1 md:grid-cols-2' :
+            optionCount === 3 ? 'grid-cols-1 md:grid-cols-3' :
+            optionCount === 4 ? 'grid-cols-1 md:grid-cols-4' :
+            'grid-cols-1 md:grid-cols-3';
 
           return (
             <div key={stepIndex} className="mb-4">
@@ -165,7 +160,8 @@ export default function DecisionTree({ flow, onRecommendation }) {
               <div className="flex flex-col items-center">
                 <div
                   data-ui="card"
-                  className={`max-w-2xl w-full ${density.sectionPad} rounded-card border ${interactive.transitionAll} ${
+                  data-decision-question={isActive ? 'active' : undefined}
+                  className={`max-w-4xl w-full px-4 py-3 rounded-card border ${interactive.transitionAll} ${
                   isActive
                     ? `border-accent ${surface.tint}`
                     : isCompleted
@@ -173,7 +169,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
                     : `${border.edge} ${surface.raised}`
                 }`}>
                   <div className="flex items-start gap-2">
-                    <div className="flex-shrink-0 mt-0.5">
+                    <div className="flex-shrink-0 mt-1">
                       {isCompleted ? (
                         <CheckCircle size={18} className="text-green-600" />
                       ) : (
@@ -183,16 +179,12 @@ export default function DecisionTree({ flow, onRecommendation }) {
                       )}
                     </div>
                     <div className="flex-1">
-                      <h4 className={`${typeScale.componentName} ${text.ink} mb-2`}>
-                        <span className="text-accent mr-1">
-                          Question {visibleNumber}:
-                        </span>
+                      <h4 className={`text-lg font-semibold ${text.ink} mb-3 text-center`}>
                         {step.question}
                       </h4>
 
-                      {/* Option nodes — content-hugging (flex-none), centered row; wraps only when
-                          content genuinely cannot fit. Basis from text, not fractional width. */}
-                      <div className={`flex flex-wrap justify-center ${density.rowGap}`}>
+                      {/* Option nodes — equal full-width grid; one col per option filling the row */}
+                      <div className={`grid ${gridCols} gap-2`}>
                         {step.options.map((option) => {
                           const selected = isOptionSelected(stepIndex, option.value);
                           const disabled = !isActive && !selected;
@@ -204,7 +196,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
                               onClick={() => !disabled && handleNodeClick(stepIndex, option.value, option.next)}
                               disabled={disabled}
                               aria-current={selected ? 'true' : undefined}
-                              className={`flex-none ${density.cardPad} rounded-card border-2 text-left ${interactive.transitionAll} ${
+                              className={`w-full py-4 px-3 rounded-card border-2 text-center ${interactive.transitionAll} ${
                                 selected
                                   ? `border-accent ${surface.tint}`
                                   : isActive
@@ -212,14 +204,14 @@ export default function DecisionTree({ flow, onRecommendation }) {
                                   : `${border.hair} ${surface.tint} opacity-50 cursor-not-allowed`
                               } ${!disabled ? interactive.focusRing : ''}`}
                             >
-                              <div className="flex items-center gap-1.5">
+                              <div className="flex items-center justify-center gap-1.5">
                                 {selected && <CheckCircle size={14} className="text-accent flex-shrink-0" />}
-                                <span className={`${typeScale.secondary} font-semibold ${text.ink}`}>
+                                <span className={`text-sm font-semibold ${text.ink}`}>
                                   {option.label}
                                 </span>
                               </div>
                               {option.recommendation && (
-                                <div className={`mt-0.5 ${typeScale.meta} text-link font-semibold`}>
+                                <div className={`mt-1 ${typeScale.meta} text-link font-semibold`}>
                                   View recommendation
                                 </div>
                               )}
