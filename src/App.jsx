@@ -145,9 +145,8 @@ function App() {
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <div className="min-w-0 flex-1">
-                <h1 className="font-display text-lg sm:text-2xl font-extrabold tracking-tight text-ink flex items-center gap-2 min-w-0">
-                  <span className="truncate">Red Hat AI Platform Explorer</span>
-                  <span className="inline-block bg-accent w-[0.7em] h-[0.7em] rounded-sm flex-shrink-0" aria-hidden="true" />
+                <h1 className="font-display text-lg sm:text-2xl font-extrabold tracking-tight text-ink truncate">
+                  Red Hat AI Platform Explorer
                 </h1>
                 <p className="text-xs sm:text-sm text-muted hidden sm:block">
                   Interactive visualization of Red Hat's AI offerings
