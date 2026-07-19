@@ -104,7 +104,7 @@ export default function TrainingDeepDive() {
           GPU Hardware for Training
         </h3>
         <p className={`${typeScale.meta} text-muted mb-1`}>
-          Representative examples — GPU availability and pricing change quickly; confirm current options with your hardware vendor.
+          Representative examples — availability and pricing change; confirm with your hardware vendor.
         </p>
         {/* Legend — categorical marks for cost/perf scale */}
         <div className="flex flex-wrap gap-x-4 gap-y-1 mb-2">
@@ -173,7 +173,7 @@ export default function TrainingDeepDive() {
             <ul className="space-y-1">
               <li className="flex items-start gap-1.5">
                 <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
-                <span className={`${typeScale.secondary} text-muted`}>Trains a model from scratch (rare for large language models — most organizations start from a foundation model)</span>
+                <span className={`${typeScale.secondary} text-muted`}>Trains from scratch — rare; most start from a foundation model</span>
               </li>
               <li className="flex items-start gap-1.5">
                 <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
@@ -209,7 +209,7 @@ export default function TrainingDeepDive() {
               </li>
               <li className="flex items-start gap-1.5">
                 <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
-                <span className={`${typeScale.secondary} text-muted`}>Use OpenShift AI fine-tuning workflows (supervised fine-tuning, LoRA adapters); InstructLab is an option for taxonomy-driven synthetic data — confirm current support status with your Red Hat account team</span>
+                <span className={`${typeScale.secondary} text-muted`}>OpenShift AI fine-tuning (supervised, LoRA adapters); InstructLab for taxonomy-driven synthetic data — confirm support with your Red Hat team</span>
               </li>
             </ul>
           </div>

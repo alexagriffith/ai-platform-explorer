@@ -81,7 +81,7 @@ export const hardwareComparison = [
   {
     gpu: 'NVIDIA H200',
     memory: '141GB HBM3e',
-    bestFor: 'Large model training and inference; successor to H100 with more memory',
+    bestFor: 'Large model training and inference; more memory than H100',
     cost: 'Highest',
     performance: 'Maximum'
   },
@@ -95,14 +95,14 @@ export const hardwareComparison = [
   {
     gpu: 'AMD MI300X',
     memory: '192GB HBM3',
-    bestFor: 'Large model training with high memory requirements, H100 alternative',
+    bestFor: 'Large model training, high memory; H100 alternative',
     cost: 'Very High',
     performance: 'Excellent'
   },
   {
     gpu: 'NVIDIA A100',
     memory: '40GB / 80GB',
-    bestFor: 'Most production fine-tuning (7B-70B parameters) — 70B feasible with parameter-efficient methods and multi-GPU sharding',
+    bestFor: 'Production fine-tuning (7B–70B); 70B with parameter-efficient methods and sharding',
     cost: 'High',
     performance: 'Excellent'
   },
