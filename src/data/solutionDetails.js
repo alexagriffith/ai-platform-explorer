@@ -37,7 +37,10 @@ export const solutionDetails = {
       'Simplify migration from external APIs to self-hosted models',
       'Multi-tenant SaaS platforms offering AI capabilities'
     ],
-    documentation: 'https://docs.redhat.com/en',
+    // SOURCE: No product-specific AI Gateway docs URL confirmed at docs.redhat.com at time of audit (2026-07-19).
+    // Candidate: https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service (200)
+    // Left null pending Alexa confirmation that MaaS docs match rh-gateway product concept.
+    documentation: null,
     contacts: ['Ask your Red Hat account team.']
   },
   'openshift': {
@@ -117,6 +120,9 @@ export const solutionDetails = {
       'Model fine-tuning and distributed training',
       'MLOps automation and governance'
     ],
+    // SOURCE: https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5 (200, verified 2026-07-19)
+    // Capabilities additions (AutoRAG, llm-d, gen AI playground) left pending Alexa review:
+    // all appear in RHOAI 3.5 EA2 doc navigation but the 3.5 docs carry EA status overall.
     documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5',
     contacts: ['Ask your Red Hat account team.']
   },
@@ -144,7 +150,9 @@ export const solutionDetails = {
       'EKS, AKS, or GKE estates standardizing on Kubernetes without OpenShift',
       'Upstream Kubernetes with a supported Red Hat AI software path'
     ],
-    documentation: 'https://docs.redhat.com',
+    // SOURCE: No product-specific docs URL for "Red Hat AI on non-OpenShift Kubernetes" as a distinct product.
+    // This entry is an internal workshop navigation concept, not a standalone Red Hat product.
+    documentation: null,
     contacts: ['Ask your Red Hat account team.']
   },
   'rhoai-distributed': {
@@ -276,7 +284,11 @@ export const solutionDetails = {
       'Multi-GPU tensor parallelism',
       'Token streaming for real-time responses',
       'Quantization and reduced-precision formats such as FP8 and INT4 (GPTQ, AWQ)',
-      'Autoscaling via Kubernetes Horizontal Pod Autoscaler (HPA) or Kubernetes Event-Driven Autoscaling (KEDA) based on request queue depth and custom metrics'
+      'Autoscaling via Kubernetes Horizontal Pod Autoscaler (HPA) or Kubernetes Event-Driven Autoscaling (KEDA) based on request queue depth and custom metrics',
+      // SOURCE: https://docs.redhat.com/en/documentation/red_hat_ai_inference/3.5 (200, 2026-07-19) — "Speculative decoding" listed as dedicated doc guide
+      'Speculative decoding for improved inference throughput',
+      // SOURCE: https://docs.redhat.com/en/documentation/red_hat_ai_inference/3.5 (200, 2026-07-19) — "Extending Red Hat AI Inference with tool calling capabilities" listed as dedicated doc guide
+      'Tool calling capabilities for agentic AI applications'
     ],
     useCases: [
       'Production LLM inference needing low time to first token (latency-optimized routing)',
@@ -286,7 +298,9 @@ export const solutionDetails = {
       'Real-time chatbot applications at scale',
       'Batch processing of text generation with efficiency'
     ],
-    documentation: 'https://docs.redhat.com',
+    // SOURCE: https://docs.redhat.com/en/documentation/red_hat_ai_inference/3.5 (200, verified 2026-07-19)
+    // Official Red Hat AI Inference product documentation — replaces bare docs.redhat.com root
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_ai_inference/3.5',
     contacts: ['Ask your Red Hat account team.']
   },
   'rh-model-registry': {
@@ -318,7 +332,9 @@ export const solutionDetails = {
       'A/B testing and canary deployments',
       'Audit trails for compliance'
     ],
-    documentation: 'https://docs.redhat.com',
+    // SOURCE: https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_model_registries (200, verified 2026-07-19)
+    // RHOAI 3.5 toc: "Register, version, and promote models with the model registry"
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_model_registries',
     contacts: ['Ask your Red Hat account team.']
   },
   'rh-observability': {
@@ -563,7 +579,9 @@ export const solutionDetails = {
     contacts: ['Ask your Red Hat account team.']
   },
   'rh-evaluation': {
-    name: 'EvalHub (OpenShift AI Model Evaluation)',
+    // SOURCE: https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/evaluating_ai_systems (200, 2026-07-19)
+    // Official page title: "Evaluating AI systems with LM-Eval" — "EvalHub" does not appear in RHOAI 3.5 doc titles.
+    name: 'LM-Eval (OpenShift AI Model Evaluation)',
     description: 'Technology Preview — Kubernetes-native evaluation orchestration routing to multiple benchmark frameworks with MLflow integration; confirm scope with your Red Hat account team',
     architecture: {
       components: [
@@ -700,7 +718,10 @@ export const solutionDetails = {
       'Prototyping AI applications before production',
       'Managing prompt libraries across projects'
     ],
-    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5',
+    // SOURCE: https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/experimenting_with_models_in_the_gen_ai_playground (200, verified 2026-07-19)
+    // RHOAI 3.5 toc: "Experimenting with models in the gen AI playground"
+    // NOTE for Alexa: Official docs call this "gen AI playground" — confirm whether "Gen AI Studio" name is intentional.
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/experimenting_with_models_in_the_gen_ai_playground',
     contacts: ['Ask your Red Hat account team.']
   },
   'rhaie': {
@@ -737,7 +758,10 @@ export const solutionDetails = {
       'Turnkey AI infrastructure and platform',
       'Enterprise AI with comprehensive support'
     ],
-    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5',
+    // SOURCE: https://docs.redhat.com/en/documentation/red_hat_ai_enterprise/ (200, verified 2026-07-19)
+    // Title: "Red Hat AI Enterprise 3"; abstract: "Red Hat AI Enterprise is an integrated AI platform..."
+    // Red Hat AI Enterprise has its own docs portal — replaced incorrect RHOAI URL.
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_ai_enterprise/',
     contacts: ['Ask your Red Hat account team.']
   },
   'rhel-ai': {
@@ -762,7 +786,10 @@ export const solutionDetails = {
       'Model loading from Hugging Face models, ModelCar container images, or OCI artifact images',
       'No Kubernetes or OpenShift required — runs on bare metal or VMs',
       'RHEL security and compliance features',
-      'NVIDIA GPU support (CUDA); AMD GPU support (ROCm) for inference only'
+      'NVIDIA GPU support (CUDA); AMD GPU support (ROCm) for inference only',
+      // SOURCE: S2 pinned source (docs.redhat.com/en/documentation/red_hat_ai/3/html-single/supported_product_and_hardware_configurations, 200, 2026-07-16)
+      // S2 lists vllm-gaudi-rhel9:3.4.0 image with "(Technology Preview)" classification
+      'Intel Gaudi accelerator support (Technology Preview)'
     ],
     useCases: [
       'LLM inference on bare metal or virtual machines without Kubernetes',
@@ -839,7 +866,10 @@ export const solutionDetails = {
       'Multi-layered safety (input + output detection)',
       'Real-time content filtering for production APIs'
     ],
-    documentation: 'https://github.com/red-hat-data-services/fms-guardrails-orchestrator',
+    // SOURCE: https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/enabling_ai_safety_with_guardrails (200, verified 2026-07-19)
+    // RHOAI 3.5 toc: "Ensuring AI safety with guardrails" — official product documentation now available.
+    // Replaces upstream GitHub repo URL with customer-facing Red Hat docs.
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/enabling_ai_safety_with_guardrails',
     contacts: ['Ask your Red Hat account team.']
   },
   'llama-stack-distribution': {
@@ -890,7 +920,10 @@ export const solutionDetails = {
       'Multi-provider inference (cloud + on-prem)',
       'Developers familiar with Meta\'s Llama Stack ecosystem'
     ],
-    documentation: 'https://github.com/red-hat-data-services/ogx-distribution',
+    // SOURCE: https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_ogx (200, verified 2026-07-19)
+    // Title: "Build AI/Agentic Applications with OGX"; abstract: "use the OGX Operator in Red Hat OpenShift AI"
+    // Official product documentation now available — replaces upstream developer GitHub repo URL.
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_ogx',
     contacts: ['Ask your Red Hat account team.']
   }
 };
