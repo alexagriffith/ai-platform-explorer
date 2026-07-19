@@ -131,7 +131,7 @@ export const capabilities = {
           id: 'kserve',
           provider: 'Red Hat',
           name: 'KServe',
-          description: 'Model serving built into RHOAI, with multiple runtimes (vLLM, TorchServe, TensorFlow) and autoscaling (HPA, KEDA, Knative).',
+          description: 'Model serving built into Red Hat OpenShift AI, with autoscaling and support for multiple runtimes (vLLM, TorchServe, TensorFlow).',
           status: 'GA'
         },
         {

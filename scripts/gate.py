@@ -168,6 +168,93 @@ def section_leaks():
         fail("leak scan (customer names / banned acronym / secrets)", "\n".join(hits))
 
 
+# ── (c2) bare-acronym scan ────────────────────────────────────────────────────
+# Flags ALL-CAPS tokens (2–5 letters) in customer-visible description/purpose
+# strings inside src/data/capabilities.js and solutionDetails.js that are NOT
+# immediately followed by a parenthetical expansion "(…)" AND NOT preceded by "("
+# (i.e. not the abbreviation inside an expansion like "Autoscaler (HPA)") AND
+# NOT in the allowlist of self-evident, standard, or proper-noun terms.
+#
+# Scope: only `description:` and `purpose:` fields — these are the option-card
+# faces shown to customers. Name fields may legitimately carry abbreviated product
+# names (e.g. "FMS Guardrails Orchestrator"). Capabilities/useCases arrays in
+# solutionDetails are in deep-dive content, not screened here (expansions are added
+# inline there as needed).
+#
+# Allowlist rationale (keep tight):
+#   - Universal tech shorthands needing no expansion: GA, AI, ML, UI, API, GPU, VM,
+#     LLM, RAG, MCP, KV, SLO, SKU, OCR, ASR, YAML, PNG, RHEL, AWS
+#   - Cloud-platform proper nouns (brand abbreviations): EKS, AKS, GKE, ROSA, ARO,
+#     GCS, S3, TPU, GCP
+#   - Tool / framework proper nouns used as product names: HELM, ONNX, RAGAS, FIPS,
+#     DCGM, RBAC, MMLU, TLS, REST, DAG, CI, CD, DR, KFP, HAP, SSO, CSI, OVN, CRD,
+#     OADP, GPTQ, AWQ, ROCm, CUDA, PDF, URL, JSON, HTTP, SHAP, LIME, FAISS, LAB,
+#     AMD, CPU, INT4, FP8
+#   - Kubernetes/infra shorthand understood in technical context: CR, EDB, FMS, LM,
+#     DB, HF, PVC, URI, TGI, ODH, OGX, LWS, ODF, TF, GPT, CNCF, MI, TTFT, POC,
+#     SQL, HTTPS, XKS
+#
+# NOTE: RHOAI / RHAI / RHAIE are NOT in the allowlist — they must be expanded as
+# "Red Hat OpenShift AI" in customer-visible description fields.
+_BARE_ACRONYM_ALLOWLIST = {
+    "GA", "AI", "ML", "UI", "API", "GPU", "VM", "LLM", "RAG", "MCP", "KV", "SLO",
+    "SKU", "OCR", "ASR", "YAML", "PNG", "RHEL",
+    "AWS", "EKS", "AKS", "GKE", "ROSA", "ARO", "GCS", "S3", "TPU", "GCP",
+    "HELM", "ONNX", "RAGAS", "FIPS", "DCGM", "RBAC", "MMLU", "TLS", "REST", "DAG",
+    "CI", "CD", "DR", "KFP", "HAP", "SSO", "CSI", "OVN", "CRD", "OADP", "GPTQ",
+    "AWQ", "ROCm", "CUDA", "PDF", "URL", "JSON", "HTTP", "SHAP", "LIME", "FAISS",
+    "LAB", "AMD", "CPU", "INT4", "FP8",
+    "CR", "EDB", "FMS", "LM", "DB", "HF", "PVC", "URI", "TGI", "ODH", "OGX",
+    "LWS", "ODF", "TF", "GPT", "CNCF", "MI", "TTFT", "POC", "SQL", "HTTPS", "XKS",
+}
+
+# Matches a bare ALL-CAPS token (2–5 letters, word-boundary).
+# Negative lookbehind: skip tokens already inside parens — e.g. "Autoscaler (HPA)".
+# Negative lookahead: skip tokens immediately followed by "(" — i.e. the start of
+# their own expansion — e.g. "Horizontal Pod Autoscaler (HPA)".
+_BARE_ACRONYM_RX = re.compile(r"(?<!\()\b([A-Z]{2,5})\b(?!\s*\()")
+
+# Only scan lines that contain a non-trivial string value (at least 4 chars).
+_HAS_STRING_VALUE_RX = re.compile(r"""['"][^'"]{4,}['"]""")
+
+# Only flag description: and purpose: field lines (the customer-visible option faces).
+_DESCRIPTION_FIELD_RX = re.compile(r"\b(description|purpose)\s*:")
+
+# Target files: only the two files that carry option-card face strings.
+_BARE_ACRONYM_TARGET_FILES = {"capabilities.js", "solutionDetails.js"}
+
+
+def section_bare_acronym():
+    data_dir = os.path.join(REPO, "src", "data")
+    hits = []
+    for fn in os.listdir(data_dir):
+        if fn not in _BARE_ACRONYM_TARGET_FILES:
+            continue
+        path = os.path.join(data_dir, fn)
+        rel = os.path.relpath(path, REPO)
+        try:
+            with open(path, "r", encoding="utf-8", errors="ignore") as fh:
+                lines = fh.readlines()
+        except OSError:
+            continue
+        for i, line in enumerate(lines, 1):
+            if not _DESCRIPTION_FIELD_RX.search(line):
+                continue
+            if not _HAS_STRING_VALUE_RX.search(line):
+                continue
+            for m in _BARE_ACRONYM_RX.finditer(line):
+                token = m.group(1)
+                if token in _BARE_ACRONYM_ALLOWLIST:
+                    continue
+                hits.append(
+                    "%s:%d bare acronym '%s' in description/purpose field — expand on first use "
+                    "or add to allowlist if it is a proper noun: %s"
+                    % (rel, i, token, line.strip()[:160])
+                )
+    if hits:
+        fail("bare-acronym scan (description/purpose fields in src/data)", "\n".join(hits))
+
+
 # ── (d) design-law static scan (docs/DESIGN-LAW.md) ───────────────────────────
 # Variant-prefix-aware hue classes: matches dark:/hover:/group-hover:/dark:hover: etc.
 # before text|bg|border|from|via|to|ring + banned hue + shade digit.
@@ -473,6 +560,7 @@ def main():
     section_check()
     section_links()
     section_leaks()
+    section_bare_acronym()
     section_design_static()
     section_duplicate_logic()
     section_doc_href_status()

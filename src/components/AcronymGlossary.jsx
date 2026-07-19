@@ -144,7 +144,7 @@ export default function AcronymGlossary({ isOpen, onClose }) {
   }
 
   return (
-    <div data-ui="overlay" className={modal.overlay}>
+    <div data-ui="overlay" data-acronym-glossary="true" className={modal.overlay}>
       <div data-ui="card" className={`${modal.panel} ${modal.panelWide} overflow-hidden flex flex-col`}>
         {/* Header */}
         <div className={modal.header}>

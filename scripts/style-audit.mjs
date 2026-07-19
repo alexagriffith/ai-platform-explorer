@@ -410,6 +410,99 @@ function cardTextBudget(tabId) {
   return out;
 }
 
+// BARE-ACRONYM OVERLAY: scans visible card-face text inside any open overlay
+// ([data-ui="overlay"]) for ALL-CAPS tokens (2–5 letters) that are not in the
+// allowlist of known/expanded terms. Catches cases where a stripped description
+// exposes a bare acronym that the data layer scan would catch at static analysis
+// time but this provides a second, DOM-measured gate against regressions.
+//
+// Allowlist mirrors the gate.py _BARE_ACRONYM_ALLOWLIST — single source of truth
+// is gate.py; this JS copy must stay in sync when allowlist changes.
+//
+// Unlike the gate.py scan (which reads source files), this check runs on RENDERED
+// DOM text in OPEN overlays so it catches dynamic content not visible at rest.
+function bareAcronymOverlay() {
+  const ALLOWLIST = new Set([
+    'GA', 'AI', 'ML', 'UI', 'API', 'GPU', 'VM', 'LLM', 'RAG', 'MCP', 'KV', 'SLO',
+    'SKU', 'OCR', 'ASR', 'YAML', 'PNG', 'RHEL',
+    'AWS', 'EKS', 'AKS', 'GKE', 'ROSA', 'ARO', 'GCS', 'S3', 'TPU', 'GCP',
+    'HELM', 'ONNX', 'RAGAS', 'FIPS', 'DCGM', 'RBAC', 'MMLU', 'TLS', 'REST', 'DAG',
+    'CI', 'CD', 'DR', 'KFP', 'HAP', 'SSO', 'CSI', 'OVN', 'CRD', 'OADP', 'GPTQ',
+    'AWQ', 'ROCm', 'CUDA', 'PDF', 'URL', 'JSON', 'HTTP', 'SHAP', 'LIME', 'FAISS',
+    'LAB', 'AMD', 'CPU', 'INT4', 'FP8',
+    'CR', 'EDB', 'FMS', 'LM', 'DB', 'HF', 'PVC', 'URI', 'TGI', 'ODH', 'OGX',
+    'LWS', 'ODF', 'TF', 'GPT', 'CNCF', 'MI', 'TTFT', 'POC', 'SQL', 'HTTPS', 'XKS',
+    // KServe/product names that appear in rendered option-card names (not descriptions)
+    'RHOAI', 'RHAI', 'RHAIE',
+  ]);
+  // Matches an ALL-CAPS token NOT inside or immediately before parens.
+  // Negative lookbehind skips "(TOKEN)" patterns; negative lookahead skips "TOKEN (" expansions.
+  const BARE_RX = /(?<!\()\b([A-Z]{2,5})\b(?!\s*\()/g;
+
+  const out = [];
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  const hasBorder = (el) => {
+    const s = getComputedStyle(el);
+    return ['Top', 'Right', 'Bottom', 'Left'].some((side) => {
+      const w = parseFloat(s[`border${side}Width`]) || 0;
+      const st = s[`border${side}Style`];
+      const col = s[`border${side}Color`];
+      return w >= 1 && st !== 'none' && st !== 'hidden' && col !== 'transparent' && col !== 'rgba(0, 0, 0, 0)';
+    });
+  };
+  const visibleText = (el) => {
+    const parts = [];
+    const walk = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) { const t = node.textContent || ''; if (t.trim()) parts.push(t); return; }
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+      if (node.hidden || node.hasAttribute('hidden') || node.hasAttribute('inert')) return;
+      if (node.getAttribute('aria-hidden') === 'true') return;
+      if (node.hasAttribute('data-disclosure')) return;
+      const s = getComputedStyle(node);
+      if (s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity || '1') === 0) return;
+      for (const child of node.childNodes) walk(child);
+    };
+    walk(el);
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  };
+
+  for (const overlay of document.querySelectorAll('[data-ui="overlay"]')) {
+    if (!visible(overlay)) continue;
+    // Skip the AcronymGlossary overlay — its purpose is to list and expand acronyms,
+    // so bare acronyms in its content are intentional (they're the defined terms).
+    if (overlay.dataset.acronymGlossary === 'true') continue;
+    // Check bordered card elements inside the overlay
+    for (const el of overlay.querySelectorAll('*')) {
+      if (!visible(el)) continue;
+      if (!hasBorder(el)) continue;
+      const r = el.getBoundingClientRect();
+      if (r.height < 24) continue; // skip tiny badges/chips
+      // Only check elements whose direct parent is a grid/flex (option cards)
+      if (!el.parentElement) continue;
+      const parentDisplay = getComputedStyle(el.parentElement).display;
+      if (parentDisplay !== 'grid' && parentDisplay !== 'flex') continue;
+      const text = visibleText(el);
+      if (!text) continue;
+      const found = [];
+      BARE_RX.lastIndex = 0;
+      let m;
+      while ((m = BARE_RX.exec(text)) !== null) {
+        if (!ALLOWLIST.has(m[1])) found.push(m[1]);
+      }
+      if (found.length) {
+        const cls = (el.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join('.');
+        out.push(`bare-acronym-overlay: <${el.tagName.toLowerCase()}.${cls}> contains bare acronym(s) [${found.join(', ')}] in card face: "${text.slice(0, 80)}"`);
+      }
+    }
+  }
+  return out;
+}
+
 // ROW-FILL: any grid row's children must together span >= 85% of the grid
 // container's inner width. Catches static-column left-packing where a row with
 // fewer items than columns leaves the right half empty.
@@ -2120,9 +2213,13 @@ async function runChecksOnPage(page, tabId, stateLabel, exemptions, viewport, th
     if (!exemptions.includes('motion-law')) {
       addProblems(await page.evaluate(motionLaw, tabId));
     }
-    // Card text budget
+    // Card text budget (also checks open overlays — see cardTextBudget implementation)
     if (!exemptions.includes('card-text-budget')) {
       addProblems(await page.evaluate(cardTextBudget, tabId));
+    }
+    // Bare-acronym overlay: flag ALL-CAPS bare acronyms in open overlay card faces
+    if (!exemptions.includes('bare-acronym-overlay')) {
+      addProblems(await page.evaluate(bareAcronymOverlay));
     }
     // Row-fill
     if (!exemptions.includes('row-fill')) {
@@ -2351,9 +2448,14 @@ async function auditTab(browser, tab) {
       for (const p of await page.evaluate(motionLaw, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
     }
 
-    // F6: CARD TEXT BUDGET (light, 1440px)
+    // F6: CARD TEXT BUDGET (light, 1440px — also scans open overlays)
     if (!exemptions.includes('card-text-budget')) {
       for (const p of await page.evaluate(cardTextBudget, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
+    // M-1: BARE-ACRONYM OVERLAY (light, 1440px — scans open overlays for bare acronyms)
+    if (!exemptions.includes('bare-acronym-overlay')) {
+      for (const p of await page.evaluate(bareAcronymOverlay)) problems.push(`${prefix('1440 light')} ${p}`);
     }
 
     // F6: ROW-FILL (light, 1440px)
@@ -2922,6 +3024,68 @@ async function runSelfTest() {
       process.stderr.write('SELF-TEST phase-11 OK: overlay card-text-budget plant caught and removed\n');
     }
     await ctx11.close();
+
+    // ── PHASE 12: bare-acronym overlay self-test ──────────────────────────────
+    // Open the CapabilityConfigurationModal (same setup as phase 11), plant a
+    // bordered card card containing bare 'ZZZ' inside the open overlay, confirm
+    // bareAcronymOverlay catches it, then remove and confirm clean.
+    const ctx12 = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: 'light' });
+    const page12 = await ctx12.newPage();
+    await openTab(page12, 'Architecture', 'architecture');
+    const bysBtn12 = page12.locator('[data-tab="architecture"] button').filter({ hasText: /build your stack/i }).first();
+    if (await bysBtn12.count() > 0) await bysBtn12.click();
+    await page12.waitForTimeout(300);
+    const capCard12 = page12.locator('[data-tab="architecture"] [data-capability="container-platform"]').first();
+    if (await capCard12.count() > 0) {
+      await capCard12.click();
+      await page12.waitForTimeout(400);
+    }
+    if (await page12.locator('[data-ui="overlay"]').count() === 0) {
+      const configBtn12 = page12.locator('[data-tab="architecture"] button').filter({ hasText: /configure|change/i }).first();
+      if (await configBtn12.count() > 0) {
+        await configBtn12.click();
+        await page12.waitForTimeout(300);
+      }
+    }
+    const overlay12Open = await page12.locator('[data-ui="overlay"]').count() > 0;
+    if (!overlay12Open) {
+      process.stderr.write('SELF-TEST WARN phase-12: could not open config modal — bare-acronym overlay check skipped\n');
+    } else {
+      // Plant: inject a flex container with a bordered card containing bare 'ZZZ' inside the overlay
+      await page12.evaluate(() => {
+        const overlay = document.querySelector('[data-ui="overlay"]');
+        const plant = document.createElement('div');
+        plant.id = '__self_test_bare_acro__';
+        plant.style.cssText = 'display:flex;gap:4px;padding:4px;';
+        const card = document.createElement('div');
+        card.style.cssText = 'border:1px solid #999;padding:8px;min-height:40px;width:300px;';
+        card.textContent = 'Model serving with ZZZ support'; // bare 'ZZZ' — must trigger
+        plant.appendChild(card);
+        overlay.appendChild(plant);
+      });
+      const bao12 = await page12.evaluate(bareAcronymOverlay);
+      const bao12Caught = bao12.some((s) => s.includes('ZZZ'));
+      process.stderr.write(`SELF-TEST bare-acronym-overlay phase-12: ${bao12Caught ? 'OK (bare ZZZ caught)' : 'UNEXPECTED: not caught'}\n`);
+      if (!bao12Caught) {
+        process.stderr.write('SELF-TEST FAIL: bareAcronymOverlay did NOT catch bare ZZZ inside open overlay\n');
+        process.stderr.write(`  bareAcronymOverlay output: ${bao12.length > 0 ? bao12.join(' | ') : '(none)'}\n`);
+        await browser.close();
+        process.exit(1);
+      }
+      const bao12Line = bao12.find((s) => s.includes('ZZZ'));
+      process.stdout.write(`SELF-TEST bare-acronym-overlay failure line: ${bao12Line}\n`);
+      // Remove plant and confirm clean
+      await page12.evaluate(() => { const b = document.getElementById('__self_test_bare_acro__'); if (b) b.remove(); });
+      const bao12Clean = await page12.evaluate(bareAcronymOverlay);
+      const bao12StillFires = bao12Clean.some((s) => s.includes('__self_test_bare_acro__'));
+      if (bao12StillFires) {
+        process.stderr.write('SELF-TEST FAIL: bare-acronym-overlay plant not removed\n');
+        await browser.close();
+        process.exit(1);
+      }
+      process.stderr.write('SELF-TEST phase-12 OK: bare-acronym-overlay ZZZ plant caught and removed\n');
+    }
+    await ctx12.close();
 
     process.stderr.write('SELF-TEST PASS (all phases)\n');
   } finally {

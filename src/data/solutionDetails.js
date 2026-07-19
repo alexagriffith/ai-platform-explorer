@@ -276,7 +276,7 @@ export const solutionDetails = {
       'Multi-GPU tensor parallelism',
       'Token streaming for real-time responses',
       'Quantization and reduced-precision formats such as FP8 and INT4 (GPTQ, AWQ)',
-      'Autoscaling via Kubernetes Horizontal Pod Autoscaler (HPA) or KEDA based on request queue depth and custom metrics'
+      'Autoscaling via Kubernetes Horizontal Pod Autoscaler (HPA) or Kubernetes Event-Driven Autoscaling (KEDA) based on request queue depth and custom metrics'
     ],
     useCases: [
       'Production LLM inference needing low time to first token (latency-optimized routing)',
@@ -532,7 +532,7 @@ export const solutionDetails = {
         { name: 'Gateway API (HTTPRoute)', purpose: 'Ingress routing via openshift-ai-inference Gateway' },
         { name: 'Advanced Inference Scheduler', purpose: 'Token-aware scheduling and key-value cache (KV cache) routing for large language models' },
         { name: 'Istio/Service Mesh', purpose: 'Optional VirtualService-based ingress (legacy)' },
-        { name: 'KEDA', purpose: 'ScaledObject-based autoscaling' },
+        { name: 'Kubernetes Event-Driven Autoscaling (KEDA)', purpose: 'ScaledObject-based autoscaling on custom metrics and event sources' },
         { name: 'S3-compatible storage', purpose: 'Model artifact storage' },
         { name: 'OpenTelemetry', purpose: 'Distributed tracing' }
       ]
@@ -546,7 +546,7 @@ export const solutionDetails = {
       'HTTPRoute-based ingress with Gateway API',
       'kube-rbac-proxy authentication when enabled',
       'Model artifact download from S3/GCS/Azure Blob',
-      'Autoscaling via HPA and KEDA (Knative Serving optional for serverless scaling)',
+      'Autoscaling via Horizontal Pod Autoscaler (HPA) and Kubernetes Event-Driven Autoscaling (KEDA); Knative Serving available for serverless scaling',
       'Multi-node LLM serving with LeaderWorkerSet',
       'Token-aware scheduling and KV cache routing',
       'Support for custom serving runtimes (ServingRuntime CRD)'
@@ -557,7 +557,7 @@ export const solutionDetails = {
       'LLM serving with advanced scheduling and KV cache optimization',
       'Multi-model serving sharing runtime resources',
       'Production serving with authentication and authorization',
-      'Autoscaling inference workloads (HPA/KEDA based on metrics, Knative for serverless)'
+      'Autoscaling inference workloads (Horizontal Pod Autoscaler or KEDA based on metrics; Knative for serverless)'
     ],
     documentation: 'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/deploying_models',
     contacts: ['Ask your Red Hat account team.']
