@@ -157,10 +157,17 @@ export const density = {
 export const typeScale = {
   /** Component / product name — the point of every box. */
   componentName: 'text-sm font-bold leading-tight',
+  /**
+   * Recommendation / result heading — primary surface outcome, one scale above componentName.
+   * Used on the decision-guide recommendation card product-name heading.
+   */
+  recommendationHeading: 'text-xl font-bold leading-tight',
   /** Group / section label — visible, not shouting. */
   groupLabel: 'text-xs font-semibold uppercase tracking-wide',
   /** Secondary / supporting text — one step below component name. */
   secondary: 'text-xs leading-snug',
+  /** Body text — readable at primary surface scale (used on recommendation body). */
+  body: 'text-sm leading-snug',
   /** Faint / tertiary metadata. */
   meta: 'text-[11px] leading-snug',
 };

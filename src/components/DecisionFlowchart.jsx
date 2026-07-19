@@ -237,40 +237,44 @@ export default function DecisionFlowchart({
             />
           ) : (
             /* Recommendation */
-            <div className={density.stackGap}>
-              <div data-ui="card" className={`${density.sectionPad} rounded-card border ${border.hair} ${surface.raised}`}>
+            <div className={`${density.stackGap} max-w-4xl w-full mx-auto`}>
+              <div
+                data-ui="card"
+                data-decision-recommendation="active"
+                className={`px-5 py-4 rounded-card ${surface.raised}`}
+              >
                 {(() => {
                   const catalogStatus = productStatusFromCatalog(treeRecommendation.productId);
                   return (
-                <div className="flex items-start gap-3 mb-3">
-                  <CheckCircle size={18} className="text-green-600 flex-shrink-0 mt-0.5" />
+                <div className="flex items-start gap-3 mb-4">
+                  <CheckCircle size={20} className="text-green-600 flex-shrink-0 mt-1" />
                   <div className="flex-1">
-                    <div className="flex flex-wrap items-baseline gap-2 mb-1">
-                      <h4 className={`${typeScale.componentName} ${text.ink}`}>
+                    <div className="flex flex-wrap items-baseline gap-2 mb-2">
+                      <h4 className={`${typeScale.recommendationHeading} ${text.ink}`}>
                         {treeRecommendation.product}
                       </h4>
                       {catalogStatus && (
-                        <span className={`${typeScale.meta} font-medium ${productStatus[catalogStatus] ?? text.muted}`}>
+                        <span className={`${typeScale.secondary} font-medium ${productStatus[catalogStatus] ?? text.muted}`}>
                           {catalogStatus}
                         </span>
                       )}
                       {treeRecommendation.platformRequirement && (
-                        <span className={`${typeScale.meta} ${text.faint}`}>
+                        <span className={`${typeScale.secondary} ${text.faint}`}>
                           · {treeRecommendation.platformRequirement}
                         </span>
                       )}
                     </div>
                     {catalogStatus === 'Check with Red Hat' && (
-                      <p className={`${typeScale.secondary} ${text.muted} mb-1`}>
+                      <p className={`${typeScale.body} ${text.muted} mb-2`}>
                         {HEDGE_LINE}
                       </p>
                     )}
-                    <p className={`${typeScale.secondary} ${text.muted} mb-2`}>
+                    <p className={`${typeScale.body} ${text.muted} mb-3`}>
                       <strong>Why:</strong> {treeRecommendation.why}
                     </p>
                     {treeRecommendation.bestFor && (
-                      <div className="mb-2">
-                        <p className={`${typeScale.meta} font-semibold ${text.muted} mb-1`}>Best for:</p>
+                      <div className="mb-3">
+                        <p className={`${typeScale.secondary} font-semibold ${text.muted} mb-1.5`}>Best for:</p>
                         <div className="flex flex-wrap gap-1.5">
                           {treeRecommendation.bestFor.map((item, idx) => (
                             <span data-ui="chip" key={idx} className={`px-2 py-0.5 ${surface.tint} border ${border.hair} rounded-card ${typeScale.secondary} ${text.muted}`}>
@@ -282,7 +286,7 @@ export default function DecisionFlowchart({
                     )}
                     {treeRecommendation.components && (
                       <div>
-                        <p className={`${typeScale.meta} font-semibold ${text.muted} mb-1`}>Key components:</p>
+                        <p className={`${typeScale.secondary} font-semibold ${text.muted} mb-1.5`}>Key components:</p>
                         <div className="flex flex-wrap gap-1.5">
                           {treeRecommendation.components.map((comp, idx) => (
                             <span data-ui="chip" key={idx} className={`px-2 py-0.5 ${surface.tint} border ${border.hair} rounded-card ${typeScale.secondary} ${text.ink}`}>
@@ -299,15 +303,15 @@ export default function DecisionFlowchart({
 
                 {/* Advantages + Tradeoffs — separated by hairline rule */}
                 {treeRecommendation.tradeoffs && (
-                  <div className={`grid md:grid-cols-2 gap-3 pt-3 border-t ${border.hair}`}>
+                  <div className={`grid md:grid-cols-2 gap-4 pt-4 border-t ${border.hair}`}>
                     <div>
-                      <h5 className={`font-bold text-green-700 dark:text-green-400 mb-1.5 flex items-center gap-1 ${typeScale.secondary}`}>
-                        <CheckCircle size={14} />
+                      <h5 className={`font-bold text-green-700 dark:text-green-400 mb-2 flex items-center gap-1.5 ${typeScale.body}`}>
+                        <CheckCircle size={15} />
                         Advantages
                       </h5>
-                      <ul className={`space-y-1 ${typeScale.secondary}`}>
+                      <ul className={`space-y-1.5 ${typeScale.body}`}>
                         {treeRecommendation.tradeoffs.map((t, idx) => (
-                          <li key={idx} className={`${text.muted} flex items-start gap-1`}>
+                          <li key={idx} className={`${text.muted} flex items-start gap-1.5`}>
                             <span className="text-green-600 flex-shrink-0">✓</span>
                             <span>{t.pro}</span>
                           </li>
@@ -315,13 +319,13 @@ export default function DecisionFlowchart({
                       </ul>
                     </div>
                     <div>
-                      <h5 className={`font-bold text-amber-700 dark:text-amber-400 mb-1.5 flex items-center gap-1 ${typeScale.secondary}`}>
-                        <XCircle size={14} />
+                      <h5 className={`font-bold text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-1.5 ${typeScale.body}`}>
+                        <XCircle size={15} />
                         Tradeoffs
                       </h5>
-                      <ul className={`space-y-1 ${typeScale.secondary}`}>
+                      <ul className={`space-y-1.5 ${typeScale.body}`}>
                         {treeRecommendation.tradeoffs.map((t, idx) => (
-                          <li key={idx} className={`${text.muted} flex items-start gap-1`}>
+                          <li key={idx} className={`${text.muted} flex items-start gap-1.5`}>
                             <span className="text-amber-600 flex-shrink-0">!</span>
                             <span>{t.con}</span>
                           </li>
@@ -333,14 +337,14 @@ export default function DecisionFlowchart({
 
                 {/* Alternatives — separated by hairline rule */}
                 {treeRecommendation.alternatives && (
-                  <div className={`pt-3 border-t ${border.hair}`}>
-                    <p className={`${typeScale.meta} font-semibold ${text.muted} mb-1.5`}>
+                  <div className={`pt-4 border-t ${border.hair}`}>
+                    <p className={`${typeScale.secondary} font-semibold ${text.muted} mb-2`}>
                       Alternative options:
                     </p>
-                    <ul className={`space-y-1 ${typeScale.secondary} ${text.muted}`}>
+                    <ul className={`space-y-1.5 ${typeScale.body} ${text.muted}`}>
                       {treeRecommendation.alternatives.map((alt, idx) => (
                         <li key={idx} className="flex items-start gap-2">
-                          <ArrowRight size={12} className="text-accent mt-0.5 flex-shrink-0" />
+                          <ArrowRight size={13} className="text-accent mt-0.5 flex-shrink-0" />
                           <span>{alt}</span>
                         </li>
                       ))}
