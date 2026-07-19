@@ -7,14 +7,6 @@ export default function TrainingDeepDive() {
 
   return (
     <div className={density.stackGap}>
-      {/* Header — no border */}
-      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
-        <div className="flex items-center gap-3">
-          <h2 className={`${typeScale.componentName} text-ink`}>Model Training & Fine-Tuning</h2>
-          <p className={`${typeScale.secondary} text-muted`}>Build, train, and fine-tune AI models at enterprise scale</p>
-        </div>
-      </div>
-
       {/* Training vs Inference + Training vs Fine-Tuning side-by-side */}
       <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <h3 className={`${typeScale.componentName} text-ink mb-2 flex items-center gap-1.5`}>
@@ -91,11 +83,11 @@ export default function TrainingDeepDive() {
               <div className="flex items-start gap-2">
                 <CheckCircle className="text-green-600 mt-0.5 flex-shrink-0" size={13} />
                 <div className="flex-1">
-                  <h4 className={`${typeScale.secondary} font-bold text-ink mb-0.5`}>Choose {option.choose}</h4>
-                  <p className={`${typeScale.meta} text-muted mb-0.5`}>
+                  <h4 className={`${typeScale.componentName} text-ink mb-0.5`}>{option.choose}</h4>
+                  <p className={`${typeScale.caption} text-muted mb-0.5`}>
                     <strong className="text-ink">When:</strong> {option.when}
                   </p>
-                  <p className={`${typeScale.meta} text-muted`}>
+                  <p className={`${typeScale.caption} text-muted`}>
                     <strong className="text-ink">Best for:</strong> {option.bestFor}
                   </p>
                 </div>

@@ -57,23 +57,23 @@ export const trainingVsInference = [
 export const trainingDecisionMatrix = [
   {
     choose: 'Red Hat Enterprise Linux AI (RHEL AI)',
-    when: 'Single-server, out-of-the-box environment for inference serving of foundation models on bare metal or cloud',
-    bestFor: 'Edge deployments, getting started, inference on a single server'
+    when: 'Out-of-the-box, single-server inference for foundation models',
+    bestFor: 'Edge, getting started, single-server inference'
   },
   {
     choose: 'Red Hat OpenShift AI (RHOAI) Distributed Workloads',
-    when: 'Enterprise-scale training jobs across clusters of multiple GPUs/nodes',
-    bestFor: 'Large models (70B+ params), multi-node distributed training'
+    when: 'Enterprise training across multi-GPU, multi-node clusters',
+    bestFor: 'Large models (70B+), distributed training'
   },
   {
     choose: 'InstructLab (open source project)',
-    when: 'You want taxonomy-driven synthetic data generation to add skills or knowledge, and have confirmed current support status with your Red Hat team',
-    bestFor: 'Limited training data, synthetic data generation, subject-matter-expert-driven improvement'
+    when: 'Taxonomy-driven synthetic data to add skills or knowledge (confirm support with your Red Hat team)',
+    bestFor: 'Limited data; subject-matter-expert-driven improvement'
   },
   {
     choose: 'Custom Infrastructure',
-    when: 'Specialized, air-gapped, or highly specific hardware configurations',
-    bestFor: 'Unique requirements not met by standard SKUs'
+    when: 'Air-gapped or highly specific hardware configurations',
+    bestFor: 'Requirements not met by standard SKUs'
   }
 ];
 
