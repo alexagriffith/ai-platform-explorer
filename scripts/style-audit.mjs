@@ -2016,6 +2016,57 @@ function assertModalCoverage() {
 }
 assertModalCoverage();
 
+// HERO INNER-FILL HEIGHT: within the containment hero ([data-ui="table"] with the
+// containment-diagram aria-label), each [data-ui="card"] is an inner-fill cell.
+// Group cells by their top coordinate (±4px = same row). Within each row, all
+// cells must have the same height (±2px). Catches the pending-label height drift
+// where an inline "pending" text line made pending cells taller than verified ones.
+// Pending cells use CSS outline (not border) so the existing nested-box check
+// cannot detect them — this dedicated check closes that gap.
+function heroInnerFillHeight(tabId) {
+  const tab = document.querySelector(`[data-tab="${tabId}"]`);
+  if (!tab) return [];
+  const out = [];
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const visible = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || '1') > 0;
+  };
+  // Find the containment hero section: data-ui="table" that contains cells with data-ui="card"
+  // and is itself inside the products tab Compare sub-view.
+  const heroes = [...tab.querySelectorAll('[data-ui="table"]')].filter((el) => {
+    // Must contain at least 2 card cells (inner-fill cells of the hero grid)
+    return el.querySelectorAll('[data-ui="card"]').length >= 2 && visible(el);
+  });
+  if (!heroes.length) return [];
+  for (const hero of heroes) {
+    const cells = [...hero.querySelectorAll('[data-ui="card"]')].filter(visible);
+    if (cells.length < 2) continue;
+    // Group by row (same top ±4px)
+    const rows = [];
+    for (const cell of cells) {
+      const r = cell.getBoundingClientRect();
+      const row = rows.find((row) => Math.abs(row.top - r.top) <= 4);
+      if (row) { row.cells.push({ el: cell, rect: r }); }
+      else rows.push({ top: r.top, cells: [{ el: cell, rect: r }] });
+    }
+    for (const row of rows) {
+      if (row.cells.length < 2) continue;
+      const h0 = row.cells[0].rect.height;
+      for (const { el, rect } of row.cells) {
+        if (Math.abs(rect.height - h0) > 2) {
+          const label = (el.getAttribute('aria-label') || el.textContent || '').trim().slice(0, 40);
+          out.push(`hero-inner-fill-height: row at top=${r2(row.cells[0].rect.top)} has unequal cell heights: ${r2(rect.height)} vs ${r2(h0)} (cell: "${label}")`);
+          break; // one report per row
+        }
+      }
+    }
+  }
+  return out;
+}
+
 // ─── runChecksOnPage — shared check runner (resting or interaction state) ─────
 //
 // Runs the full check suite on `page` which is already at the desired state.
@@ -2123,6 +2174,11 @@ async function runChecksOnPage(page, tabId, stateLabel, exemptions, viewport, th
     // T-2b: Orphan-row
     if (!exemptions.includes('orphan-row')) {
       addProblems(await page.evaluate(orphanRowCheck, tabId));
+    }
+
+    // Hero inner-fill height equality (products tab only — containment diagram check)
+    if (tabId === 'products' && !exemptions.includes('hero-inner-fill-height')) {
+      addProblems(await page.evaluate(heroInnerFillHeight, tabId));
     }
   }
 
@@ -2366,6 +2422,11 @@ async function auditTab(browser, tab) {
     // T-2b: ORPHAN-ROW (light, 1440px)
     if (!exemptions.includes('orphan-row')) {
       for (const p of await page.evaluate(orphanRowCheck, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
+    }
+
+    // Hero inner-fill height equality (products tab only — containment diagram)
+    if (tabId === 'products' && !exemptions.includes('hero-inner-fill-height')) {
+      for (const p of await page.evaluate(heroInnerFillHeight, tabId)) problems.push(`${prefix('1440 light')} ${p}`);
     }
 
     await ctx.close();
