@@ -216,7 +216,7 @@ export default function DecisionFlowchart({
                 setSelectedDecision('');
                 setTreeRecommendation(null);
               }}
-              className={`text-sm text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
+              className={`${typeScale.body} text-link hover:underline ${interactive.transition} ${interactive.focusRing}`}
             >
               ← Change Decision Type
             </button>
