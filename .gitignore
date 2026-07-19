@@ -49,3 +49,7 @@ planning/
 # Local leak-check denylist (pre-commit hook)
 .leak-denylist
 .vercel
+
+# Python bytecode
+__pycache__/
+*.pyc
