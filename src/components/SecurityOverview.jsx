@@ -34,7 +34,7 @@ export default function SecurityOverview() {
                 <ul className="space-y-1">
                   {layer.methods.map((method, i) => (
                     <li key={i} className="flex items-start gap-1.5">
-                      <span className="text-accent mt-0.5 flex-shrink-0 text-xs">•</span>
+                      <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
                       <div className="flex-1">
                         <div className={`${typeScale.secondary} font-semibold ${text.ink}`}>{method.name}</div>
                         <div className={`${typeScale.meta} ${text.muted}`}>{method.description}</div>

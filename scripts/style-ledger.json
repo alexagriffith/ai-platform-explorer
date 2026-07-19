@@ -49,8 +49,8 @@
     }
   ],
   "legacyViolatingFilesMax": 0,
-  "rawTextSizeMax": 37,
-  "_rawTextSizeNote": "Count of raw text-size Tailwind utility matches (text-xs|sm|base|lg|xl|2xl|3xl, variant-prefixed included) in src/components/**/*.jsx as of ws/typescale-foundation. Can only decrease — any new raw size fails the gate.",
+  "rawTextSizeMax": 0,
+  "_rawTextSizeNote": "Count of raw text-size Tailwind utility matches (text-xs|sm|base|lg|xl|2xl|3xl, variant-prefixed included) in src/components/**/*.jsx. Final batch (ws/ts-migrate-final): all 37 remaining raw sizes migrated to typeScale role tokens. Zero raw sizes remain.",
   "heightBudgets": {
     "_note": "Per-tab scrollHeight/viewport budgets at 1440x900. Set just above post-fix measured values. Regressions fail immediately.",
     "_measured": "architecture:1.20 deployment-impact:0.17 decisions:0.78 products:2.2 (post-AR3-fit-first: decisions budget updated; fit-first layout makes guide buttons narrower than old stretched grid cells)",

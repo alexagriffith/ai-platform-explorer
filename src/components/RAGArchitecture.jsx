@@ -37,7 +37,7 @@ export default function RAGArchitecture() {
                   <ul className="space-y-0.5">
                     {stage.details.map((detail, i) => (
                       <li key={i} className="flex items-start gap-1">
-                        <span className="text-accent flex-shrink-0 text-xs">•</span>
+                        <span className={`text-accent flex-shrink-0 ${typeScale.caption}`}>•</span>
                         <span className={`${typeScale.meta} text-ink`}>{detail}</span>
                       </li>
                     ))}

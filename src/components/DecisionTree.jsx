@@ -179,7 +179,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
                       )}
                     </div>
                     <div className="flex-1">
-                      <h4 className={`text-lg font-semibold ${text.ink} mb-3 text-center`}>
+                      <h4 className={`${typeScale.decideName} ${text.ink} mb-3 text-center`}>
                         {step.question}
                       </h4>
 
@@ -206,7 +206,7 @@ export default function DecisionTree({ flow, onRecommendation }) {
                             >
                               <div className="flex items-center justify-center gap-1.5">
                                 {selected && <CheckCircle size={14} className="text-accent flex-shrink-0" />}
-                                <span className={`text-sm font-semibold ${text.ink}`}>
+                                <span className={`${typeScale.bodyStrong} font-semibold ${text.ink}`}>
                                   {option.label}
                                 </span>
                               </div>

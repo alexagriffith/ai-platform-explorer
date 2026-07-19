@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BookOpen, Search, X } from 'lucide-react';
-import { field, interactive, modal, text } from '../lib/styleTokens';
+import { field, interactive, modal, text, typeScale } from '../lib/styleTokens';
 
 /**
  * AcronymGlossary modal. Controlled by the caller:
@@ -151,7 +151,7 @@ export default function AcronymGlossary({ isOpen, onClose }) {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <BookOpen size={28} className="text-accent" />
-              <h2 className={`text-2xl font-bold ${text.ink}`}>Acronym Glossary</h2>
+              <h2 className={`${typeScale.pageTitle} ${text.ink}`}>Acronym Glossary</h2>
             </div>
             <button
               onClick={onClose}
@@ -184,16 +184,16 @@ export default function AcronymGlossary({ isOpen, onClose }) {
           <table className="w-full">
             <thead className="sticky top-0 bg-tint">
               <tr>
-                <th className={`px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider ${text.muted}`}>
+                <th className={`px-6 py-3 text-left ${typeScale.tableHeader} ${text.muted}`}>
                   Acronym
                 </th>
-                <th className={`px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider ${text.muted}`}>
+                <th className={`px-6 py-3 text-left ${typeScale.tableHeader} ${text.muted}`}>
                   Full Name
                 </th>
-                <th className={`px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider ${text.muted}`}>
+                <th className={`px-6 py-3 text-left ${typeScale.tableHeader} ${text.muted}`}>
                   What It Means
                 </th>
-                <th className={`px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider ${text.muted}`}>
+                <th className={`px-6 py-3 text-left ${typeScale.tableHeader} ${text.muted}`}>
                   When to Use
                 </th>
               </tr>
@@ -205,22 +205,22 @@ export default function AcronymGlossary({ isOpen, onClose }) {
                   className={`hover:bg-tint ${interactive.transition}`}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-bold text-link">
+                    <span className={`${typeScale.componentName} text-link`}>
                       {item.acronym}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`text-sm font-medium ${text.ink}`}>
+                    <span className={`${typeScale.bodyStrong} ${text.ink}`}>
                       {item.fullName}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`text-sm ${text.muted}`}>
+                    <span className={`${typeScale.body} ${text.muted}`}>
                       {item.explanation}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`text-sm ${text.muted}`}>
+                    <span className={`${typeScale.body} ${text.muted}`}>
                       {item.whenToUse}
                     </span>
                   </td>
@@ -237,7 +237,7 @@ export default function AcronymGlossary({ isOpen, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className={`border-t border-hair bg-tint p-4 text-center text-sm ${text.muted}`}>
+        <div className={`border-t border-hair bg-tint p-4 text-center ${typeScale.body} ${text.muted}`}>
           {filteredGlossary.length} {filteredGlossary.length === 1 ? 'term' : 'terms'} displayed
         </div>
       </div>

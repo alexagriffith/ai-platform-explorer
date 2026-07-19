@@ -1,5 +1,5 @@
 import { Cpu, Zap, GitBranch, Database, ArrowRight, CheckCircle, Info } from 'lucide-react';
-import { typeScale, density, hwBadge } from '../lib/styleTokens';
+import { typeScale, density, hwBadge, text } from '../lib/styleTokens';
 import { trainingWorkflow, trainingVsInference, trainingDecisionMatrix, hardwareComparison } from '../data/trainingDeepDive';
 
 export default function TrainingDeepDive() {
@@ -25,17 +25,17 @@ export default function TrainingDeepDive() {
           <table className="w-full">
             <thead className="bg-tint">
               <tr>
-                <th className="px-3 py-1.5 text-left font-semibold text-ink text-xs border-b border-hair">Aspect</th>
-                <th className="px-3 py-1.5 text-left font-semibold text-ink text-xs border-b border-hair">Training</th>
-                <th className="px-3 py-1.5 text-left font-semibold text-ink text-xs border-b border-hair">Inference</th>
+                <th className={`px-3 py-1.5 text-left ${typeScale.label} ${text.ink} font-semibold border-b border-hair`}>Aspect</th>
+                <th className={`px-3 py-1.5 text-left ${typeScale.label} ${text.ink} font-semibold border-b border-hair`}>Training</th>
+                <th className={`px-3 py-1.5 text-left ${typeScale.label} ${text.ink} font-semibold border-b border-hair`}>Inference</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hair">
               {trainingVsInference.map((row, index) => (
                 <tr key={index} className="hover:bg-tint transition-colors duration-150 ease-out motion-reduce:transition-none">
-                  <td className="px-3 py-1.5 font-medium text-ink text-xs">{row.aspect}</td>
-                  <td className="px-3 py-1.5 text-muted text-xs">{row.training}</td>
-                  <td className="px-3 py-1.5 text-muted text-xs">{row.inference}</td>
+                  <td className={`px-3 py-1.5 ${typeScale.tableCellStrong} ${text.ink}`}>{row.aspect}</td>
+                  <td className={`px-3 py-1.5 ${typeScale.tableCell} ${text.muted}`}>{row.training}</td>
+                  <td className={`px-3 py-1.5 ${typeScale.tableCell} ${text.muted}`}>{row.inference}</td>
                 </tr>
               ))}
             </tbody>
@@ -61,7 +61,7 @@ export default function TrainingDeepDive() {
                 <div className="space-y-0.5">
                   {stage.tools.map((tool, i) => (
                     <div key={i} className="flex items-start gap-1">
-                      <span className="text-accent flex-shrink-0 text-xs">•</span>
+                      <span className={`text-accent flex-shrink-0 ${typeScale.caption}`}>•</span>
                       <span className={`${typeScale.meta} text-ink`}>{tool}</span>
                     </div>
                   ))}
@@ -133,19 +133,19 @@ export default function TrainingDeepDive() {
           <table className="w-full">
             <thead className="bg-tint">
               <tr>
-                <th className="px-3 py-1.5 text-left font-semibold text-ink text-xs border-b border-hair">GPU</th>
-                <th className="px-3 py-1.5 text-left font-semibold text-ink text-xs border-b border-hair">Memory</th>
-                <th className="px-3 py-1.5 text-left font-semibold text-ink text-xs border-b border-hair">Best For</th>
-                <th className="px-3 py-1.5 text-left font-semibold text-ink text-xs border-b border-hair">Cost</th>
-                <th className="px-3 py-1.5 text-left font-semibold text-ink text-xs border-b border-hair">Performance</th>
+                <th className={`px-3 py-1.5 text-left ${typeScale.label} ${text.ink} font-semibold border-b border-hair`}>GPU</th>
+                <th className={`px-3 py-1.5 text-left ${typeScale.label} ${text.ink} font-semibold border-b border-hair`}>Memory</th>
+                <th className={`px-3 py-1.5 text-left ${typeScale.label} ${text.ink} font-semibold border-b border-hair`}>Best For</th>
+                <th className={`px-3 py-1.5 text-left ${typeScale.label} ${text.ink} font-semibold border-b border-hair`}>Cost</th>
+                <th className={`px-3 py-1.5 text-left ${typeScale.label} ${text.ink} font-semibold border-b border-hair`}>Performance</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hair">
               {hardwareComparison.map((hw, index) => (
                 <tr key={index} className="hover:bg-tint transition-colors duration-150 ease-out motion-reduce:transition-none">
-                  <td className="px-3 py-1.5 font-semibold text-ink text-xs">{hw.gpu}</td>
-                  <td className="px-3 py-1.5 text-muted text-xs">{hw.memory}</td>
-                  <td className="px-3 py-1.5 text-muted text-xs">{hw.bestFor}</td>
+                  <td className={`px-3 py-1.5 ${typeScale.tableCellStrong} ${text.ink}`}>{hw.gpu}</td>
+                  <td className={`px-3 py-1.5 ${typeScale.tableCell} ${text.muted}`}>{hw.memory}</td>
+                  <td className={`px-3 py-1.5 ${typeScale.tableCell} ${text.muted}`}>{hw.bestFor}</td>
                   <td className="px-3 py-1.5">
                     <span className={hwBadge.cost(hw.cost)}>{hw.cost}</span>
                   </td>
@@ -170,19 +170,19 @@ export default function TrainingDeepDive() {
             </h4>
             <ul className="space-y-1">
               <li className="flex items-start gap-1.5">
-                <span className="text-accent mt-0.5 flex-shrink-0 text-xs">•</span>
+                <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
                 <span className={`${typeScale.secondary} text-muted`}>Trains a model from scratch (rare for large language models — most organizations start from a foundation model)</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <span className="text-accent mt-0.5 flex-shrink-0 text-xs">•</span>
+                <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
                 <span className={`${typeScale.secondary} text-muted`}>Requires massive datasets (TBs of data)</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <span className="text-accent mt-0.5 flex-shrink-0 text-xs">•</span>
+                <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
                 <span className={`${typeScale.secondary} text-muted`}>Multi-node distributed workloads essential</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <span className="text-accent mt-0.5 flex-shrink-0 text-xs">•</span>
+                <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
                 <span className={`${typeScale.secondary} text-muted`}>Red Hat OpenShift AI distributed workloads (Ray) support large multi-node jobs</span>
               </li>
             </ul>
@@ -194,19 +194,19 @@ export default function TrainingDeepDive() {
             </h4>
             <ul className="space-y-1">
               <li className="flex items-start gap-1.5">
-                <span className="text-accent mt-0.5 flex-shrink-0 text-xs">•</span>
+                <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
                 <span className={`${typeScale.secondary} text-muted`}>Adapts existing model to specific data/tasks</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <span className="text-accent mt-0.5 flex-shrink-0 text-xs">•</span>
+                <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
                 <span className={`${typeScale.secondary} text-muted`}>Works with limited data via synthetic generation</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <span className="text-accent mt-0.5 flex-shrink-0 text-xs">•</span>
+                <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
                 <span className={`${typeScale.secondary} text-muted`}>Small-to-medium scale compared to pre-training</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <span className="text-accent mt-0.5 flex-shrink-0 text-xs">•</span>
+                <span className={`text-accent mt-0.5 flex-shrink-0 ${typeScale.caption}`}>•</span>
                 <span className={`${typeScale.secondary} text-muted`}>Use OpenShift AI fine-tuning workflows (supervised fine-tuning, LoRA adapters); InstructLab is an option for taxonomy-driven synthetic data — confirm current support status with your Red Hat account team</span>
               </li>
             </ul>
