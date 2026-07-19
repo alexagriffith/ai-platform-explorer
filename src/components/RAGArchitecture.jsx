@@ -12,7 +12,7 @@ export default function RAGArchitecture() {
       {/* RAG Pipeline Flow — no border on outer panel, no border on stage cards */}
       <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
         <h3 className={`${typeScale.componentName} text-ink mb-0.5`}>RAG Architecture Pipeline</h3>
-        <p className={`${typeScale.meta} text-muted mb-2`}>
+        <p className={`${typeScale.caption} text-muted mb-2`}>
           API Gateway → Retrieval → Model Serving → Response
         </p>
 
@@ -31,14 +31,14 @@ export default function RAGArchitecture() {
                 <div data-ui="card" className="rounded-card bg-tint px-2 py-1.5 relative z-20">
                   <div className="flex items-center gap-1.5 mb-1">
                     <Icon size={13} className="text-muted flex-shrink-0" />
-                    <h4 className={`${typeScale.secondary} font-bold text-ink`}>{stage.stage}</h4>
+                    <h4 className={`${typeScale.componentName} text-ink`}>{stage.stage}</h4>
                   </div>
-                  <p className={`${typeScale.meta} text-muted mb-1`}>{stage.description}</p>
+                  <p className={`${typeScale.caption} text-muted mb-1`}>{stage.description}</p>
                   <ul className="space-y-0.5">
                     {stage.details.map((detail, i) => (
                       <li key={i} className="flex items-start gap-1">
                         <span className={`text-accent flex-shrink-0 ${typeScale.caption}`}>•</span>
-                        <span className={`${typeScale.meta} text-ink`}>{detail}</span>
+                        <span className={`${typeScale.caption} text-ink`}>{detail}</span>
                       </li>
                     ))}
                   </ul>
@@ -55,7 +55,7 @@ export default function RAGArchitecture() {
           {/* Document Processing */}
           <div>
             <h3 className={`${typeScale.componentName} text-ink mb-0.5`}>Document Processing & Ingestion</h3>
-            <p className={`${typeScale.meta} text-muted mb-2`}>
+            <p className={`${typeScale.caption} text-muted mb-2`}>
               Common source formats a RAG ingestion pipeline needs to handle, and the typical processing technique for each
             </p>
             <div className="grid grid-cols-2 gap-x-3 gap-y-1">
@@ -65,8 +65,8 @@ export default function RAGArchitecture() {
                   <div key={index} className="flex items-start gap-1.5">
                     <Icon className="text-muted flex-shrink-0 mt-0.5" size={12} />
                     <div className="min-w-0">
-                      <div className={`${typeScale.secondary} font-semibold text-ink`}>{doc.format}</div>
-                      <div className={`${typeScale.meta} text-muted`}>{doc.technique}</div>
+                      <div className={`${typeScale.bodyStrong} text-ink`}>{doc.format}</div>
+                      <div className={`${typeScale.caption} text-muted`}>{doc.technique}</div>
                     </div>
                   </div>
                 );
@@ -80,19 +80,19 @@ export default function RAGArchitecture() {
               <Settings className="text-muted" size={13} />
               <h3 className={`${typeScale.componentName} text-ink`}>RAG Configuration Tuning</h3>
             </div>
-            <p className={`${typeScale.meta} text-muted mb-2`}>
+            <p className={`${typeScale.caption} text-muted mb-2`}>
               Parameters worth testing systematically to improve retrieval quality
             </p>
             <div className={`grid grid-cols-2 ${density.rowGap} mb-2`}>
               {optimizations.map((opt, index) => (
                 <div key={index} data-ui="card" className="rounded-card bg-tint px-2 py-1.5">
-                  <h4 className={`${typeScale.secondary} font-semibold text-ink mb-0.5`}>{opt.name}</h4>
-                  <p className={`${typeScale.meta} text-muted mb-0.5`}>{opt.description}</p>
-                  <div className={`${typeScale.meta} text-faint`}>Optimizes: {opt.optimizes}</div>
+                  <h4 className={`${typeScale.componentName} text-ink mb-0.5`}>{opt.name}</h4>
+                  <p className={`${typeScale.caption} text-muted mb-0.5`}>{opt.description}</p>
+                  <div className={`${typeScale.caption} text-faint`}>Optimizes: {opt.optimizes}</div>
                 </div>
               ))}
             </div>
-            <p className={`${typeScale.meta} text-ink`}>
+            <p className={`${typeScale.caption} text-ink`}>
               <strong>Goal:</strong> systematically test these parameters against a labeled question set, then deploy the best-scoring configuration
             </p>
           </div>
