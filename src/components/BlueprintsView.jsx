@@ -37,6 +37,7 @@ export default function BlueprintsView() {
           return (
             <button
               key={bp.id}
+              data-ui="control"
               type="button"
               role="tab"
               aria-selected={on}

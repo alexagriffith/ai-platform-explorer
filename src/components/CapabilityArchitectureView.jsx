@@ -11,7 +11,8 @@ import {
   RotateCcw,
   CheckCircle2,
   Image,
-  Check
+  Check,
+  Plus
 } from 'lucide-react';
 import { capabilities, capabilityLayers } from '../data/capabilities';
 import { solutionDetails } from '../data/solutionDetails';
@@ -129,9 +130,10 @@ function CapabilityCard({
         data-capability={capability.id}
         data-ui-exempt={uiExempt || undefined}
         onClick={() => onConfigure(capability)}
+        aria-label={`Configure ${capability.name}`}
         className={`${card.unselected} group px-2 py-2 w-full h-full`}
       >
-        <div className="flex flex-col items-center text-center gap-0.5 min-h-0">
+        <div className="flex flex-col items-center text-center gap-1 min-h-0">
           <h4 className={`${typeScale.componentName} ${text.ink}`}>
             {capability.name}
             {capability.required && (
@@ -140,6 +142,11 @@ function CapabilityCard({
               </span>
             )}
           </h4>
+          <Plus
+            size={14}
+            className={`${text.faint} group-hover:text-link ${interactive.transition}`}
+            aria-hidden
+          />
         </div>
       </button>
     );
