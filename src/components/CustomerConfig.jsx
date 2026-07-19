@@ -98,7 +98,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
     <div className="space-y-4">
       {/* Header */}
       <div data-ui="card" className={`bg-surface rounded-card border ${border.hair} ${density.panelPad}`}>
-        <h2 className={`font-bold text-lg ${text.ink} mb-1`}>
+        <h2 className={`${typeScale.sectionTitle} ${text.ink} mb-1`}>
           Configure Customer Environment
         </h2>
         <p className={`${typeScale.secondary} ${text.muted}`}>
@@ -489,10 +489,10 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
           >
             <div className="flex items-start justify-between gap-3 p-4 border-b border-hair">
               <div>
-                <h3 id="suggestion-modal-title" className={`text-lg font-bold ${text.ink}`}>
+                <h3 id="suggestion-modal-title" className={`${typeScale.sectionTitle} ${text.ink}`}>
                   Suggestion preview
                 </h3>
-                <p className={`text-sm ${text.muted} mt-1`}>
+                <p className={`${typeScale.body} ${text.muted} mt-1`}>
                   Draft only — for facilitator notes. Heuristics are intentionally simple; treat this as a conversation starter. Does not update Build Your Stack or the Products tab.
                 </p>
               </div>
@@ -509,8 +509,8 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
             <div className="p-4 space-y-4">
 
               <div>
-                <p className={`text-sm font-semibold ${text.ink} mb-2`}>Suggested products to discuss</p>
-                <ul className={`space-y-1 text-sm ${text.muted}`}>
+                <p className={`${typeScale.bodyStrong} font-semibold ${text.ink} mb-2`}>Suggested products to discuss</p>
+                <ul className={`space-y-1 ${typeScale.body} ${text.muted}`}>
                   {suggestedProductIds.map((id) => (
                     <li key={id}>• {productLabel(id)}</li>
                   ))}
@@ -518,8 +518,8 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
               </div>
 
               <div>
-                <p className={`text-sm font-semibold ${text.ink} mb-2`}>Context summary</p>
-                <ul className={`space-y-1 text-sm ${text.muted}`}>
+                <p className={`${typeScale.bodyStrong} font-semibold ${text.ink} mb-2`}>Context summary</p>
+                <ul className={`space-y-1 ${typeScale.body} ${text.muted}`}>
                   {customerEnv.hasOpenShift && <li>✓ OpenShift in environment</li>}
                   {!customerEnv.hasOpenShift && <li>→ OpenShift called out as a typical base to validate</li>}
                   {customerEnv.hasApiGateway && <li>✓ Existing API gateway noted</li>}
@@ -540,7 +540,7 @@ export default function CustomerConfig({ customerEnv, setCustomerEnv }) {
                   <Copy size={16} />
                   Copy full text
                 </button>
-                {copyDone && <span className="text-sm text-green-600 self-center">Copied.</span>}
+                {copyDone && <span className={`${typeScale.body} text-green-600 self-center`}>Copied.</span>}
               </div>
             </div>
           </div>

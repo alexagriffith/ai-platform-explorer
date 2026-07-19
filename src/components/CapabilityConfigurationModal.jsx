@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { X, Check, Microscope } from 'lucide-react';
 import { isCapabilityOptionDisabled, MCP_CAPABILITY_ID, LLAMA_STACK_CAPABILITY_ID } from '../lib/platformAiConstraints';
-import { badge, interactive, modal, productStatus, redHatFirst, text } from '../lib/styleTokens';
+import { badge, interactive, modal, productStatus, redHatFirst, text, typeScale } from '../lib/styleTokens';
 import { solutionDetails } from '../data/solutionDetails';
 
 /**
@@ -55,10 +55,10 @@ export default function CapabilityConfigurationModal({
         <div className={modal.header}>
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <h3 className={`text-2xl font-bold ${text.ink}`}>Configure: {capability.name}</h3>
-              <p className={`mt-1 text-sm ${text.muted}`}>{capability.description}</p>
+              <h3 className={`${typeScale.pageTitle} ${text.ink}`}>Configure: {capability.name}</h3>
+              <p className={`mt-1 ${typeScale.body} ${text.muted}`}>{capability.description}</p>
               {pairingHint && (
-                <p className={`mt-2 text-xs ${text.faint}`}>{pairingHint}</p>
+                <p className={`mt-2 ${typeScale.caption} ${text.faint}`}>{pairingHint}</p>
               )}
             </div>
             <button
@@ -68,7 +68,7 @@ export default function CapabilityConfigurationModal({
               onClick={() => {
                 onRemoveFromStack(capability.id);
               }}
-              className={`flex items-center gap-1 text-xs font-medium text-faint hover:text-ink rounded-card px-2 py-1 ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
+              className={`flex items-center gap-1 ${typeScale.label} text-faint hover:text-ink rounded-card px-2 py-1 ${interactive.hoverTint} ${interactive.transition} ${interactive.focusRing}`}
             >
               <X size={14} aria-hidden="true" />
               Remove
@@ -105,12 +105,12 @@ export default function CapabilityConfigurationModal({
                         <div className="mb-1 flex items-center gap-2 flex-wrap">
                           <h4 className={`font-bold ${text.ink}`}>{option.name}</h4>
                           {disabled && (
-                            <span className="rounded-card px-2 py-0.5 text-xs bg-page text-muted">
+                            <span className={`rounded-card px-2 py-0.5 ${typeScale.caption} bg-page text-muted`}>
                               N/A for pairing
                             </span>
                           )}
                           {option.isCustomer && (
-                            <span className="rounded-card px-2 py-0.5 text-xs bg-tint text-ink">
+                            <span className={`rounded-card px-2 py-0.5 ${typeScale.caption} bg-tint text-ink`}>
                               Customer
                             </span>
                           )}
@@ -120,12 +120,12 @@ export default function CapabilityConfigurationModal({
                             </span>
                           )}
                           {option.status && (
-                            <span data-ui="chip" className={`rounded-card px-2 py-0.5 text-xs bg-page border border-hair ${productStatus[option.status] ?? 'text-muted'}`}>
+                            <span data-ui="chip" className={`rounded-card px-2 py-0.5 ${typeScale.caption} bg-page border border-hair ${productStatus[option.status] ?? 'text-muted'}`}>
                               {option.status}
                             </span>
                           )}
                         </div>
-                        <p className={`text-sm ${text.muted}`}>{option.description}</p>
+                        <p className={`${typeScale.body} ${text.muted}`}>{option.description}</p>
                       </div>
                     </div>
                   </button>
@@ -137,7 +137,7 @@ export default function CapabilityConfigurationModal({
                           e.stopPropagation();
                           onDeepDive(option.id);
                         }}
-                        className={`inline-flex items-center gap-1.5 text-sm font-medium text-link hover:underline ${interactive.focusRing} ${interactive.transition} rounded-card`}
+                        className={`inline-flex items-center gap-1.5 ${typeScale.bodyStrong} text-link hover:underline ${interactive.focusRing} ${interactive.transition} rounded-card`}
                       >
                         <Microscope size={14} aria-hidden="true" />
                         Technical Details
