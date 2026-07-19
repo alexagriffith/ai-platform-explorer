@@ -123,6 +123,12 @@ information allows — best first:
 ## Anti-box law (unchanged, now app-wide)
 
 - One surface per section; zero nested bordered boxes.
+- **No one-sided side-panel highlight (added 2026-07-19, Alexa).** A box is never
+  highlighted with a one-sided (left/right) accent border — no `border-l-*`/`border-r-*`
+  with a width (`-2/-4/-8`) or a color/token. Highlight a box with a thin FULL outline
+  around all four sides, or with nothing. (Tab underlines `border-b-2` and drawn
+  connector/line elements `border-t-2` are lines, not box highlights, and are allowed.)
+  Enforced hard, app-wide, by `gate.py` section `one-sided side-accent`.
 - **One canvas per view:** every tab renders on a single uninterrupted background plane.
   A tab's root element is `bg-page`; its content panels sit on `bg-surface`. There is no
   second page-level background plane inside a tab — only surface-on-page layering.

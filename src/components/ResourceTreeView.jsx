@@ -347,7 +347,7 @@ function ResourceDetailPanel({ resourceKind, onClose }) {
               </h3>
               <div className="space-y-3">
                 {resource.keyFields.map((field, idx) => (
-                  <div key={idx} className="border-l-2 border-accent pl-4">
+                  <div key={idx}>
                     <code className={`${typeScale.monoBody} text-link`}>
                       {field.name}
                     </code>

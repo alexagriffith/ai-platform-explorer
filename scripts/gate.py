@@ -354,6 +354,43 @@ def section_design_static():
         )
 
 
+# ── (d1b) one-sided side-accent — HARD app-wide ban ───────────────────────────
+# Alexa's law: NEVER highlight a box with a one-sided (left/right) accent border —
+# the "left-side panel highlight". Use a thin FULL outline around the whole box, or
+# none. This is a hard ban (not a ratchet): ANY match anywhere in src/ fails the gate.
+# Matches border-l-/border-r- with a width (2|4|8) or a color/token name, including
+# variant prefixes (dark:border-l-amber-600). Does NOT match:
+#   - border-l-0 / border-r-0 (resets)
+#   - border-t-*/border-b-* (tab underlines, flow-connector lines — legitimate)
+#   - bare border-l / border-r (1px neutral divider)
+_ONE_SIDED_ACCENT_RX = re.compile(
+    r"(?:[\w-]+:)*border-[lr]-(?:2|4|8|"
+    r"(?:red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|"
+    r"violet|purple|fuchsia|pink|rose|slate|zinc|stone|gray|neutral|accent|edge|hair)\b)"
+)
+
+
+def section_one_sided_accent():
+    hits = []
+    for path in _scan_src_files():
+        rel = os.path.relpath(path, REPO)
+        try:
+            with open(path, "r", encoding="utf-8", errors="ignore") as fh:
+                lines = fh.readlines()
+        except OSError:
+            continue
+        for i, line in enumerate(lines, 1):
+            m = _ONE_SIDED_ACCENT_RX.search(line)
+            if m:
+                hits.append("%s:%d %s" % (rel, i, m.group(0)))
+    if hits:
+        fail(
+            "one-sided side-accent (banned)",
+            "One-sided left/right accent borders are banned — use a thin FULL "
+            "outline around the whole box, or none:\n" + "\n".join(hits),
+        )
+
+
 # ── (d2) raw-text-size ratchet ────────────────────────────────────────────────
 # Counts raw text-size Tailwind utility class matches in src/components/**/*.jsx
 # (text-xs|sm|base|lg|xl|2xl|3xl, including variant-prefixed forms such as
@@ -609,6 +646,7 @@ def main():
     section_leaks()
     section_bare_acronym()
     section_design_static()
+    section_one_sided_accent()
     section_raw_text_size()
     section_duplicate_logic()
     section_doc_href_status()

@@ -693,7 +693,7 @@ export default function InteractiveBuilder({ selectedCapabilities = {}, setSelec
                           : isCompleted
                           ? 'border-edge bg-surface'
                           : 'border-edge bg-page'
-                      } border-l-4 border-l-accent`}
+                      }`}
                     >
                       <div className="flex items-center gap-2 mb-1">
                         {isCompleted ? (

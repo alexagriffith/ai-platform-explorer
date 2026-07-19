@@ -272,7 +272,7 @@ export default function QuickComparisonTable({ comparison }) {
       </div>
 
       {/* Bottom Line — accent border for the primary decision callout */}
-      <div className="bg-tint border-l-4 border-accent rounded-card px-4 py-3">
+      <div className="bg-tint border border-accent rounded-card px-4 py-3">
         <h4 className={`${typeScale.subPanelTitle} text-ink mb-2`}>
           The Bottom Line: When to Choose Which
         </h4>

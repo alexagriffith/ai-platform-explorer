@@ -338,19 +338,21 @@ export const typeScale = {
 
 /**
  * Categorical mark tokens (Accent law + Density law).
- * Applied as outlines, left hairlines, or dots on neutral surfaces — NEVER surface fills.
+ * Applied as a thin FULL outline around the whole box, or as dots on neutral surfaces —
+ * NEVER a one-sided (left/right) side-panel highlight, and never a surface fill.
+ * (One-sided side accents are banned app-wide; see gate.py "one-sided side-accent".)
  * Meanings: redHat = Red Hat provenance, openSource = community/open-source,
  *           partner = hardware / partner / third-party, customer = your organization.
  */
 export const categoricalMark = {
-  /** Red Hat — red left hairline accent only (1-sided, not a structural box). */
-  redHat: 'border-l-2 border-l-red-600',
-  /** Open Source — blue left hairline accent only (1-sided, not a structural box). */
-  openSource: 'border-l-2 border-l-blue-500',
-  /** Partner / Hardware / Third-party — teal left hairline accent only (1-sided, not a structural box). */
-  partner: 'border-l-2 border-l-teal-500',
-  /** Customer / Your organization — neutral dashed left hairline only (1-sided, not a structural box). */
-  customer: 'border-l-2 border-l-edge border-dashed',
+  /** Red Hat — thin red outline around the whole box. */
+  redHat: 'border border-red-600',
+  /** Open Source — thin blue outline around the whole box. */
+  openSource: 'border border-blue-500',
+  /** Partner / Hardware / Third-party — thin teal outline around the whole box. */
+  partner: 'border border-teal-500',
+  /** Customer / Your organization — thin neutral dashed outline around the whole box. */
+  customer: 'border border-dashed border-edge',
 };
 
 /**

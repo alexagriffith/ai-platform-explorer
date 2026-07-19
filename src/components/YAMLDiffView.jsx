@@ -115,17 +115,17 @@ function YAMLResource({ resource, state }) {
     }
   };
 
-  // Status-semantic left-accent: amber = before/warning, green = after/success, neutral = option
+  // Status-semantic full outline: amber = before/warning, green = after/success, neutral = option
   const stateColorMap = {
-    'before': 'border-l-amber-400 dark:border-l-amber-600',
-    'after': 'border-l-green-500 dark:border-l-green-600',
-    'option-a': 'border-l-edge',
-    'option-b': 'border-l-accent'
+    'before': 'border-amber-400 dark:border-amber-600',
+    'after': 'border-green-500 dark:border-green-600',
+    'option-a': 'border-edge',
+    'option-b': 'border-accent'
   };
   const stateColor = stateColorMap[state] || stateColorMap['before'];
 
   return (
-    <div data-ui="card" data-ui-exempt="yaml-diff-card" className={`border border-edge border-l-4 ${stateColor} rounded-card overflow-hidden bg-surface`}>
+    <div data-ui="card" data-ui-exempt="yaml-diff-card" className={`border ${stateColor} rounded-card overflow-hidden bg-surface`}>
       {/* Header - clickable to expand/collapse */}
       <div
         data-ui="section-header"
