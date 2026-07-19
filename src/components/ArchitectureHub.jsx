@@ -3,8 +3,7 @@ import { Layers, HelpCircle } from 'lucide-react';
 import CapabilityArchitectureView from './CapabilityArchitectureView';
 import InteractiveBuilder from './InteractiveBuilder';
 import CustomerConfig from './CustomerConfig';
-import RAGArchitecture from './RAGArchitecture';
-import TrainingDeepDive from './TrainingDeepDive';
+import BlueprintsView from './BlueprintsView';
 import { interactive, text, typeScale } from '../lib/styleTokens';
 
 export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities, initialMode = 'build', onModeChange }) {
@@ -51,12 +50,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
       id: 'blueprints',
       name: 'Blueprints',
       description: 'Pre-composed reference architectures — RAG and training patterns (read-only; no stack wiring)',
-      component: (
-        <div className="space-y-6">
-          <RAGArchitecture />
-          <TrainingDeepDive />
-        </div>
-      )
+      component: <BlueprintsView />
     }
   ];
 

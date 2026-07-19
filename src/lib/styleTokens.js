@@ -338,21 +338,23 @@ export const typeScale = {
 
 /**
  * Categorical mark tokens (Accent law + Density law).
- * Applied as a thin FULL outline around the whole box, or as dots on neutral surfaces —
+ * Applied as a thin FULL ring around the whole box, or as dots on neutral surfaces —
  * NEVER a one-sided (left/right) side-panel highlight, and never a surface fill.
+ * A ring (box-shadow) is used, not a border, so a marked element nested inside a
+ * bordered container does not count as a nested bordered box (anti-box law).
  * (One-sided side accents are banned app-wide; see gate.py "one-sided side-accent".)
  * Meanings: redHat = Red Hat provenance, openSource = community/open-source,
  *           partner = hardware / partner / third-party, customer = your organization.
  */
 export const categoricalMark = {
-  /** Red Hat — thin red outline around the whole box. */
-  redHat: 'border border-red-600',
-  /** Open Source — thin blue outline around the whole box. */
-  openSource: 'border border-blue-500',
-  /** Partner / Hardware / Third-party — thin teal outline around the whole box. */
-  partner: 'border border-teal-500',
-  /** Customer / Your organization — thin neutral dashed outline around the whole box. */
-  customer: 'border border-dashed border-edge',
+  /** Red Hat — thin red ring around the whole box. */
+  redHat: 'ring-1 ring-inset ring-red-600',
+  /** Open Source — thin blue ring around the whole box. */
+  openSource: 'ring-1 ring-inset ring-blue-500',
+  /** Partner / Hardware / Third-party — thin teal ring around the whole box. */
+  partner: 'ring-1 ring-inset ring-teal-500',
+  /** Customer / Your organization — thin neutral ring around the whole box. */
+  customer: 'ring-1 ring-inset ring-edge',
 };
 
 /**
