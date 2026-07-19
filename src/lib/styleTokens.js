@@ -178,10 +178,19 @@ export const density = {
  *   secondary          → caption
  *   recommendationHeading → primaryHeading
  */
+// Shared literals for roles that intentionally share one type treatment. Declaring the string ONCE
+// here (rather than repeating it per role) is the "decide once" guarantee: change the tier in one
+// place and every role on it moves together. Literals stay complete strings (Tailwind JIT-safe).
+// Any accidental duplicate NOT routed through one of these is caught by styleTokens.test.js.
+const _title2xlBold = 'text-2xl font-bold leading-tight'; // pageTitle · monoTitle
+const _titleXlBold = 'text-xl font-bold leading-tight';   // primaryHeading · recommendationHeading
+const _smBoldTight = 'text-sm font-bold leading-tight';   // componentName · subPanelTitle
+const _xsSnug = 'text-xs leading-snug';                    // caption · tableCell · secondary
+
 export const typeScale = {
   // ── Page / section headings ─────────────────────────────────────────────────
   /** Tab or page-level H1 — largest structural heading. */
-  pageTitle: 'text-2xl font-bold leading-tight',
+  pageTitle: _title2xlBold,
   /** Major section heading within a tab — anchors a content region. */
   sectionTitle: 'text-xl font-semibold leading-tight',
   /** Card or panel heading — names a discrete content unit. */
@@ -192,11 +201,11 @@ export const typeScale = {
    * Decision-guide question/recommendation — primary outcome heading.
    * One step above componentName; used for the recommendation card product-name heading.
    */
-  primaryHeading: 'text-xl font-bold leading-tight',
+  primaryHeading: _titleXlBold,
 
   // ── Component / product identity ────────────────────────────────────────────
   /** Component / product name — the point of every unit box. */
-  componentName: 'text-sm font-bold leading-tight',
+  componentName: _smBoldTight,
 
   // ── Body ────────────────────────────────────────────────────────────────────
   /** Primary readable body text — used on recommendation bodies and detail paragraphs. */
@@ -210,7 +219,7 @@ export const typeScale = {
   /** Group / section label — visible, not shouting; uppercase tracking. */
   groupLabel: 'text-xs font-semibold uppercase tracking-wide',
   /** Supporting description / caption under a card or chip name. */
-  caption: 'text-xs leading-snug',
+  caption: _xsSnug,
   /** Faint tertiary metadata — timestamps, counts, footnotes. */
   meta: 'text-[11px] leading-snug',
 
@@ -224,7 +233,7 @@ export const typeScale = {
    * Sub-panel heading — sm size, bold.
    * Used for migration notes, docs-link section headers within a card.
    */
-  subPanelTitle: 'text-sm font-bold leading-tight',
+  subPanelTitle: _smBoldTight,
   /**
    * Sub-panel heading — sm size, semibold.
    * Used for YAML column headers, resource tree column headers.
@@ -253,7 +262,7 @@ export const typeScale = {
   /**
    * Monospace display heading — 2xl, bold. Used for resource-kind panel H1.
    */
-  monoTitle: 'text-2xl font-bold leading-tight',
+  monoTitle: _title2xlBold,
   /**
    * Monospace body line — sm, mono. Used for resource kind clickable labels, YAML kind labels.
    */
@@ -275,7 +284,7 @@ export const typeScale = {
   /**
    * Table cell content — xs, normal. Used for data cells in comparison tables.
    */
-  tableCell: 'text-xs leading-snug',
+  tableCell: _xsSnug,
   /**
    * Table cell content, emphasized — xs, medium. Used for after-state cells in delta table.
    */
@@ -322,9 +331,9 @@ export const typeScale = {
 
   // ── Legacy aliases (do NOT remove — existing callers depend on these) ────────
   /** @deprecated Use typeScale.caption — kept for back-compat. */
-  secondary: 'text-xs leading-snug',
+  secondary: _xsSnug,
   /** @deprecated Use typeScale.primaryHeading — kept for back-compat. */
-  recommendationHeading: 'text-xl font-bold leading-tight',
+  recommendationHeading: _titleXlBold,
 };
 
 /**
