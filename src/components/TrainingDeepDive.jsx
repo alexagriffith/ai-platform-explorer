@@ -43,30 +43,40 @@ export default function TrainingDeepDive() {
         </div>
       </div>
 
-      {/* Training Workflow — no border on outer, no border on step cards */}
-      <div data-ui="card" className="rounded-card bg-surface px-4 py-3">
-        <h3 className={`${typeScale.componentName} text-ink mb-2`}>Typical Training Workflow</h3>
-        <div className={`grid md:grid-cols-5 ${density.rowGap}`}>
+      {/* Training Workflow — numbered flow on one surface (matches the RAG pipeline) */}
+      <div data-ui="card" className="rounded-card bg-surface px-4 py-4">
+        <h3 className={`${typeScale.componentName} text-ink`}>Typical Training Workflow</h3>
+        <p className={`${typeScale.caption} text-muted`}>
+          From raw data to a registered, deployable model
+        </p>
+
+        <div className="mt-4 grid gap-x-6 gap-y-4 md:grid-cols-5">
           {trainingWorkflow.map((stage, index) => (
             <div key={index} className="relative">
               {index < trainingWorkflow.length - 1 && (
-                <div className="hidden md:block absolute top-6 -right-1.5 z-10">
-                  <ArrowRight className="text-muted" size={14} />
-                </div>
+                <ArrowRight
+                  size={16}
+                  className="text-faint hidden md:block absolute top-1 -right-4 z-10"
+                  aria-hidden
+                />
               )}
-              <div data-ui="card" className="rounded-card bg-tint px-2 py-1.5 relative z-20">
-                <div className={`${typeScale.meta} text-faint mb-0.5`}>STEP {index + 1}</div>
-                <h4 className={`${typeScale.secondary} font-bold text-ink mb-0.5`}>{stage.step}</h4>
-                <p className={`${typeScale.meta} text-muted mb-1`}>{stage.description}</p>
-                <div className="space-y-0.5">
-                  {stage.tools.map((tool, i) => (
-                    <div key={i} className="flex items-start gap-1">
-                      <span className={`text-accent flex-shrink-0 ${typeScale.caption}`}>•</span>
-                      <span className={`${typeScale.meta} text-ink`}>{tool}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="flex items-center gap-2 mb-1.5">
+                <span
+                  className={`flex items-center justify-center w-6 h-6 rounded-full bg-accent text-on-accent shrink-0 ${typeScale.caption} font-bold`}
+                >
+                  {index + 1}
+                </span>
+                <h4 className={`${typeScale.componentName} text-ink`}>{stage.step}</h4>
               </div>
+              <p className={`${typeScale.caption} text-muted mb-1.5`}>{stage.description}</p>
+              <ul className="space-y-1">
+                {stage.tools.map((tool, i) => (
+                  <li key={i} className="flex items-start gap-1.5">
+                    <span className={`text-muted flex-shrink-0 ${typeScale.caption}`}>•</span>
+                    <span className={`${typeScale.caption} text-ink`}>{tool}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
