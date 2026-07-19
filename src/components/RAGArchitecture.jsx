@@ -16,7 +16,7 @@ export default function RAGArchitecture() {
           How a query flows from request to a grounded answer
         </p>
 
-        <div className="mt-4 grid gap-x-6 gap-y-5 md:grid-cols-4">
+        <div className="mt-4 grid gap-x-6 gap-y-4 md:grid-cols-4">
           {pipeline.map((stage, index) => (
             <div key={index} className="relative">
               {index < pipeline.length - 1 && (
