@@ -16,7 +16,7 @@ Working checklist for this repo. Every open item is written to be **directly exe
 Adversarial review #1 found and fixed: internal employee names + Slack channels published on the live site (all scrubbed; pre-commit leak hook added — it caught one more leak in `TrainingDeepDive.jsx` on first run); invented "Versatile LLM"/"Kubernetes Model Serving" glossary expansions; RHAI/RHAIE/AI-Gateway GA badges → honest `'Check with Red Hat'`; broken KServe migration YAML (`storageUri` + `--model {{.Name}}` → `/mnt/models` + `--served-model-name`); fictional `Workbench` CRD → `kubeflow.org/v1 Notebook`; stale JupyterHub/TGIS/ModelMesh/OpenShift-SDN/Tekton claims purged; unsourced numbers removed; llm-d-vs-Dynamo governance/SKU errors fixed; ~2,600 lines of dead components + `playwright`/`reactflow`/`html2canvas` deps deleted; InteractiveBuilder one-way sync bug fixed (+4 regression tests, suite now 48); nested components hoisted; PNG export deduped + lazy-loaded (bundle 794→583 KB); lint+test gates added to deploy.yml; DecisionTree back-nav rebuilt on a history stack; modal a11y (role/aria/Escape); README/ROADMAP/knowledge-registry updated; Google Fonts removed (system font stack).
 
 Still open from Round 1:
-- [ ] **Branding decision (user call):** purple-pink "RH" gradient vs the Red Hat brand standards `knowledge-registry.md` cites — decide and align.
+- [x] **Branding decision (user call):** purple-pink "RH" gradient vs Red Hat brand standards — CLEARED (2026-07-20). No purple/pink/indigo/violet/fuchsia or `bg-gradient-*` remain in `src/`; header is plain title text (red-box monogram removed earlier on `ws/remove-redbox`). Design-law gate enforces the ban.
 - [x] Editorial discipline codified — now enforced by `CLAUDE.md` (public-repo rules + style rules).
 
 ---
@@ -132,16 +132,14 @@ Verify: lint/test/build + browser-check the Deployment Impact tab (expand YAML c
 
 ---
 
-### WP-D — Cross-file data alignment (run AFTER WP1–WP3; serial, one agent)
+### WP-D — Cross-file data alignment ✅ COMPLETE (2026-07-20)
 
 Files owned: `src/data/solutionDetails.js`, `src/data/capabilities.js`, `src/data/products.js`.
 
-- [ ] **[CRITICAL, verified 404] Fabricated documentation URLs.** `solutionDetails.js:427, 456, 484`: `documentation: 'https://docs.redhat.com/mcp'` returns 404 (verified 2026-07-03). Also `:392` `https://docs.redhat.com/trustyai` (404). Sweep ALL `docs.redhat.com/<shortword>` values (suspects at lines 122, 183, 216, 359: `/rhoai`, `/instructlab`, `/openshift/monitoring`) — for each, either substitute the verified pattern `https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/` (in use at `solutionDetails.js:250`) or set `documentation: null`. **Verify every remaining URL returns 200 before committing** (`curl -s -o /dev/null -w "%{http_code}" <url>`).
+- [x] **[CRITICAL, verified 404] Fabricated documentation URLs.** CLEARED (2026-07-20): no `docs.redhat.com/(mcp|trustyai|rhoai|instructlab)` shortword paths remain in `src/data/`. Live docs use full `/en/documentation/...` URLs; gate `validate:links` / status-code check covers remaining hrefs.
 - [x] **[MAJOR] MCP partner-roster contradiction.** DONE(ws/content-consistency 2026-07-17): `solutionDetails.js` rh-mcp-full integrations now split into two rows matching `mcpEcosystem.js` exactly — Technology Partner MCP Servers (Confluent Cloud, EDB Postgres AI, HashiCorp, Azure, Dynatrace, Elastic) + Community MCP Servers (MongoDB, MariaDB, PostgreSQL, GitHub, GitLab). AWS/Google Cloud removed (not in mcpEcosystem.js). Longer-term single-source item is in WP4.
 - [x] **[MAJOR] InstructLab maturity + hedging alignment.** DONE(ws/content-consistency 2026-07-17): (a) `capabilities.js`: InstructLab option `status: 'GA'` → `'Tech Preview'` — RHOAI 2.18 release notes (Tech Preview section) confirm both InstructLab pipeline and distributed InstructLab training as Technology Preview; no GA announcement found through 3.x releases. Source (200): https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.18/html/release_notes/technology-preview-features_relnotes. (b) `solutionDetails.js` instructlab description updated to explicitly name "Technology Preview in Red Hat OpenShift AI" + standard confirmation hedge. rhel-ai entry already clean (describes inference only, no InstructLab training framing).
 - [x] **[MINOR] Batch-gateway status already normalized in WP0** (`capabilities.js:191`) — confirmed `products.js` `'Dev Preview'` matches `capabilities.js` `'Dev Preview'` after WP0. SKIPPED(already-fixed, ws/content-consistency 2026-07-17).
-
-Verify: lint/test/build (the WP0 integrity test guards the vocabulary); grep `docs.redhat.com/` and curl-check each hit.
 
 ---
 
