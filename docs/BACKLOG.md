@@ -145,33 +145,29 @@ Verify: lint/test/build (the WP0 integrity test guards the vocabulary); grep `do
 
 ---
 
-### WP4 — Extract inline content to `src/data/` (root-cause fix; run after WP1–WP3 + WP-D)
+### WP4 — Extract inline content to `src/data/` ✅ COMPLETE (2026-07-20)
 
 Everything below moves content only — no wording changes (content is already corrected by earlier WPs). Keep exports named as listed; icons: keep icon components in data (precedent: `lib/flowVisualizationData.js` imports lucide) EXCEPT `guideMetadata` where string names + an `iconMap` in the component is cleaner. After each extraction add `?? []` guards on any field not present on every record.
 
-- [ ] `DecisionFlowchart.jsx`: move `guideMetadata` (24-35), `guideGroups` (37-63), `decisionFlows` (65-1301 — 1,237 lines) → `src/data/decisionGuides.js`. Cuts the component from 1,733 to ~455 lines.
-- [ ] `UseCaseView.jsx`: `useCases` (13-177) → `src/data/useCases.js`.
-- [ ] `AcronymGlossary.jsx`: `glossary` (8-117) → `src/data/glossary.js`.
-- [ ] `TrainingDeepDive.jsx`: `trainingWorkflow`, `trainingVsInference`, `decisionMatrix`→`trainingDecisionMatrix`, `hardwareComparison` (4-126) → `src/data/trainingDeepDive.js`.
-- [ ] `FineTuningDecisionMatrix.jsx`: `approaches` (4-89) → `fineTuningApproaches` in `src/data/fineTuningApproaches.js`.
-- [ ] `SecurityOverview.jsx`: `securityLayers` (4-77) → `src/data/securityLayers.js`.
-- [ ] `MCPEcosystemFull.jsx`: `mcpServers` (7-40), `components`→`mcpEcosystemComponents` (42-76) → `src/data/mcpEcosystem.js`. Then point `solutionDetails.js:407` at this single source (resolves the roster contradiction permanently).
-- [ ] `RAGArchitecture.jsx`: `pipeline`→`ragPipeline`, `documentFormats`→`ragDocumentFormats`, `autoRAGOptimizations`→`ragOptimizations` (4-67) → `src/data/ragArchitecture.js`.
-- [ ] Do NOT extract: `DeepDiveModal.jsx` `DEFAULT_REQUIREMENTS` (one string), `CustomerConfig.jsx` `getSuggestedProductIds` (logic-with-content; fine in place).
-
-Verify: lint/test/build; every tab browser-checked (this touches all five); `git diff --stat` should show near-pure moves.
+- [x] `DecisionFlowchart.jsx`: → `src/data/decisionGuides.js`.
+- [x] `UseCaseView.jsx`: `useCases` → moot (Use Cases tab absorbed by WS-IA-2; no `useCases.js` needed).
+- [x] `AcronymGlossary.jsx`: `glossary` → `src/data/glossary.js` (2026-07-20).
+- [x] `TrainingDeepDive.jsx`: → `src/data/trainingDeepDive.js`.
+- [x] `FineTuningDecisionMatrix.jsx`: → `src/data/fineTuningApproaches.js`.
+- [x] `SecurityOverview.jsx`: → `src/data/securityLayers.js`.
+- [x] `MCPEcosystemFull.jsx`: → `src/data/mcpEcosystem.js`.
+- [x] `RAGArchitecture.jsx`: → `src/data/ragArchitecture.js`.
+- [x] Do NOT extract: `DeepDiveModal.jsx` `DEFAULT_REQUIREMENTS` (one string), `CustomerConfig.jsx` `getSuggestedProductIds` (logic-with-content; fine in place).
 
 ---
 
-### WP5 — Shared color/status tokens
+### WP5 — Shared color/status tokens ✅ SUPERSEDED by `styleTokens.js`
 
-Files owned: new `src/lib/colorTokens.js` + the components listed.
+The intended `colorTokens.js` surface landed as `src/lib/styleTokens.js` (`productStatus`, `providerMark`, `status`, `supportMark`, etc.). Components import from there; do not create a parallel `colorTokens.js`.
 
-- [ ] Create `src/lib/colorTokens.js` exporting: `statusBadgeClass(status)` (canonical 4-value map: GA→green, Tech Preview→blue, Dev Preview→yellow, Check with Red Hat→gray; unknown→gray), `providerClasses(option, variant)` (Customer=blue, Red Hat=green/emerald, third-party=purple; variants: `banner`/`card`/`chip`), and `colorTokens(color)` (the generic named-color→Tailwind map). All values complete Tailwind class-string literals — never template-built (JIT rule, see CLAUDE.md).
-- [ ] Replace the duplicates: status maps at `ProductExplorer.jsx:21-23` (currently the only colored one), `InteractiveBuilder.jsx:214`, `CapabilityConfigurationModal.jsx:119-123`; provider ternaries at `CapabilityArchitectureView.jsx:121-124` and `:129-135` (note: currently uses different shades than its own banner — unify), `InteractiveBuilder.jsx:100-105`, `:204-208`, `CapabilityConfigurationModal.jsx:109-113`; local `colors` maps at `RAGArchitecture.jsx:70`, `MCPEcosystemFull.jsx:79`, `SecurityOverview.jsx:80`, `FineTuningDecisionMatrix.jsx:92`.
-- [ ] Add a data-integrity assertion (extend WP0's test): every status the components can receive maps to a non-undefined class via `statusBadgeClass`.
-
-Verify: lint/test/build; visual spot-check Products tab badges + Architecture tab provider colors, light + dark.
+- [x] Shared status/provider/color tokens live in `src/lib/styleTokens.js` (not `colorTokens.js`).
+- [x] Call sites use `productStatus` / `providerMark` / related maps (InteractiveBuilder, CapabilityConfigurationModal, ProductExplorer, etc.).
+- [x] Integrity covered by existing catalog + style gates; no separate `statusBadgeClass` module required.
 
 ---
 
