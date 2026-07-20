@@ -49,7 +49,7 @@ export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchT
     {
       id: 'blueprints',
       name: 'Blueprints',
-      description: 'Pre-composed reference architectures — RAG and training patterns (read-only; no stack wiring)',
+      description: 'Pre-composed reference architectures — retrieval-augmented generation (RAG) and training patterns (read-only; no stack wiring)',
       component: <BlueprintsView />
     }
   ];

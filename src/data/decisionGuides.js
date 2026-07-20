@@ -127,7 +127,7 @@ export const decisionFlows = {
         ],
         recommendation: {
           product: 'Red Hat AI Enterprise (RHAIE)',
-          why: 'RHAIE provides OpenShift + OpenShift AI together — confirm current packaging and bundled components with your Red Hat account team',
+          why: 'Red Hat AI Enterprise (RHAIE) provides OpenShift + OpenShift AI together — confirm current packaging and bundled components with your Red Hat account team',
           tradeoffs: [
             { pro: 'Simplified procurement', con: 'Less flexibility in component selection' },
             { pro: 'Pre-integrated stack', con: 'May include components you don\'t need' }
@@ -346,7 +346,7 @@ export const decisionFlows = {
       'cloud-kubernetes-both': {
         product: 'Native Cloud Kubernetes (Full Lifecycle)',
         icon: '🔄',
-        why: 'Complete ML platform with RHAI on EKS/AKS/GKE',
+        why: 'Complete ML platform with Red Hat AI (RHAI) on EKS/AKS/GKE',
         bestFor: ['Cloud-native teams', 'Cost optimization', 'Kubernetes expertise'],
         tradeoffs: [
           { pro: 'End-to-end platform', con: 'Higher ongoing costs' },

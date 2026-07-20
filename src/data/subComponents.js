@@ -164,7 +164,7 @@ export const subComponents = {
       {
         id: 'pipelines',
         name: 'Data Science Pipelines',
-        description: 'Kubeflow Pipelines for ML workflows',
+        description: 'Kubeflow Pipelines for machine learning (ML) workflows',
         role: 'Orchestration'
       },
       {
@@ -188,7 +188,7 @@ export const subComponents = {
         id: 'rhaie-bundle',
         name: 'OpenShift + OpenShift AI (bundled)',
         description:
-          'One integrated RHAIE offering—OpenShift and OpenShift AI are delivered and supported together here, not as two independent products you bolt on separately.',
+          'One integrated Red Hat AI Enterprise (RHAIE) offering—OpenShift and OpenShift AI are delivered and supported together here, not as two independent products you bolt on separately.',
         role: 'Integrated platform'
       },
       {

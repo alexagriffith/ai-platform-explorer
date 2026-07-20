@@ -9,7 +9,7 @@ export const fineTuningApproaches = [
       'Specialized industry jargon or terminology',
       'Complex domain knowledge not in training data',
       'Specific writing style or tone requirements',
-      'Parameter-efficient options (LoRA adapters) reduce cost and hardware needs significantly'
+      'Parameter-efficient options like low-rank adaptation (LoRA) adapters reduce cost and hardware needs significantly'
     ],
     pros: [
       'Model learns domain-specific patterns',
@@ -20,7 +20,7 @@ export const fineTuningApproaches = [
     cons: [
       'Requires training data and infrastructure',
       'Time-consuming (hours to days)',
-      'GPU compute costs (much lower with parameter-efficient methods like LoRA — low-rank adaptation)',
+      'GPU compute costs (much lower with parameter-efficient methods like LoRA)',
       'Model becomes static until retrained'
     ],
     effort: 'High',

@@ -11,7 +11,7 @@ export default function RAGArchitecture() {
     <div className={density.stackGap}>
       {/* RAG Pipeline — numbered flow on one surface (no nested boxes); red step-nodes are the accent */}
       <div data-ui="card" className="rounded-card bg-surface px-4 py-4">
-        <h3 className={`${typeScale.componentName} text-ink`}>RAG Architecture Pipeline</h3>
+        <h3 className={`${typeScale.componentName} text-ink`}>Retrieval-augmented generation (RAG) architecture pipeline</h3>
         <p className={`${typeScale.caption} text-muted`}>
           How a query flows from request to a grounded answer
         </p>

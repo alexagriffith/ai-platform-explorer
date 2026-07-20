@@ -20,13 +20,13 @@ export default function AcronymGlossary({ isOpen, onClose }) {
     {
       acronym: 'RHAI',
       fullName: 'Red Hat AI',
-      explanation: 'In this explorer, RHAI is the path for standard Kubernetes (non-OpenShift) estates — distinct from RHOAI, which assumes OpenShift.',
+      explanation: 'In this explorer, Red Hat AI (RHAI) is the path for standard Kubernetes (non-OpenShift) estates — distinct from Red Hat OpenShift AI (RHOAI), which assumes OpenShift.',
       whenToUse: 'When the agreed footprint is EKS, AKS, GKE, or upstream Kubernetes without OpenShift.'
     },
     {
       acronym: 'RHAIE',
       fullName: 'Red Hat AI Enterprise',
-      explanation: 'An integrated package of OpenShift and RHOAI.',
+      explanation: 'An integrated package of OpenShift and Red Hat OpenShift AI (RHOAI).',
       whenToUse: 'When buying a complete, pre-configured AI platform.'
     },
     {

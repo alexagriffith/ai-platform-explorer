@@ -40,11 +40,11 @@ const USE_CASE_INDEX = [
     action: 'architecture-blueprints',
   },
   {
-    title: 'Full ML Lifecycle',
+    title: 'Full machine learning (ML) lifecycle',
     action: 'products-catalog',
   },
   {
-    title: 'Experimentation & POCs',
+    title: 'Experimentation & proofs of concept (POCs)',
     action: 'products-catalog',
   },
   {
@@ -52,15 +52,15 @@ const USE_CASE_INDEX = [
     action: 'products-mcp',
   },
   {
-    title: 'RAG (Retrieval-Augmented Generation)',
+    title: 'Retrieval-augmented generation (RAG)',
     action: 'architecture-blueprints',
   },
   {
-    title: 'LLM Security & Vulnerability Testing',
+    title: 'Large language model (LLM) security & vulnerability testing',
     action: 'decisions-security',
   },
   {
-    title: 'Disaggregated LLM Serving (Prefill/Decode Split)',
+    title: 'Disaggregated large language model (LLM) serving (prefill/decode split)',
     action: 'products-catalog',
   },
   {

@@ -786,7 +786,7 @@ export const solutionDetails = {
       'LLM inference via vLLM with OpenAI-compatible API (/v1/completions)',
       'Model quantization, sparsity, and compression via Red Hat AI Model Optimization Toolkit (llm-compressor)',
       'Pre-optimized validated models',
-      'Model loading from Hugging Face models, ModelCar container images, or OCI artifact images',
+      'Model loading from Hugging Face models, ModelCar container images, or Open Container Initiative (OCI) artifact images',
       'No Kubernetes or OpenShift required — runs on bare metal or VMs',
       'RHEL security and compliance features',
       'NVIDIA GPU support (CUDA); AMD GPU support (ROCm) for inference only',
