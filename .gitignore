@@ -53,3 +53,6 @@ planning/
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Local env (Vercel OIDC token, etc.) — never commit
+.env*
