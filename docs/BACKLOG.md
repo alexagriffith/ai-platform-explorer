@@ -254,9 +254,9 @@ Branch: `ws/style-unification`. Two commits.
 
 - [x] **Nested `<button>` inside `<button data-ui="card">` in InteractiveBuilder option cards** (`src/components/InteractiveBuilder.jsx`, `CapabilitySelector` component, "Learn more" guide toggle). Fixed (ws/nested-button 2026-07-17): outer option card changed from `<button data-ui="card">` to `<div role="button" tabIndex={0} aria-pressed aria-disabled onKeyDown Enter/Space>` with the guide toggle `<button>` extracted as an absolutely-positioned sibling. `validateDOMNesting` warning eliminated from vitest output; all 71 tests green.
 
-- [ ] **`DecisionTree` "View recommendation" link uses `text-green-600`** (`src/components/DecisionTree.jsx`) — raw color class, violates the style law rule "status colors are status-only" (green = GA/complete status only). Fix: replace `text-green-600` with `text-link` (or `text-accent`) so it uses the semantic action-link token, not the completion-status color.
+- [x] **`DecisionTree` "View recommendation" link uses `text-green-600`** — already fixed: `View recommendation` uses `text-link` (`DecisionTree.jsx`). Remaining `text-green-600` on the completed-step `CheckCircle` is correct (green = complete status).
 
-- [ ] **`ComponentVersionsPanel` links missing `rel='noopener noreferrer'`** — deferred; file is owned by the compare lane. Do not edit outside that lane's scope.
+- [x] **`ComponentVersionsPanel` links missing `rel='noopener noreferrer'`** — panel absorbed into `SharedSpineLedger`; source links already use `rel="noopener"` / `rel="noopener noreferrer"`.
 
 ---
 
