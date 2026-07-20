@@ -121,7 +121,7 @@ export const modal = {
   overlay: 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4',
   /** Lighter scrim for side-panel drawers (not full-modal dimming). */
   overlayScrim: 'fixed inset-0 bg-black/20 dark:bg-black/40',
-  panel: 'w-full max-h-[90vh] overflow-y-auto rounded-panel border border-edge bg-surface',
+  panel: 'w-full max-h-[90vh] overflow-y-auto rounded-card border border-edge bg-surface',
   panelWide: 'max-w-4xl',
   panelMedium: 'max-w-2xl',
   /** Narrow: hugs text at ~65ch (option-picker, configure modals). */

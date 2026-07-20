@@ -262,11 +262,11 @@ export default function FlowVisualization({ selectedCapabilities, onClose }) {
         aria-modal="true"
         aria-label="Architecture flow"
         data-ui="overlay"
-        className="bg-surface rounded-panel border border-edge max-w-6xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-surface rounded-card border border-edge max-w-6xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 border-b border-hair bg-surface px-4 py-3 rounded-t-panel">
+        <div className="sticky top-0 z-10 border-b border-hair bg-surface px-4 py-3 rounded-t-card">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Workflow size={18} className="text-accent" />

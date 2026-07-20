@@ -129,6 +129,12 @@ information allows — best first:
   around all four sides, or with nothing. (Tab underlines `border-b-2` and drawn
   connector/line elements `border-t-2` are lines, not box highlights, and are allowed.)
   Enforced hard, app-wide, by `gate.py` section `one-sided side-accent`.
+  - **The one permitted exception (Alexa, 2026-07-19):** the short vertical accent tick
+    that sits immediately left of a *section heading* — Build Your Stack layer titles
+    (`CapabilityArchitectureView.jsx`, `w-0.5 h-5 bg-accent`) and the Interactive Builder
+    layer headings (`InteractiveBuilder.jsx`, `w-1 h-6`). That is a heading marker, not a
+    box highlight. It is the ONLY place a left bar is acceptable — do not add left bars
+    anywhere else, and do not remove these.
 - **One canvas per view:** every tab renders on a single uninterrupted background plane.
   A tab's root element is `bg-page`; its content panels sit on `bg-surface`. There is no
   second page-level background plane inside a tab — only surface-on-page layering.
