@@ -4,7 +4,7 @@
  * Patches merge into the flat blueprint map, then `reconcileContainerAiPlatform` runs (OpenShift/RHAI rules).
  */
 
-import { reconcileContainerAiPlatform } from '../lib/platformAiConstraints';
+import { reconcileContainerAiPlatform } from './platformAiConstraints';
 
 const p = (capabilityId, optionId) => ({ capabilityId, optionId });
 

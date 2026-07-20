@@ -1,4 +1,4 @@
-import { products, thirdPartyOptions } from './products';
+import { products, thirdPartyOptions } from '../data/products';
 
 /**
  * Capability-aligned or OSS references used in use cases / workshops (not always a billable SKU row).

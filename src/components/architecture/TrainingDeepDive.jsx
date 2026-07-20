@@ -1,6 +1,6 @@
 import { Cpu, Zap, GitBranch, Database, ArrowRight, CheckCircle, Info } from 'lucide-react';
-import { typeScale, density, hwBadge, text } from '../lib/styleTokens';
-import { trainingWorkflow, trainingVsInference, trainingDecisionMatrix, hardwareComparison } from '../data/trainingDeepDive';
+import { typeScale, density, hwBadge, text } from '../../lib/styleTokens';
+import { trainingWorkflow, trainingVsInference, trainingDecisionMatrix, hardwareComparison } from '../../data/trainingDeepDive';
 
 export default function TrainingDeepDive() {
   const decisionMatrix = trainingDecisionMatrix;

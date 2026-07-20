@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle, RotateCcw, ChevronLeft } from 'lucide-react';
-import { button, text, interactive, surface, border, density, typeScale } from '../lib/styleTokens';
+import { button, text, interactive, surface, border, density, typeScale } from '../../lib/styleTokens';
 
 export default function DecisionTree({ flow, onRecommendation }) {
   const [selectedPath, setSelectedPath] = useState({});

@@ -169,39 +169,29 @@ The intended `colorTokens.js` surface landed as `src/lib/styleTokens.js` (`produ
 
 ---
 
-### WP6 — Directory reorganization (LAST; one dedicated commit, `git mv` only, zero logic changes)
+### WP6 — Directory reorganization ✅ COMPLETE (2026-07-20)
 
-Decision (made — do not re-litigate): **light grouping, not a full feature-folder reorg.** `src/data/` stays cross-feature (capabilities.js serves 3 tabs); the import graph is already clean (zero cross-tab component imports).
-
-Target:
+Decision (made — do not re-litigate): **light grouping, not a full feature-folder reorg.** `src/data/` stays cross-feature; logic in `src/lib/`. Layout adapted to post-IA import graph (FineTuning/Security stay with Decision Guides; Blueprints/RAG/Training stay under Architecture; ProductsHub owns Compare/Catalog/MCP).
 
 ```
-src/
-  App.jsx  main.jsx  index.css
-  components/
-    architecture/       ArchitectureHub, CapabilityArchitectureView, InteractiveBuilder(+.test.jsx),
-                        CustomerConfig, CapabilityConfigurationModal, FlowVisualization, DeepDiveModal
-    decision-guides/    DecisionFlowchart, DecisionTree
-    use-cases/          UseCaseView, MCPEcosystemFull, FineTuningDecisionMatrix,
-                        RAGArchitecture, SecurityOverview, TrainingDeepDive
-    products/           ProductExplorer
-    deployment-impact/  DeploymentImpactView, DeploymentComparisonSelector, YAMLDiffView,
-                        CapabilityDeltaTable, ResourceTreeView
-    shared/             AcronymGlossary
-  data/                 content only (catalog + feature data files, incl. WP4 extractions)
-  lib/                  ALL logic: existing lib files + catalogResolve.js + decisionRecommendationApply.js(+.test.js)
+src/components/
+  architecture/       ArchitectureHub, CapabilityArchitectureView, InteractiveBuilder(+.test),
+                      CustomerConfig, CapabilityConfigurationModal, FlowVisualization, DeepDiveModal,
+                      BlueprintsView, RAGArchitecture, TrainingDeepDive
+  decision-guides/    DecisionFlowchart, DecisionTree, FineTuningDecisionMatrix, SecurityOverview
+  products/           ProductsHub, ProductExplorer, ProductComparisonView, ProductComparisonHero,
+                      SharedSpineLedger, MCPEcosystemFull
+  deployment-impact/  DeploymentImpactView, DeploymentComparisonSelector, YAMLDiffView,
+                      CapabilityDeltaTable, ResourceTreeView
+  shared/             AcronymGlossary
+src/lib/              includes catalogResolve.js + decisionRecommendationApply.js(+.test.js)
 ```
 
-Mechanical steps (import-change list verified against actual import statements at review time):
-
-- [ ] `git mv` the components into the folders above. Sibling `./X` imports within a folder are unchanged. Data/lib imports in moved components change `../data/…`→`../../data/…` and `../lib/…`→`../../lib/…` — affected lines: CapabilityArchitectureView 17-19, 22-26; InteractiveBuilder 3-10; CustomerConfig 3; CapabilityConfigurationModal 3; FlowVisualization 3-10; DeepDiveModal 3; DecisionFlowchart 20-22; UseCaseView 3; ProductExplorer 3; DeploymentImpactView 8; DeploymentComparisonSelector 2; ResourceTreeView 3. DecisionTree, YAMLDiffView, CapabilityDeltaTable, the five use-cases siblings, AcronymGlossary: no import changes.
-- [ ] `App.jsx` imports (lines 3-8) update to the new folder paths.
-- [ ] `git mv src/data/catalogResolve.js src/lib/` — inside it, `./products`→`../data/products`; importers: `UseCaseView.jsx` (covered), `src/lib/libPureFunctions.test.js:10` → `./catalogResolve`.
-- [ ] `git mv src/data/decisionRecommendationApply.js src/data/decisionRecommendationApply.test.js src/lib/` — inside: `../lib/platformAiConstraints`→`./platformAiConstraints`; test: `./capabilities`→`../data/capabilities`; importers: `DecisionFlowchart.jsx` (covered), `libPureFunctions.test.js:9` → `./decisionRecommendationApply`. (WP0's `catalogIntegrity.test.js` moves to `src/lib/` too if it imports moved modules.)
-- [ ] No config changes needed: vitest glob `src/**/*.test.{js,jsx}` still matches; no path aliases exist; eslint globs unaffected.
-- [ ] Update the layout map in `CLAUDE.md` and the project-structure tree in `README.md` to the new paths.
-
-Verify: `npm run check` green; every tab loads in the browser; `git log --follow` on one moved file shows history preserved.
+- [x] `git mv` components into folders; nested imports use `../../data/` and `../../lib/`.
+- [x] `App.jsx` imports updated to folder paths.
+- [x] `catalogResolve.js` + `decisionRecommendationApply.js(+.test.js)` → `src/lib/`.
+- [x] `style-ledger.json` paths updated; stale `UseCaseView.jsx` entry removed.
+- [x] `CLAUDE.md` layout map updated.
 
 ---
 

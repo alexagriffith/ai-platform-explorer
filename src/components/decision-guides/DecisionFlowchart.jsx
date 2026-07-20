@@ -10,12 +10,12 @@ import {
 import DecisionTree from './DecisionTree';
 import FineTuningDecisionMatrix from './FineTuningDecisionMatrix';
 import SecurityOverview from './SecurityOverview';
-import { mergeDecisionPatches, getPatchesForRecommendationKey } from '../data/decisionRecommendationApply';
-import { capabilities } from '../data/capabilities';
-import { products } from '../data/products';
-import { reconcileContainerAiPlatform } from '../lib/platformAiConstraints';
-import { button, text, interactive, modal, surface, border, density, typeScale, productStatus } from '../lib/styleTokens';
-import { guideMetadata, guideGroups, decisionFlows } from '../data/decisionGuides';
+import { mergeDecisionPatches, getPatchesForRecommendationKey } from '../../lib/decisionRecommendationApply';
+import { capabilities } from '../../data/capabilities';
+import { products } from '../../data/products';
+import { reconcileContainerAiPlatform } from '../../lib/platformAiConstraints';
+import { button, text, interactive, modal, surface, border, density, typeScale, productStatus } from '../../lib/styleTokens';
+import { guideMetadata, guideGroups, decisionFlows } from '../../data/decisionGuides';
 
 /** Look up status from products catalog by id. Returns null when no match. */
 const productStatusFromCatalog = (productId) => {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { X, ExternalLink, BookOpen, ListChecks, Layers, GitBranch } from 'lucide-react';
-import { solutionDetails } from '../data/solutionDetails';
-import { interactive, modal, text, typeScale } from '../lib/styleTokens';
+import { solutionDetails } from '../../data/solutionDetails';
+import { interactive, modal, text, typeScale } from '../../lib/styleTokens';
 
 const DEFAULT_REQUIREMENTS =
   'Confirm supported versions, cluster capacity, and network policy with official documentation and your platform team.';

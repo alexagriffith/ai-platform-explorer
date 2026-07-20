@@ -1,5 +1,5 @@
 import { TrendingUp, AlertTriangle, Minus } from 'lucide-react';
-import { typeScale } from '../lib/styleTokens';
+import { typeScale } from '../../lib/styleTokens';
 
 /**
  * CapabilityDeltaTable

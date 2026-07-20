@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ChevronDown, ExternalLink } from 'lucide-react';
-import { buildLedgerModel, LEDGER_PRODUCTS, sideTitle } from '../lib/ledgerModel';
-import { getComponentVersions } from '../data/componentVersions';
-import { interactive, supportMark, typeScale } from '../lib/styleTokens';
+import { buildLedgerModel, LEDGER_PRODUCTS, sideTitle } from '../../lib/ledgerModel';
+import { getComponentVersions } from '../../data/componentVersions';
+import { interactive, supportMark, typeScale } from '../../lib/styleTokens';
 
 /**
  * SharedSpineLedger — BEAT 3 ("PROVE") of the Product Comparison tab.

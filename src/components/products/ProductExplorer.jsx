@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Search, Filter } from 'lucide-react';
-import { products } from '../data/products';
-import { text, surface, border, interactive, field, productStatus, density, typeScale } from '../lib/styleTokens';
+import { products } from '../../data/products';
+import { text, surface, border, interactive, field, productStatus, density, typeScale } from '../../lib/styleTokens';
 
 function statusTextClass(s) {
   return productStatus[s] ?? 'text-faint';

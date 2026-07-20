@@ -4,8 +4,8 @@ import DeploymentComparisonSelector from './DeploymentComparisonSelector';
 import YAMLDiffView from './YAMLDiffView';
 import CapabilityDeltaTable from './CapabilityDeltaTable';
 import ResourceTreeView from './ResourceTreeView';
-import { getComparisonById } from '../data/deploymentComparisons';
-import { interactive, text, typeScale } from '../lib/styleTokens';
+import { getComparisonById } from '../../data/deploymentComparisons';
+import { interactive, text, typeScale } from '../../lib/styleTokens';
 
 /**
  * DeploymentImpactView

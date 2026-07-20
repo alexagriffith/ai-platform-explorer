@@ -1,6 +1,6 @@
 import { ArrowRight, Users, GitCompare } from 'lucide-react';
-import { getComparisonList } from '../data/deploymentComparisons';
-import { interactive, border, typeScale } from '../lib/styleTokens';
+import { getComparisonList } from '../../data/deploymentComparisons';
+import { interactive, border, typeScale } from '../../lib/styleTokens';
 
 /**
  * DeploymentComparisonSelector

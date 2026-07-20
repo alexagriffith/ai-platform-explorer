@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BookOpen, Search, X } from 'lucide-react';
-import { glossary } from '../data/glossary';
-import { field, interactive, modal, text, typeScale } from '../lib/styleTokens';
+import { glossary } from '../../data/glossary';
+import { field, interactive, modal, text, typeScale } from '../../lib/styleTokens';
 
 /**
  * AcronymGlossary modal. Controlled by the caller:

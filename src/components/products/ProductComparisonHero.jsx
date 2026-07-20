@@ -1,6 +1,6 @@
 import { ExternalLink } from 'lucide-react';
-import { interactive, typeScale } from '../lib/styleTokens';
-import { readSide } from '../lib/ledgerModel';
+import { interactive, typeScale } from '../../lib/styleTokens';
+import { readSide } from '../../lib/ledgerModel';
 
 /**
  * ProductComparisonHero — CONTAINMENT DIAGRAM from hero data in productComparisons.js.

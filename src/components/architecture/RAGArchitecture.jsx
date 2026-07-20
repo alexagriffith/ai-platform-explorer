@@ -1,6 +1,6 @@
 import { ArrowRight, Settings } from 'lucide-react';
-import { typeScale, density } from '../lib/styleTokens';
-import { ragPipeline, ragDocumentFormats, ragOptimizations } from '../data/ragArchitecture';
+import { typeScale, density } from '../../lib/styleTokens';
+import { ragPipeline, ragDocumentFormats, ragOptimizations } from '../../data/ragArchitecture';
 
 export default function RAGArchitecture() {
   const pipeline = ragPipeline;

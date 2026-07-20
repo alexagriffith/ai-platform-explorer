@@ -1,6 +1,6 @@
 import { Shield } from 'lucide-react';
-import { typeScale, density, border, surface, text } from '../lib/styleTokens';
-import { securityLayers } from '../data/securityLayers';
+import { typeScale, density, border, surface, text } from '../../lib/styleTokens';
+import { securityLayers } from '../../data/securityLayers';
 
 export default function SecurityOverview() {
   return (

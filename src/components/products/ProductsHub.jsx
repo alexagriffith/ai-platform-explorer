@@ -3,7 +3,7 @@ import { Package, Scale, Network } from 'lucide-react';
 import ProductComparisonView from './ProductComparisonView';
 import ProductExplorer from './ProductExplorer';
 import MCPEcosystemFull from './MCPEcosystemFull';
-import { interactive, text, typeScale } from '../lib/styleTokens';
+import { interactive, text, typeScale } from '../../lib/styleTokens';
 
 const SUB_VIEWS = [
   {

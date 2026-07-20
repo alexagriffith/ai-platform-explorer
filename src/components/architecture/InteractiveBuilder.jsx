@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Check, ChevronRight, ArrowDown, ArrowRight, Building2, Sparkles, RotateCcw, Package, Microscope, ArrowUp, Workflow, HelpCircle, Info } from 'lucide-react';
-import { capabilities, capabilityLayers } from '../data/capabilities';
-import { optionGuides } from '../data/optionGuides';
+import { capabilities, capabilityLayers } from '../../data/capabilities';
+import { optionGuides } from '../../data/optionGuides';
 import {
   flattenBuiltLayersToMap,
   expandCapabilityMapToBuiltLayers,
   capabilityMapToFlowShape
-} from '../lib/capabilityBlueprint';
-import { reconcileContainerAiPlatform, isCapabilityOptionDisabled } from '../lib/platformAiConstraints';
-import { badge, button, categoricalMark, interactive, legendChip, productStatus, providerMark, status, text, toggle, typeScale } from '../lib/styleTokens';
+} from '../../lib/capabilityBlueprint';
+import { reconcileContainerAiPlatform, isCapabilityOptionDisabled } from '../../lib/platformAiConstraints';
+import { badge, button, categoricalMark, interactive, legendChip, productStatus, providerMark, status, text, toggle, typeScale } from '../../lib/styleTokens';
 import DeepDiveModal from './DeepDiveModal';
 import FlowVisualization from './FlowVisualization';
 

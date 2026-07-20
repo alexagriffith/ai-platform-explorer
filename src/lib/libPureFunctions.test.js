@@ -6,8 +6,8 @@ import {
   flattenBuiltLayersToMap,
   expandCapabilityMapToBuiltLayers
 } from './capabilityBlueprint';
-import { mergeDecisionPatches } from '../data/decisionRecommendationApply';
-import { getCatalogDisplayName, getCatalogEntry } from '../data/catalogResolve';
+import { mergeDecisionPatches } from './decisionRecommendationApply';
+import { getCatalogDisplayName, getCatalogEntry } from './catalogResolve';
 
 describe('reconcileContainerAiPlatform (platform compatibility)', () => {
   it('RHOAI implies OpenShift when container was Kubernetes', () => {

@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
 import { AlertCircle, Download, Copy, Check, ExternalLink } from 'lucide-react';
-import { productComparisons, isComparisonDraft } from '../data/productComparisons';
+import { productComparisons, isComparisonDraft } from '../../data/productComparisons';
 import SharedSpineLedger from './SharedSpineLedger';
 import ProductComparisonHero from './ProductComparisonHero';
-import { buildLedgerModel } from '../lib/ledgerModel';
-import { interactive, supportMark as SUPPORT_MARK, typeScale } from '../lib/styleTokens';
+import { buildLedgerModel } from '../../lib/ledgerModel';
+import { interactive, supportMark as SUPPORT_MARK, typeScale } from '../../lib/styleTokens';
 
 /**
  * ProductComparisonView — the Product Comparison tab, structured as THREE BEATS top to bottom so a

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Database, GraduationCap } from 'lucide-react';
 import RAGArchitecture from './RAGArchitecture';
 import TrainingDeepDive from './TrainingDeepDive';
-import { interactive, text, typeScale } from '../lib/styleTokens';
+import { interactive, text, typeScale } from '../../lib/styleTokens';
 
 const BLUEPRINTS = [
   {

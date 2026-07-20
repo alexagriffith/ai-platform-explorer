@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { X, Check, Microscope } from 'lucide-react';
-import { isCapabilityOptionDisabled, MCP_CAPABILITY_ID, LLAMA_STACK_CAPABILITY_ID } from '../lib/platformAiConstraints';
-import { badge, interactive, modal, productStatus, redHatFirst, text, typeScale } from '../lib/styleTokens';
-import { solutionDetails } from '../data/solutionDetails';
+import { isCapabilityOptionDisabled, MCP_CAPABILITY_ID, LLAMA_STACK_CAPABILITY_ID } from '../../lib/platformAiConstraints';
+import { badge, interactive, modal, productStatus, redHatFirst, text, typeScale } from '../../lib/styleTokens';
+import { solutionDetails } from '../../data/solutionDetails';
 
 /**
  * Layer option picker for Build Your Stack. Backdrop = cancel; header ✕ = remove capability + close.

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Server, Settings, Sparkles, Copy, X } from 'lucide-react';
-import { products, thirdPartyOptions } from '../data/products';
-import { border, button, density, interactive, modal, text, typeScale } from '../lib/styleTokens';
+import { products, thirdPartyOptions } from '../../data/products';
+import { border, button, density, interactive, modal, text, typeScale } from '../../lib/styleTokens';
 
 function getSuggestedProductIds(customerEnv) {
   const recommended = products.filter((p) => p.required).map((p) => p.id);

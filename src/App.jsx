@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Layers, Package, GitBranch, AlertCircle, GitCompare, Sun, Moon, BookOpen } from 'lucide-react';
-import ArchitectureHub from './components/ArchitectureHub';
-import ProductsHub from './components/ProductsHub';
-import DecisionFlowchart from './components/DecisionFlowchart';
-import DeploymentImpactView from './components/DeploymentImpactView';
-import AcronymGlossary from './components/AcronymGlossary';
+import ArchitectureHub from './components/architecture/ArchitectureHub';
+import ProductsHub from './components/products/ProductsHub';
+import DecisionFlowchart from './components/decision-guides/DecisionFlowchart';
+import DeploymentImpactView from './components/deployment-impact/DeploymentImpactView';
+import AcronymGlossary from './components/shared/AcronymGlossary';
 import { interactive } from './lib/styleTokens';
 
 /**

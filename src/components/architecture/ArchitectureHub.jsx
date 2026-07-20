@@ -4,7 +4,7 @@ import CapabilityArchitectureView from './CapabilityArchitectureView';
 import InteractiveBuilder from './InteractiveBuilder';
 import CustomerConfig from './CustomerConfig';
 import BlueprintsView from './BlueprintsView';
-import { interactive, text, typeScale } from '../lib/styleTokens';
+import { interactive, text, typeScale } from '../../lib/styleTokens';
 
 export default function ArchitectureHub({ customerEnv, setCustomerEnv, onSwitchToDecisions, selectedCapabilities, setSelectedCapabilities, initialMode = 'build', onModeChange }) {
   const [mode, setMode] = useState(initialMode); // 'build', 'interactive', 'generate', 'blueprints'

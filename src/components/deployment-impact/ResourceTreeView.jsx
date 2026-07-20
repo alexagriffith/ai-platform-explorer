@@ -1,7 +1,7 @@
 import { ChevronRight, ChevronDown, Server, Workflow, X, ExternalLink, Info } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getResourceDefinition } from '../data/resourceDefinitions';
-import { interactive, modal, button, typeScale } from '../lib/styleTokens';
+import { getResourceDefinition } from '../../data/resourceDefinitions';
+import { interactive, modal, button, typeScale } from '../../lib/styleTokens';
 
 /**
  * ResourceTreeView

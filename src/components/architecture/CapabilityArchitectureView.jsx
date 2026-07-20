@@ -14,16 +14,16 @@ import {
   Check,
   Plus
 } from 'lucide-react';
-import { capabilities, capabilityLayers } from '../data/capabilities';
-import { solutionDetails } from '../data/solutionDetails';
-import { subComponents } from '../data/subComponents';
+import { capabilities, capabilityLayers } from '../../data/capabilities';
+import { solutionDetails } from '../../data/solutionDetails';
+import { subComponents } from '../../data/subComponents';
 import DeepDiveModal from './DeepDiveModal';
 import FlowVisualization from './FlowVisualization';
-import { capabilityMapToFlowShape } from '../lib/capabilityBlueprint';
+import { capabilityMapToFlowShape } from '../../lib/capabilityBlueprint';
 import {
   reconcileContainerAiPlatform,
   isCapabilityOptionDisabled
-} from '../lib/platformAiConstraints';
+} from '../../lib/platformAiConstraints';
 import CapabilityConfigurationModal from './CapabilityConfigurationModal';
 import {
   button,
@@ -36,7 +36,7 @@ import {
   text,
   toggle,
   typeScale,
-} from '../lib/styleTokens';
+} from '../../lib/styleTokens';
 
 /**
  * Returns Tailwind class strings for equal-width capability card grids.

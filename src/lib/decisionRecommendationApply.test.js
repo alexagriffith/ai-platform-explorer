@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { DECISION_RECOMMENDATION_PATCHES, getPatchesForRecommendationKey } from './decisionRecommendationApply';
-import { capabilities } from './capabilities';
+import { capabilities } from '../data/capabilities';
 
 describe('Decision Recommendation Mappings', () => {
   it('should have non-empty patches for all registered keys', () => {

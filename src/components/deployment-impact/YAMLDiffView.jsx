@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Copy, Check, ChevronDown, ChevronRight } from 'lucide-react';
-import { interactive, button, typeScale } from '../lib/styleTokens';
+import { interactive, button, typeScale } from '../../lib/styleTokens';
 
 /**
  * YAMLDiffView

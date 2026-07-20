@@ -1,6 +1,6 @@
 import { CheckCircle, XCircle, AlertCircle, Zap, Database, Sparkles } from 'lucide-react';
-import { typeScale, status, border, surface, text } from '../lib/styleTokens';
-import { fineTuningApproaches } from '../data/fineTuningApproaches';
+import { typeScale, status, border, surface, text } from '../../lib/styleTokens';
+import { fineTuningApproaches } from '../../data/fineTuningApproaches';
 
 export default function FineTuningDecisionMatrix() {
   const approaches = fineTuningApproaches;

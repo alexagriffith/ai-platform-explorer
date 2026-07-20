@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Database, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
-import { typeScale, density, categoricalMark, categoricalDot, legendChip } from '../lib/styleTokens';
-import { mcpServers, mcpEcosystemComponents } from '../data/mcpEcosystem';
+import { typeScale, density, categoricalMark, categoricalDot, legendChip } from '../../lib/styleTokens';
+import { mcpServers, mcpEcosystemComponents } from '../../data/mcpEcosystem';
 
 /**
  * Category → categoricalMark key mapping.

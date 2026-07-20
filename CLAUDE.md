@@ -4,16 +4,16 @@
 
 ## What this is
 
-A **public GitHub Pages workshop tool** (React 19 + Vite + Tailwind v3, static site) that Red Hat field engineers use **live in front of customers** to explore Red Hat AI platform architectures. Six tabs, wired in `src/App.jsx`:
+A **public GitHub Pages workshop tool** (React 19 + Vite + Tailwind v3, static site) that Red Hat field engineers use **live in front of customers** to explore Red Hat AI platform architectures. Four tabs, wired in `src/App.jsx`:
 
 | Tab id | Name | Entry component |
 |---|---|---|
-| `architecture` | Architecture | `ArchitectureHub` (hosts `CapabilityArchitectureView`, `InteractiveBuilder`, `CustomerConfig`) |
-| `decisions` | Decision Guides | `DecisionFlowchart` (hosts `DecisionTree`) |
-| `use-cases` | Use Cases | `UseCaseView` (hosts `FineTuningDecisionMatrix`, `TrainingDeepDive`, `RAGArchitecture`, `MCPEcosystemFull`, `SecurityOverview`) |
-| `products` | Products | `ProductExplorer` |
-| `deployment-impact` | Deployment Impact | `DeploymentImpactView` (hosts `DeploymentComparisonSelector`, `YAMLDiffView`, `ResourceTreeView`, `CapabilityDeltaTable`) |
-| `product-comparison` | Product Comparison | `ProductComparisonView` (dual-view: bill of materials + capability comparison; draft data) |
+| `architecture` | Architecture | `components/architecture/ArchitectureHub` (Build / Interactive / Generate / Blueprints) |
+| `decisions` | Decision Guides | `components/decision-guides/DecisionFlowchart` (hosts `DecisionTree` + reference guides) |
+| `products` | Products | `components/products/ProductsHub` (Compare / Catalog / MCP Ecosystem) |
+| `deployment-impact` | Deployment Impact | `components/deployment-impact/DeploymentImpactView` |
+
+**Layout (WP6):** components are grouped under `src/components/{architecture,decision-guides,products,deployment-impact,shared}/`. Content stays in `src/data/`; logic (including `catalogResolve.js` and `decisionRecommendationApply.js`) lives in `src/lib/`.
 
 **State model:** no router, no store. `App.jsx` owns `customerEnv` and `selectedCapabilities` — the canonical blueprint map `capabilityId → optionId` that Build Your Stack, the Decision Guides, and the Interactive Builder all read and write. `InteractiveBuilder` syncs its local wizard state up to this map continuously (regression-tested in `InteractiveBuilder.test.jsx`). Pure transforms live in `src/lib/capabilityBlueprint.js`; the OpenShift/Kubernetes/RHEL pairing rules live in `src/lib/platformAiConstraints.js`.
 
@@ -23,7 +23,7 @@ A **public GitHub Pages workshop tool** (React 19 + Vite + Tailwind v3, static s
 - **No cloud CI.** Quality gates are local hooks + the lint/test steps already in `.github/workflows/deploy.yml` (which deploys `main` straight to the public site).
 - **`dist/` and `planning/` are never committed** (gitignored).
 - **Content claims trace to the sources in `knowledge-registry.md`.** No new hard numbers without a source.
-- **Status vocabulary is exactly:** `'GA' | 'Tech Preview' | 'Dev Preview' | 'Check with Red Hat'` (enforced by `src/data/catalogIntegrity.test.js`). The `provider` field is **open** — it carries vendor/source names (`Red Hat`, `Customer`, `NVIDIA`, `AMD`, `Intel`, `Google`, `AWS`, `Open Source`, …); only the color-badge grouping collapses it to Red Hat / Customer / third-party.
+- **Status vocabulary is exactly:** `'GA' | 'Tech Preview' | 'Dev Preview' | 'Check with Red Hat'` (enforced by `src/data/catalogIntegrity.test.js`). The `provider` field is **open** — it carries vendor/source names (`Red Hat`, `Customer`, `NVIDIA`, `AMD`, `Intel`, `Google`, `AWS`, `Open Source`, …); only the color-badge grouping collapses it to Red Hat / Customer / third-party. Shared badge tokens live in `src/lib/styleTokens.js`.
 - **Do not rename capability/option/product ids** (`rhai`, `rhaie`, `rhoai`, `ai-inference`, …) — code, tests, and cross-file references depend on them. Fix display strings only.
 
 ## Public-repo rules (the sharp edge)

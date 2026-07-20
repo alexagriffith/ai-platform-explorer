@@ -1,14 +1,14 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { X, ArrowDown, Workflow, Maximize2, Minimize2, Download, Layers, Crosshair } from 'lucide-react';
-import { subComponents } from '../data/subComponents';
+import { subComponents } from '../../data/subComponents';
 import {
   collectFlowLayersFromNested,
   collectFlowStructuralEdges,
   collectSameLayerStructuralEdges,
   collectBridgeStructuralEdges,
   getFocusNeighborSet
-} from '../lib/flowVisualizationData';
-import { interactive, modal, text, button, categoricalMark, legendChip, typeScale } from '../lib/styleTokens';
+} from '../../lib/flowVisualizationData';
+import { interactive, modal, text, button, categoricalMark, legendChip, typeScale } from '../../lib/styleTokens';
 
 function nameById(flow, id) {
   for (const layer of flow) {
