@@ -42,15 +42,8 @@ export default function ResourceTreeView({ comparison }) {
   const beforeKinds = getResourceKinds(before.clusterResources);
   const afterKinds = getResourceKinds(after.clusterResources);
 
-  const isAlternative = comparison.comparisonType === 'alternative';
-
-  const leftConfig = isAlternative
-    ? { label: before.label, dotClass: 'bg-muted', prefix: '' }
-    : { label: before.label, dotClass: 'bg-amber-500', prefix: 'Before: ' };
-
-  const rightConfig = isAlternative
-    ? { label: after.label, dotClass: 'bg-accent', prefix: '' }
-    : { label: after.label, dotClass: 'bg-green-600', prefix: 'After: ' };
+  const leftConfig = { label: before.label, dotClass: 'bg-amber-500', prefix: 'Before: ' };
+  const rightConfig = { label: after.label, dotClass: 'bg-green-600', prefix: 'After: ' };
 
   return (
     <div className="space-y-3 relative">
@@ -59,9 +52,7 @@ export default function ResourceTreeView({ comparison }) {
           Kubernetes Resource Tree
         </h3>
         <p className={`${typeScale.body} text-muted`}>
-          {isAlternative
-            ? 'Compare what Kubernetes resources each platform creates from similar user inputs.'
-            : 'See how the resource structure changes when adopting this platform component.'}
+          See how the resource structure changes when adopting this platform component.
           {' '}
           <span className={`inline-flex items-center gap-1 ${typeScale.caption} text-link`}>
             <Info size={13} />
@@ -89,7 +80,6 @@ export default function ResourceTreeView({ comparison }) {
                 selectedKind={selectedResourceKind}
                 diffStatus="before"
                 otherKinds={afterKinds}
-                isAlternative={isAlternative}
               />
             ))}
           </div>
@@ -113,7 +103,6 @@ export default function ResourceTreeView({ comparison }) {
                 selectedKind={selectedResourceKind}
                 diffStatus="after"
                 otherKinds={beforeKinds}
-                isAlternative={isAlternative}
               />
             ))}
           </div>
@@ -138,22 +127,20 @@ export default function ResourceTreeView({ comparison }) {
               </span>
             </div>
           </div>
-          {!isAlternative && (
-            <div className={`flex items-center gap-3 ${typeScale.caption} pt-1.5 border-t border-hair`}>
-              <div className="flex items-center gap-1.5">
-                <span className={`px-1.5 py-0.5 ${typeScale.label} font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded-card`}>
-                  NEW
-                </span>
-                <span className="text-ink">Added by platform</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className={`px-1.5 py-0.5 ${typeScale.label} font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 rounded-card`}>
-                  REMOVED
-                </span>
-                <span className="text-ink">No longer needed</span>
-              </div>
+          <div className={`flex items-center gap-3 ${typeScale.caption} pt-1.5 border-t border-hair`}>
+            <div className="flex items-center gap-1.5">
+              <span className={`px-1.5 py-0.5 ${typeScale.label} font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded-card`}>
+                NEW
+              </span>
+              <span className="text-ink">Added by platform</span>
             </div>
-          )}
+            <div className="flex items-center gap-1.5">
+              <span className={`px-1.5 py-0.5 ${typeScale.label} font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 rounded-card`}>
+                REMOVED
+              </span>
+              <span className="text-ink">No longer needed</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -171,7 +158,7 @@ export default function ResourceTreeView({ comparison }) {
 /**
  * ResourceTreeNode - Individual node in the tree with expand/collapse and clickable resource kind
  */
-function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffStatus, otherKinds, isAlternative }) {
+function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffStatus, otherKinds }) {
   const [isExpanded, setIsExpanded] = useState(depth <= 1);
   const hasChildren = node.children && node.children.length > 0;
 
@@ -187,12 +174,10 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
 
   // Status diff badges — green = new/added, amber = removed (not red; removed ≠ error)
   let badge = null;
-  if (!isAlternative) {
-    if (diffStatus === 'after' && !otherKinds.has(node.kind)) {
-      badge = { text: 'NEW', className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' };
-    } else if (diffStatus === 'before' && !otherKinds.has(node.kind)) {
-      badge = { text: 'REMOVED', className: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' };
-    }
+  if (diffStatus === 'after' && !otherKinds.has(node.kind)) {
+    badge = { text: 'NEW', className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' };
+  } else if (diffStatus === 'before' && !otherKinds.has(node.kind)) {
+    badge = { text: 'REMOVED', className: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' };
   }
 
   return (
@@ -259,7 +244,6 @@ function ResourceTreeNode({ node, depth = 0, onSelectKind, selectedKind, diffSta
               selectedKind={selectedKind}
               diffStatus={diffStatus}
               otherKinds={otherKinds}
-              isAlternative={isAlternative}
             />
           ))}
         </div>

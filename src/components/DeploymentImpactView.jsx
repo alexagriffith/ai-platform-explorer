@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { FileCode, Table, GitCompare, ChevronDown, ChevronRight, Zap } from 'lucide-react';
+import { FileCode, Table, GitCompare, ChevronDown, ChevronRight } from 'lucide-react';
 import DeploymentComparisonSelector from './DeploymentComparisonSelector';
 import YAMLDiffView from './YAMLDiffView';
 import CapabilityDeltaTable from './CapabilityDeltaTable';
 import ResourceTreeView from './ResourceTreeView';
-import QuickComparisonTable from './QuickComparisonTable';
 import { getComparisonById } from '../data/deploymentComparisons';
 import { interactive, text, typeScale } from '../lib/styleTokens';
 
@@ -13,6 +12,10 @@ import { interactive, text, typeScale } from '../lib/styleTokens';
  *
  * Main view for the Deployment Impact Explorer (V2 feature).
  * Orchestrates comparison selection and displays before/after analysis in tabs.
+ *
+ * Note: the former llm-d vs Dynamo "alternative" Quick Comparison surface was
+ * removed — do not reintroduce competitor head-to-head content without an
+ * explicit product decision.
  */
 export default function DeploymentImpactView() {
   const [selectedComparisonId, setSelectedComparisonId] = useState(null);
@@ -21,26 +24,16 @@ export default function DeploymentImpactView() {
 
   const comparison = selectedComparisonId ? getComparisonById(selectedComparisonId) : null;
 
-  // Reset active tab when comparison changes
   const handleSelectComparison = (id) => {
     setSelectedComparisonId(id);
-    const newComparison = getComparisonById(id);
-    setActiveTab(newComparison?.comparisonType === 'alternative' ? 'quick' : 'yaml');
+    setActiveTab('yaml');
   };
 
-  // For alternative comparisons (not upgrades), show Quick Comparison tab first
-  const tabs = comparison?.comparisonType === 'alternative'
-    ? [
-        { id: 'quick', name: 'Quick Comparison', icon: Zap },
-        { id: 'yaml', name: 'YAML Diff', icon: FileCode },
-        { id: 'resources', name: 'Resource Tree', icon: GitCompare },
-        { id: 'capabilities', name: 'Capability Delta', icon: Table }
-      ]
-    : [
-        { id: 'yaml', name: 'YAML Diff', icon: FileCode },
-        { id: 'resources', name: 'Resource Tree', icon: GitCompare },
-        { id: 'capabilities', name: 'Capability Delta', icon: Table }
-      ];
+  const tabs = [
+    { id: 'yaml', name: 'YAML Diff', icon: FileCode },
+    { id: 'resources', name: 'Resource Tree', icon: GitCompare },
+    { id: 'capabilities', name: 'Capability Delta', icon: Table }
+  ];
 
   return (
     <div data-tab="deployment-impact" className="space-y-4">
@@ -87,7 +80,6 @@ export default function DeploymentImpactView() {
             </div>
 
             <div className="p-4">
-              {activeTab === 'quick' && <QuickComparisonTable comparison={comparison} />}
               {activeTab === 'yaml' && <YAMLDiffView comparison={comparison} />}
               {activeTab === 'resources' && <ResourceTreeView comparison={comparison} />}
               {activeTab === 'capabilities' && <CapabilityDeltaTable comparison={comparison} />}

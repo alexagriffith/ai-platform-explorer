@@ -225,7 +225,7 @@ export const aiInferenceVsRhoai = {
         sourceLabel: 'Red Hat AI on-OpenShift Helm chart (rhai/rhai-on-openshift-chart) — installs OpenShift AI (RHOAI) operators + configuration on OpenShift; catalog.redhat.com, Tech Preview v3.4'
       },
       illustrative: true,
-      sourceRef: 'Placeholder from products.js (rhoai description; QuickComparisonTable enterprise-distribution row) — pending BOM curation'
+      sourceRef: 'Placeholder from products.js (rhoai description) — pending BOM curation'
     },
     {
       area: 'Operators, container images, and versions per release',

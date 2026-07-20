@@ -16,7 +16,6 @@
     "src/components/YAMLDiffView.jsx",
     "src/components/ResourceTreeView.jsx",
     "src/components/CapabilityDeltaTable.jsx",
-    "src/components/QuickComparisonTable.jsx",
     "src/components/DecisionFlowchart.jsx",
     "src/components/DecisionTree.jsx",
     "src/components/ProductExplorer.jsx",

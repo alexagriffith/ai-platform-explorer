@@ -20,40 +20,29 @@ export default function YAMLDiffView({ comparison }) {
   }
 
   const { before, after } = comparison;
-  const isAlternative = comparison.comparisonType === 'alternative';
 
-  // Dot colors: muted-neutral for alternative (no status meaning); amber=before, green=after for upgrade diff
-  const leftConfig = isAlternative
-    ? { label: before.label, dotClass: 'bg-muted', prefix: '', state: 'option-a' }
-    : { label: before.label, dotClass: 'bg-amber-500', prefix: 'Before: ', state: 'before' };
-
-  const rightConfig = isAlternative
-    ? { label: after.label, dotClass: 'bg-accent', prefix: '', state: 'option-b' }
-    : { label: after.label, dotClass: 'bg-green-600', prefix: 'After: ', state: 'after' };
+  const leftConfig = { label: before.label, dotClass: 'bg-amber-500', prefix: 'Before: ', state: 'before' };
+  const rightConfig = { label: after.label, dotClass: 'bg-green-600', prefix: 'After: ', state: 'after' };
 
   return (
     <div className="space-y-3">
       <div>
         <h3 className={`${typeScale.panelTitle} text-ink mb-1`}>
-          {isAlternative ? 'What You Submit: Side-by-Side' : 'What You Submit: Before vs After'}
+          What You Submit: Before vs After
         </h3>
         <p className={`${typeScale.body} text-muted`}>
-          {isAlternative
-            ? 'Compare the YAML specifications for each platform approach.'
-            : 'See how the YAML you write changes when adopting this platform component.'}
+          See how the YAML you write changes when adopting this platform component.
         </p>
-        {!isAlternative && (
-          <div className="flex items-center gap-4 mt-1.5" aria-label="Color legend">
-            <span className={`flex items-center gap-1.5 ${typeScale.caption} text-muted`}>
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 flex-shrink-0" aria-hidden="true" />
-              Before (existing)
-            </span>
-            <span className={`flex items-center gap-1.5 ${typeScale.caption} text-muted`}>
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-green-600 flex-shrink-0" aria-hidden="true" />
-              After (with platform)
-            </span>
-          </div>
-        )}
+        <div className="flex items-center gap-4 mt-1.5" aria-label="Color legend">
+          <span className={`flex items-center gap-1.5 ${typeScale.caption} text-muted`}>
+            <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 flex-shrink-0" aria-hidden="true" />
+            Before (existing)
+          </span>
+          <span className={`flex items-center gap-1.5 ${typeScale.caption} text-muted`}>
+            <span className="inline-block w-2.5 h-2.5 rounded-full bg-green-600 flex-shrink-0" aria-hidden="true" />
+            After (with platform)
+          </span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">

@@ -26,19 +26,14 @@ export default function CapabilityDeltaTable({ comparison }) {
     neutral: capabilityDelta.filter(d => d.impact === 'neutral').length
   };
 
-  const isAlternativeComparison = comparison.comparisonType === 'alternative';
-
   return (
     <div className="space-y-3">
       <div>
         <h3 className={`${typeScale.panelTitle} text-ink mb-1`}>
-          {isAlternativeComparison ? 'Feature Comparison' : 'Capability Changes'}
+          Capability Changes
         </h3>
         <p className={`${typeScale.body} text-muted`}>
-          {isAlternativeComparison
-            ? 'How do these two technologies compare across key capabilities and operational characteristics?'
-            : 'What features and operational characteristics change when you adopt this platform component?'
-          }
+          What features and operational characteristics change when you adopt this platform component?
         </p>
       </div>
 
@@ -47,7 +42,7 @@ export default function CapabilityDeltaTable({ comparison }) {
         <div data-ui="chip" className="flex items-center gap-2 px-3 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-card">
           <TrendingUp size={14} className="text-green-600 dark:text-green-400" />
           <span className={`text-ink ${typeScale.caption}`}>
-            <strong className="text-green-700 dark:text-green-300">{impactCounts.positive}</strong> {isAlternativeComparison ? 'Advantages' : 'Improvements'}
+            <strong className="text-green-700 dark:text-green-300">{impactCounts.positive}</strong> Improvements
           </span>
         </div>
 
@@ -80,10 +75,10 @@ export default function CapabilityDeltaTable({ comparison }) {
                   Capability
                 </th>
                 <th className={`px-3 py-2 text-left ${typeScale.tableHeader} text-muted min-w-[120px]`}>
-                  {isAlternativeComparison ? comparison.before.label : 'Before'}
+                  Before
                 </th>
                 <th className={`px-3 py-2 text-left ${typeScale.tableHeader} text-muted min-w-[120px]`}>
-                  {isAlternativeComparison ? comparison.after.label : 'After'}
+                  After
                 </th>
                 <th className={`px-3 py-2 text-left ${typeScale.tableHeader} text-muted min-w-[100px]`}>
                   Impact
@@ -112,7 +107,7 @@ export default function CapabilityDeltaTable({ comparison }) {
                     {delta.afterState}
                   </td>
                   <td className="px-3 py-2">
-                    <ImpactBadge impact={delta.impact} isAlternativeComparison={isAlternativeComparison} />
+                    <ImpactBadge impact={delta.impact} />
                   </td>
                 </tr>
               ))}
@@ -127,29 +122,20 @@ export default function CapabilityDeltaTable({ comparison }) {
         <div className={`flex flex-wrap gap-x-6 gap-y-1 ${typeScale.caption} text-muted`}>
           {impactCounts.positive > 0 && (
             <div>
-              <span className="font-medium text-green-600 dark:text-green-400">{isAlternativeComparison ? 'Advantage:' : 'Improvement:'}</span>{' '}
-              {isAlternativeComparison
-                ? `Advantage of ${comparison.after.label}`
-                : 'Clear improvement or new capability'
-              }
+              <span className="font-medium text-green-600 dark:text-green-400">Improvement:</span>{' '}
+              Clear improvement or new capability
             </div>
           )}
           {impactCounts.tradeoff > 0 && (
             <div>
               <span className="font-medium text-amber-600 dark:text-amber-400">Tradeoff:</span>{' '}
-              {isAlternativeComparison
-                ? 'Different strengths and weaknesses between options'
-                : 'Gain something, but accept added complexity or constraint'
-              }
+              Gain something, but accept added complexity or constraint
             </div>
           )}
           {impactCounts.neutral > 0 && (
             <div>
               <span className="font-medium text-muted">Neutral:</span>{' '}
-              {isAlternativeComparison
-                ? 'Similar capabilities between options'
-                : 'Different approach, similar outcome'
-              }
+              Different approach, similar outcome
             </div>
           )}
         </div>
@@ -162,11 +148,11 @@ export default function CapabilityDeltaTable({ comparison }) {
  * ImpactBadge - Visual indicator for capability impact.
  * Colors are STATUS-semantic only (green=success, amber=warning, neutral=neutral).
  */
-function ImpactBadge({ impact, isAlternativeComparison }) {
+function ImpactBadge({ impact }) {
   const badgeConfig = {
     positive: {
       icon: TrendingUp,
-      label: isAlternativeComparison ? 'Advantage' : 'Improvement',
+      label: 'Improvement',
       className: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800'
     },
     tradeoff: {
@@ -185,7 +171,7 @@ function ImpactBadge({ impact, isAlternativeComparison }) {
   const Icon = config.icon;
 
   return (
-    <span data-ui="chip" className={`inline-flex items-center gap-1.5 px-2 py-0.5 ${typeScale.label} font-medium border rounded-card ${config.className}`}>
+    <span data-ui="chip" className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-card border ${typeScale.label} font-semibold ${config.className}`}>
       <Icon size={12} />
       {config.label}
     </span>

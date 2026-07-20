@@ -157,7 +157,7 @@ Everything below moves content only — no wording changes (content is already c
 - [ ] `SecurityOverview.jsx`: `securityLayers` (4-77) → `src/data/securityLayers.js`.
 - [ ] `MCPEcosystemFull.jsx`: `mcpServers` (7-40), `components`→`mcpEcosystemComponents` (42-76) → `src/data/mcpEcosystem.js`. Then point `solutionDetails.js:407` at this single source (resolves the roster contradiction permanently).
 - [ ] `RAGArchitecture.jsx`: `pipeline`→`ragPipeline`, `documentFormats`→`ragDocumentFormats`, `autoRAGOptimizations`→`ragOptimizations` (4-67) → `src/data/ragArchitecture.js`.
-- [ ] Do NOT extract: `DeepDiveModal.jsx` `DEFAULT_REQUIREMENTS` (one string), `QuickComparisonTable.jsx` `iconMap`, `CustomerConfig.jsx` `getSuggestedProductIds` (logic-with-content; fine in place).
+- [ ] Do NOT extract: `DeepDiveModal.jsx` `DEFAULT_REQUIREMENTS` (one string), `CustomerConfig.jsx` `getSuggestedProductIds` (logic-with-content; fine in place).
 
 Verify: lint/test/build; every tab browser-checked (this touches all five); `git diff --stat` should show near-pure moves.
 
@@ -192,7 +192,7 @@ src/
                         RAGArchitecture, SecurityOverview, TrainingDeepDive
     products/           ProductExplorer
     deployment-impact/  DeploymentImpactView, DeploymentComparisonSelector, YAMLDiffView,
-                        CapabilityDeltaTable, ResourceTreeView, QuickComparisonTable
+                        CapabilityDeltaTable, ResourceTreeView
     shared/             AcronymGlossary
   data/                 content only (catalog + feature data files, incl. WP4 extractions)
   lib/                  ALL logic: existing lib files + catalogResolve.js + decisionRecommendationApply.js(+.test.js)
@@ -200,7 +200,7 @@ src/
 
 Mechanical steps (import-change list verified against actual import statements at review time):
 
-- [ ] `git mv` the components into the folders above. Sibling `./X` imports within a folder are unchanged. Data/lib imports in moved components change `../data/…`→`../../data/…` and `../lib/…`→`../../lib/…` — affected lines: CapabilityArchitectureView 17-19, 22-26; InteractiveBuilder 3-10; CustomerConfig 3; CapabilityConfigurationModal 3; FlowVisualization 3-10; DeepDiveModal 3; DecisionFlowchart 20-22; UseCaseView 3; ProductExplorer 3; DeploymentImpactView 8; DeploymentComparisonSelector 2; ResourceTreeView 3. DecisionTree, YAMLDiffView, CapabilityDeltaTable, QuickComparisonTable, the five use-cases siblings, AcronymGlossary: no import changes.
+- [ ] `git mv` the components into the folders above. Sibling `./X` imports within a folder are unchanged. Data/lib imports in moved components change `../data/…`→`../../data/…` and `../lib/…`→`../../lib/…` — affected lines: CapabilityArchitectureView 17-19, 22-26; InteractiveBuilder 3-10; CustomerConfig 3; CapabilityConfigurationModal 3; FlowVisualization 3-10; DeepDiveModal 3; DecisionFlowchart 20-22; UseCaseView 3; ProductExplorer 3; DeploymentImpactView 8; DeploymentComparisonSelector 2; ResourceTreeView 3. DecisionTree, YAMLDiffView, CapabilityDeltaTable, the five use-cases siblings, AcronymGlossary: no import changes.
 - [ ] `App.jsx` imports (lines 3-8) update to the new folder paths.
 - [ ] `git mv src/data/catalogResolve.js src/lib/` — inside it, `./products`→`../data/products`; importers: `UseCaseView.jsx` (covered), `src/lib/libPureFunctions.test.js:10` → `./catalogResolve`.
 - [ ] `git mv src/data/decisionRecommendationApply.js src/data/decisionRecommendationApply.test.js src/lib/` — inside: `../lib/platformAiConstraints`→`./platformAiConstraints`; test: `./capabilities`→`../data/capabilities`; importers: `DecisionFlowchart.jsx` (covered), `libPureFunctions.test.js:9` → `./decisionRecommendationApply`. (WP0's `catalogIntegrity.test.js` moves to `src/lib/` too if it imports moved modules.)
@@ -273,6 +273,9 @@ Branch: `ws/style-unification`. Two commits.
 ### Parked (do not do without a user decision)
 
 - "Ownership" tab in Deployment Impact rendering `operationalShifts`/`appTeamOwns`/`platformTeamOwns` (hundreds of lines of corrected data currently invisible) — feature addition, needs design.
-- Data-driven refactor of `QuickComparisonTable`'s hardcoded llm-d/Dynamo prose into a `comparisonType: 'alternative'` entry in `deploymentComparisons.js` (`sharedTraits`, `architectureRows`, `chooseA`/`chooseB`) — currently dead code guarded by WP3; only worth doing when a second alternative comparison is planned.
 - Using `customerEnv` in UseCaseView to pre-highlight relevant use cases (the prop being removed in WP2) — feature idea.
 - Rendering `RAGArchitecture` only when the RAG use case is selected (UseCaseView currently always renders five heavy sections) — perf/UX call.
+
+### Deprecated / removed (do not reintroduce without an explicit product decision)
+
+- **llm-d vs Dynamo Quick Comparison** (2026-07-20): deleted `QuickComparisonTable.jsx` and stripped `comparisonType: 'alternative'` wiring from Deployment Impact. Competitor head-to-head content must not ship. Migration-path comparisons (vLLM→KServe, OpenShift→RHOAI) remain.
