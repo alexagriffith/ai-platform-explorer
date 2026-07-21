@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Check, ChevronRight, ArrowDown, ArrowRight, Building2, Sparkles, RotateCcw, Package, Microscope, ArrowUp, Workflow, HelpCircle, Info } from 'lucide-react';
 import { capabilities, capabilityLayers } from '../../data/capabilities';
 import { optionGuides } from '../../data/optionGuides';
+import { solutionDetails } from '../../data/solutionDetails';
 import {
   flattenBuiltLayersToMap,
   expandCapabilityMapToBuiltLayers,
@@ -78,7 +79,7 @@ function BuiltLayerCard({ layer, index, selectedCaps, onEdit, onDeepDive }) {
             const option = capability?.options.find(o => o.id === optionId);
             if (!capability || !option) return null;
 
-            const canDeepDive = option.provider === 'Red Hat';
+            const canDeepDive = option.provider === 'Red Hat' && !!solutionDetails[optionId];
 
           return (
             <button

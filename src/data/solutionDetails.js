@@ -79,6 +79,61 @@ export const solutionDetails = {
     documentation: 'https://docs.redhat.com/en/documentation/openshift_container_platform',
     contacts: ['Ask your Red Hat account team.']
   },
+  // Platform & Runtime: bare-metal / VM hosts (distinct from the Red Hat Enterprise Linux AI product entry below).
+  // SOURCE: https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/ (200 via redirect to current major, verified 2026-07-20)
+  // Framing aligned with optionGuides['rhel-hosts'] — OS foundation for non-cluster AI footprints.
+  'rhel-hosts': {
+    name: 'Red Hat Enterprise Linux (RHEL) servers',
+    description:
+      'Dedicated Red Hat Enterprise Linux (RHEL) systems as the platform and runtime for AI workloads — bare metal or virtual machines (VMs) without OpenShift as the shared control plane.',
+    requirements:
+      'Confirm a supported Red Hat Enterprise Linux (RHEL) release, subscription entitlement, accelerator drivers, and network policy with your platform team. Pair with Red Hat Enterprise Linux AI when you need a packaged generative AI stack on these hosts.',
+    architecture: {
+      components: [
+        {
+          name: 'Red Hat Enterprise Linux',
+          role: 'Operating system',
+          description: 'Supported Linux host for inference and tooling on bare metal or virtual machines'
+        },
+        {
+          name: 'Hardware enablement',
+          role: 'Accelerators and devices',
+          description: 'Graphics processing unit (GPU) and other accelerator drivers managed on the host (confirm vendor support for your release)'
+        },
+        {
+          name: 'Container runtime (optional)',
+          role: 'Workload packaging',
+          description: 'Podman or similar for containerized model servers when you are not scheduling on Kubernetes'
+        },
+        {
+          name: 'System services',
+          role: 'Process management',
+          description: 'systemd and host networking for long-running inference endpoints'
+        }
+      ],
+      integrations: [
+        { name: 'Red Hat Enterprise Linux AI', purpose: 'Packaged generative AI inference and optimization on RHEL hosts' },
+        { name: 'Red Hat Subscription Management', purpose: 'Entitlement, updates, and support' },
+        { name: 'Podman', purpose: 'Container runtime for model serving without a cluster' }
+      ]
+    },
+    capabilities: [
+      'Enterprise Linux foundation with Red Hat support and lifecycle',
+      'Bare-metal and virtual machine footprints without a shared Kubernetes control plane',
+      'Host-level accelerator enablement for supported graphics processing units (GPUs)',
+      'Fits single-server inference, air-gapped Linux hosts, and department-scale AI before cluster rollout',
+      'Clear split from cluster-based Red Hat OpenShift AI (RHOAI) or Red Hat AI Enterprise (RHAIE)',
+      'Can host Red Hat Enterprise Linux AI when you need a packaged generative AI stack'
+    ],
+    useCases: [
+      'Single-server large language model (LLM) inference on RHEL',
+      'Edge or air-gapped Linux hosts outside OpenShift',
+      'Department-scale AI before adopting a shared cluster',
+      'Teams standardizing on RHEL for model hosts alongside a separate OpenShift estate'
+    ],
+    documentation: 'https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/',
+    contacts: ['Ask your Red Hat account team.']
+  },
   'rhoai': {
     name: 'Red Hat OpenShift AI (RHOAI)',
     description: 'Comprehensive AI/ML platform for the full machine learning lifecycle, including model development, training, serving, and model fine-tuning.',
